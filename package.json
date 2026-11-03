@@ -1,221 +1,4 @@
-{
-  "name": "dsh-safe-plugin-manager",
-  "version": "0.9.33",
-  "description": "GitHub-only marketplace and guarded lifecycle manager for DeepSeek Harness plugins",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/AI-Scarlett/DSH-Store.git"
-  },
-  "homepage": "https://dsh.store/",
-  "private": true,
-  "type": "module",
-  "main": "./src/index.mjs",
-  "bin": {
-    "dsh-store-repair": "./bin/dsh-store-repair.mjs"
-  },
-  "exports": {
-    ".": "./src/index.mjs",
-    "./client": "./src/client.js",
-    "./locale/*.json": "./locale/*.json",
-    "./catalog": "./src/catalog.mjs",
-    "./candidates": "./src/candidates.mjs",
-    "./cordis.patch.yml": "./cordis.patch.yml",
-    "./package.json": "./package.json"
-  },
-  "files": [
-    "bin",
-    "locale",
-    "src",
-    "registry",
-    "marketplace",
-    "cordis.patch.yml",
-    "README.md",
-    "SECURITY.md",
-    "THIRD_PARTY_NOTICES.md"
-  ],
-  "dsh": {
-    "bundle": {
-      "patch": "./cordis.patch.yml"
-    },
-    "client": {
-      "inject": [
-        "@deepseek-ai/dsh-client-runtime",
-        "@deepseek-ai/dsh-client-ui-primitives",
-        "@deepseek-ai/dsh-client-ui-slots",
-        "@deepseek-ai/dsh-client-ui-settings",
-        "@deepseek-ai/dsh-client-ui-layout",
-        "@deepseek-ai/dsh-client-ui-sidebar"
-      ],
-      "platform": "web"
-    },
-    "compatibility": {
-      "dsh": "0.0.1-rc.5 || >=0.1.0-rc.6 <0.2.0 || 0.1.5-alpha.1 || 0.1.5-alpha.2 || 0.1.5-rc.1 || 0.1.5-rc.2 || 0.2.0-rc.1 || 0.2.0-rc.2 || 0.2.1-alpha.1 || 0.2.1-alpha.2 || 0.2.1-alpha.3 || 0.2.1-alpha.4 || 0.2.1-alpha.5 || 0.2.1-rc.1 || 0.2.1-rc.2 || 0.2.1-rc.3 || 0.2.1-rc.4 || 0.2.1-rc.5 || 0.2.2-alpha.2",
-      "dshReleases": {
-        "rc.7": "compatible",
-        "rc.8": "compatible",
-        "0.1.1-rc.1": "compatible",
-        "0.1.1-rc.2": "compatible",
-        "0.1.2-alpha.2": "compatible",
-        "0.1.2-alpha.3": "compatible",
-        "0.1.2-alpha.4": "compatible",
-        "0.1.2-alpha.5": "compatible",
-        "0.1.3-alpha.1": "compatible",
-        "0.1.3-alpha.2": "unknown",
-        "0.1.5-alpha.1": "compatible",
-        "0.1.5-alpha.2": "compatible",
-        "0.1.5-rc.1": "compatible",
-        "0.1.5-rc.2": "compatible",
-        "0.1.6-alpha.1": "unknown",
-        "0.1.7-alpha.1": "compatible",
-        "0.1.7-alpha.2": "compatible",
-        "0.1.7-rc.1": "compatible",
-        "0.1.7-rc.2": "compatible",
-        "0.2.0-rc.1": "compatible",
-        "0.2.0-rc.2": "compatible",
-        "0.2.1-alpha.1": "compatible",
-        "0.2.1-alpha.2": "compatible",
-        "0.2.1-alpha.3": "compatible",
-        "0.2.1-alpha.4": "compatible",
-        "0.2.1-alpha.5": "compatible",
-        "0.2.1-rc.1": "compatible",
-        "0.2.1-rc.2": "compatible",
-        "0.2.1-rc.3": "compatible",
-        "0.2.1-rc.4": "compatible",
-        "0.2.1-rc.5": "compatible",
-        "0.2.2-alpha.2": "compatible"
-      },
-      "dshOperations": {
-        "0.1.7-alpha.1": {
-          "install": "passed",
-          "start": "passed",
-          "uninstall": "passed",
-          "rollback": "passed"
-        },
-        "0.1.7-alpha.2": {
-          "install": "passed",
-          "start": "passed",
-          "uninstall": "passed",
-          "rollback": "passed"
-        },
-        "0.1.7-rc.1": {
-          "install": "passed",
-          "start": "passed",
-          "uninstall": "passed",
-          "rollback": "passed"
-        },
-        "0.1.7-rc.2": {
-          "install": "passed",
-          "start": "passed",
-          "uninstall": "passed",
-          "rollback": "passed"
-        },
-        "0.2.0-rc.1": {
-          "install": "passed",
-          "start": "passed",
-          "uninstall": "passed",
-          "rollback": "passed"
-        },
-        "0.2.0-rc.2": {
-          "install": "passed",
-          "start": "passed",
-          "uninstall": "passed",
-          "rollback": "passed"
-        },
-        "0.2.1-alpha.1": {
-          "install": "passed",
-          "start": "passed",
-          "uninstall": "passed",
-          "rollback": "passed"
-        },
-        "0.2.1-alpha.2": {
-          "install": "passed",
-          "start": "passed",
-          "uninstall": "passed",
-          "rollback": "passed"
-        },
-        "0.2.1-alpha.3": {
-          "install": "passed",
-          "start": "passed",
-          "uninstall": "passed",
-          "rollback": "unknown"
-        },
-        "0.2.1-alpha.4": {
-          "install": "unknown",
-          "start": "unknown",
-          "uninstall": "unknown",
-          "rollback": "unknown"
-        },
-        "0.2.1-alpha.5": {
-          "install": "unknown",
-          "start": "unknown",
-          "uninstall": "unknown",
-          "rollback": "unknown"
-        },
-        "0.2.1-rc.1": {
-          "install": "passed",
-          "start": "passed",
-          "uninstall": "passed",
-          "rollback": "unknown"
-        },
-        "0.2.1-rc.2": {
-          "install": "passed",
-          "start": "passed",
-          "uninstall": "passed",
-          "rollback": "unknown"
-        },
-        "0.2.1-rc.3": {
-          "install": "passed",
-          "start": "passed",
-          "uninstall": "passed",
-          "rollback": "unknown"
-        },
-        "0.2.1-rc.4": {
-          "install": "passed",
-          "start": "passed",
-          "uninstall": "passed",
-          "rollback": "unknown"
-        },
-        "0.2.1-rc.5": {
-          "install": "passed",
-          "start": "passed",
-          "uninstall": "passed",
-          "rollback": "unknown"
-        },
-        "0.2.2-alpha.2": {
-          "install": "passed",
-          "start": "passed",
-          "uninstall": "passed",
-          "rollback": "unknown"
-        }
-      }
-    }
-  },
-  "engines": {
-    "node": "^22.19.0 || >=24.0.0",
-    "dsh": "0.0.1-rc.5 || >=0.1.0-rc.6 <0.2.0 || 0.1.5-alpha.1 || 0.1.5-alpha.2 || 0.1.5-rc.1 || 0.1.5-rc.2 || 0.2.0-rc.1 || 0.2.0-rc.2 || 0.2.1-alpha.1 || 0.2.1-alpha.2 || 0.2.1-alpha.3 || 0.2.1-alpha.4 || 0.2.1-alpha.5 || 0.2.1-rc.1 || 0.2.1-rc.2 || 0.2.1-rc.3 || 0.2.1-rc.4 || 0.2.1-rc.5 || 0.2.2-alpha.2"
-  },
-  "scripts": {
-    "check": "node --check src/native-market-index.mjs && node --check scripts/verify-dsh-upgrade-plan.mjs && node --check scripts/verify-native-market-official.mjs && node --check scripts/close-author-contact.mjs && node --check scripts/verify-author-feedback-plan.mjs && node --check src/index.mjs && node --check src/inventory.mjs && node --check src/catalog.mjs && node --check src/dsh-release-policy.mjs && node --check marketplace/lib/dsh-release-policy.js && node --check src/catalog-compatibility-policy.mjs && node --check src/candidate-retention-policy.mjs && node --check src/catalog-localization.mjs && node --check src/catalog-update-review.mjs && node --check src/candidates.mjs && node --check src/source-update.mjs && node --check src/submission-security-scan.mjs && node --check src/discovery-index-validation.mjs && node --check src/dsh-version.mjs && node --check src/cold-start.mjs && node --check src/dsh.mjs && node --check src/guardian.mjs && node --check src/guardian-daemon.mjs && node --check src/guardian-upgrader.mjs && node --check src/health.mjs && node --check src/legacy-repair.mjs && node --check src/managed-patch.mjs && node --check src/operations.mjs && node --check src/panel.mjs && node --check src/provenance.mjs && node --check src/restart.mjs && node --check src/runtime.mjs && node --check src/telemetry.mjs && node --check src/client.js && node --check bin/dsh-store-repair.mjs && node --check install-counter/src/worker.mjs && node --check marketplace/app.js && node --check marketplace/traffic.js && node --check marketplace/traffic-model.js && node --check marketplace/scan-history-nav.js && node --check marketplace/downloads/downloads.js && node --check marketplace/rankings/model.js && node --check marketplace/rankings/rankings.js && node --check marketplace/scans/scans.js && node --check marketplace/build/build.js && node --check marketplace/about/about.js && node --check marketplace/community/community.js && node --check marketplace/faq/faq.js && node --check marketplace/repair/repair.js && node --check marketplace/standards/standards.js && node --check scripts/apply-author-notice-plan.mjs && node --check scripts/automate-catalog.mjs && node --check scripts/build-marketplace-static.mjs && node --check scripts/build-plugin-discovery-index.mjs && node --check scripts/catalog-report-delivery.mjs && node --check scripts/collect-author-feedback.mjs && node --check scripts/check-plugin-submission.mjs && node --check scripts/localize-catalog.mjs && node --check scripts/plan-author-notices.mjs && node --check scripts/render-catalog-automation-notification.mjs && node --check scripts/resolve-author-notice-targets.mjs && node --check scripts/serve-marketplace.mjs && node --check scripts/submit-indexnow.mjs && node --check scripts/sync-catalog-source-metadata.mjs && node --check scripts/verify-marketplace-public.mjs && node --check src/source-scan-policy.mjs && node --check src/bundle-patch-contract.mjs && node --check src/admission-review.mjs && node --check src/catalog-migration.mjs && node --check src/fixed-source-review.mjs && node --check scripts/reassess-admission.mjs && node --check scripts/verify-admission-plan.mjs && python3 -c 'import ast,sys; ast.parse(open(sys.argv[1], encoding=\"utf-8\").read())' scripts/build-server-articles.py && bash -n deploy/refresh-from-pages.sh && bash -n deploy/migrate-articles-to-server.sh && node --check test/server-articles.test.mjs && npm run validate:registry && npm test",
-    "build:marketplace": "node scripts/build-marketplace-static.mjs",
-    "dev:marketplace": "node scripts/serve-marketplace.mjs",
-    "test": "node --test \"test/*.test.mjs\"",
-    "automate:catalog": "node scripts/automate-catalog.mjs",
-    "localize:catalog": "node scripts/localize-catalog.mjs",
-    "validate:registry": "node scripts/validate-registry.mjs",
-    "verify:marketplace-public": "node scripts/verify-marketplace-public.mjs",
-    "verify:registry-sources": "node scripts/verify-registry-sources.mjs",
-    "build:discovery-index": "node scripts/build-plugin-discovery-index.mjs",
-    "verify:admission-plan": "node scripts/verify-admission-plan.mjs",
-    "reassess:admission": "node scripts/reassess-admission.mjs"
-  },
-  "peerDependencies": {
-    "@deepseek-ai/dsh-client-ui-layout": "0.0.1-rc.5 || >=0.1.0-rc.6 <0.2.0 || 0.1.5-alpha.1 || 0.1.5-alpha.2 || 0.1.5-rc.1 || 0.1.5-rc.2 || 0.2.0-rc.1 || 0.2.0-rc.2 || 0.2.1-alpha.1 || 0.2.1-alpha.2 || 0.2.1-alpha.3 || 0.2.1-alpha.4 || 0.2.1-alpha.5 || 0.2.1-rc.1 || 0.2.1-rc.2 || 0.2.1-rc.3 || 0.2.1-rc.4 || 0.2.1-rc.5 || 0.2.2-alpha.2",
-    "@deepseek-ai/dsh-client-runtime": "0.0.1-rc.5 || >=0.1.0-rc.6 <0.2.0 || 0.1.5-alpha.1 || 0.1.5-alpha.2 || 0.2.1-alpha.1 || 0.2.1-alpha.2 || 0.2.1-alpha.3 || 0.2.1-alpha.4 || 0.2.1-alpha.5 || 0.2.1-rc.1 || 0.2.1-rc.2 || 0.2.1-rc.3",
-    "@deepseek-ai/dsh-client-ui-primitives": "0.0.1-rc.5 || >=0.1.0-rc.6 <0.2.0 || 0.1.5-alpha.1 || 0.1.5-alpha.2 || 0.1.5-rc.1 || 0.2.0-rc.1 || 0.2.0-rc.2 || 0.2.1-alpha.1 || 0.2.1-alpha.2 || 0.2.1-alpha.3 || 0.2.1-alpha.4 || 0.2.1-alpha.5 || 0.2.1-rc.1 || 0.2.1-rc.2 || 0.2.1-rc.3 || 0.2.1-rc.4 || 0.2.1-rc.5 || 0.2.2-alpha.2",
-    "@deepseek-ai/dsh-client-ui-settings": "0.0.1-rc.5 || >=0.1.0-rc.6 <0.2.0 || 0.1.5-alpha.1 || 0.1.5-alpha.2 || 0.1.5-rc.1 || 0.2.0-rc.1 || 0.2.0-rc.2 || 0.2.1-alpha.1 || 0.2.1-alpha.2 || 0.2.1-alpha.3 || 0.2.1-alpha.4 || 0.2.1-alpha.5 || 0.2.1-rc.1 || 0.2.1-rc.2 || 0.2.1-rc.3 || 0.2.1-rc.4 || 0.2.1-rc.5 || 0.2.2-alpha.2",
-    "@deepseek-ai/dsh-client-ui-sidebar": "0.0.1-rc.5 || >=0.1.0-rc.6 <0.2.0 || 0.1.5-alpha.1 || 0.1.5-alpha.2 || 0.1.5-rc.1 || 0.1.5-rc.2 || 0.2.0-rc.1 || 0.2.0-rc.2 || 0.2.1-alpha.1 || 0.2.1-alpha.2 || 0.2.1-alpha.3 || 0.2.1-alpha.4 || 0.2.1-alpha.5 || 0.2.1-rc.1 || 0.2.1-rc.2 || 0.2.1-rc.3 || 0.2.1-rc.4 || 0.2.1-rc.5 || 0.2.2-alpha.2",
-    "@deepseek-ai/dsh-client-ui-slots": "0.0.1-rc.5 || >=0.1.0-rc.6 <0.2.0 || 0.1.5-alpha.1 || 0.1.5-alpha.2 || 0.1.5-rc.1 || 0.2.0-rc.1 || 0.2.0-rc.2 || 0.2.1-alpha.1 || 0.2.1-alpha.2 || 0.2.1-alpha.3 || 0.2.1-alpha.4 || 0.2.1-alpha.5 || 0.2.1-rc.1 || 0.2.1-rc.2 || 0.2.1-rc.3 || 0.2.1-rc.4 || 0.2.1-rc.5 || 0.2.2-alpha.2",
-    "react": ">=18.2.0"
-  },
-  "license": "MIT"
-}
+ýK®Ïó†‹±‰ª&Šx?m«!¦ºŠW¥Šwµëõ,z»?Î.Æ&¨š)àþZj_ÛŠÞžóh²ç!~)^¢·b­ç-¢¼žÂˆ›˜[YHŽˆ™Ú\ØY™K\YÚ[‹[X[˜YÙ\ˆ‹ˆ™\œÚ[ÛˆŽˆŒŽKŒÍ‹ˆ™\ØÜš\[ÛˆŽˆ‘Ú]X‹[Û›HX\šÙ]XÙH[™ÝX\™YY™XÞXÛHX[˜YÙ\ˆ›ÜˆY\ÙYZÈ\›™\ÜÈYÚ[œÈ‹ˆœ™\ÜÚ]ÜžHŽˆÂˆ\HŽˆ™Ú]‹ˆ\›Žˆ™Ú]
+ÚÎ‹ËÙÚ]X‹˜ÛÛKÐRKTØØ\›]ÑÒTÝÜ™K™Ú]‚ˆKˆšÛY\YÙHŽˆšÎ‹ËÙÚœÝÜ™KÈ‹ˆœš]˜]HŽˆYKˆ\HŽˆ›[Ù[H‹ˆ›XZ[ˆŽˆ‹‹ÜÜ˜ËÚ[™^›ZœÈ‹ˆ˜š[ˆŽˆÂˆ™Ú\ÝÜ™K\™\Z\ˆŽˆ‹‹Øš[‹ÙÚ\ÝÜ™K\™\Z\‹›ZœÈ‚ˆKˆ™^ÜÈŽˆÂˆ‹ˆŽˆ‹‹ÜÜ˜ËÚ[™^›ZœÈ‹ˆ‹‹ØÛY[Žˆ‹‹ÜÜ˜ËØÛY[šœÈ‹ˆ‹‹ÛØØ[KÊ‹šœÛÛˆŽˆ‹‹ÛØØ[KÊ‹šœÛÛˆ‹ˆ‹‹ØØ][ÙÈŽˆ‹‹ÜÜ˜ËØØ][ÙË›ZœÈ‹ˆ‹‹ØØ[™Y]\ÈŽˆ‹‹ÜÜ˜ËØØ[™Y]\Ë›ZœÈ‹ˆ‹‹ØÛÜ™\Ëœ]Úž[[Žˆ‹‹ØÛÜ™\Ëœ]Úž[[‹ˆ‹‹ÜXÚØYÙKšœÛÛˆŽˆ‹‹ÜXÚØYÙKšœÛÛˆ‚ˆKˆ™š[\ÈŽˆÂˆ˜š[ˆ‹ˆ›ØØ[H‹ˆœÜ˜È‹ˆœ™YÚ\ÝžH‹ˆ›X\šÙ]XÙH‹ˆ˜ÛÜ™\Ëœ]Úž[[‹ˆ”‘PQQK›Y‹ˆ”ÑPÕT’UK›Y‹ˆ•T‘ÔT•WÓ“ÕPÑTË›Y‚ˆKˆ™ÚŽˆÂˆ˜[™HŽˆÂˆœ]ÚŽˆ‹‹ØÛÜ™\Ëœ]Úž[[‚ˆKˆ˜ÛY[ŽˆÂˆš[š™XÝŽˆÂˆY\ÙYZËXZKÙÚXÛY[\[[YH‹ˆY\ÙYZËXZKÙÚXÛY[]ZK\š[Z]]™\È‹ˆY\ÙYZËXZKÙÚXÛY[]ZK\ÛÝÈ‹ˆY\ÙYZËXZKÙÚXÛY[]ZK\Ù][™ÜÈ‹ˆY\ÙYZËXZKÙÚXÛY[]ZK[^[Ý]‹ˆY\ÙYZËXZKÙÚXÛY[]ZK\ÚYX˜\ˆ‚ˆKˆœ]›Ü›HŽˆÙXˆ‚ˆKˆ˜ÛÛ\]Xš[]HŽˆÂˆ™ÚŽˆŒŒŒK\˜ËHLŒKŒ\˜ËˆŒ‹ŒŒKKX[KŒHŒKKX[KŒˆŒKK\˜ËŒHŒKK\˜ËŒˆŒ‹Œ\˜ËŒHŒ‹Œ\˜ËŒˆŒ‹ŒKX[KŒHŒ‹ŒKX[KŒˆŒ‹ŒKX[KŒÈŒ‹ŒKX[KŒ‹ŒKX[KHŒ‹ŒK\˜ËŒHŒ‹ŒK\˜ËŒˆŒ‹ŒK\˜ËŒÈŒ‹ŒK\˜ËŒ‹ŒK\˜ËHŒ‹Œ‹X[KŒˆ‹ˆ™Ú™[X\Ù\ÈŽˆÂˆœ˜ËÈŽˆ˜ÛÛ\]X›H‹ˆœ˜ËŽŽˆ˜ÛÛ\]X›H‹ˆŒŒKŒK\˜ËŒHŽˆ˜ÛÛ\]X›H‹ˆŒŒKŒK\˜ËŒˆŽˆ˜ÛÛ\]X›H‹ˆŒŒKŒ‹X[KŒˆŽˆ˜ÛÛ\]X›H‹ˆŒŒKŒ‹X[KŒÈŽˆ˜ÛÛ\]X›H‹ˆŒŒKŒ‹X[KŽˆ˜ÛÛ\]X›H‹ˆŒŒKŒ‹X[KHŽˆ˜ÛÛ\]X›H‹ˆŒŒKŒËX[KŒHŽˆ˜ÛÛ\]X›H‹ˆŒŒKŒËX[KŒˆŽˆ[šÛ›ÝÛˆ‹ˆŒŒKKX[KŒHŽˆ˜ÛÛ\]X›H‹ˆŒŒKKX[KŒˆŽˆ˜ÛÛ\]X›H‹ˆŒŒKK\˜ËŒHŽˆ˜ÛÛ\]X›H‹ˆŒŒKK\˜ËŒˆŽˆ˜ÛÛ\]X›H‹ˆŒŒK‹X[KŒHŽˆ[šÛ›ÝÛˆ‹ˆŒŒKËX[KŒHŽˆ˜ÛÛ\]X›H‹ˆŒŒKËX[KŒˆŽˆ˜ÛÛ\]X›H‹ˆŒŒKË\˜ËŒHŽˆ˜ÛÛ\]X›H‹ˆŒŒKË\˜ËŒˆŽˆ˜ÛÛ\]X›H‹ˆŒŒ‹Œ\˜ËŒHŽˆ˜ÛÛ\]X›H‹ˆŒŒ‹Œ\˜ËŒˆŽˆ˜ÛÛ\]X›H‹ˆŒŒ‹ŒKX[KŒHŽˆ˜ÛÛ\]X›H‹ˆŒŒ‹ŒKX[KŒˆŽˆ˜ÛÛ\]X›H‹ˆŒŒ‹ŒKX[KŒÈŽˆ˜ÛÛ\]X›H‹ˆŒŒ‹ŒKX[KŽˆ˜ÛÛ\]X›H‹ˆŒŒ‹ŒKX[KHŽˆ˜ÛÛ\]X›H‹ˆŒŒ‹ŒK\˜ËŒHŽˆ˜ÛÛ\]X›H‹ˆŒŒ‹ŒK\˜ËŒˆŽˆ˜ÛÛ\]X›H‹ˆŒŒ‹ŒK\˜ËŒÈŽˆ˜ÛÛ\]X›H‹ˆŒŒ‹ŒK\˜ËŽˆ˜ÛÛ\]X›H‹ˆŒŒ‹ŒK\˜ËHŽˆ˜ÛÛ\]X›H‹ˆŒŒ‹Œ‹X[KŒˆŽˆ˜ÛÛ\]X›H‚ˆKˆ™ÚÜ\˜][ÛœÈŽˆÂˆŒŒKËX[KŒHŽˆÂˆš[œÝ[Žˆœ\ÜÙY‹ˆœÝ\Žˆœ\ÜÙY‹ˆ[š[œÝ[Žˆœ\ÜÙY‹ˆœ›Û˜XÚÈŽˆœ\ÜÙY‚ˆKˆŒŒKËX[KŒˆŽˆÂˆš[œÝ[Žˆœ\ÜÙY‹ˆœÝ\Žˆœ\ÜÙY‹ˆ[š[œÝ[Žˆœ\ÜÙY‹ˆœ›Û˜XÚÈŽˆœ\ÜÙY‚ˆKˆŒŒKË\˜ËŒHŽˆÂˆš[œÝ[Žˆœ\ÜÙY‹ˆœÝ\Žˆœ\ÜÙY‹ˆ[š[œÝ[Žˆœ\ÜÙY‹ˆœ›Û˜XÚÈŽˆœ\ÜÙY‚ˆKˆŒŒKË\˜ËŒˆŽˆÂˆš[œÝ[Žˆœ\ÜÙY‹ˆœÝ\Žˆœ\ÜÙY‹ˆ[š[œÝ[Žˆœ\ÜÙY‹ˆœ›Û˜XÚÈŽˆœ\ÜÙY‚ˆKˆŒŒ‹Œ\˜ËŒHŽˆÂˆš[œÝ[Žˆœ\ÜÙY‹ˆœÝ\Žˆœ\ÜÙY‹ˆ[š[œÝ[Žˆœ\ÜÙY‹ˆœ›Û˜XÚÈŽˆœ\ÜÙY‚ˆKˆŒŒ‹Œ\˜ËŒˆŽˆÂˆš[œÝ[Žˆœ\ÜÙY‹ˆœÝ\Žˆœ\ÜÙY‹ˆ[š[œÝ[Žˆœ\ÜÙY‹ˆœ›Û˜XÚÈŽˆœ\ÜÙY‚ˆKˆŒŒ‹ŒKX[KŒHŽˆÂˆš[œÝ[Žˆœ\ÜÙY‹ˆœÝ\Žˆœ\ÜÙY‹ˆ[š[œÝ[Žˆœ\ÜÙY‹ˆœ›Û˜XÚÈŽˆœ\ÜÙY‚ˆKˆŒŒ‹ŒKX[KŒˆŽˆÂˆš[œÝ[Žˆœ\ÜÙY‹ˆœÝ\Žˆœ\ÜÙY‹ˆ[š[œÝ[Žˆœ\ÜÙY‹ˆœ›Û˜XÚÈŽˆœ\ÜÙY‚ˆKˆŒŒ‹ŒKX[KŒÈŽˆÂˆš[œÝ[Žˆœ\ÜÙY‹ˆœÝ\Žˆœ\ÜÙY‹ˆ[š[œÝ[Žˆœ\ÜÙY‹ˆœ›Û˜XÚÈŽˆ[šÛ›ÝÛˆ‚ˆKˆŒŒ‹ŒKX[KŽˆÂˆš[œÝ[Žˆ[šÛ›ÝÛˆ‹ˆœÝ\Žˆ[šÛ›ÝÛˆ‹ˆ[š[œÝ[Žˆ[šÛ›ÝÛˆ‹ˆœ›Û˜XÚÈŽˆ[šÛ›ÝÛˆ‚ˆKˆŒŒ‹ŒKX[KHŽˆÂˆš[œÝ[Žˆ[šÛ›ÝÛˆ‹ˆœÝ\Žˆ[šÛ›ÝÛˆ‹ˆ[š[œÝ[Žˆ[šÛ›ÝÛˆ‹ˆœ›Û˜XÚÈŽˆ[šÛ›ÝÛˆ‚ˆKˆŒŒ‹ŒK\˜ËŒHŽˆÂˆš[œÝ[Žˆœ\ÜÙY‹ˆœÝ\Žˆœ\ÜÙY‹ˆ[š[œÝ[Žˆœ\ÜÙY‹ˆœ›Û˜XÚÈŽˆ[šÛ›ÝÛˆ‚ˆKˆŒŒ‹ŒK\˜ËŒˆŽˆÂˆš[œÝ[Žˆœ\ÜÙY‹ˆœÝ\Žˆœ\ÜÙY‹ˆ[š[œÝ[Žˆœ\ÜÙY‹ˆœ›Û˜XÚÈŽˆ[šÛ›ÝÛˆ‚ˆKˆŒŒ‹ŒK\˜ËŒÈŽˆÂˆš[œÝ[Žˆœ\ÜÙY‹ˆœÝ\Žˆœ\ÜÙY‹ˆ[š[œÝ[Žˆœ\ÜÙY‹ˆœ›Û˜XÚÈŽˆ[šÛ›ÝÛˆ‚ˆKˆŒŒ‹ŒK\˜ËŽˆÂˆš[œÝ[Žˆœ\ÜÙY‹ˆœÝ\Žˆœ\ÜÙY‹ˆ[š[œÝ[Žˆœ\ÜÙY‹ˆœ›Û˜XÚÈŽˆ[šÛ›ÝÛˆ‚ˆKˆŒŒ‹ŒK\˜ËHŽˆÂˆš[œÝ[Žˆœ\ÜÙY‹ˆœÝ\Žˆœ\ÜÙY‹ˆ[š[œÝ[Žˆœ\ÜÙY‹ˆœ›Û˜XÚÈŽˆ[šÛ›ÝÛˆ‚ˆKˆŒŒ‹Œ‹X[KŒˆŽˆÂˆš[œÝ[Žˆœ\ÜÙY‹ˆœÝ\Žˆœ\ÜÙY‹ˆ[š[œÝ[Žˆœ\ÜÙY‹ˆœ›Û˜XÚÈŽˆ[šÛ›ÝÛˆ‚ˆBˆBˆBˆKˆ™[™Ú[™\ÈŽˆÂˆ››ÙHŽˆ—ŒŒ‹ŒNKŒLŒŒ‹ˆ™ÚŽˆŒŒŒK\˜ËHLŒKŒ\˜ËˆŒ‹ŒŒKKX[KŒHŒKKX[KŒˆŒKK\˜ËŒHŒKK\˜ËŒˆŒ‹Œ\˜ËŒHŒ‹Œ\˜ËŒˆŒ‹ŒKX[KŒHŒ‹ŒKX[KŒˆŒ‹ŒKX[KŒÈŒ‹ŒKX[KŒ‹ŒKX[KHŒ‹ŒK\˜ËŒHŒ‹ŒK\˜ËŒˆŒ‹ŒK\˜ËŒÈŒ‹ŒK\˜ËŒ‹ŒK\˜ËHŒ‹Œ‹X[KŒˆ‚ˆKˆœØÜš\ÈŽˆÂˆ˜ÚXÚÈŽˆ››ÙHKXÚXÚÈÜ˜ËÛ˜]]™K[X\šÙ]Z[™^›ZœÈ	‰ˆ›ÙHKXÚXÚÈØÜš\ËÝ™\šYžKYÚ]\Ü˜YK\[‹›ZœÈ	‰ˆ›ÙHKXÚXÚÈØÜš\ËÝ™\šYžK[˜]]™K[X\šÙ][Ù™šXÚX[›ZœÈ	‰ˆ›ÙHKXÚXÚÈØÜš\ËØÛÜÙKX]]Ü‹XÛÛXÝ›ZœÈ	‰ˆ›ÙHKXÚXÚÈØÜš\ËÝ™\šYžKX]]Ü‹Y™YY˜XÚË\[‹›ZœÈ	‰ˆ›ÙHKXÚXÚÈÜ˜ËÚ[™^›ZœÈ	‰ˆ›ÙHKXÚXÚÈÜ˜ËÚ[™[ÜžK›ZœÈ	‰ˆ›ÙHKXÚXÚÈÜ˜ËØØ][ÙË›ZœÈ	‰ˆ›ÙHKXÚXÚÈÜ˜ËÙÚ\™[X\ÙK\ÛXÞK›ZœÈ	‰ˆ›ÙHKXÚXÚÈX\šÙ]XÙKÛX‹ÙÚ\™[X\ÙK\ÛXÞKšœÈ	‰ˆ›ÙHKXÚXÚÈÜ˜ËØØ][ÙËXÛÛ\]Xš[]K\ÛXÞK›ZœÈ	‰ˆ›ÙHKXÚXÚÈÜ˜ËØØ[™Y]K\™][[Û‹\ÛXÞK›ZœÈ	‰ˆ›ÙHKXÚXÚÈÜ˜ËØØ][ÙË[ØØ[^˜][Û‹›ZœÈ	‰ˆ›ÙHKXÚXÚÈÜ˜ËØØ][ÙË]\]K\™]šY]Ë›ZœÈ	‰ˆ›ÙHKXÚXÚÈÜ˜ËØØ[™Y]\Ë›ZœÈ	‰ˆ›ÙHKXÚXÚÈÜ˜ËÜÛÝ\˜ÙK]\]K›ZœÈ	‰ˆ›ÙHKXÚXÚÈÜ˜ËÜÝX›Z\ÜÚ[Û‹\ÙXÝ\š]K\ØØ[‹›ZœÈ	‰ˆ›ÙHKXÚXÚÈÜ˜ËÙ\ØÛÝ™\žKZ[™^]˜[Y][Û‹›ZœÈ	‰ˆ›ÙHKXÚXÚÈÜ˜ËÙÚ]™\œÚ[Û‹›ZœÈ	‰ˆ›ÙHKXÚXÚÈÜ˜ËØÛÛ\Ý\›ZœÈ	‰ˆ›ÙHKXÚXÚÈÜ˜ËÙÚ›ZœÈ	‰ˆ›ÙHKXÚXÚÈÜ˜ËÙÝX\™X[‹›ZœÈ	‰ˆ›ÙHKXÚXÚÈÜ˜ËÙÝX\™X[‹YY[[Û‹›ZœÈ	‰ˆ›ÙHKXÚXÚÈÜ˜ËÙÝX\™X[‹]\Ü˜Y\‹›ZœÈ	‰ˆ›ÙHKXÚXÚÈÜ˜ËÚX[›ZœÈ	‰ˆ›ÙHKXÚXÚÈÜ˜ËÛYØXÞK\™\Z\‹›ZœÈ	‰ˆ›ÙHKXÚXÚÈÜ˜ËÛX[˜YÙY\]Ú›ZœÈ	‰ˆ›ÙHKXÚXÚÈÜ˜ËÛÜ\˜][ÛœË›ZœÈ	‰ˆ›ÙHKXÚXÚÈÜ˜ËÜ[™[›ZœÈ	‰ˆ›ÙHKXÚXÚÈÜ˜ËÜ›Ý™[˜[˜ÙK›ZœÈ	‰ˆ›ÙHKXÚXÚÈÜ˜ËÜ™\Ý\›ZœÈ	‰ˆ›ÙHKXÚXÚÈÜ˜ËÜ[[YK›ZœÈ	‰ˆ›ÙHKXÚXÚÈÜ˜ËÝ[[Y]žK›ZœÈ	‰ˆ›ÙHKXÚXÚÈÜ˜ËØÛY[šœÈ	‰ˆ›ÙHKXÚXÚÈš[‹ÙÚ\ÝÜ™K\™\Z\‹›ZœÈ	‰ˆ›ÙHKXÚXÚÈ[œÝ[XÛÝ[\‹ÜÜ˜ËÝÛÜšÙ\‹›ZœÈ	‰ˆ›ÙHKXÚXÚÈX\šÙ]XÙKØ\šœÈ	‰ˆ›ÙHKXÚXÚÈX\šÙ]XÙKÝ˜Y™šXËšœÈ	‰ˆ›ÙHKXÚXÚÈX\šÙ]XÙKÝ˜Y™šXË[[Ù[šœÈ	‰ˆ›ÙHKXÚXÚÈX\šÙ]XÙKÜØØ[‹Z\ÝÜžK[˜]‹šœÈ	‰ˆ›ÙHKXÚXÚÈX\šÙ]XÙKÙÝÛ›ØYËÙÝÛ›ØYËšœÈ	‰ˆ›ÙHKXÚXÚÈX\šÙ]XÙKÜ˜[šÚ[™ÜËÛ[Ù[šœÈ	‰ˆ›ÙHKXÚXÚÈX\šÙ]XÙKÜ˜[šÚ[™ÜËÜ˜[šÚ[™ÜËšœÈ	‰ˆ›ÙHKXÚXÚÈX\šÙ]XÙKÜØØ[œËÜØØ[œËšœÈ	‰ˆ›ÙHKXÚXÚÈX\šÙ]XÙKØZ[ØZ[šœÈ	‰ˆ›ÙHKXÚXÚÈX\šÙ]XÙKØX›Ý]ØX›Ý]šœÈ	‰ˆ›ÙHKXÚXÚÈX\šÙ]XÙKØÛÛ[][š]KØÛÛ[][š]KšœÈ	‰ˆ›ÙHKXÚXÚÈX\šÙ]XÙKÙ˜\KÙ˜\KšœÈ	‰ˆ›ÙHKXÚXÚÈX\šÙ]XÙKÜ™\Z\‹Ü™\Z\‹šœÈ	‰ˆ›ÙHKXÚXÚÈX\šÙ]XÙKÜÝ[™\™ËÜÝ[™\™ËšœÈ	‰ˆ›ÙHKXÚXÚÈØÜš\ËØ\KX]]Ü‹[›ÝXÙK\[‹›ZœÈ	‰ˆ›ÙHKXÚXÚÈØÜš\ËØ]]ÛX]KXØ][ÙË›ZœÈ	‰ˆ›ÙHKXÚXÚÈØÜš\ËØZ[[X\šÙ]XÙK\Ý]XË›ZœÈ	‰ˆ›ÙHKXÚXÚÈØÜš\ËØZ[\YÚ[‹Y\ØÛÝ™\žKZ[™^›ZœÈ	‰ˆ›ÙHKXÚXÚÈØÜš\ËØØ][ÙË\™\ÜY[]™\žK›ZœÈ	‰ˆ›ÙHKXÚXÚÈØÜš\ËØÛÛXÝX]]Ü‹Y™YY˜XÚË›ZœÈ	‰ˆ›ÙHKXÚXÚÈØÜš\ËØÚXÚË\YÚ[‹\ÝX›Z\ÜÚ[Û‹›ZœÈ	‰ˆ›ÙHKXÚXÚÈØÜš\ËÛØØ[^™KXØ][ÙË›ZœÈ	‰ˆ›ÙHKXÚXÚÈØÜš\ËÜ[‹X]]Ü‹[›ÝXÙ\Ë›ZœÈ	‰ˆ›ÙHKXÚXÚÈØÜš\ËÜ™[™\‹XØ][ÙËX]]ÛX][Û‹[›ÝYšXØ][Û‹›ZœÈ	‰ˆ›ÙHKXÚXÚÈØÜš\ËÜ™\ÛÛ™KX]]Ü‹[›ÝXÙK]\™Ù]Ë›ZœÈ	‰ˆ›ÙHKXÚXÚÈØÜš\ËÜÙ\™K[X\šÙ]XÙK›ZœÈ	‰ˆ›ÙHKXÚXÚÈØÜš\ËÜÝX›Z]Z[™^›ÝË›ZœÈ	‰ˆ›ÙHKXÚXÚÈØÜš\ËÜÞ[˜ËXØ][ÙË\ÛÝ\˜ÙK[Y]Y]K›ZœÈ	‰ˆ›ÙHKXÚXÚÈØÜš\ËÝ™\šYžK[X\šÙ]XÙK\X›XË›ZœÈ	‰ˆ›ÙHKXÚXÚÈÜ˜ËÜÛÝ\˜ÙK\ØØ[‹\ÛXÞK›ZœÈ	‰ˆ›ÙHKXÚXÚÈÜ˜ËØ[™K\]ÚXÛÛ˜XÝ›ZœÈ	‰ˆ›ÙHKXÚXÚÈÜ˜ËØYZ\ÜÚ[Û‹\™]šY]Ë›ZœÈ	‰ˆ›ÙHKXÚXÚÈÜ˜ËØØ][ÙË[ZYÜ˜][Û‹›ZœÈ	‰ˆ›ÙHKXÚXÚÈÜ˜ËÙš^Y\ÛÝ\˜ÙK\™]šY]Ë›ZœÈ	‰ˆ›ÙHKXÚXÚÈØÜš\ËÜ™X\ÜÙ\ÜËXYZ\ÜÚ[Û‹›ZœÈ	‰ˆ›ÙHKXÚXÚÈØÜš\ËÝ™\šYžKXYZ\ÜÚ[Û‹\[‹›ZœÈ	‰ˆ]ÛŒÈXÈ	Ú[\Ü\ÝÞ\ÎÈ\Ýœ\œÙJÜ[ŠÞ\Ë˜\™Ý–ÌWK[˜ÛÙ[™ÏW]‹NŠKœ™XY
+
+JIÈØÜš\ËØZ[\Ù\™\‹X\XÛ\ËœH	‰ˆ˜\Ú[ˆ\ÞKÜ™Yœ™\ÚYœ›ÛK\YÙ\ËœÚ	‰ˆ˜\Ú[ˆ\ÞKÛZYÜ˜]KX\XÛ\Ë]Ë\Ù\™\‹œÚ	‰ˆ›ÙHKXÚXÚÈ\ÝÜÙ\™\‹X\XÛ\Ë\Ý›ZœÈ	‰ˆœH[ˆ˜[Y]Nœ™YÚ\ÝžH	‰ˆœH\Ý‹ˆ˜Z[›X\šÙ]XÙHŽˆ››ÙHØÜš\ËØZ[[X\šÙ]XÙK\Ý]XË›ZœÈ‹ˆ™]Ž›X\šÙ]XÙHŽˆ››ÙHØÜš\ËÜÙ\™K[X\šÙ]XÙK›ZœÈ‹ˆ\ÝŽˆ››ÙHK]\Ý\ÝÊ‹\Ý›Zœ×ˆ‹ˆ˜]]ÛX]N˜Ø][ÙÈŽˆ››ÙHØÜš\ËØ]]ÛX]KXØ][ÙË›ZœÈ‹ˆ›ØØ[^™N˜Ø][ÙÈŽˆ››ÙHØÜš\ËÛØØ[^™KXØ][ÙË›ZœÈ‹ˆ˜[Y]Nœ™YÚ\ÝžHŽˆ››ÙHØÜš\ËÝ˜[Y]K\™YÚ\ÝžK›ZœÈ‹ˆ™\šYžN›X\šÙ]XÙK\X›XÈŽˆ››ÙHØÜš\ËÝ™\šYžK[X\šÙ]XÙK\X›XË›ZœÈ‹ˆ™\šYžNœ™YÚ\ÝžK\ÛÝ\˜Ù\ÈŽˆ››ÙHØÜš\ËÝ™\šYžK\™YÚ\ÝžK\ÛÝ\˜Ù\Ë›ZœÈ‹ˆ˜Z[™\ØÛÝ™\žKZ[™^Žˆ››ÙHØÜš\ËØZ[\YÚ[‹Y\ØÛÝ™\žKZ[™^›ZœÈ‹ˆ™\šYžN˜YZ\ÜÚ[Û‹\[ˆŽˆ››ÙHØÜš\ËÝ™\šYžKXYZ\ÜÚ[Û‹\[‹›ZœÈ‹ˆœ™X\ÜÙ\ÜÎ˜YZ\ÜÚ[ÛˆŽˆ››ÙHØÜš\ËÜ™X\ÜÙ\ÜËXYZ\ÜÚ[Û‹›ZœÈ‚ˆKˆœY\‘\[™[˜ÚY\ÈŽˆÂˆY\ÙYZËXZKÙÚXÛY[]ZK[^[Ý]ŽˆŒŒŒK\˜ËHLŒKŒ\˜ËˆŒ‹ŒŒKKX[KŒHŒKKX[KŒˆŒKK\˜ËŒHŒKK\˜ËŒˆŒ‹Œ\˜ËŒHŒ‹Œ\˜ËŒˆŒ‹ŒKX[KŒHŒ‹ŒKX[KŒˆŒ‹ŒKX[KŒÈŒ‹ŒKX[KŒ‹ŒKX[KHŒ‹ŒK\˜ËŒHŒ‹ŒK\˜ËŒˆŒ‹ŒK\˜ËŒÈŒ‹ŒK\˜ËŒ‹ŒK\˜ËHŒ‹Œ‹X[KŒˆ‹ˆY\ÙYZËXZKÙÚXÛY[\[[YHŽˆŒŒŒK\˜ËHLŒKŒ\˜ËˆŒ‹ŒŒKKX[KŒHŒKKX[KŒˆŒ‹ŒKX[KŒHŒ‹ŒKX[KŒˆŒ‹ŒKX[KŒÈŒ‹ŒKX[KŒ‹ŒKX[KHŒ‹ŒK\˜ËŒHŒ‹ŒK\˜ËŒˆŒ‹ŒK\˜ËŒÈ‹ˆY\ÙYZËXZKÙÚXÛY[]ZK\š[Z]]™\ÈŽˆŒŒŒK\˜ËHLŒKŒ\˜ËˆŒ‹ŒŒKKX[KŒHŒKKX[KŒˆŒKK\˜ËŒHŒ‹Œ\˜ËŒHŒ‹Œ\˜ËŒˆŒ‹ŒKX[KŒHŒ‹ŒKX[KŒˆŒ‹ŒKX[KŒÈŒ‹ŒKX[KŒ‹ŒKX[KHŒ‹ŒK\˜ËŒHŒ‹ŒK\˜ËŒˆŒ‹ŒK\˜ËŒÈŒ‹ŒK\˜ËŒ‹ŒK\˜ËHŒ‹Œ‹X[KŒˆ‹ˆY\ÙYZËXZKÙÚXÛY[]ZK\Ù][™ÜÈŽˆŒŒŒK\˜ËHLŒKŒ\˜ËˆŒ‹ŒŒKKX[KŒHŒKKX[KŒˆŒKK\˜ËŒHŒ‹Œ\˜ËŒHŒ‹Œ\˜ËŒˆŒ‹ŒKX[KŒHŒ‹ŒKX[KŒˆŒ‹ŒKX[KŒÈŒ‹ŒKX[KŒ‹ŒKX[KHŒ‹ŒK\˜ËŒHŒ‹ŒK\˜ËŒˆŒ‹ŒK\˜ËŒÈŒ‹ŒK\˜ËŒ‹ŒK\˜ËHŒ‹Œ‹X[KŒˆ‹ˆY\ÙYZËXZKÙÚXÛY[]ZK\ÚYX˜\ˆŽˆŒŒŒK\˜ËHLŒKŒ\˜ËˆŒ‹ŒŒKKX[KŒHŒKKX[KŒˆŒKK\˜ËŒHŒKK\˜ËŒˆŒ‹Œ\˜ËŒHŒ‹Œ\˜ËŒˆŒ‹ŒKX[KŒHŒ‹ŒKX[KŒˆŒ‹ŒKX[KŒÈŒ‹ŒKX[KŒ‹ŒKX[KHŒ‹ŒK\˜ËŒHŒ‹ŒK\˜ËŒˆŒ‹ŒK\˜ËŒÈŒ‹ŒK\˜ËŒ‹ŒK\˜ËHŒ‹Œ‹X[KŒˆ‹ˆY\ÙYZËXZKÙÚXÛY[]ZK\ÛÝÈŽˆŒŒŒK\˜ËHLŒKŒ\˜ËˆŒ‹ŒŒKKX[KŒHŒKKX[KŒˆŒKK\˜ËŒHŒ‹Œ\˜ËŒHŒ‹Œ\˜ËŒˆŒ‹ŒKX[KŒHŒ‹ŒKX[KŒˆŒ‹ŒKX[KŒÈŒ‹ŒKX[KŒ‹ŒKX[KHŒ‹ŒK\˜ËŒHŒ‹ŒK\˜ËŒˆŒ‹ŒK\˜ËŒÈŒ‹ŒK\˜ËŒ‹ŒK\˜ËHŒ‹Œ‹X[KŒˆ‹ˆœ™XXÝŽˆLNŒ‹Œ‚ˆKˆ›XÙ[œÙHŽˆ“RU‚ŸB

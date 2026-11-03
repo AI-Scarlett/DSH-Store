@@ -1,2109 +1,1798 @@
-import assert from 'node:assert/strict'
-import { createHash, webcrypto } from 'node:crypto'
-import { mkdtemp, mkdir, readFile, rm, writeFile } from 'node:fs/promises'
-import { tmpdir } from 'node:os'
-import { join } from 'node:path'
-import { Readable } from 'node:stream'
-import { runInNewContext } from 'node:vm'
-import test from 'node:test'
-import { createKnownPluginDirectory } from '../marketplace/lib/plugin-directory.js'
-import { rankingEntries } from '../marketplace/rankings/model.js'
-import { resolveHostOptions } from '../src/index.mjs'
-import { createRuntimeStatus } from '../src/runtime.mjs'
-import {
-  handleExecuteRequest, handleGuardianExecuteRequest, handleGuardianPlanRequest,
-  handleGuardianRequest, handleInventoryRequest, handlePlanRequest,
-  handleRestartExecuteRequest, handleRestartPlanRequest, handleRuntimeRequest,
-} from '../src/panel.mjs'
-
-function request(body = {}, intent = null) {
-  const req = Readable.from([JSON.stringify(body)])
-  req.method = 'POST'
-  req.headers = {
-    host: '127.0.0.1:40000', origin: 'http://127.0.0.1:40000',
-    'content-type': 'application/json',
-    ...(intent ? { 'x-dsh-safe-intent': intent } : {}),
-  }
-  return req
-}
-
-function response() {
-  return {
-    status: null, body: '',
-    writeHead(status) { this.status = status },
-    end(value = '') { this.body += String(value) },
-  }
-}
-
-test('official Desktop context binds inventory to Desktop and disables Store mutations', () => {
-  const ctx = { profileContext: { name: 'desktop', home: '/disposable/dsh-home', installAnchor: '/disposable/runtime/package.json' } }
-  const options = resolveHostOptions(ctx, { defaultProfile: 'web', dshHome: '/wrong-home', mutationsEnabled: true })
-  assert.equal(options.defaultProfile, 'desktop')
-  assert.equal(options.dshHome, ctx.profileContext.home)
-  assert.equal(options.dshManifestPath, ctx.profileContext.installAnchor)
-  assert.equal(options.mutationsEnabled, false)
-  assert.equal(options.desktopMode, true)
-  assert.equal(options.dshCliPath, null)
-  const runtime = createRuntimeStatus({ profile: 'desktop', desktopMode: true, restartCommand: [] })
-  assert.equal(runtime.restartSupported, false)
-  assert.equal(runtime.restartMode, 'official-desktop')
-  assert.deepEqual(runtime.restartCommand, [])
-})
-
-test('Desktop rejects every Store write endpoint before calling a mutation service', async () => {
-  const forbidden = () => { throw new Error('mutation service must not run') }
-  const options = {
-    desktopMode: true,
-    operationService: { createPlan: forbidden, start: forbidden },
-    restartService: { createPlan: forbidden, execute: forbidden },
-    guardianService: { createInstallPlan: forbidden, executeInstall: forbidden },
-  }
-  const endpoints = [
-    [handlePlanRequest, 'plan'], [handleExecuteRequest, 'execute'],
-    [handleRestartPlanRequest, 'restart-plan'], [handleRestartExecuteRequest, 'restart-execute'],
-    [handleGuardianPlanRequest, 'guardian-plan'], [handleGuardianExecuteRequest, 'guardian-execute'],
-  ]
-  for (const [handler, intent] of endpoints) {
-    const res = response()
-    await handler(request({ profile: 'web' }, intent), res, options)
-    assert.equal(res.status, 409)
-    assert.equal(JSON.parse(res.body).error.code, 'DESKTOP_MUTATION_UNSUPPORTED')
-  }
-})
-
-test('Desktop inventory reads its own Profile and refuses a forged Web Profile', async () => {
-  const root = await mkdtemp(join(tmpdir(), 'dsh-store-desktop-'))
-  try {
-    const dir = join(root, 'profiles', 'desktop')
-    await mkdir(dir, { recursive: true })
-    await writeFile(join(dir, 'package.json'), JSON.stringify({
-      name: 'fixture-desktop', dependencies: {}, dsh: { profile: { bundles: [] } },
-    }))
-    const options = { desktopMode: true, defaultProfile: 'desktop', dshHome: root }
-    const ok = response()
-    await handleInventoryRequest(request(), ok, options)
-    assert.equal(ok.status, 200)
-    assert.equal(JSON.parse(ok.body).value.profile, 'desktop')
-    const denied = response()
-    await handleInventoryRequest(request({ profile: 'web' }), denied, options)
-    assert.equal(denied.status, 409)
-    const runtime = response()
-    await handleRuntimeRequest(request({ profile: 'web' }), runtime, {
-      ...options, runtimeStatus: createRuntimeStatus({ profile: 'desktop', desktopMode: true }),
-    })
-    assert.equal(JSON.parse(runtime.body).error.code, 'DESKTOP_PROFILE_MISMATCH')
-  } finally {
-    await rm(root, { recursive: true, force: true })
-  }
-})
-
-test('Desktop Guardian status reports official ownership without probing launchd', async () => {
-  const res = response()
-  await handleGuardianRequest(request(), res, { desktopMode: true, guardianService: { status: () => { throw new Error('must not probe') } } })
-  assert.equal(res.status, 200)
-  assert.equal(JSON.parse(res.body).value.errorCode, 'OFFICIAL_DESKTOP_OWNS_HOST')
-})
-
-const desktopCatalogUrl = 'https://raw.githubusercontent.com/AI-Scarlett/DSH-Store/main/registry/catalog.json'
-const desktopCatalogIndexUrl = 'https://raw.githubusercontent.com/AI-Scarlett/DSH-Store/main/registry/catalog-index.json'
-const desktopDiscoveryUrl = 'https://raw.githubusercontent.com/AI-Scarlett/DSH-Store/main/registry/discovery-index.json'
-const desktopCandidatesUrl = 'https://raw.githubusercontent.com/AI-Scarlett/DSH-Store/main/registry/candidates.json'
-const desktopRankingIndexUrl = 'https://ai-scarlett.github.io/DSH-Store/marketplace/rankings/index.html'
-const desktopRankingDataUrl = 'https://ai-scarlett.github.io/DSH-Store/marketplace/rankings/data.json'
-const desktopCommit = 'a'.repeat(40)
-
-function desktopEntry({ id, packageName, commit, compatibility = 'compatible', profiles = ['desktop'], status = 'approved', statusReason,
-  repositoryUrl = `https://github.com/acme/${id}`, source, installPath = null,
-  manifestPath = installPath ? `${installPath}/package.json` : 'package.json', entryIds = [id] }) {
-  return {
-    id, name: id === 'dsh-safe-plugin-manager' ? 'å®‰å…¨æ’ä»¶å•†åŸŽï¼ˆDSH-Storeï¼‰' : `Name ${id}`,
-    packageName, description: `Description for ${id}`,
-    repositoryUrl, commit, version: '1.2.3',
-    source: source ?? { provenance: 'github-commit', updatedAt: '2026-10-30T00:00:00Z' },
-    installPath, manifestPath, entryIds, categories: ['tools'],
-    searchTerms: [id], status, ...(statusReason ? { statusReason } : {}),
-    compatibility: { dshReleases: { '0.2.2-alpha.2': compatibility }, profiles },
-    details: {
-      license: 'MIT', externalDependencies: [],
-      permissions: { level: 'low', files: 'none', network: 'none', commands: 'none', credentials: ['none'] },
-    },
-    risk: { installScripts: [] },
-  }
-}
-
-function desktopRankingEntry({ id, name = id, repositoryUrl = `https://github.com/acme/${id}`, source = 'catalog',
-  reviewStatus = 'approved', listingStatus = source === 'catalog' && reviewStatus === 'approved' ? 'listed' : 'not-listed',
-  listingReason = listingStatus === 'listed' ? null : 'This entry is not approved for Store listing.',
-  categories = ['tools'], weeklyCategories = categories, weeklyStars = 0, communityRecommendation }) {
-  return {
-    id, nameZh: name, nameEn: name, version: '1.0.0', repositoryUrl, description: `${name} description`, categories,
-    listingStatus, listingReason, source, reviewStatus, stars: weeklyStars, weeklyStars,
-    weeklySnapshotMember: true, weeklyCategories,
-    ...(communityRecommendation ? { communityRecommendation } : {}),
-  }
-}
-
-function desktopRankingSnapshot(entries) {
-  return {
-    schemaVersion: 4, sourceCommit: desktopCommit, catalogUpdatedAt: '2026-11-02T00:00:00.000Z',
-    candidatesUpdatedAt: '2026-11-02T00:00:00.000Z', starsObservedAt: '2026-11-02T00:00:00.000Z',
-    weeklyStarsObservedAt: '2026-11-02T00:00:00.000Z',
-    categories: [{ id: 'tools', zh: 'å·¥å…·', en: 'Tools' }, { id: 'ai', zh: 'AI', en: 'AI' }], entries,
-  }
-}
-
-function desktopCatalog(entries) {
-  const updatedAt = '2026-10-30T00:00:00Z'
-  const catalogIndex = {
-    schemaVersion: 2, catalogType: 'index',
-    registry: { repositoryUrl: 'https://github.com/AI-Scarlett/DSH-Store', updatedAt, detailsPath: 'catalog/details' },
-    entries: entries.map((entry, order) => ({
-      id: entry.id, nameZh: entry.name, nameEn: entry.name, packageName: entry.packageName,
-      version: entry.version, featured: false, order, repositoryUrl: entry.repositoryUrl,
-      detailPath: `catalog/details/${entry.id}.json`, status: entry.status,
-      categories: entry.categories, searchTerms: entry.searchTerms || [],
-    })),
-  }
-  const catalogIndexBytes = Buffer.from(JSON.stringify(catalogIndex))
-  return {
-    schemaVersion: 1,
-    registry: {
-      repositoryUrl: 'https://github.com/AI-Scarlett/DSH-Store', categories: { tools: 'å·¥å…·' }, updatedAt,
-      indexPath: 'catalog-index.json', indexSha256: createHash('sha256').update(catalogIndexBytes).digest('hex'),
-      indexBytes: catalogIndexBytes.byteLength, indexEntryCount: entries.length,
-    },
-    entries,
-  }
-}
-
-function desktopDirectoryDocuments(catalog, { extraCandidates = [] } = {}) {
-  const entries = catalog.entries.filter(entry => entry.status !== 'unlisted').map((entry, sourceIndex) => ({
-    sourceIndex, sourceId: entry.id, alias: entry.packageName, name: entry.name,
-    description: entry.description, stars: 25 - sourceIndex, categories: ['ai'], kind: 'dsh-plugin',
-    repositoryUrl: entry.repositoryUrl, detailUrl: `https://www.dsh.so/artifact/${entry.id}/`,
-  }))
-  entries.push({ sourceIndex: entries.length, sourceId: 'public-only', alias: '@acme/public-only', name: 'Public only plugin',
-    description: 'Listed in the public discovery index only.', stars: 3, categories: ['ai'], kind: 'dsh-plugin',
-    repositoryUrl: 'https://github.com/acme/public-only', detailUrl: 'https://www.dsh.so/artifact/public-only/' })
-  const candidates = [{ id: 'build-dsh-plugin', name: 'DSH Build candidate', description: 'Candidate review metadata for a Catalog entry.',
-    repositoryUrl: 'https://github.com/acme/build-dsh-plugin', status: 'reviewing', latestCommit: '9'.repeat(40), topics: ['ai'] },
-  ...extraCandidates]
-  return {
-    catalogIndex: desktopCatalogIndex(catalog.entries),
-    catalogIndexRaw: JSON.stringify(desktopCatalogIndex(catalog.entries)),
-    discovery: {
-      schemaVersion: 1,
-      source: { name: 'dsh.so public discovery index', url: 'https://www.dsh.so/plugins-index.json',
-        generatedAt: '2026-10-13T00:19:35.310Z', recordCount: entries.length,
-        license: { spdx: 'CC-BY-4.0', attribution: 'dsh.so â€” DSH Developer Hub (https://www.dsh.so)' } },
-      entries,
-    },
-    candidates: { schemaVersion: 1, registry: {
-      repositoryUrl: 'https://github.com/AI-Scarlett/DSH-Store',
-      trustBoundary: { installActionsDisabled: true, catalogPromotionRequired: true, unknownIsNotVerified: true },
-    }, entries: candidates },
-  }
-}
-
-function desktopRankingFixture() {
-  const rankingSnapshot = desktopRankingSnapshot([
-    desktopRankingEntry({ id: 'dsh-rank-alpha', name: 'Alpha ranked plugin', weeklyStars: 55, categories: ['tools'] }),
-    desktopRankingEntry({ id: 'dsh-rank-beta', name: 'Beta ranked plugin', weeklyStars: 45, categories: ['ai'] }),
-    desktopRankingEntry({ id: 'candidate:pending-review', name: 'Pending review plugin', source: 'candidate',
-      reviewStatus: 'reviewing', listingReason: 'Store review is still pending for this plugin.',
-      repositoryUrl: 'https://github.com/acme/pending-review', weeklyStars: 35, categories: ['tools', 'ai'],
-      communityRecommendation: { basis: 'author-interaction', evidenceUrl: 'https://github.com/AI-Scarlett/DSH-Store/issues/1700#issuecomment-1', occurredAt: '2026-11-01T12:00:00.000Z' } }),
-    desktopRankingEntry({ id: 'dsh-rank-blocked', name: 'Blocked plugin', reviewStatus: 'blocked', listingReason: 'A policy blocker.',
-      weeklyStars: 100, categories: ['tools'] }),
-    desktopRankingEntry({ id: 'candidate:rejected-review', name: 'Rejected plugin', source: 'candidate', reviewStatus: 'rejected',
-      listingReason: 'Fixed-source review rejected this plugin.', repositoryUrl: 'https://github.com/acme/rejected-review',
-      weeklyStars: 90, categories: ['ai'] }),
-    desktopRankingEntry({ id: 'dsh-store-tool', name: 'DSH Store tool', repositoryUrl: 'https://github.com/AI-Scarlett/DSH-Store',
-      weeklyStars: 10, categories: ['tools'] }),
-    desktopRankingEntry({ id: 'build-dsh-plugin', name: 'Build DSH Plugin', repositoryUrl: 'https://github.com/AI-Scarlett/build-dsh-plugin',
-      weeklyStars: 5, categories: ['ai'] }),
-    desktopRankingEntry({ id: 'zero-star-category-leader', name: 'Zero star category leader', weeklyStars: 0, categories: ['zero-weekly'] }),
-    desktopRankingEntry({ id: 'unknown-stars-tools-plugin', name: 'Unknown stars tools plugin', reviewStatus: 'unlisted',
-      listingStatus: 'not-listed', listingReason: 'This entry is not approved for Store listing.', weeklyStars: null, categories: ['tools'] }),
-  ])
-  rankingSnapshot.categories.push({ id: 'zero-weekly', zh: 'é›¶æ˜Ÿæ ‡', en: 'Zero Stars' })
-  const catalogEntries = rankingSnapshot.entries.filter(entry => entry.source === 'catalog').map(entry => desktopEntry({
-    id: entry.id, packageName: `@acme/${entry.id}`, commit: desktopCommit, status: entry.reviewStatus,
-    statusReason: entry.listingReason || undefined, repositoryUrl: entry.repositoryUrl,
-  }))
-  const candidates = rankingSnapshot.entries.filter(entry => entry.source === 'candidate').map(entry => ({
-    id: entry.id.replace(/^candidate:/, ''), name: entry.nameZh, description: entry.description,
-    repositoryUrl: entry.repositoryUrl, status: entry.reviewStatus, statusReason: entry.listingReason,
-    latestCommit: '9'.repeat(40), topics: entry.categories,
-  }))
-  const catalog = desktopCatalog(catalogEntries)
-  return { rankingSnapshot, catalog, directoryDocuments: desktopDirectoryDocuments(catalog, { extraCandidates: candidates }) }
-}
-
-function desktopCatalogIndex(entries) {
-  const updatedAt = '2026-10-30T00:00:00Z'
-  return {
-    schemaVersion: 2, catalogType: 'index',
-    registry: { repositoryUrl: 'https://github.com/AI-Scarlett/DSH-Store', updatedAt, detailsPath: 'catalog/details' },
-    entries: entries.map((entry, order) => ({
-      id: entry.id, nameZh: entry.name, nameEn: entry.name, packageName: entry.packageName,
-      version: entry.version, featured: false, order, repositoryUrl: entry.repositoryUrl,
-      detailPath: `catalog/details/${entry.id}.json`, status: entry.status,
-      categories: entry.categories, searchTerms: entry.searchTerms || [],
-    })),
-  }
-}
-
-function createDesktopHarness({ catalog, installed = [], responseFactory, desktopRuntimeVersion = '0.2.2-alpha.2',
-  inspectResult, installResult, installedAfterInstallResult = null, removeResult = null,
-  retainInstalledAfterRemove = false, inspectAvailable = true, removeBundleAvailable = true,
-  protocol = 'dsh-app:', directoryDocuments = undefined, rankingSnapshot = null, rankingIndexDigest = null,
-  listBundlesError = false } = {}) {
-  const activeDirectoryDocuments = directoryDocuments === undefined
-    ? (catalog ? desktopDirectoryDocuments(catalog) : null) : directoryDocuments
-  const sourcePromise = readFile(new URL('../src/client.js', import.meta.url), 'utf8')
-  const settingsRegistrations = []
-  const slotRegistrations = []
-  const injections = []
-  const moduleDependencies = []
-  const requests = []
-  const directoryRequests = []
-  const timerCallbacks = []
-  const timerDelays = []
-  const calls = { listBundles: 0, inspect: [], installBundle: [], removeBundle: [], setBundleEnabled: [], waitForInstall: [] }
-  const componentRecords = new Map()
-  let activeComponent = null
-  let panel
-  let activeSlotRegistration = null
-  let installedBundles = installed
-  let nextTimer = 0
-
-  const recordFor = component => {
-    if (!componentRecords.has(component)) componentRecords.set(component, { states: [], refs: [], effects: [], callbacks: [], cursor: 0 })
-    return componentRecords.get(component)
-  }
-  const sameDependencies = (left, right) => Array.isArray(left) && Array.isArray(right)
-    && left.length === right.length && left.every((value, index) => Object.is(value, right[index]))
-  const React = {
-    Fragment: Symbol('Fragment'),
-    createElement(type, props, ...children) {
-      const values = children.length === 1 ? children[0] : children
-      return { type, props: { ...(props || {}), ...(children.length ? { children: values } : {}) }, children }
-    },
-    useCallback(callback, dependencies) {
-      const record = activeComponent
-      const index = record.cursor++
-      const cached = record.callbacks[index]
-      if (cached && sameDependencies(cached.dependencies, dependencies)) return cached.callback
-      record.callbacks[index] = { callback, dependencies }
-      return callback
-    },
-    useEffect(effect, dependencies) {
-      const record = activeComponent
-      const index = record.cursor++
-      const previous = record.effects[index]
-      if (!previous) record.effects[index] = { effect, cleanup: null, dependencies, pending: true }
-      else if (dependencies === undefined || previous.dependencies === undefined
-        || !sameDependencies(previous.dependencies, dependencies)) {
-        record.effects[index] = { effect, cleanup: previous.cleanup, dependencies, pending: true }
-      }
-    },
-    useMemo(factory) { activeComponent.cursor++; return factory() },
-    useRef(initial) {
-      const record = activeComponent
-      const index = record.cursor++
-      if (!(index in record.refs)) record.refs[index] = { current: initial }
-      return record.refs[index]
-    },
-    useState(initial) {
-      const record = activeComponent
-      const index = record.cursor++
-      if (!(index in record.states)) record.states[index] = typeof initial === 'function' ? initial() : initial
-      return [record.states[index], value => { record.states[index] = typeof value === 'function' ? value(record.states[index]) : value }]
-    },
-  }
-  const Modal = props => React.createElement('div', { role: 'dialog', 'aria-label': props.title }, props.title, props.children, props.footer)
-  const withComponent = (component, props = {}) => {
-    const previous = activeComponent
-    const record = recordFor(component)
-    record.cursor = 0
-    activeComponent = record
-    try { return component(props) } finally { activeComponent = previous }
-  }
-  const resolveTree = value => {
-    if (Array.isArray(value)) return value.map(resolveTree)
-    if (!value || typeof value !== 'object' || !Object.hasOwn(value, 'type')) return value
-    if (typeof value.type === 'function') return resolveTree(withComponent(value.type, value.props))
-    return { type: value.type, props: value.props, children: resolveTree(value.children) }
-  }
-  const manager = {
-    async listBundles() {
-      calls.listBundles++
-      if (listBundlesError) throw Object.assign(new Error('DESKTOP_INVENTORY_FAILED'), { code: 'DESKTOP_INVENTORY_FAILED' })
-      return [
-        ...(desktopRuntimeVersion ? [{ name: 'dsh.desktop-runtime', official: true,
-          installTarget: { version: desktopRuntimeVersion }, installed: true }] : []),
-        ...installedBundles,
-      ]
-    },
-    async inspect(spec) {
-      calls.inspect.push(spec)
-      return typeof inspectResult === 'function' ? inspectResult(spec) : inspectResult ?? { status: 'accepted', kind: 'git' }
-    },
-    async installBundle(spec, options) {
-      calls.installBundle.push({ spec, options })
-      const requestedResult = typeof installResult === 'function' ? await installResult(spec, options) : installResult
-      if (requestedResult) {
-        if (Array.isArray(installedAfterInstallResult)) installedBundles = installedAfterInstallResult
-        return requestedResult
-      }
-      const entry = catalog.entries.find(item => spec.startsWith(`git+${item.repositoryUrl}.git#`))
-      installedBundles = [...installedBundles.filter(bundle => bundle.name !== entry?.packageName), {
-        name: entry?.packageName || '@acme/dsh-installable', official: false, installed: true,
-        removable: true, enabled: options.enabled, version: entry?.version, source: spec,
-      }]
-      return { application: 'applied', changed: true, stage: 'install', target: spec }
-    },
-    async removeBundle(name) {
-      calls.removeBundle.push(name)
-      const result = removeResult ?? { application: 'applied', changed: true, stage: 'remove', target: name }
-      if (!retainInstalledAfterRemove && ['applied', 'restart-required'].includes(result.application)) {
-        installedBundles = installedBundles.filter(bundle => bundle.name !== name)
-      }
-      return result
-    },
-    async setBundleEnabled(name, enabled) {
-      calls.setBundleEnabled.push({ name, enabled })
-      installedBundles = installedBundles.map(bundle => bundle.name === name ? { ...bundle, enabled } : bundle)
-      return { application: 'applied', changed: true, stage: 'enable', target: name, enabled }
-    },
-    async waitForInstall(requestId) { calls.waitForInstall.push(requestId); return null },
-  }
-  if (!inspectAvailable) delete manager.inspect
-  if (!removeBundleAvailable) delete manager.removeBundle
-  const jsonResponse = (url, payload, rawText = JSON.stringify(payload)) => {
-    const bytes = new TextEncoder().encode(rawText)
-    let offset = 0
-    return {
-      ok: true, url,
-      headers: { get: name => name === 'content-length' ? String(bytes.byteLength) : null },
-      body: { getReader: () => ({
-        async read() {
-          if (offset >= bytes.byteLength) return { done: true }
-          const value = bytes.subarray(offset, Math.min(offset + 4096, bytes.byteLength))
-          offset += value.byteLength
-          return { done: false, value }
-        },
-        async cancel() {}, releaseLock() {},
-      }) },
-    }
-  }
-  const fetch = async (url, options) => {
-    if (url === desktopCatalogUrl) {
-      requests.push({ url, options })
-      if (responseFactory) return responseFactory()
-      return jsonResponse(url, catalog)
-    }
-    directoryRequests.push({ url, options })
-    if (url === desktopRankingIndexUrl) {
-      const digest = rankingIndexDigest || createHash('sha256').update(JSON.stringify(rankingSnapshot)).digest('hex')
-      return jsonResponse(url, null, `<meta name="dsh-rankings-sha256" content="${digest}">`)
-    }
-    const payload = url.includes('/catalog-index.json') ? activeDirectoryDocuments?.catalogIndex
-      : url.includes('/discovery-index.json') ? activeDirectoryDocuments?.discovery
-        : url.includes('/candidates.json') ? activeDirectoryDocuments?.candidates
-          : url === desktopRankingDataUrl ? rankingSnapshot : null
-    if (!payload) throw new Error('directory fixture unavailable')
-    const rawText = url.includes('/catalog-index.json') ? activeDirectoryDocuments?.catalogIndexRaw : null
-    return jsonResponse(url, payload, rawText || JSON.stringify(payload))
-  }
-  const window = {
-    location: { protocol, origin: protocol === 'dsh-app:' ? 'dsh-app://app' : 'https://dsh.test',
-      href: protocol === 'dsh-app:' ? 'dsh-app://app/settings' : 'https://dsh.test/settings' },
-    localStorage: { getItem: () => null, setItem: () => {}, removeItem: () => {} },
-    crypto: { randomUUID: () => '11111111-1111-4111-8111-111111111111', subtle: webcrypto.subtle },
-    setTimeout: (callback, delay) => { timerCallbacks.push(callback); timerDelays.push(delay); return ++nextTimer },
-    clearTimeout: () => {},
-    __ModuleLoader__: { load({ factory }) {
-      const plugin = factory(name => name === 'react' ? React : ({ Modal }))
-      moduleDependencies.push(...plugin.inject)
-      const declaredDependencies = new Set(plugin.inject)
-      plugin.apply({
-        ...(declaredDependencies.has('remote') && declaredDependencies.has('remote.pluginManager')
-          ? { remote: { pluginManager: manager } } : {}),
-        inject(paths, callback) {
-          injections.push(paths)
-          if (paths.every(path => declaredDependencies.has(path))) callback()
-        },
-        effect() {},
-        slots: {
-          inject(slot, register) {
-            const current = { slot }
-            slotRegistrations.push(current)
-            if (slot === 'settings.section') settingsRegistrations.push(current)
-            activeSlotRegistration = current
-            register()
-            activeSlotRegistration = null
-          },
-          register(metadata, component) {
-            activeSlotRegistration.metadata = metadata
-            activeSlotRegistration.component = component
-            if (activeSlotRegistration.slot === 'settings.section') panel = component
-          },
-        },
-      })
-    } },
-  }
-  const ready = sourcePromise.then(source => runInNewContext(source, {
-    window, fetch, URL, AbortController, TextDecoder, TextEncoder, Uint8Array,
-  }))
-  const render = async () => {
-    await ready
-    return resolveTree(withComponent(panel))
-  }
-  const renderComponent = async (component, props) => {
-    await ready
-    return resolveTree(withComponent(component, props))
-  }
-  const runEffects = async component => {
-    await ready
-    const effects = recordFor(component).effects
-    for (const record of effects) {
-      if (!record || !record.pending) continue
-      record.pending = false
-      record.cleanup?.()
-      record.cleanup = record.effect()
-    }
-  }
-  return { ready, render, runEffects, setInstalledBundles: value => { installedBundles = value },
-    getComponent: name => [...componentRecords.keys()].find(component => component.name === name),
-    settingsRegistrations, slotRegistrations, renderComponent, injections, moduleDependencies, requests, directoryRequests,
-    calls, timerCallbacks, timerDelays,
-    setInstalled: value => { installedBundles = value } }
-}
-
-function desktopNodes(tree) {
-  const result = []
-  const visit = value => {
-    if (Array.isArray(value)) { value.forEach(visit); return }
-    if (!value || typeof value !== 'object') return
-    result.push(value)
-    visit(value.children)
-  }
-  visit(tree)
-  return result
-}
-
-function desktopText(tree) {
-  const output = []
-  const visit = value => {
-    if (typeof value === 'string' || typeof value === 'number') { output.push(String(value)); return }
-    if (Array.isArray(value)) { value.forEach(visit); return }
-    if (value && typeof value === 'object') visit(value.children)
-  }
-  visit(tree)
-  return output.join(' ')
-}
-
-async function waitForDesktopTree(harness, predicate) {
-  let tree
-  for (let attempt = 0; attempt < 100; attempt++) {
-    await new Promise(resolve => setImmediate(resolve))
-    tree = await harness.render()
-    if (predicate(tree)) return tree
-  }
-  return tree
-}
-
-test('official Desktop registers æ’ä»¶å•†åŸŽ and mirrors the complete website directory with search and scrolling', async () => {
-  const entry = desktopEntry({ id: 'dsh-installed', packageName: '@acme/dsh-installed', commit: 'b'.repeat(40) })
-  const catalog = desktopCatalog([
-    entry,
-    desktopEntry({ id: 'dsh-installable', packageName: '@acme/dsh-installable', commit: desktopCommit }),
-    desktopEntry({ id: 'dsh-incompatible', packageName: '@acme/dsh-incompatible', commit: 'c'.repeat(40), compatibility: 'incompatible' }),
-    desktopEntry({ id: 'dsh-unknown', packageName: '@acme/dsh-unknown', commit: 'e'.repeat(40), compatibility: 'unknown' }),
-    desktopEntry({ id: 'dsh-web-only', packageName: '@acme/dsh-web-only', commit: 'f'.repeat(40), profiles: ['web'] }),
-    desktopEntry({ id: 'dsh-safe-plugin-manager', packageName: 'dsh-safe-plugin-manager', commit: 'd'.repeat(40), profiles: ['web'] }),
-    desktopEntry({ id: 'build-dsh-plugin', packageName: 'dsh-build-plugin', commit: '9'.repeat(40), profiles: [], status: 'blocked',
-      statusReason: 'Automatic policy blocked installation: fixed-source security warnings require review' }),
-    desktopEntry({ id: 'withdrawn-plugin', packageName: '@acme/withdrawn-plugin', commit: '8'.repeat(40), status: 'unlisted' }),
-  ])
-  const harness = createDesktopHarness({
-    catalog,
-    directoryDocuments: desktopDirectoryDocuments(catalog, { extraCandidates: [
-      { id: 'candidate-only', name: 'Candidate only plugin', description: 'A candidate with no Catalog record.',
-        repositoryUrl: 'https://github.com/acme/candidate-only', status: 'rejected', latestCommit: '7'.repeat(40), topics: ['ai'] },
-    ] }),
-    installed: [{ name: '@acme/dsh-installed', official: false, installed: true, removable: true, enabled: true,
-      version: '1.0.0', source: `git+https://github.com/acme/dsh-installed.git#${'b'.repeat(40)}` }],
-  })
-  await harness.ready
-  assert.equal(harness.settingsRegistrations.length, 1)
-  assert.equal(harness.settingsRegistrations[0].slot, 'settings.section')
-  assert.equal(harness.settingsRegistrations[0].metadata.id, 'dsh-store')
-  assert.equal(harness.settingsRegistrations[0].metadata.label(), 'æ’ä»¶å•†åŸŽ')
-  assert.deepEqual(harness.slotRegistrations.map(row => row.slot), ['settings.section', 'main', 'sidebar.panellist'])
-  const storePanel = harness.slotRegistrations.find(row => row.slot === 'main')
-  assert.equal(storePanel.metadata.key, 'dsh-store')
-  assert.equal(storePanel.component.name, 'ManagerPanel')
-  const sidebarEntry = harness.slotRegistrations.find(row => row.slot === 'sidebar.panellist')
-  assert.equal(sidebarEntry.metadata.id, storePanel.metadata.key)
-  assert.equal(sidebarEntry.metadata.label, 'æ’ä»¶å•†åŸŽ')
-  assert.equal(sidebarEntry.metadata.order, 10)
-  const icon = await harness.renderComponent(sidebarEntry.component, { size: 18, active: true })
-  assert.equal(desktopNodes(icon).find(node => node.type === 'svg')?.props.width, 18)
-  const manifest = JSON.parse(await readFile(new URL('../package.json', import.meta.url), 'utf8'))
-  assert.ok(manifest.dsh.client.inject.includes('@deepseek-ai/dsh-client-ui-layout'))
-  assert.ok(manifest.dsh.client.inject.includes('@deepseek-ai/dsh-client-ui-sidebar'))
-  assert.deepEqual(harness.moduleDependencies, ['slots', 'remote', 'remote.pluginManager'])
-  assert.equal(JSON.stringify(harness.injections[0]), '["remote","remote.pluginManager"]')
-
-  const initial = await harness.render()
-  const desktopPanel = harness.getComponent('DesktopStorePanel')
-  assert.equal(typeof desktopPanel, 'function')
-  await harness.runEffects(desktopPanel)
-  const tree = await waitForDesktopTree(harness, value => desktopText(value).includes('Name dsh-installable'))
-  const text = desktopText(tree)
-  assert.match(text, /DSH-Store/)
-  assert.match(text, /æ’ä»¶å•†åŸŽï¼ˆDSH-Storeï¼‰/)
-  assert.match(text, /å…¨éƒ¨å·²çŸ¥æ’ä»¶ Â· 10/)
-  assert.match(text, /Name dsh-installed.*å·²å¯åŠ¨|å·²å¯åŠ¨.*Name dsh-installed/)
-  assert.match(text, /æ”¶å½•çŠ¶æ€ä¸Žå®¡æ ¸å»ºè®®åˆ†å¼€å±•ç¤º/)
-  assert.match(text, /Catalog å·²æ‹¦æˆª Â· DSH å¯æ£€æŸ¥/)
-  assert.ok(desktopNodes(initial).length > 0)
-  assert.equal(harness.calls.listBundles, 1)
-  assert.equal(harness.requests.length, 1)
-  assert.equal(harness.requests[0].url, desktopCatalogUrl)
-  assert.equal(harness.requests[0].options.redirect, 'error')
-  assert.equal(desktopNodes(tree).some(node => node.type === 'button' && node.children?.includes('å®‰è£…')), true)
-  const installedCard = desktopNodes(tree).find(node => node.type === 'article' && desktopText(node).includes('@acme/dsh-installed'))
-  const incompatibleCard = desktopNodes(tree).find(node => node.type === 'article' && desktopText(node).includes('@acme/dsh-incompatible'))
-  const unknownCard = desktopNodes(tree).find(node => node.type === 'article' && desktopText(node).includes('@acme/dsh-unknown'))
-  const webOnlyCard = desktopNodes(tree).find(node => node.type === 'article' && desktopText(node).includes('@acme/dsh-web-only'))
-  const publicOnlyCard = desktopNodes(tree).find(node => node.type === 'article' && desktopText(node).includes('@acme/public-only'))
-  const candidateOnlyCard = desktopNodes(tree).find(node => node.type === 'article' && desktopText(node).includes('Candidate only plugin'))
-  const withdrawnCard = desktopNodes(tree).find(node => node.type === 'article' && desktopText(node).includes('@acme/withdrawn-plugin'))
-  const blockedPluginCard = desktopNodes(tree).find(node => node.type === 'article' && desktopText(node).includes('dsh-build-plugin'))
-  assert.ok(installedCard)
-  assert.ok(incompatibleCard)
-  assert.ok(unknownCard)
-  assert.ok(webOnlyCard)
-  assert.ok(publicOnlyCard, 'discovery-only plugins remain visible in the full directory')
-  assert.ok(candidateOnlyCard, 'candidate-only plugins remain visible in the full directory')
-  assert.ok(withdrawnCard, 'unlisted Catalog records remain visible in the full directory')
-  assert.ok(blockedPluginCard, 'Catalog-blocked plugins remain searchable and can be handed to DSH for a final check')
-  assert.match(desktopText(blockedPluginCard), /Catalog å·²æ‹¦æˆª Â· DSH å¯æ£€æŸ¥/)
-  const blockedInstallCard = desktopNodes(blockedPluginCard).find(node => node.type === 'button' && node.children?.includes('äº¤ç”± DSH æ£€æŸ¥å®‰è£…'))
-  assert.ok(blockedInstallCard)
-  assert.equal(blockedInstallCard.props.disabled, false)
-  assert.equal(typeof blockedInstallCard.props.onClick, 'function')
-  for (const card of [publicOnlyCard, candidateOnlyCard, withdrawnCard]) {
-    const githubInstall = desktopNodes(card).find(node => node.type === 'button'
-      && node.children?.includes('GitHub åœ°å€äº¤ç”± DSH å®‰è£…'))
-    assert.ok(githubInstall, 'unlisted, candidate, and public-only DSH plugins share the DSH install handoff')
-    assert.equal(githubInstall.props.disabled, false)
-  }
-  assert.match(desktopText(tree), /AI ä¸Žæ™ºèƒ½ä½“/)
-  const directorySearch = desktopNodes(tree).find(node => node.type === 'input' && node.props['aria-label'] === 'æœç´¢å…¨éƒ¨å·²çŸ¥æ’ä»¶')
-  assert.ok(directorySearch)
-  const viewport = desktopNodes(tree).find(node => node.props?.['aria-label'] === 'å…¨éƒ¨å·²çŸ¥æ’ä»¶ç»“æžœ')
-  assert.equal(viewport.props.style.overflow, 'visible')
-  assert.equal(viewport.children.length, 1, 'the list and pagination share the marketplace scroll flow')
-  const root = desktopNodes(tree).find(node => node.type === 'section' && node.props?.['aria-label'].startsWith('æ’ä»¶å•†åŸŽï¼ˆDSH-Storeï¼‰'))
-  assert.match(root.props.style.height, /100vh/)
-  assert.equal(root.props.style.overflowY, 'auto')
-  assert.equal(root.props.style.marginInline, 'auto')
-  assert.equal(root.props.style.padding, '14px clamp(16px, 2.5vw, 30px) 28px')
-  assert.equal(desktopNodes(tree).find(node => node.props?.['aria-label'] === 'å…¨éƒ¨å·²çŸ¥æ’ä»¶').props.style.gap, '14px')
-  assert.equal(root.props.tabIndex, 0)
-  assert.equal(desktopNodes(tree).find(node => node.props?.['aria-label'] === 'ç›®å½•æœç´¢å’Œç­›é€‰').props.style.position, 'sticky')
-  for (const label of ['å…³é—­', 'å¸è½½', 'æŸ¥çœ‹è¯¦æƒ…']) {
-    assert.equal(desktopNodes(installedCard).some(node => node.type === 'button' && node.children?.includes(label)), true, `${label} is available for a matching installed third-party bundle`)
-  }
-  assert.equal(desktopNodes(installedCard).some(node => node.type === 'button' && node.children?.includes('å®‰è£…')), false)
-  for (const card of [incompatibleCard, unknownCard, webOnlyCard]) {
-    const install = desktopNodes(card).find(node => node.type === 'button' && node.children?.includes('å®‰è£…'))
-    assert.ok(install, 'the official Desktop manager gets to decide install compatibility')
-    assert.equal(install.props.disabled, false)
-    assert.equal(typeof install.props.onClick, 'function')
-  }
-  const storeCard = desktopNodes(tree).find(node => node.type === 'article' && desktopText(node).includes('dsh-safe-plugin-manager'))
-  assert.ok(storeCard)
-  assert.equal(desktopNodes(storeCard).some(node => node.type === 'button' && ['å¯åŠ¨', 'å…³é—­', 'å¸è½½'].some(label => node.children?.includes(label))), false)
-
-  const detailButton = desktopNodes(installedCard).find(node => node.type === 'button' && node.children?.includes('æŸ¥çœ‹è¯¦æƒ…'))
-  detailButton.props.onClick()
-  const detailTree = await harness.render()
-  assert.match(desktopText(detailTree), /Name dsh-installed Â· æ’ä»¶è¯¦æƒ…/)
-  assert.match(desktopText(detailTree), /GitHub ä»“åº“ï¼šhttps:\/\/github\.com\/acme\/dsh-installed/)
-  assert.match(desktopText(detailTree), /æƒé™ low/)
-  const installedDetailActions = desktopNodes(detailTree).find(node => node.props?.['aria-label'] === 'æ’ä»¶æ“ä½œ')
-  assert.ok(installedDetailActions)
-  for (const label of ['å®‰è£…', 'å¯åŠ¨', 'å…³é—­', 'å¸è½½']) {
-    assert.equal(desktopNodes(installedDetailActions).some(node => node.type === 'button' && node.children?.includes(label)), true,
-      `${label} remains visible in plugin details`)
-  }
-  assert.equal(desktopNodes(installedDetailActions).find(node => node.type === 'button' && node.children?.includes('å®‰è£…')).props.disabled, true)
-  assert.equal(desktopNodes(installedDetailActions).find(node => node.type === 'button' && node.children?.includes('å¸è½½')).props.disabled, false)
-
-  const unknownDetailButton = desktopNodes(unknownCard).find(node => node.type === 'button' && node.children?.includes('æŸ¥çœ‹è¯¦æƒ…'))
-  unknownDetailButton.props.onClick()
-  const unknownDetailTree = await harness.render()
-  const unknownDetailActions = desktopNodes(unknownDetailTree).find(node => node.props?.['aria-label'] === 'æ’ä»¶æ“ä½œ')
-  assert.ok(unknownDetailActions)
-  const blockedInstall = desktopNodes(unknownDetailActions).find(node => node.type === 'button' && node.children?.includes('å®‰è£…'))
-  assert.ok(blockedInstall)
-  assert.equal(blockedInstall.props.disabled, false)
-  assert.equal(typeof blockedInstall.props.onClick, 'function')
-  for (const label of ['å¯åŠ¨', 'å…³é—­', 'å¸è½½']) {
-    const button = desktopNodes(unknownDetailActions).find(node => node.type === 'button' && node.children?.includes(label))
-    assert.ok(button, `${label} remains visible in plugin details`)
-    assert.equal(button.props.disabled, true)
-    assert.equal(button.props.title, 'å½“å‰ Profile å°šæœªå®‰è£…æ­¤æ’ä»¶ã€‚')
-  }
-  assert.doesNotMatch(desktopText(unknownDetailTree), /å®‰è£…å·²ç¦ç”¨/)
-
-  const search = desktopNodes(detailTree).find(node => node.type === 'input' && node.props['aria-label'] === 'æœç´¢å…¨éƒ¨å·²çŸ¥æ’ä»¶')
-  assert.ok(search)
-  search.props.onChange({ target: { value: 'build-dsh-plugin' } })
-  const blockedSearchTree = await harness.render()
-  const searchResults = desktopNodes(blockedSearchTree).filter(node => node.type === 'article')
-  assert.equal(searchResults.length, 1)
-  assert.match(desktopText(searchResults[0]), /dsh-build-plugin/)
-  assert.ok(desktopText(blockedSearchTree).includes('Catalog å·²æ‹¦æˆª Â· 1'))
-  const blockedDetailsButton = desktopNodes(searchResults[0]).find(node => node.type === 'button' && node.children?.includes('æŸ¥çœ‹è¯¦æƒ…'))
-  blockedDetailsButton.props.onClick()
-  const blockedDetailsTree = await harness.render()
-  assert.match(desktopText(blockedDetailsTree), /å•†åŸŽå®¡æ ¸å»ºè®®/)
-  assert.match(desktopText(blockedDetailsTree), /Automatic policy blocked installation/)
-  assert.match(desktopText(blockedDetailsTree), /æŸ¥çœ‹æŠ€æœ¯æ£€æŸ¥è¯¦æƒ…/)
-  const blockedDetailActions = desktopNodes(blockedDetailsTree).find(node => node.props?.['aria-label'] === 'æ’ä»¶æ“ä½œ')
-  assert.equal(desktopNodes(blockedDetailActions).find(node => node.type === 'button' && node.children?.includes('äº¤ç”± DSH æ£€æŸ¥å®‰è£…')).props.disabled, false)
-  const clearBlockedSearch = desktopNodes(blockedDetailsTree).find(node => node.type === 'button' && node.children?.includes('æ¸…é™¤ç­›é€‰'))
-  clearBlockedSearch.props.onClick()
-  const resetTree = await harness.render()
-  const resetSearch = desktopNodes(resetTree).find(node => node.type === 'input' && node.props['aria-label'] === 'æœç´¢å…¨éƒ¨å·²çŸ¥æ’ä»¶')
-  resetSearch.props.onChange({ target: { value: 'dsh-web-only' } })
-  const searchedTree = await harness.render()
-  assert.equal(desktopNodes(searchedTree).filter(node => node.type === 'article').length, 1)
-  assert.match(desktopText(searchedTree), /Name dsh-web-only/)
-  assert.ok(desktopNodes(searchedTree).some(node => node.type === 'select' && node.props['aria-label'] === 'æŒ‰åˆ†ç±»ç­›é€‰'))
-  assert.ok(desktopNodes(searchedTree).some(node => node.type === 'select' && node.props['aria-label'] === 'æŽ’åºæ–¹å¼'))
-  assert.ok(desktopNodes(searchedTree).some(node => node.type === 'select' && node.props['aria-label'] === 'æŒ‰ DSH STORE å®¡æ ¸çŠ¶æ€ç­›é€‰'))
-})
-
-test('Desktop directory keeps records beyond the former 700-item range searchable', async () => {
-  const catalog = desktopCatalog([desktopEntry({ id: 'large-directory-anchor', packageName: '@acme/large-directory-anchor', commit: desktopCommit })])
-  const directoryDocuments = desktopDirectoryDocuments(catalog)
-  const initialCount = directoryDocuments.discovery.entries.length
-  const additionalRecords = 805
-  for (let index = 0; index < additionalRecords; index++) {
-    const sourceIndex = initialCount + index
-    const id = `bulk-dsh-plugin-${index}`
-    directoryDocuments.discovery.entries.push({
-      sourceIndex, sourceId: id, alias: `@acme/${id}`, name: `Bulk DSH plugin ${index}`,
-      description: `Large directory fixture ${index}`, stars: additionalRecords - index, categories: ['ai'],
-      kind: 'dsh-plugin', repositoryUrl: `https://github.com/acme/${id}`,
-      detailUrl: `https://www.dsh.so/artifact/${id}/`,
-    })
-  }
-  directoryDocuments.discovery.source.recordCount = directoryDocuments.discovery.entries.length
-  const expectedDirectory = createKnownPluginDirectory(catalog.entries.filter(row => row.status !== 'unlisted'),
-    directoryDocuments.candidates.entries, { discoveryIndex: directoryDocuments.discovery })
-  const harness = createDesktopHarness({ catalog, directoryDocuments })
-  await harness.ready
-  await harness.render()
-  await harness.runEffects(harness.getComponent('DesktopStorePanel'))
-  let tree = await waitForDesktopTree(harness, value => desktopText(value).includes(`å…¨éƒ¨å·²çŸ¥æ’ä»¶ Â· ${expectedDirectory.length}`))
-  const search = desktopNodes(tree).find(node => node.type === 'input' && node.props['aria-label'] === 'æœç´¢å…¨éƒ¨å·²çŸ¥æ’ä»¶')
-  search.props.onChange({ target: { value: `bulk-dsh-plugin-${additionalRecords - 1}` } })
-  tree = await harness.render()
-  const results = desktopNodes(tree).filter(node => node.type === 'article')
-  assert.equal(results.length, 1)
-  assert.match(desktopText(results[0]), new RegExp(`Bulk DSH plugin ${additionalRecords - 1}`))
-  assert.match(desktopText(tree), /1 æ¡ç»“æžœ Â· ç¬¬ 1 \/ 1 é¡µ/)
-})
-
-test('Desktop full-directory search ignores moderation boilerplate and ranks plugin identity matches first', async () => {
-  const image = desktopEntry({ id: 'dsh-image-tool', packageName: '@acme/dsh-image-tool', commit: desktopCommit })
-  image.name = 'dsh-image-tool'
-  image.description = 'Creates and edits images.'
-  image.searchTerms = ['image generation']
-  const bodyOnly = desktopEntry({ id: 'text-tool', packageName: '@acme/text-tool', commit: 'b'.repeat(40) })
-  bodyOnly.name = 'text-tool'
-  bodyOnly.description = 'A simple image utility.'
-  const boilerplateOnly = desktopEntry({ id: 'security-audit-helper', packageName: '@acme/security-audit-helper',
-    commit: 'c'.repeat(40), status: 'blocked',
-    statusReason: 'Automatic policy blocked installation: runtime security warnings require review' })
-  boilerplateOnly.name = 'security-audit-helper'
-  boilerplateOnly.description = 'Reviews package security.'
-  const catalog = desktopCatalog([image, bodyOnly, boilerplateOnly])
-  const harness = createDesktopHarness({ catalog, directoryDocuments: desktopDirectoryDocuments(catalog) })
-  await harness.ready
-  await harness.render()
-  await harness.runEffects(harness.getComponent('DesktopStorePanel'))
-  let tree = await waitForDesktopTree(harness, value => desktopText(value).includes('å…¨éƒ¨å·²çŸ¥æ’ä»¶ Â· 3'))
-  const search = desktopNodes(tree).find(node => node.type === 'input' && node.props['aria-label'] === 'æœç´¢å…¨éƒ¨å·²çŸ¥æ’ä»¶')
-  assert.ok(search)
-
-  search.props.onChange({ target: { value: 'im' } })
-  tree = await harness.render()
-  let results = desktopNodes(tree).filter(node => node.type === 'article')
-  assert.equal(results.length, 1, 'short search excludes incidental description and moderation-reason matches')
-  assert.match(desktopText(results[0]), /dsh-image-tool/)
-
-  const updatedSearch = desktopNodes(tree).find(node => node.type === 'input' && node.props['aria-label'] === 'æœç´¢å…¨éƒ¨å·²çŸ¥æ’ä»¶')
-  updatedSearch.props.onChange({ target: { value: 'image' } })
-  tree = await harness.render()
-  results = desktopNodes(tree).filter(node => node.type === 'article')
-  assert.equal(results.length, 2, 'longer searches also match relevant description text')
-  assert.match(desktopText(results[0]), /dsh-image-tool/, 'plugin name and package matches rank before body-only matches')
-  assert.match(desktopText(results[1]), /text-tool/)
-
-  const imageSearch = desktopNodes(tree).find(node => node.type === 'input' && node.props['aria-label'] === 'æœç´¢å…¨éƒ¨å·²çŸ¥æ’ä»¶')
-  imageSearch.props.onChange({ target: { value: 'installation' } })
-  tree = await harness.render()
-  assert.equal(desktopNodes(tree).filter(node => node.type === 'article').length, 0,
-    'moderation rationale is not user-searchable plugin metadata')
-})
-
-test('Store review advice is plain-language, keeps technical evidence expandable, and leaves the final decision to Desktop', async () => {
-  const blocked = desktopEntry({ id: 'review-advice-plugin', packageName: '@acme/review-advice-plugin',
-    commit: desktopCommit, status: 'blocked',
-    statusReason: 'Automatic policy blocked installation: network permission signal; install lifecycle scripts are present: prepare' })
-  const harness = createDesktopHarness({ catalog: desktopCatalog([blocked]) })
-  await harness.ready
-  await harness.render()
-  await harness.runEffects(harness.getComponent('DesktopStorePanel'))
-  let tree = await waitForDesktopTree(harness, value => desktopText(value).includes('review-advice-plugin'))
-  let card = desktopNodes(tree).find(node => node.type === 'article' && desktopText(node).includes('review-advice-plugin'))
-  assert.match(desktopText(card), /æ’ä»¶ä¼šè¿žæŽ¥ç½‘ç»œ/)
-  assert.match(desktopText(card), /å®‰è£…æˆ–æ›´æ–°æ—¶ä¼šè‡ªåŠ¨è¿è¡Œè„šæœ¬ï¼ˆprepareï¼‰/)
-  assert.match(desktopText(card), /ä¸ä»£è¡¨ DSH Desktop å·²æ‹’ç»å®‰è£…/)
-  assert.match(desktopText(card), /Automatic policy blocked installation/)
-  assert.ok(desktopNodes(card).some(node => node.type === 'details'), 'the exact scanner reason is behind a disclosure control')
-
-  const detailsButton = desktopNodes(card).find(node => node.type === 'button' && node.children?.includes('æŸ¥çœ‹è¯¦æƒ…'))
-  detailsButton.props.onClick()
-  tree = await harness.render()
-  let dialog = desktopNodes(tree).find(node => node.props.role === 'dialog')
-  assert.ok(dialog)
-  assert.match(desktopText(dialog), /æ’ä»¶ä¼šè¿žæŽ¥ç½‘ç»œ/)
-  assert.match(desktopText(dialog), /æŸ¥çœ‹æŠ€æœ¯æ£€æŸ¥è¯¦æƒ…/)
-  assert.match(desktopText(dialog), /æœ€ç»ˆç»“æžœä»¥ DSH å®˜æ–¹æ’ä»¶ç®¡ç†å™¨è¿”å›žä¸ºå‡†/)
-  desktopNodes(dialog).find(node => node.type === 'button' && node.children?.includes('å…³é—­è¯¦æƒ…')).props.onClick()
-
-  tree = await harness.render()
-  card = desktopNodes(tree).find(node => node.type === 'article' && desktopText(node).includes('review-advice-plugin'))
-  const handoff = desktopNodes(card).find(node => node.type === 'button' && node.children?.includes('äº¤ç”± DSH æ£€æŸ¥å®‰è£…'))
-  assert.ok(handoff)
-  assert.equal(handoff.props.disabled, false)
-  handoff.props.onClick()
-  tree = await harness.render()
-  dialog = desktopNodes(tree).find(node => node.props.role === 'dialog')
-  assert.match(desktopText(dialog), /å•†åŸŽå®¡æ ¸å»ºè®®/)
-  assert.match(desktopText(dialog), /æœ€ç»ˆç»“æžœä»¥ DSH å®˜æ–¹æ’ä»¶ç®¡ç†å™¨è¿”å›žä¸ºå‡†/)
-  assert.equal(harness.calls.installBundle.length, 0, 'the Store advice is shown before the user submits the request to Desktop')
-})
-
-test('Desktop recommendation and essential boards match the official website ranking algorithm and show review reasons', async () => {
-  const { rankingSnapshot, catalog, directoryDocuments } = desktopRankingFixture()
-  const harness = createDesktopHarness({ catalog, directoryDocuments, rankingSnapshot })
-  await harness.ready
-  await harness.render()
-  const panel = harness.getComponent('DesktopStorePanel')
-  await harness.runEffects(panel)
-  await waitForDesktopTree(harness, tree => desktopText(tree).includes('å…¨éƒ¨å·²çŸ¥æ’ä»¶'))
-  const expectedCounts = Object.fromEntries(['recommended', 'essential'].map(type => [type, rankingEntries(rankingSnapshot, type).length]))
-  assert.notEqual(expectedCounts.recommended, expectedCounts.essential, 'fixture exposes cross-board count leakage')
-
-  for (const [type, tabPrefix] of [['recommended', 'æŽ¨èæ¦œå•'], ['essential', 'å¿…è£…æ¦œå•']]) {
-    let tree = await harness.render()
-    const tab = desktopNodes(tree).find(node => node.type === 'button' && node.props.role === 'tab'
-      && node.children?.some(value => String(value).startsWith(tabPrefix)))
-    assert.ok(tab, `${tabPrefix} tab is visible`)
-    tab.props.onClick()
-    tree = await harness.render()
-    await harness.runEffects(panel)
-    tree = await waitForDesktopTree(harness, value => desktopText(value).includes(type === 'recommended' ? 'å®˜ç½‘æŽ¨èæ¦œ' : 'å®˜ç½‘å¿…è£…æ¦œ')
-      && !desktopText(value).includes('æ­£åœ¨è¯»å–å®˜ç½‘æ¦œå•'))
-    for (const [countType, countLabel] of [['recommended', 'æŽ¨èæ¦œå•'], ['essential', 'å¿…è£…æ¦œå•']]) {
-      const countTab = desktopNodes(tree).find(node => node.type === 'button' && node.props.role === 'tab'
-        && node.children?.some(value => String(value).startsWith(countLabel)))
-      assert.ok(countTab, `${countLabel} tab is visible`)
-      assert.match(desktopText(countTab), new RegExp(`${countLabel} Â· ${expectedCounts[countType]}$`),
-        `${countLabel} count stays bound to its own ranking after switching to ${type}`)
-    }
-
-    const expectedIds = rankingEntries(rankingSnapshot, type).map(entry => entry.id)
-    const pageCount = Math.max(1, Math.ceil(expectedIds.length / 30))
-    for (let page = 1; page <= pageCount; page++) {
-      if (page > 1) {
-        const next = desktopNodes(tree).find(node => node.type === 'button' && node.props['aria-label'] === 'ä¸‹ä¸€é¡µ')
-        assert.ok(next, `${tabPrefix} exposes page ${page}`)
-        next.props.onClick()
-        tree = await harness.render()
-        assert.ok(desktopText(tree).includes(`${page} / ${pageCount} é¡µ`))
-      }
-      const actualIds = desktopNodes(tree).filter(node => node.type === 'article')
-        .map(node => node.props['data-market-entry-id'])
-      assert.deepEqual(actualIds, expectedIds.slice((page - 1) * 30, page * 30),
-        `${tabPrefix} page ${page} follows marketplace/rankings/model.js`)
-    }
-    if (type === 'recommended') {
-      const candidateCard = desktopNodes(tree).find(node => node.type === 'article'
-        && node.props['data-market-entry-id'] === 'candidate:pending-review')
-      assert.ok(candidateCard)
-      assert.match(desktopText(candidateCard), /DSH Store è¿˜æ²¡æœ‰å®Œæˆè¿™é¡¹æ¥æºçš„æ”¶å½•å®¡æ ¸/)
-      assert.match(desktopText(candidateCard), /æŸ¥çœ‹æŠ€æœ¯æ£€æŸ¥è¯¦æƒ…/)
-      assert.match(desktopText(candidateCard), /Store review is still pending for this plugin\./)
-      assert.match(desktopText(candidateCard), /ä½œè€…äº’åŠ¨æŽ¨è/)
-    } else {
-      const supplement = desktopNodes(tree).find(node => node.type === 'article'
-        && node.props['data-market-entry-id'] && desktopText(node).includes('å·¥å…· Â· åˆ†ç±»è¡¥ä½ Â· å¯æŸ¥æ˜Ÿæ ‡ç¬¬'))
-      assert.ok(supplement, 'Desktop labels category supplements with their category and observed rank')
-      assert.match(desktopText(supplement), /1 ä¸ªæ’ä»¶æ˜Ÿæ ‡æœªçŸ¥ï¼Œå† å†›æœªç¡®è®¤/)
-    }
-  }
-
-  assert.equal(harness.directoryRequests.filter(item => item.url === desktopRankingIndexUrl).length, 1)
-  assert.equal(harness.directoryRequests.filter(item => item.url === desktopRankingDataUrl).length, 1)
-})
-
-test('a ranking digest mismatch fails the board closed without disabling full-directory search', async () => {
-  const { rankingSnapshot, catalog, directoryDocuments } = desktopRankingFixture()
-  const harness = createDesktopHarness({ catalog, directoryDocuments, rankingSnapshot, rankingIndexDigest: 'f'.repeat(64) })
-  await harness.ready
-  await harness.render()
-  const panel = harness.getComponent('DesktopStorePanel')
-  await harness.runEffects(panel)
-  let tree = await waitForDesktopTree(harness, value => desktopText(value).includes('å…¨éƒ¨å·²çŸ¥æ’ä»¶'))
-  let tab = desktopNodes(tree).find(node => node.type === 'button' && node.props.role === 'tab'
-    && node.children?.some(value => String(value).startsWith('æŽ¨èæ¦œå•')))
-  tab.props.onClick()
-  tree = await harness.render()
-  await harness.runEffects(panel)
-  tree = await waitForDesktopTree(harness, value => desktopText(value).includes('DESKTOP_RANKING_INTEGRITY_MISMATCH'))
-  assert.match(desktopText(tree), /å®˜ç½‘æ¦œå•æš‚ä¸å¯ç”¨/)
-  assert.equal(desktopNodes(tree).some(node => node.type === 'article'), false)
-
-  tab = desktopNodes(tree).find(node => node.type === 'button' && node.props.role === 'tab'
-    && node.children?.some(value => String(value).startsWith('å…¨éƒ¨å·²çŸ¥æ’ä»¶')))
-  tab.props.onClick()
-  tree = await harness.render()
-  assert.ok(desktopNodes(tree).some(node => node.type === 'article' && desktopText(node).includes('Name dsh-rank-alpha')))
-  const search = desktopNodes(tree).find(node => node.type === 'input' && node.props['aria-label'] === 'æœç´¢å…¨éƒ¨å·²çŸ¥æ’ä»¶')
-  search.props.onChange({ target: { value: 'public-only' } })
-  tree = await harness.render()
-  assert.equal(desktopNodes(tree).filter(node => node.type === 'article').length, 1)
-  assert.match(desktopText(tree), /Public only plugin/)
-})
-
-test('Desktop lets DSH decide a rejected candidate after exact GitHub source confirmation', async () => {
-  const catalog = desktopCatalog([
-    desktopEntry({ id: 'baseline-entry', packageName: '@acme/baseline-entry', commit: desktopCommit }),
-  ])
-  const candidate = { id: 'candidate-only', name: 'Candidate only plugin', description: 'A candidate with no Catalog record.',
-    repositoryUrl: 'https://github.com/acme/candidate-only', status: 'rejected', latestCommit: '7'.repeat(40),
-    statusReason: 'Static Store review did not find a standard DSH Bundle.', topics: ['ai'] }
-  const harness = createDesktopHarness({
-    catalog,
-    directoryDocuments: desktopDirectoryDocuments(catalog, { extraCandidates: [candidate] }),
-    inspectResult: { status: 'rejected', reason: 'DSH preflight could not verify this repository yet' },
-  })
-  await harness.ready
-  await harness.render()
-  await harness.runEffects(harness.getComponent('DesktopStorePanel'))
-  let tree = await waitForDesktopTree(harness, value => desktopText(value).includes('Candidate only plugin'))
-  const card = desktopNodes(tree).find(node => node.type === 'article' && desktopText(node).includes(candidate.name))
-  assert.ok(card, desktopText(tree))
-  assert.match(desktopText(card), /å€™é€‰å®¡æ ¸æœªé€šè¿‡/)
-  assert.match(desktopText(card), /Static Store review did not find a standard DSH Bundle/)
-  const install = desktopNodes(card).find(node => node.type === 'button' && node.children?.includes('GitHub åœ°å€äº¤ç”± DSH å®‰è£…'))
-  assert.ok(install)
-  assert.equal(install.props.disabled, false)
-  install.props.onClick()
-  tree = await harness.render()
-  assert.match(desktopText(tree), /Store å€™é€‰å®¡æ ¸çŠ¶æ€ï¼šrejected/)
-  assert.match(desktopText(tree), /è¿™æ˜¯å•†åŸŽå»ºè®®ï¼Œä¸æ˜¯ DSH çš„å®‰è£…ç»“è®º/)
-  assert.equal(harness.calls.installBundle.length, 0)
-
-  const confirmation = 'INSTALL GITHUB acme/candidate-only DEFAULT'
-  desktopNodes(tree).find(node => node.type === 'input' && node.props.placeholder === confirmation)
-    .props.onChange({ target: { value: confirmation } })
-  tree = await harness.render()
-  const confirm = desktopNodes(tree).find(node => node.type === 'button' && node.children?.includes('ç¡®è®¤å¹¶å®‰è£…'))
-  assert.equal(confirm.props.disabled, false)
-  await confirm.props.onClick()
-  tree = await waitForDesktopTree(harness, value => desktopText(value).includes('DSH å®˜æ–¹æ’ä»¶ç®¡ç†å™¨å·²å®Œæˆå®‰è£…')
-    && desktopText(value).includes('DSH å·²å®‰è£… Â· å·²å¯åŠ¨'))
-
-  assert.deepEqual(harness.calls.inspect, ['git+https://github.com/acme/candidate-only.git'])
-  assert.equal(harness.calls.installBundle.length, 1)
-  assert.equal(harness.calls.installBundle[0].spec, 'git+https://github.com/acme/candidate-only.git')
-  assert.equal(harness.calls.installBundle[0].options.enabled, true)
-  assert.match(desktopText(tree), /DSH Desktop é¢„æ£€æç¤ºï¼šDSH preflight could not verify this repository yet/)
-  const installedCard = desktopNodes(tree).find(node => node.type === 'article' && desktopText(node).includes(candidate.name))
-  assert.match(desktopText(installedCard), /DSH å·²å®‰è£… Â· å·²å¯åŠ¨/)
-  assert.match(desktopText(installedCard), /å·²ç”± DSH Desktop å®‰è£…/)
-  assert.equal(desktopNodes(installedCard).some(node => node.type === 'button'
-    && node.children?.includes('GitHub åœ°å€äº¤ç”± DSH å®‰è£…')), false)
-})
-
-test('Web renderer retains the Settings entry without registering a Desktop home panel', async () => {
-  const harness = createDesktopHarness({ catalog: desktopCatalog([]), protocol: 'https:' })
-  await harness.ready
-  assert.deepEqual(harness.slotRegistrations.map(row => row.slot), ['settings.section'])
-  assert.equal(harness.settingsRegistrations[0].metadata.id, 'dsh-store')
-})
-
-test('Desktop keeps the complete directory searchable when its official install inventory is unavailable', async () => {
-  const entry = desktopEntry({ id: 'inventory-independent', packageName: '@acme/inventory-independent', commit: desktopCommit })
-  const catalog = desktopCatalog([entry])
-  const directoryDocuments = desktopDirectoryDocuments(catalog)
-  const expectedDirectory = createKnownPluginDirectory(catalog.entries.filter(row => row.status !== 'unlisted'),
-    directoryDocuments.candidates.entries, { discoveryIndex: directoryDocuments.discovery })
-  const harness = createDesktopHarness({ catalog, directoryDocuments, listBundlesError: true })
-  await harness.ready
-  await harness.render()
-  await harness.runEffects(harness.getComponent('DesktopStorePanel'))
-  let tree = await waitForDesktopTree(harness, value => desktopText(value).includes(`å…¨éƒ¨å·²çŸ¥æ’ä»¶ Â· ${expectedDirectory.length}`))
-  assert.match(desktopText(tree), /DSH å®‰è£…æ¸…å•æš‚ä¸å¯ç”¨ï¼ˆDESKTOP_INVENTORY_FAILEDï¼‰/)
-  assert.match(desktopText(tree), /å®Œæ•´ç›®å½•å’Œæœç´¢ä»å¯ä½¿ç”¨/)
-  const search = desktopNodes(tree).find(node => node.type === 'input' && node.props['aria-label'] === 'æœç´¢å…¨éƒ¨å·²çŸ¥æ’ä»¶')
-  assert.ok(search)
-  search.props.onChange({ target: { value: 'public-only' } })
-  tree = await harness.render()
-  const publicCard = desktopNodes(tree).find(node => node.type === 'article' && desktopText(node).includes('Public only plugin'))
-  assert.ok(publicCard, 'directory search remains independent of the DSH installed list')
-  search.props.onChange({ target: { value: 'inventory-independent' } })
-  tree = await harness.render()
-  const catalogCard = desktopNodes(tree).find(node => node.type === 'article' && desktopText(node).includes('@acme/inventory-independent'))
-  const install = desktopNodes(catalogCard).find(node => node.type === 'button' && node.children?.includes('å®‰è£…'))
-  assert.ok(install)
-  assert.equal(install.props.disabled, true, 'state-dependent installs wait for an authoritative DSH inventory')
-  assert.match(install.props.title, /DSH å®‰è£…æ¸…å•æš‚ä¸å¯ç”¨/)
-})
-
-test('blocked fixed-source entries use DSH inspect and install only after explicit confirmation', async () => {
-  const commit = '9'.repeat(40)
-  const entry = desktopEntry({ id: 'build-dsh-plugin', packageName: 'dsh-build-plugin', commit,
-    repositoryUrl: 'https://github.com/AI-Scarlett/build-dsh-plugin', profiles: [], status: 'blocked',
-    statusReason: 'Automatic policy blocked installation: runtime source contains files and commands permission signals' })
-  entry.updatePolicy = 'external-only'
-  const harness = createDesktopHarness({ catalog: desktopCatalog([entry]) })
-  await harness.ready
-  await harness.render()
-  const desktopPanel = harness.getComponent('DesktopStorePanel')
-  await harness.runEffects(desktopPanel)
-  let tree = await waitForDesktopTree(harness, value => desktopText(value).includes('Catalog å·²æ‹¦æˆª Â· DSH å¯æ£€æŸ¥'))
-  const card = desktopNodes(tree).find(node => node.type === 'article' && desktopText(node).includes('dsh-build-plugin'))
-  const install = desktopNodes(card).find(node => node.type === 'button' && node.children?.includes('äº¤ç”± DSH æ£€æŸ¥å®‰è£…'))
-  assert.ok(install)
-  assert.equal(install.props.disabled, false)
-  install.props.onClick()
-  tree = await harness.render()
-  const warning = desktopText(tree)
-  assert.match(warning, /å•†åŸŽå®¡æ ¸å»ºè®®/)
-  assert.match(warning, /Automatic policy blocked installation/)
-  assert.match(warning, /DSH Store çš„å‚è€ƒæç¤ºï¼Œä¸ä»£è¡¨ DSH Desktop å·²æ‹’ç»å®‰è£…/)
-  assert.match(warning, /external-only/)
-  assert.equal(harness.calls.inspect.length, 0)
-  assert.equal(harness.calls.installBundle.length, 0)
-
-  const confirmation = `INSTALL dsh-build-plugin ${commit}`
-  const input = desktopNodes(tree).find(node => node.type === 'input' && node.props.placeholder === confirmation)
-  assert.ok(input)
-  input.props.onChange({ target: { value: confirmation } })
-  tree = await harness.render()
-  const confirm = desktopNodes(tree).find(node => node.type === 'button' && node.children?.includes('ç¡®è®¤å¹¶å®‰è£…'))
-  assert.ok(confirm)
-  assert.equal(confirm.props.disabled, false)
-  await confirm.props.onClick()
-
-  assert.deepEqual(harness.calls.inspect, [`git+https://github.com/AI-Scarlett/build-dsh-plugin.git#${commit}`])
-  assert.equal(harness.calls.installBundle.length, 1)
-  assert.equal(harness.calls.installBundle[0].options.enabled, true)
-  tree = await waitForDesktopTree(harness, value => desktopText(value).includes('DSH å®˜æ–¹æ’ä»¶ç®¡ç†å™¨å·²å®Œæˆå®‰è£…')
-    && desktopText(value).includes('DSH å·²å®‰è£… Â· å·²å¯åŠ¨'))
-  const installedBlockedCard = desktopNodes(tree).find(node => node.type === 'article' && desktopText(node).includes('dsh-build-plugin'))
-  assert.match(desktopText(installedBlockedCard), /Catalog å·²æ‹¦æˆª/)
-  assert.match(desktopText(installedBlockedCard), /DSH å·²å®‰è£… Â· å·²å¯åŠ¨/)
-})
-
-test('DSH inspection warning is shown while the confirmed request reaches installBundle', async () => {
-  const commit = '8'.repeat(40)
-  const entry = desktopEntry({ id: 'review-rejected', packageName: 'dsh-review-rejected', commit, status: 'blocked',
-    statusReason: 'Fixed-source review required' })
-  const harness = createDesktopHarness({ catalog: desktopCatalog([entry]),
-    inspectResult: { status: 'rejected', reason: 'DSH runtime requirement is not met' } })
-  await harness.ready
-  await harness.render()
-  await harness.runEffects(harness.getComponent('DesktopStorePanel'))
-  let tree = await waitForDesktopTree(harness, value => desktopText(value).includes('Catalog å·²æ‹¦æˆª Â· DSH å¯æ£€æŸ¥'))
-  const install = desktopNodes(tree).find(node => node.type === 'button' && node.children?.includes('äº¤ç”± DSH æ£€æŸ¥å®‰è£…'))
-  install.props.onClick()
-  tree = await harness.render()
-  const phrase = `INSTALL ${entry.packageName} ${commit}`
-  desktopNodes(tree).find(node => node.type === 'input' && node.props.placeholder === phrase)
-    .props.onChange({ target: { value: phrase } })
-  tree = await harness.render()
-  const confirm = desktopNodes(tree).find(node => node.type === 'button' && node.children?.includes('ç¡®è®¤å¹¶å®‰è£…'))
-  await confirm.props.onClick()
-  tree = await waitForDesktopTree(harness, value => desktopText(value).includes('DSH å®˜æ–¹æ’ä»¶ç®¡ç†å™¨å·²å®Œæˆå®‰è£…'))
-  assert.equal(harness.calls.inspect.length, 1)
-  assert.equal(harness.calls.installBundle.length, 1)
-  assert.match(desktopText(tree), /DSH Desktop é¢„æ£€æç¤ºï¼šDSH runtime requirement is not met/)
-})
-
-test('blocked full-Commit entries are not gated by Catalog provenance labels or timestamps', async () => {
-  const entry = desktopEntry({ id: 'repository-provenance', packageName: 'dsh-repository-provenance',
-    commit: '6'.repeat(40), status: 'blocked', statusReason: 'Fixed-source review required',
-    source: { provenance: 'github-repository' } })
-  const harness = createDesktopHarness({ catalog: desktopCatalog([entry]) })
-  await harness.ready
-  await harness.render()
-  await harness.runEffects(harness.getComponent('DesktopStorePanel'))
-  const tree = await waitForDesktopTree(harness, value => desktopText(value).includes('Catalog å·²æ‹¦æˆª Â· DSH å¯æ£€æŸ¥'))
-  const install = desktopNodes(tree).find(node => node.type === 'button' && node.children?.includes('äº¤ç”± DSH æ£€æŸ¥å®‰è£…'))
-  assert.ok(install)
-  assert.equal(install.props.disabled, false)
-})
-
-test('blocked entries with safe Unicode install paths are handed to DSH as pinned bundle specs', async () => {
-  const commit = '5'.repeat(40)
-  const installPath = 'å…¶å®ƒå¥½ç”¨çš„å·¥å…·/dsh-deepseek-balance'
-  const entry = desktopEntry({ id: 'cjk-install-path', packageName: 'dsh-cjk-install-path', commit,
-    repositoryUrl: 'https://github.com/Kaczev/dsh-KazMode', status: 'blocked',
-    installPath, manifestPath: `${installPath}/package.json`, statusReason: 'Compatibility review required' })
-  const harness = createDesktopHarness({ catalog: desktopCatalog([entry]) })
-  await harness.ready
-  await harness.render()
-  await harness.runEffects(harness.getComponent('DesktopStorePanel'))
-  let tree = await waitForDesktopTree(harness, value => desktopText(value).includes('Catalog å·²æ‹¦æˆª Â· DSH å¯æ£€æŸ¥'))
-  const install = desktopNodes(tree).find(node => node.type === 'button' && node.children?.includes('äº¤ç”± DSH æ£€æŸ¥å®‰è£…'))
-  assert.ok(install)
-  assert.equal(install.props.disabled, false)
-  install.props.onClick()
-  tree = await harness.render()
-  const confirmation = `INSTALL ${entry.packageName} ${commit}`
-  desktopNodes(tree).find(node => node.type === 'input' && node.props.placeholder === confirmation)
-    .props.onChange({ target: { value: confirmation } })
-  tree = await harness.render()
-  const confirm = desktopNodes(tree).find(node => node.type === 'button' && node.children?.includes('ç¡®è®¤å¹¶å®‰è£…'))
-  await confirm.props.onClick()
-  assert.deepEqual(harness.calls.inspect, [
-    `git+https://github.com/Kaczev/dsh-KazMode.git#${commit}&path:${installPath}`,
-  ])
-  assert.equal(harness.calls.installBundle.length, 1)
-})
-
-test('Desktop rechecks the confirmed source identity before calling the official manager', async () => {
-  const commit = '7'.repeat(40)
-  const entry = desktopEntry({ id: 'source-changed', packageName: 'dsh-source-changed', commit, status: 'blocked',
-    statusReason: 'Fixed-source review required' })
-  let requestCount = 0
-  const responseFactory = () => {
-    const current = requestCount++ === 0 ? entry : { ...entry, commit: '6'.repeat(40) }
-    const bytes = new TextEncoder().encode(JSON.stringify(desktopCatalog([current])))
-    let offset = 0
-    return {
-      ok: true, url: desktopCatalogUrl,
-      headers: { get: name => name === 'content-length' ? String(bytes.byteLength) : null },
-      body: { getReader: () => ({
-        async read() {
-          if (offset >= bytes.byteLength) return { done: true }
-          const value = bytes.subarray(offset, Math.min(offset + 4096, bytes.byteLength))
-          offset += value.byteLength
-          return { done: false, value }
-        },
-        async cancel() {}, releaseLock() {},
-      }) },
-    }
-  }
-  const harness = createDesktopHarness({ catalog: desktopCatalog([entry]), responseFactory })
-  await harness.ready
-  await harness.render()
-  await harness.runEffects(harness.getComponent('DesktopStorePanel'))
-  let tree = await waitForDesktopTree(harness, value => desktopText(value).includes('Catalog å·²æ‹¦æˆª Â· DSH å¯æ£€æŸ¥'))
-  desktopNodes(tree).find(node => node.type === 'button' && node.children?.includes('äº¤ç”± DSH æ£€æŸ¥å®‰è£…')).props.onClick()
-  tree = await harness.render()
-  const phrase = `INSTALL ${entry.packageName} ${commit}`
-  desktopNodes(tree).find(node => node.type === 'input' && node.props.placeholder === phrase)
-    .props.onChange({ target: { value: phrase } })
-  tree = await harness.render()
-  const confirm = desktopNodes(tree).find(node => node.type === 'button' && node.children?.includes('ç¡®è®¤å¹¶å®‰è£…'))
-  await confirm.props.onClick()
-  tree = await harness.render()
-  assert.equal(harness.calls.inspect.length, 0)
-  assert.equal(harness.calls.installBundle.length, 0)
-  assert.match(desktopText(tree), /CATALOG_OR_PROFILE_STATE_CHANGED/)
-})
-
-test('blocked entry handoff still fails closed on invalid source, unsafe paths, and protected targets', async () => {
-  const rows = [
-    desktopEntry({ id: 'bad-repository', packageName: 'dsh-bad-repository', commit: '1'.repeat(40), status: 'blocked',
-      repositoryUrl: 'https://example.com/plugin' }),
-    desktopEntry({ id: 'floating-source', packageName: 'dsh-floating-source', commit: 'main', status: 'blocked' }),
-    desktopEntry({ id: 'unsafe-path', packageName: 'dsh-unsafe-path', commit: '2'.repeat(40), status: 'blocked',
-      installPath: '../outside', manifestPath: '../outside/package.json' }),
-    desktopEntry({ id: 'protected-entry', packageName: 'dsh-protected-entry', commit: '3'.repeat(40), status: 'blocked',
-      entryIds: ['ui-settings-plugin-inventory'] }),
-    desktopEntry({ id: 'protected-package', packageName: '@deepseek-ai/dsh-protected-package', commit: '4'.repeat(40), status: 'blocked' }),
-  ]
-  const harness = createDesktopHarness({ catalog: desktopCatalog(rows) })
-  await harness.ready
-  await harness.render()
-  await harness.runEffects(harness.getComponent('DesktopStorePanel'))
-  const tree = await waitForDesktopTree(harness, value => desktopText(value).includes('5 Catalog å·²æ‹¦æˆª'))
-  const cards = desktopNodes(tree).filter(node => node.type === 'article')
-  assert.equal(cards.length, rows.length)
-  for (const card of cards) {
-    const button = desktopNodes(card).find(node => node.type === 'button' && node.children?.includes('äº¤ç”± DSH æ£€æŸ¥å®‰è£…'))
-    assert.ok(button, 'the review reason remains visible with an unavailable action')
-    assert.equal(button.props.disabled, true)
-  }
-  assert.equal(harness.calls.inspect.length, 0)
-  assert.equal(harness.calls.installBundle.length, 0)
-})
-
-test('official Desktop separates official plugins from user-installed plugins and keeps marketplace tabs readable', async () => {
-  const catalogInstalled = desktopEntry({ id: 'dsh-installed-view', packageName: '@acme/dsh-installed-view', commit: 'b'.repeat(40) })
-  const harness = createDesktopHarness({
-    catalog: desktopCatalog([catalogInstalled]),
-    installed: [
-      { name: '@deepseek-ai/dsh-official-plugin', official: true, installed: true, removable: false, enabled: true,
-        version: '0.2.2-alpha.2', source: 'npm:@deepseek-ai/dsh-official-plugin@0.2.2-alpha.2' },
-      { name: '@acme/dsh-installed-view', official: false, installed: true, removable: true, enabled: false,
-        version: '1.0.0', source: `git+https://github.com/acme/dsh-installed-view.git#${'b'.repeat(40)}` },
-      { name: 'local-unlisted-plugin', official: false, installed: true, removable: true, enabled: true,
-        version: '2.0.0', source: `git+https://github.com/acme/local-unlisted-plugin.git#${'c'.repeat(40)}` },
-    ],
-  })
-  await harness.ready
-  await harness.render()
-  await harness.runEffects(harness.getComponent('DesktopStorePanel'))
-  const catalogTree = await waitForDesktopTree(harness, tree => desktopText(tree).includes('Name dsh-installed-view'))
-  const catalogTab = desktopNodes(catalogTree).find(node => node.type === 'button' && node.props.role === 'tab'
-    && node.children?.some(value => String(value).startsWith('Catalog å®¡æ ¸è®°å½• Â· ')))
-  const installedTab = desktopNodes(catalogTree).find(node => node.type === 'button' && node.props.role === 'tab'
-    && node.children?.some(value => String(value).startsWith('å·²å®‰è£…æ’ä»¶ Â· 2')))
-  let officialTab = desktopNodes(catalogTree).find(node => node.type === 'button' && node.props.role === 'tab'
-    && node.children?.some(value => String(value).startsWith('å®˜æ–¹æ’ä»¶ Â· 2')))
-  assert.ok(catalogTab)
-  assert.ok(installedTab)
-  assert.ok(officialTab)
-  assert.equal(installedTab.props['aria-selected'], false)
-  assert.equal(officialTab.props['aria-selected'], false)
-
-  const tabList = desktopNodes(catalogTree).find(node => node.props.role === 'tablist' && node.props['aria-label'] === 'æ’ä»¶å•†åŸŽè§†å›¾')
-  assert.ok(tabList)
-  assert.equal(tabList.props.style.display, 'grid')
-  assert.match(tabList.props.style.gridTemplateColumns, /auto-fit/)
-  const viewTabs = desktopNodes(tabList).filter(node => node.type === 'button' && node.props.role === 'tab')
-  assert.equal(viewTabs.length, 6)
-  assert.ok(viewTabs.every(node => node.props.style.width === '100%'), 'each navigation tab uses its share of the available row')
-
-  const directorySearch = desktopNodes(catalogTree).find(node => node.type === 'input' && node.props['aria-label'] === 'æœç´¢å…¨éƒ¨å·²çŸ¥æ’ä»¶')
-  directorySearch.props.onChange({ target: { value: 'local-unlisted-plugin' } })
-  let searchedDirectory = await harness.render()
-  officialTab = desktopNodes(searchedDirectory).find(node => node.type === 'button' && node.props.role === 'tab'
-    && node.children?.some(value => String(value).startsWith('å®˜æ–¹æ’ä»¶ Â· ')))
-  officialTab.props.onClick()
-
-  const officialTree = await harness.render()
-  assert.ok(desktopNodes(officialTree).some(node => node.type === 'button' && node.props.role === 'tab'
-    && node.props['aria-selected'] === true && node.children?.some(value => String(value).startsWith('å®˜æ–¹æ’ä»¶ Â· '))))
-  assert.match(desktopText(officialTree), /è¿™é‡Œåªå±•ç¤º Desktop å®‰è£…æ¸…å•ä¸­æ ‡è®°ä¸ºå®˜æ–¹æˆ–éš DSH æä¾›çš„ç»„ä»¶/)
-  assert.match(desktopText(officialTree), /@deepseek-ai\/dsh-official-plugin/)
-  assert.match(desktopText(officialTree), /dsh\.desktop-runtime/)
-  assert.doesNotMatch(desktopText(officialTree), /local-unlisted-plugin|@acme\/dsh-installed-view/)
-  const officialCard = desktopNodes(officialTree).find(node => node.type === 'article' && desktopText(node).includes('@deepseek-ai/dsh-official-plugin'))
-  assert.ok(officialCard)
-  assert.ok(desktopNodes(officialCard).some(node => node.type === 'button' && node.children?.includes('DSH å®˜æ–¹ç®¡ç†') && node.props.disabled))
-
-  const officialSearch = desktopNodes(officialTree).find(node => node.type === 'input' && node.props['aria-label'] === 'æœç´¢å®˜æ–¹æ’ä»¶')
-  officialSearch.props.onChange({ target: { value: '@deepseek-ai' } })
-  assert.match(desktopText(await harness.render()), /1 æ¡ç»“æžœ/)
-  const filteredOfficialTree = await harness.render()
-  const installedTabAfterSearch = desktopNodes(filteredOfficialTree).find(node => node.type === 'button' && node.props.role === 'tab'
-    && node.children?.some(value => String(value).startsWith('å·²å®‰è£…æ’ä»¶ Â· ')))
-  installedTabAfterSearch.props.onClick()
-
-  const installedTree = await harness.render()
-  assert.ok(desktopNodes(installedTree).some(node => node.type === 'button' && node.props.role === 'tab'
-    && node.props['aria-selected'] === true && node.children?.some(value => String(value).startsWith('å·²å®‰è£…æ’ä»¶ Â· '))))
-  assert.match(desktopText(installedTree), /2 å·²å®‰è£…æ’ä»¶/)
-  assert.match(desktopText(installedTree), /ç›®å½•å¤–åªè¯»/)
-  assert.match(desktopText(installedTree), /local-unlisted-plugin/)
-  assert.doesNotMatch(desktopText(installedTree), /@deepseek-ai\/dsh-official-plugin|dsh\.desktop-runtime/)
-  const externalCard = desktopNodes(installedTree).find(node => node.type === 'article' && desktopText(node).includes('local-unlisted-plugin'))
-  assert.ok(externalCard)
-  assert.match(desktopText(externalCard), /æ­¤æ’ä»¶æ²¡æœ‰å¯åŒ¹é…çš„å·²å®¡æ ¸ Catalog å›ºå®šæ¥æºè®°å½•/)
-  assert.ok(desktopNodes(externalCard).some(node => node.type === 'button' && node.children?.includes('å•†åŸŽä¸ç®¡ç†') && node.props.disabled))
-  assert.equal(desktopNodes(externalCard).some(node => node.type === 'button' && ['å®‰è£…', 'å¯åŠ¨', 'å…³é—­', 'å¸è½½'].some(label => node.children?.includes(label))), false)
-
-  const search = desktopNodes(installedTree).find(node => node.type === 'input' && node.props['aria-label'] === 'æœç´¢æ’ä»¶')
-  search.props.onChange({ target: { value: 'local-unlisted-plugin' } })
-  const searchedTree = await harness.render()
-  assert.equal(desktopNodes(searchedTree).filter(node => node.type === 'article').length, 1)
-  assert.match(desktopText(searchedTree), /GitHub æ¥æºï¼šhttps:\/\/github\.com\/acme\/local-unlisted-plugin/)
-})
-
-test('official Desktop requires the full package and Commit confirmation before using the DSH installer', async () => {
-  const harness = createDesktopHarness({
-    catalog: desktopCatalog([desktopEntry({ id: 'dsh-installable', packageName: '@acme/dsh-installable', commit: desktopCommit })]),
-  })
-  await harness.ready
-  await harness.render()
-  await harness.runEffects(harness.getComponent('DesktopStorePanel'))
-  let tree = await waitForDesktopTree(harness, value => desktopText(value).includes('Name dsh-installable'))
-  const installButton = desktopNodes(tree).find(node => node.type === 'button' && node.children?.includes('å®‰è£…'))
-  assert.ok(installButton)
-  installButton.props.onClick()
-  tree = await harness.render()
-  const expected = `INSTALL @acme/dsh-installable ${desktopCommit}`
-  assert.ok(desktopText(tree).includes(expected))
-  let confirmationInput = desktopNodes(tree).find(node => node.type === 'input' && node.props.placeholder === expected)
-  assert.ok(confirmationInput)
-  let confirmButton = desktopNodes(tree).find(node => node.type === 'button' && node.children?.includes('ç¡®è®¤å¹¶å®‰è£…'))
-  assert.equal(confirmButton.props.disabled, true)
-  confirmationInput.props.onChange({ target: { value: `INSTALL @acme/dsh-installable ${desktopCommit.slice(0, 12)}` } })
-  tree = await harness.render()
-  confirmButton = desktopNodes(tree).find(node => node.type === 'button' && node.children?.includes('ç¡®è®¤å¹¶å®‰è£…'))
-  assert.equal(confirmButton.props.disabled, true)
-  assert.equal(harness.calls.installBundle.length, 0)
-
-  confirmationInput = desktopNodes(tree).find(node => node.type === 'input' && node.props.placeholder === expected)
-  confirmationInput.props.onChange({ target: { value: expected } })
-  tree = await harness.render()
-  confirmButton = desktopNodes(tree).find(node => node.type === 'button' && node.children?.includes('ç¡®è®¤å¹¶å®‰è£…'))
-  assert.equal(confirmButton.props.disabled, false)
-  await confirmButton.props.onClick()
-  tree = await waitForDesktopTree(harness, value => desktopText(value).includes('DSH å®˜æ–¹æ’ä»¶ç®¡ç†å™¨å·²å®Œæˆå®‰è£…'))
-  assert.equal(harness.calls.inspect.length, 1)
-  assert.equal(harness.calls.inspect[0], `git+https://github.com/acme/dsh-installable.git#${desktopCommit}`)
-  assert.equal(harness.calls.installBundle.length, 1)
-  assert.equal(harness.calls.installBundle[0].spec, harness.calls.inspect[0])
-  assert.equal(harness.calls.installBundle[0].options.enabled, true)
-  assert.equal(harness.calls.installBundle[0].options.requestId, '11111111-1111-4111-8111-111111111111')
-  assert.equal(Object.hasOwn(harness.calls.installBundle[0].options, 'approvedBuilds'), false)
-  assert.equal(harness.calls.waitForInstall.length, 0)
-  assert.equal(harness.requests.every(item => item.url === desktopCatalogUrl), true)
-  assert.match(desktopText(tree), /å·²å®‰è£…/)
-})
-
-test('official Desktop receives unadapted unknown entries and displays DSH compatibility refusal', async () => {
-  const entry = desktopEntry({ id: 'dsh-unknown', packageName: '@acme/dsh-unknown', commit: desktopCommit,
-    compatibility: 'unknown', profiles: ['web'] })
-  const incompatible = [{ name: entry.packageName, version: entry.version, runtimeVersion: '0.2.2-alpha.2',
-    requirements: { 'engines.dsh': '^0.1.0' } }]
-  const harness = createDesktopHarness({
-    catalog: desktopCatalog([entry]), desktopRuntimeVersion: null,
-    installResult: { application: 'failed', changed: false, stage: 'install', target: entry.packageName,
-      error: { code: 'incompatible-version', incompatible }, packageResult: { exitCode: 1, output: '', truncated: false,
-        logPath: '/disposable/manager.log', incompatible } },
-  })
-  await harness.ready
-  await harness.render()
-  await harness.runEffects(harness.getComponent('DesktopStorePanel'))
-  let tree = await waitForDesktopTree(harness, value => desktopText(value).includes(entry.packageName))
-  assert.match(desktopText(tree), /å®‰è£…ä»ä¼šäº¤ç”± Desktop å®˜æ–¹æ’ä»¶ç®¡ç†å™¨æŒ‰å½“å‰è¿è¡ŒçŽ¯å¢ƒæ ¡éªŒ/)
-  const card = desktopNodes(tree).find(node => node.type === 'article' && desktopText(node).includes(entry.packageName))
-  const install = desktopNodes(card).find(node => node.type === 'button' && node.children?.includes('å®‰è£…'))
-  assert.ok(install)
-  assert.equal(install.props.disabled, false)
-  assert.equal(typeof install.props.onClick, 'function')
-  const details = desktopNodes(card).find(node => node.type === 'button' && node.children?.includes('æŸ¥çœ‹è¯¦æƒ…'))
-  details.props.onClick()
-  tree = await harness.render()
-  assert.match(desktopText(tree), /DSH Desktop å®¢æˆ·ç«¯ï¼šæœªå£°æ˜Žé€‚é…/)
-  assert.match(desktopText(tree), /Catalog å…¼å®¹æ€§å‚è€ƒï¼šDSH æœªçŸ¥ \/ unknown/)
-  const detailInstall = desktopNodes(tree).find(node => node.type === 'button' && node.children?.includes('å®‰è£…'))
-  assert.equal(detailInstall.props.disabled, false)
-  detailInstall.props.onClick()
-  tree = await harness.render()
-  const confirmation = `INSTALL ${entry.packageName} ${entry.commit}`
-  const input = desktopNodes(tree).find(node => node.type === 'input' && node.props.placeholder === confirmation)
-  assert.ok(input)
-  input.props.onChange({ target: { value: confirmation } })
-  tree = await harness.render()
-  const confirm = desktopNodes(tree).find(node => node.type === 'button' && node.children?.includes('ç¡®è®¤å¹¶å®‰è£…'))
-  await confirm.props.onClick()
-  tree = await waitForDesktopTree(harness, value => desktopText(value).includes('DSH å®˜æ–¹å…¼å®¹æ€§æ ¡éªŒæ‹’ç»'))
-  assert.match(desktopText(tree), /incompatible-version/)
-  assert.match(desktopText(tree), /@acme\/dsh-unknown@1\.2\.3/)
-  assert.match(desktopText(tree), /engines\.dsh=\^0\.1\.0/)
-  assert.equal(harness.calls.inspect.length, 1)
-  assert.equal(harness.calls.installBundle.length, 1)
-  assert.equal(harness.calls.removeBundle.length, 0)
-  assert.equal(harness.calls.setBundleEnabled.length, 0)
-})
-
-test('official Desktop inspection refusal is advisory and installBundle determines the final result', async () => {
-  const entry = desktopEntry({ id: 'dsh-no-bundle', packageName: '@acme/dsh-no-bundle', commit: desktopCommit,
-    compatibility: 'incompatible', profiles: [] })
-  const harness = createDesktopHarness({ catalog: desktopCatalog([entry]),
-    inspectResult: { status: 'refused', problem: 'not-a-bundle', reason: 'the Git source has no DSH Bundle Patch' },
-    installResult: { application: 'failed', changed: false, stage: 'install', target: entry.packageName,
-      error: { code: 'not-a-bundle' } } })
-  await harness.ready
-  await harness.render()
-  await harness.runEffects(harness.getComponent('DesktopStorePanel'))
-  let tree = await waitForDesktopTree(harness, value => desktopText(value).includes(entry.packageName))
-  const install = desktopNodes(tree).find(node => node.type === 'button' && node.children?.includes('å®‰è£…'))
-  assert.ok(install)
-  assert.equal(install.props.disabled, false)
-  install.props.onClick()
-  tree = await harness.render()
-  const confirmation = `INSTALL ${entry.packageName} ${entry.commit}`
-  const input = desktopNodes(tree).find(node => node.type === 'input' && node.props.placeholder === confirmation)
-  input.props.onChange({ target: { value: confirmation } })
-  tree = await harness.render()
-  const confirm = desktopNodes(tree).find(node => node.type === 'button' && node.children?.includes('ç¡®è®¤å¹¶å®‰è£…'))
-  await confirm.props.onClick()
-  tree = await waitForDesktopTree(harness, value => desktopText(value).includes('æ“ä½œæœªå®Œæˆï¼ˆnot-a-bundleï¼‰'))
-  assert.match(desktopText(tree), /DSH Desktop é¢„æ£€æç¤ºï¼šthe Git source has no DSH Bundle Patch/)
-  assert.match(desktopText(tree), /the Git source has no DSH Bundle Patch/)
-  assert.match(desktopText(tree), /not-a-bundle/)
-  assert.equal(harness.calls.inspect.length, 1)
-  assert.equal(harness.calls.installBundle.length, 1)
-})
-
-test('official Desktop install result can succeed after its inspection advisory', async () => {
-  const entry = desktopEntry({ id: 'dsh-inspection-advisory', packageName: '@acme/dsh-inspection-advisory', commit: desktopCommit })
-  const harness = createDesktopHarness({ catalog: desktopCatalog([entry]),
-    inspectResult: { status: 'refused', reason: 'Desktop preflight could not confirm this source' } })
-  await harness.ready
-  await harness.render()
-  await harness.runEffects(harness.getComponent('DesktopStorePanel'))
-  let tree = await waitForDesktopTree(harness, value => desktopText(value).includes(entry.packageName))
-  const install = desktopNodes(tree).find(node => node.type === 'button' && node.children?.includes('å®‰è£…'))
-  install.props.onClick()
-  tree = await harness.render()
-  const confirmation = `INSTALL ${entry.packageName} ${desktopCommit}`
-  desktopNodes(tree).find(node => node.type === 'input' && node.props.placeholder === confirmation)
-    .props.onChange({ target: { value: confirmation } })
-  tree = await harness.render()
-  await desktopNodes(tree).find(node => node.type === 'button' && node.children?.includes('ç¡®è®¤å¹¶å®‰è£…')).props.onClick()
-  tree = await waitForDesktopTree(harness, value => desktopText(value).includes('DSH å®˜æ–¹æ’ä»¶ç®¡ç†å™¨å·²å®Œæˆå®‰è£…'))
-  assert.match(desktopText(tree), /DSH Desktop é¢„æ£€æç¤ºï¼šDesktop preflight could not confirm this source/)
-  assert.equal(harness.calls.inspect.length, 1)
-  assert.equal(harness.calls.installBundle.length, 1)
-})
-
-test('an already installed exact package reported by Desktop reconciles a no-change install failure', async () => {
-  const entry = desktopEntry({ id: 'dsh-no-change-installed', packageName: '@acme/dsh-no-change-installed', commit: desktopCommit })
-  const installedPackage = { name: entry.packageName, official: false, installed: true, removable: true,
-    enabled: true, version: entry.version, source: `git+${entry.repositoryUrl}.git#${desktopCommit}` }
-  const harness = createDesktopHarness({ catalog: desktopCatalog([entry]),
-    installResult: { application: 'failed', changed: false, stage: 'install', target: entry.packageName,
-      error: { code: 'NO_DEPENDENCY_CHANGES' } },
-    installedAfterInstallResult: [installedPackage] })
-  await harness.ready
-  await harness.render()
-  await harness.runEffects(harness.getComponent('DesktopStorePanel'))
-  let tree = await waitForDesktopTree(harness, value => desktopText(value).includes(entry.packageName))
-  const install = desktopNodes(tree).find(node => node.type === 'button' && node.children?.includes('å®‰è£…'))
-  install.props.onClick()
-  tree = await harness.render()
-  const confirmation = `INSTALL ${entry.packageName} ${desktopCommit}`
-  desktopNodes(tree).find(node => node.type === 'input' && node.props.placeholder === confirmation)
-    .props.onChange({ target: { value: confirmation } })
-  tree = await harness.render()
-  await desktopNodes(tree).find(node => node.type === 'button' && node.children?.includes('ç¡®è®¤å¹¶å®‰è£…')).props.onClick()
-  tree = await waitForDesktopTree(harness, value => desktopText(value).includes('DSH Desktop å·²å®‰è£…æ¸…å•ç¡®è®¤ç›®æ ‡åŒ…å½“å‰å·²å®‰è£…'))
-  assert.doesNotMatch(desktopText(tree), /æ“ä½œæœªå®Œæˆ|NO_DEPENDENCY_CHANGES/)
-  assert.equal(harness.calls.installBundle.length, 1)
-  assert.ok(harness.calls.listBundles >= 2)
-  assert.equal(harness.calls.waitForInstall.length, 0)
-})
-
-test('Desktop updates an older fixed GitHub revision through DSH remove and install after exact Commit confirmation', async () => {
-  const entry = desktopEntry({ id: 'dsh-update-target', packageName: '@acme/dsh-update-target', commit: desktopCommit })
-  const oldCommit = 'b'.repeat(40)
-  const installed = { name: entry.packageName, official: false, installed: true, removable: true,
-    enabled: false, version: '1.0.0', source: `git+${entry.repositoryUrl}.git#${oldCommit}` }
-  const updated = { ...installed, enabled: false, version: entry.version,
-    source: `git+${entry.repositoryUrl}.git#${desktopCommit}` }
-  const harness = createDesktopHarness({ catalog: desktopCatalog([entry]), installed: [installed],
-    installResult: { application: 'applied', changed: true, stage: 'install', target: entry.packageName },
-    installedAfterInstallResult: [updated] })
-  await harness.ready
-  await harness.render()
-  await harness.runEffects(harness.getComponent('DesktopStorePanel'))
-  let tree = await waitForDesktopTree(harness, value => desktopText(value).includes(entry.packageName))
-  const card = desktopNodes(tree).find(node => node.type === 'article' && desktopText(node).includes(entry.packageName))
-  const update = desktopNodes(card).find(node => node.type === 'button' && node.children?.includes('æ›´æ–°'))
-  assert.ok(update)
-  assert.equal(update.props.disabled, false)
-  update.props.onClick()
-  tree = await harness.render()
-  const confirmation = `UPDATE ${entry.packageName} ${desktopCommit}`
-  assert.match(desktopText(tree), new RegExp(`æ›´æ–° specï¼šgit\\+${entry.repositoryUrl}\\.git#${desktopCommit}`))
-  desktopNodes(tree).find(node => node.type === 'input' && node.props.placeholder === confirmation)
-    .props.onChange({ target: { value: confirmation } })
-  tree = await harness.render()
-  await desktopNodes(tree).find(node => node.type === 'button' && node.children?.includes('ç¡®è®¤å¹¶æ›´æ–°')).props.onClick()
-  tree = await waitForDesktopTree(harness, value => desktopText(value).includes('DSH å®˜æ–¹æ’ä»¶ç®¡ç†å™¨å·²å®Œæˆæ›´æ–°'))
-  assert.deepEqual(harness.calls.inspect, [`git+${entry.repositoryUrl}.git#${desktopCommit}`])
-  assert.equal(harness.calls.installBundle.length, 1)
-  assert.equal(harness.calls.installBundle[0].spec, harness.calls.inspect[0])
-  assert.equal(harness.calls.installBundle[0].options.enabled, false)
-  assert.ok(harness.timerDelays.includes(90_000), 'DSH operations retain their 90-second deadline')
-  assert.deepEqual(harness.calls.removeBundle, [entry.packageName])
-})
-
-test('DSH Store can update its own installed package through the official Desktop manager', async () => {
-  const entry = desktopEntry({ id: 'dsh-safe-plugin-manager', packageName: 'dsh-safe-plugin-manager', commit: desktopCommit,
-    repositoryUrl: 'https://github.com/AI-Scarlett/DSH-Store' })
-  entry.version = '0.9.25'
-  const oldCommit = 'b'.repeat(40)
-  const installed = { name: entry.packageName, official: false, installed: true, removable: false,
-    enabled: true, version: '0.9.24', source: `git+${entry.repositoryUrl}.git#${oldCommit}` }
-  const updated = { ...installed, version: entry.version, source: `git+${entry.repositoryUrl}.git#${desktopCommit}` }
-  const harness = createDesktopHarness({ catalog: desktopCatalog([entry]), installed: [installed],
-    installResult: { application: 'failed', changed: false, stage: 'install', target: entry.packageName,
-      error: { code: 'PACKAGE_CHANGE_AMBIGUOUS' } },
-    installedAfterInstallResult: [updated] })
-  await harness.ready
-  await harness.render()
-  await harness.runEffects(harness.getComponent('DesktopStorePanel'))
-  let tree = await waitForDesktopTree(harness, value => desktopText(value).includes(entry.packageName))
-  const card = desktopNodes(tree).find(node => node.type === 'article' && desktopText(node).includes(entry.packageName))
-  const update = desktopNodes(card).find(node => node.type === 'button' && node.children?.includes('æ›´æ–°'))
-  assert.ok(update, 'the Store entry exposes its fixed-Commit update action')
-  update.props.onClick()
-  tree = await harness.render()
-  const confirmation = `UPDATE ${entry.packageName} ${desktopCommit}`
-  desktopNodes(tree).find(node => node.type === 'input' && node.props.placeholder === confirmation)
-    .props.onChange({ target: { value: confirmation } })
-  tree = await harness.render()
-  await desktopNodes(tree).find(node => node.type === 'button' && node.children?.includes('ç¡®è®¤å¹¶æ›´æ–°')).props.onClick()
-  tree = await waitForDesktopTree(harness, value => desktopText(value).includes('DSH Desktop å·²å®‰è£…æ¸…å•ç¡®è®¤å½“å‰æ¥æºä¸Žç›®æ ‡å›ºå®š Commit ä¸€è‡´'))
-  assert.equal(harness.calls.installBundle.length, 1)
-  assert.equal(harness.calls.installBundle[0].spec, `git+${entry.repositoryUrl}.git#${desktopCommit}`)
-  assert.deepEqual(harness.calls.removeBundle, [])
-  assert.ok(harness.calls.listBundles >= 2)
-})
-
-test('Store self-update accepts a legacy install with no full source Commit and no removeBundle API', async () => {
-  const entry = desktopEntry({ id: 'dsh-safe-plugin-manager', packageName: 'dsh-safe-plugin-manager', commit: desktopCommit,
-    repositoryUrl: 'https://github.com/AI-Scarlett/DSH-Store' })
-  entry.version = '0.9.27'
-  const installed = { name: entry.packageName, official: false, installed: true, removable: false,
-    enabled: true, version: '0.9.26', source: 'git+https://github.com/AI-Scarlett/DSH-Store.git' }
-  const updated = { ...installed, version: entry.version, source: `git+${entry.repositoryUrl}.git#${desktopCommit}` }
-  const harness = createDesktopHarness({ catalog: desktopCatalog([entry]), installed: [installed],
-    removeBundleAvailable: false,
-    installResult: { application: 'failed', changed: false, stage: 'install', target: entry.packageName,
-      error: { code: 'PACKAGE_CHANGE_AMBIGUOUS' } },
-    installedAfterInstallResult: [updated] })
-  await harness.ready
-  await harness.render()
-  await harness.runEffects(harness.getComponent('DesktopStorePanel'))
-  let tree = await waitForDesktopTree(harness, value => desktopText(value).includes(entry.packageName))
-  const card = desktopNodes(tree).find(node => node.type === 'article' && desktopText(node).includes(entry.packageName))
-  const update = desktopNodes(card).find(node => node.type === 'button' && node.children?.includes('æ›´æ–°'))
-  assert.ok(update, 'the older Store version exposes the DSH self-update action without removeBundle')
-  update.props.onClick()
-  tree = await harness.render()
-  const confirmation = `UPDATE ${entry.packageName} ${desktopCommit}`
-  desktopNodes(tree).find(node => node.type === 'input' && node.props.placeholder === confirmation)
-    .props.onChange({ target: { value: confirmation } })
-  tree = await harness.render()
-  await desktopNodes(tree).find(node => node.type === 'button' && node.children?.includes('ç¡®è®¤å¹¶æ›´æ–°')).props.onClick()
-  tree = await waitForDesktopTree(harness, value => desktopText(value).includes('DSH Desktop å·²å®‰è£…æ¸…å•ç¡®è®¤å½“å‰æ¥æºä¸Žç›®æ ‡å›ºå®š Commit ä¸€è‡´'))
-  assert.equal(harness.calls.installBundle.length, 1)
-  assert.equal(harness.calls.installBundle[0].spec, `git+${entry.repositoryUrl}.git#${desktopCommit}`)
-  assert.deepEqual(harness.calls.removeBundle, [])
-  assert.equal(harness.calls.waitForInstall.length, 0)
-})
-
-test('Store self-update preserves a DSH rejection for an unpinned old source and never retries', async () => {
-  const entry = desktopEntry({ id: 'dsh-safe-plugin-manager', packageName: 'dsh-safe-plugin-manager', commit: desktopCommit,
-    repositoryUrl: 'https://github.com/AI-Scarlett/DSH-Store' })
-  entry.version = '0.9.27'
-  const installed = { name: entry.packageName, official: false, installed: true, removable: false,
-    enabled: true, version: '0.9.26', source: 'git+https://github.com/AI-Scarlett/DSH-Store.git' }
-  const harness = createDesktopHarness({ catalog: desktopCatalog([entry]), installed: [installed],
-    removeBundleAvailable: false,
-    installResult: { application: 'failed', changed: false, stage: 'install', target: entry.packageName,
-      error: { code: 'DSH_FIXED_SOURCE_REJECTED', reason: 'official DSH rejection' } } })
-  await harness.ready
-  await harness.render()
-  await harness.runEffects(harness.getComponent('DesktopStorePanel'))
-  let tree = await waitForDesktopTree(harness, value => desktopText(value).includes(entry.packageName))
-  const card = desktopNodes(tree).find(node => node.type === 'article' && desktopText(node).includes(entry.packageName))
-  desktopNodes(card).find(node => node.type === 'button' && node.children?.includes('æ›´æ–°')).props.onClick()
-  tree = await harness.render()
-  const confirmation = `UPDATE ${entry.packageName} ${desktopCommit}`
-  desktopNodes(tree).find(node => node.type === 'input' && node.props.placeholder === confirmation)
-    .props.onChange({ target: { value: confirmation } })
-  tree = await harness.render()
-  await desktopNodes(tree).find(node => node.type === 'button' && node.children?.includes('ç¡®è®¤å¹¶æ›´æ–°')).props.onClick()
-  tree = await waitForDesktopTree(harness, value => desktopText(value).includes('æ—§å›ºå®š Commit æœªçŸ¥ ä¿ç•™'))
-  assert.ok(desktopText(tree).includes('DSH_FIXED_SOURCE_REJECTED'))
-  assert.equal(harness.calls.installBundle.length, 1)
-  assert.deepEqual(harness.calls.removeBundle, [])
-  assert.equal(harness.calls.waitForInstall.length, 0)
-})
-
-test('Store self-update does not offer a downgrade when its installed stable version is newer', async () => {
-  const entry = desktopEntry({ id: 'dsh-safe-plugin-manager', packageName: 'dsh-safe-plugin-manager', commit: desktopCommit,
-    repositoryUrl: 'https://github.com/AI-Scarlett/DSH-Store' })
-  entry.version = '0.9.27'
-  const installed = { name: entry.packageName, official: false, installed: true, removable: false,
-    enabled: true, version: '0.9.28', source: 'git+https://github.com/AI-Scarlett/DSH-Store.git' }
-  const harness = createDesktopHarness({ catalog: desktopCatalog([entry]), installed: [installed],
-    removeBundleAvailable: false })
-  await harness.ready
-  await harness.render()
-  await harness.runEffects(harness.getComponent('DesktopStorePanel'))
-  const tree = await waitForDesktopTree(harness, value => desktopText(value).includes(entry.packageName))
-  const card = desktopNodes(tree).find(node => node.type === 'article' && desktopText(node).includes(entry.packageName))
-  const update = desktopNodes(card).find(node => node.type === 'button' && node.children?.includes('æ›´æ–°'))
-  assert.ok(update)
-  assert.equal(update.props.disabled, true)
-  assert.match(update.props.title, /æœªæäº¤é™çº§æ›´æ–°/)
-  assert.equal(harness.calls.installBundle.length, 0)
-  assert.deepEqual(harness.calls.removeBundle, [])
-})
-
-test('DSH stop-profile removal outcome follows the official update path and still submits the fixed Commit', async () => {
-  const entry = desktopEntry({ id: 'dsh-stop-profile-update', packageName: '@acme/dsh-stop-profile-update', commit: desktopCommit })
-  const oldCommit = 'b'.repeat(40)
-  const installed = { name: entry.packageName, official: false, installed: true, removable: true,
-    enabled: true, version: '1.0.0', source: `git+${entry.repositoryUrl}.git#${oldCommit}` }
-  const updated = { ...installed, version: entry.version, source: `git+${entry.repositoryUrl}.git#${desktopCommit}` }
-  const harness = createDesktopHarness({ catalog: desktopCatalog([entry]), installed: [installed],
-    removeResult: { application: 'failed', changed: false, stage: 'remove', target: entry.packageName,
-      error: { code: 'stop-profile' } },
-    installResult: { application: 'applied', changed: true, stage: 'install', target: entry.packageName },
-    installedAfterInstallResult: [updated] })
-  await harness.ready
-  await harness.render()
-  await harness.runEffects(harness.getComponent('DesktopStorePanel'))
-  let tree = await waitForDesktopTree(harness, value => desktopText(value).includes(entry.packageName))
-  desktopNodes(tree).find(node => node.type === 'button' && node.children?.includes('æ›´æ–°')).props.onClick()
-  tree = await harness.render()
-  const confirmation = `UPDATE ${entry.packageName} ${desktopCommit}`
-  desktopNodes(tree).find(node => node.type === 'input' && node.props.placeholder === confirmation)
-    .props.onChange({ target: { value: confirmation } })
-  tree = await harness.render()
-  await desktopNodes(tree).find(node => node.type === 'button' && node.children?.includes('ç¡®è®¤å¹¶æ›´æ–°')).props.onClick()
-  tree = await waitForDesktopTree(harness, value => desktopText(value).includes('DSH å®˜æ–¹æ’ä»¶ç®¡ç†å™¨å·²å®Œæˆæ›´æ–°'))
-  assert.deepEqual(harness.calls.removeBundle, [entry.packageName])
-  assert.equal(harness.calls.installBundle.length, 1)
-  assert.equal(harness.calls.installBundle[0].spec, `git+${entry.repositoryUrl}.git#${desktopCommit}`)
-})
-
-test('an update with no dependency changes is reconciled only when Desktop confirms the exact target Commit', async () => {
-  const entry = desktopEntry({ id: 'dsh-update-no-change', packageName: '@acme/dsh-update-no-change', commit: desktopCommit })
-  const oldCommit = 'b'.repeat(40)
-  const installed = { name: entry.packageName, official: false, installed: true, removable: true,
-    enabled: true, version: '1.0.0', source: `git+${entry.repositoryUrl}.git#${oldCommit}` }
-  const updated = { ...installed, version: entry.version, source: `git+${entry.repositoryUrl}.git#${desktopCommit}` }
-  const harness = createDesktopHarness({ catalog: desktopCatalog([entry]), installed: [installed],
-    installResult: { application: 'failed', changed: false, stage: 'install', target: entry.packageName,
-      error: { code: 'NO_DEPENDENCY_CHANGES' } },
-    installedAfterInstallResult: [updated] })
-  await harness.ready
-  await harness.render()
-  await harness.runEffects(harness.getComponent('DesktopStorePanel'))
-  let tree = await waitForDesktopTree(harness, value => desktopText(value).includes(entry.packageName))
-  desktopNodes(tree).find(node => node.type === 'button' && node.children?.includes('æ›´æ–°')).props.onClick()
-  tree = await harness.render()
-  const confirmation = `UPDATE ${entry.packageName} ${desktopCommit}`
-  desktopNodes(tree).find(node => node.type === 'input' && node.props.placeholder === confirmation)
-    .props.onChange({ target: { value: confirmation } })
-  tree = await harness.render()
-  await desktopNodes(tree).find(node => node.type === 'button' && node.children?.includes('ç¡®è®¤å¹¶æ›´æ–°')).props.onClick()
-  tree = await waitForDesktopTree(harness, value => desktopText(value).includes('æ­¤å›ºå®š Commit å·²æ˜¯å½“å‰ç‰ˆæœ¬'))
-  assert.equal(harness.calls.installBundle.length, 1)
-  assert.ok(harness.calls.listBundles >= 2)
-  assert.equal(harness.calls.waitForInstall.length, 0)
-})
-
-test('Desktop update preserves the official rejection and never resubmits the request', async () => {
-  const entry = desktopEntry({ id: 'dsh-update-refused', packageName: '@acme/dsh-update-refused', commit: desktopCommit })
-  const oldCommit = 'b'.repeat(40)
-  const installed = { name: entry.packageName, official: false, installed: true, removable: true,
-    enabled: true, version: '1.0.0', source: `git+${entry.repositoryUrl}.git#${oldCommit}` }
-  const harness = createDesktopHarness({ catalog: desktopCatalog([entry]), installed: [installed],
-    removeResult: { application: 'restart-required', changed: true, stage: 'remove', target: entry.packageName },
-    retainInstalledAfterRemove: true,
-    installResult: { application: 'failed', changed: false, stage: 'install', target: entry.packageName,
-      error: { code: 'incompatible-version' } } })
-  await harness.ready
-  await harness.render()
-  await harness.runEffects(harness.getComponent('DesktopStorePanel'))
-  let tree = await waitForDesktopTree(harness, value => desktopText(value).includes(entry.packageName))
-  desktopNodes(tree).find(node => node.type === 'button' && node.children?.includes('æ›´æ–°')).props.onClick()
-  tree = await harness.render()
-  const confirmation = `UPDATE ${entry.packageName} ${desktopCommit}`
-  desktopNodes(tree).find(node => node.type === 'input' && node.props.placeholder === confirmation)
-    .props.onChange({ target: { value: confirmation } })
-  tree = await harness.render()
-  await desktopNodes(tree).find(node => node.type === 'button' && node.children?.includes('ç¡®è®¤å¹¶æ›´æ–°')).props.onClick()
-  tree = await waitForDesktopTree(harness, value => desktopText(value).includes('æ“ä½œæœªå®Œæˆï¼ˆincompatible-versionï¼‰'))
-  assert.match(desktopText(tree), new RegExp(`æ—§å›ºå®š Commit ${oldCommit} ä¿ç•™`))
-  assert.equal(harness.calls.installBundle.length, 1)
-  assert.deepEqual(harness.calls.removeBundle, [entry.packageName])
-  assert.equal(harness.calls.waitForInstall.length, 0)
-})
-
-test('a definite target failure restores the prior fixed source through DSH and reports its reload result', async () => {
-  const entry = desktopEntry({ id: 'dsh-update-restore', packageName: '@acme/dsh-update-restore', commit: desktopCommit })
-  const oldCommit = 'b'.repeat(40)
-  const installed = { name: entry.packageName, official: false, installed: true, removable: true,
-    enabled: true, version: '1.0.0', source: `git+${entry.repositoryUrl}.git#${oldCommit}` }
-  const targetSpec = `git+${entry.repositoryUrl}.git#${desktopCommit}`
-  const oldSpec = installed.source
-  const harness = createDesktopHarness({ catalog: desktopCatalog([entry]), installed: [installed],
-    installResult: spec => spec === targetSpec
-      ? { application: 'failed', changed: false, stage: 'install', error: { code: 'TARGET_COMMIT_REFUSED' } }
-      : { application: 'restart-required', changed: true, stage: 'install' },
-    installedAfterInstallResult: [] })
-  await harness.ready
-  await harness.render()
-  await harness.runEffects(harness.getComponent('DesktopStorePanel'))
-  let tree = await waitForDesktopTree(harness, value => desktopText(value).includes(entry.packageName))
-  desktopNodes(tree).find(node => node.type === 'button' && node.children?.includes('æ›´æ–°')).props.onClick()
-  tree = await harness.render()
-  const confirmation = `UPDATE ${entry.packageName} ${desktopCommit}`
-  desktopNodes(tree).find(node => node.type === 'input' && node.props.placeholder === confirmation)
-    .props.onChange({ target: { value: confirmation } })
-  tree = await harness.render()
-  await desktopNodes(tree).find(node => node.type === 'button' && node.children?.includes('ç¡®è®¤å¹¶æ›´æ–°')).props.onClick()
-  tree = await waitForDesktopTree(harness, value => desktopText(value).includes('DSH å·²æŽ¥å—æ¢å¤æ—§å›ºå®š Commit'))
-  assert.deepEqual(harness.calls.installBundle.map(call => call.spec), [targetSpec, oldSpec])
-  assert.match(desktopText(tree), new RegExp(`æ—§å›ºå®š Commit ${oldCommit}ï¼Œéœ€æŒ‰ DSH æµç¨‹é‡è½½`))
-  assert.equal(harness.calls.waitForInstall.length, 0)
-})
-
-test('an uncertain update result is reconciled once and never resubmitted or rolled back blindly', async () => {
-  const entry = desktopEntry({ id: 'dsh-update-unknown', packageName: '@acme/dsh-update-unknown', commit: desktopCommit })
-  const oldCommit = 'b'.repeat(40)
-  const installed = { name: entry.packageName, official: false, installed: true, removable: true,
-    enabled: true, version: '1.0.0', source: `git+${entry.repositoryUrl}.git#${oldCommit}` }
-  const harness = createDesktopHarness({ catalog: desktopCatalog([entry]), installed: [installed],
-    installResult: async () => { const error = new Error('result unavailable'); error.code = 'DESKTOP_INSTALL_TIMEOUT'; throw error } })
-  await harness.ready
-  await harness.render()
-  await harness.runEffects(harness.getComponent('DesktopStorePanel'))
-  let tree = await waitForDesktopTree(harness, value => desktopText(value).includes(entry.packageName))
-  desktopNodes(tree).find(node => node.type === 'button' && node.children?.includes('æ›´æ–°')).props.onClick()
-  tree = await harness.render()
-  const confirmation = `UPDATE ${entry.packageName} ${desktopCommit}`
-  desktopNodes(tree).find(node => node.type === 'input' && node.props.placeholder === confirmation)
-    .props.onChange({ target: { value: confirmation } })
-  tree = await harness.render()
-  await desktopNodes(tree).find(node => node.type === 'button' && node.children?.includes('ç¡®è®¤å¹¶æ›´æ–°')).props.onClick()
-  tree = await waitForDesktopTree(harness, value => desktopText(value).includes('æ“ä½œç»“æžœæš‚æ—¶æ— æ³•ç¡®è®¤'))
-  assert.equal(harness.calls.installBundle.length, 1)
-  assert.deepEqual(harness.calls.removeBundle, [entry.packageName])
-  assert.equal(harness.calls.waitForInstall.length, 1)
-})
-
-test('DSH restart-required update result is accepted while its installed inventory is still catching up', async () => {
-  const entry = desktopEntry({ id: 'dsh-update-restart', packageName: '@acme/dsh-update-restart', commit: desktopCommit })
-  const oldCommit = 'b'.repeat(40)
-  const installed = { name: entry.packageName, official: false, installed: true, removable: true,
-    enabled: true, version: '1.0.0', source: `git+${entry.repositoryUrl}.git#${oldCommit}` }
-  const harness = createDesktopHarness({ catalog: desktopCatalog([entry]), installed: [installed],
-    removeResult: { application: 'restart-required', changed: true, stage: 'remove', target: entry.packageName },
-    retainInstalledAfterRemove: true,
-    installResult: { application: 'restart-required', changed: true, stage: 'install', target: entry.packageName },
-    installedAfterInstallResult: [installed] })
-  await harness.ready
-  await harness.render()
-  await harness.runEffects(harness.getComponent('DesktopStorePanel'))
-  let tree = await waitForDesktopTree(harness, value => desktopText(value).includes(entry.packageName))
-  desktopNodes(tree).find(node => node.type === 'button' && node.children?.includes('æ›´æ–°')).props.onClick()
-  tree = await harness.render()
-  const confirmation = `UPDATE ${entry.packageName} ${desktopCommit}`
-  desktopNodes(tree).find(node => node.type === 'input' && node.props.placeholder === confirmation)
-    .props.onChange({ target: { value: confirmation } })
-  tree = await harness.render()
-  await desktopNodes(tree).find(node => node.type === 'button' && node.children?.includes('ç¡®è®¤å¹¶æ›´æ–°')).props.onClick()
-  tree = await waitForDesktopTree(harness, value => desktopText(value).includes('æ“ä½œå·²å†™å…¥ Desktop Profile'))
-  assert.equal(harness.calls.installBundle.length, 1)
-  assert.deepEqual(harness.calls.removeBundle, [entry.packageName])
-  assert.equal(harness.calls.waitForInstall.length, 0)
-})
-
-test('DSH refusal to remove an installed bundle prevents the update install request', async () => {
-  const entry = desktopEntry({ id: 'dsh-update-remove-refused', packageName: '@acme/dsh-update-remove-refused', commit: desktopCommit })
-  const oldCommit = 'b'.repeat(40)
-  const installed = { name: entry.packageName, official: false, installed: true, removable: true,
-    enabled: true, version: '1.0.0', source: `git+${entry.repositoryUrl}.git#${oldCommit}` }
-  const harness = createDesktopHarness({ catalog: desktopCatalog([entry]), installed: [installed],
-    removeResult: { application: 'failed', changed: false, stage: 'remove', target: entry.packageName,
-      error: { code: 'PACKAGE_REMOVE_REFUSED' } } })
-  await harness.ready
-  await harness.render()
-  await harness.runEffects(harness.getComponent('DesktopStorePanel'))
-  let tree = await waitForDesktopTree(harness, value => desktopText(value).includes(entry.packageName))
-  desktopNodes(tree).find(node => node.type === 'button' && node.children?.includes('æ›´æ–°')).props.onClick()
-  tree = await harness.render()
-  const confirmation = `UPDATE ${entry.packageName} ${desktopCommit}`
-  desktopNodes(tree).find(node => node.type === 'input' && node.props.placeholder === confirmation)
-    .props.onChange({ target: { value: confirmation } })
-  tree = await harness.render()
-  await desktopNodes(tree).find(node => node.type === 'button' && node.children?.includes('ç¡®è®¤å¹¶æ›´æ–°')).props.onClick()
-  tree = await waitForDesktopTree(harness, value => desktopText(value).includes('PACKAGE_REMOVE_REFUSED'))
-  assert.equal(harness.calls.installBundle.length, 0)
-  assert.deepEqual(harness.calls.removeBundle, [entry.packageName])
-})
-
-test('Desktop hides the update action when the installed source already matches the fixed Commit', async () => {
-  const entry = desktopEntry({ id: 'dsh-already-current', packageName: '@acme/dsh-already-current', commit: desktopCommit })
-  const installed = { name: entry.packageName, official: false, installed: true, removable: true,
-    enabled: true, version: entry.version, source: `git+${entry.repositoryUrl}.git#${desktopCommit}` }
-  const harness = createDesktopHarness({ catalog: desktopCatalog([entry]), installed: [installed] })
-  await harness.ready
-  await harness.render()
-  await harness.runEffects(harness.getComponent('DesktopStorePanel'))
-  const tree = await waitForDesktopTree(harness, value => desktopText(value).includes(entry.packageName))
-  const card = desktopNodes(tree).find(node => node.type === 'article' && desktopText(node).includes(entry.packageName))
-  const update = desktopNodes(card).find(node => node.type === 'button' && node.children?.includes('æ›´æ–°'))
-  assert.ok(update)
-  assert.equal(update.props.disabled, true)
-  assert.match(update.props.title, /å½“å‰å›ºå®š Commit/)
-  assert.equal(harness.calls.installBundle.length, 0)
-})
-
-test('a changed Desktop installation invalidates the update confirmation before any package request', async () => {
-  const entry = desktopEntry({ id: 'dsh-update-stale', packageName: '@acme/dsh-update-stale', commit: desktopCommit })
-  const oldCommit = 'b'.repeat(40)
-  const installed = { name: entry.packageName, official: false, installed: true, removable: true,
-    enabled: true, version: '1.0.0', source: `git+${entry.repositoryUrl}.git#${oldCommit}` }
-  const alreadyUpdated = { ...installed, version: entry.version, source: `git+${entry.repositoryUrl}.git#${desktopCommit}` }
-  const harness = createDesktopHarness({ catalog: desktopCatalog([entry]), installed: [installed] })
-  await harness.ready
-  await harness.render()
-  await harness.runEffects(harness.getComponent('DesktopStorePanel'))
-  let tree = await waitForDesktopTree(harness, value => desktopText(value).includes(entry.packageName))
-  desktopNodes(tree).find(node => node.type === 'button' && node.children?.includes('æ›´æ–°')).props.onClick()
-  tree = await harness.render()
-  const confirmation = `UPDATE ${entry.packageName} ${desktopCommit}`
-  desktopNodes(tree).find(node => node.type === 'input' && node.props.placeholder === confirmation)
-    .props.onChange({ target: { value: confirmation } })
-  tree = await harness.render()
-  harness.setInstalledBundles([alreadyUpdated])
-  await desktopNodes(tree).find(node => node.type === 'button' && node.children?.includes('ç¡®è®¤å¹¶æ›´æ–°')).props.onClick()
-  tree = await waitForDesktopTree(harness, value => desktopText(value).includes('CATALOG_OR_PROFILE_STATE_CHANGED'))
-  assert.equal(harness.calls.installBundle.length, 0)
-})
-
-test('Desktop installBundle remains available when the optional inspect method is absent', async () => {
-  const entry = desktopEntry({ id: 'dsh-no-inspect', packageName: '@acme/dsh-no-inspect', commit: desktopCommit })
-  const harness = createDesktopHarness({ catalog: desktopCatalog([entry]), inspectAvailable: false })
-  await harness.ready
-  await harness.render()
-  await harness.runEffects(harness.getComponent('DesktopStorePanel'))
-  let tree = await waitForDesktopTree(harness, value => desktopText(value).includes(entry.packageName))
-  desktopNodes(tree).find(node => node.type === 'button' && node.children?.includes('å®‰è£…')).props.onClick()
-  tree = await harness.render()
-  const confirmation = `INSTALL ${entry.packageName} ${desktopCommit}`
-  desktopNodes(tree).find(node => node.type === 'input' && node.props.placeholder === confirmation)
-    .props.onChange({ target: { value: confirmation } })
-  tree = await harness.render()
-  await desktopNodes(tree).find(node => node.type === 'button' && node.children?.includes('ç¡®è®¤å¹¶å®‰è£…')).props.onClick()
-  tree = await waitForDesktopTree(harness, value => desktopText(value).includes('DSH å®˜æ–¹æ’ä»¶ç®¡ç†å™¨å·²å®Œæˆå®‰è£…'))
-  assert.equal(harness.calls.inspect.length, 0)
-  assert.equal(harness.calls.installBundle.length, 1)
-})
-
-test('official Desktop installs an approved plugin without Desktop adaptation when its manager accepts it', async () => {
-  const entry = desktopEntry({ id: 'dsh-host-only', packageName: '@acme/dsh-host-only', commit: desktopCommit,
-    compatibility: 'unknown', profiles: ['web'] })
-  const harness = createDesktopHarness({ catalog: desktopCatalog([entry]) })
-  await harness.ready
-  await harness.render()
-  await harness.runEffects(harness.getComponent('DesktopStorePanel'))
-  let tree = await waitForDesktopTree(harness, value => desktopText(value).includes(entry.packageName))
-  const card = desktopNodes(tree).find(node => node.type === 'article' && desktopText(node).includes(entry.packageName))
-  assert.ok(card)
-  assert.match(desktopText(card), /DSH Desktop å®¢æˆ·ç«¯ï¼šæœªå£°æ˜Žé€‚é…/)
-  const install = desktopNodes(card).find(node => node.type === 'button' && node.children?.includes('å®‰è£…'))
-  assert.ok(install)
-  assert.equal(install.props.disabled, false)
-  install.props.onClick()
-  tree = await harness.render()
-  const confirmation = `INSTALL ${entry.packageName} ${entry.commit}`
-  const input = desktopNodes(tree).find(node => node.type === 'input' && node.props.placeholder === confirmation)
-  assert.ok(input)
-  input.props.onChange({ target: { value: confirmation } })
-  tree = await harness.render()
-  const confirm = desktopNodes(tree).find(node => node.type === 'button' && node.children?.includes('ç¡®è®¤å¹¶å®‰è£…'))
-  assert.ok(confirm)
-  await confirm.props.onClick()
-  tree = await waitForDesktopTree(harness, value => desktopText(value).includes('DSH å®˜æ–¹æ’ä»¶ç®¡ç†å™¨å·²å®Œæˆå®‰è£…'))
-  assert.equal(harness.calls.inspect.length, 1)
-  assert.equal(harness.calls.inspect[0], `git+${entry.repositoryUrl}.git#${desktopCommit}`)
-  assert.equal(harness.calls.installBundle.length, 1)
-  assert.equal(harness.calls.installBundle[0].spec, harness.calls.inspect[0])
-  assert.equal(harness.calls.installBundle[0].options.enabled, true)
-})
-
-test('official Desktop starts, closes, and uninstalls only the matching Catalog bundle through pluginManager', async () => {
-  const entry = desktopEntry({ id: 'dsh-managed', packageName: '@acme/dsh-managed', commit: desktopCommit,
-    compatibility: 'incompatible', profiles: ['web'] })
-  const oldCommit = 'b'.repeat(40)
-  const harness = createDesktopHarness({
-    catalog: desktopCatalog([entry]),
-    installed: [{ name: entry.packageName, official: false, installed: true, removable: true, enabled: true,
-      version: '1.0.0', source: `git+${entry.repositoryUrl}.git#${oldCommit}` }],
-  })
-  await harness.ready
-  await harness.render()
-  await harness.runEffects(harness.getComponent('DesktopStorePanel'))
-  let tree = await waitForDesktopTree(harness, value => desktopText(value).includes('Name dsh-managed'))
-  const managedCard = desktopNodes(tree).find(node => node.type === 'article' && desktopText(node).includes(entry.packageName))
-  assert.ok(managedCard)
-  assert.equal(desktopNodes(managedCard).some(node => node.type === 'button' && node.children?.includes('æ›´æ–°')), true,
-    'a changed Catalog Commit is sent through DSH installBundle after confirmation')
-
-  const runConfirmed = async (buttonName, token, successText) => {
-    const button = desktopNodes(tree).find(node => node.type === 'button' && node.children?.includes(buttonName))
-    assert.ok(button, `${buttonName} button is available`)
-    button.props.onClick()
-    tree = await harness.render()
-    assert.match(desktopText(tree), new RegExp(token.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')))
-    const input = desktopNodes(tree).find(node => node.type === 'input' && node.props.placeholder === token)
-    assert.ok(input)
-    input.props.onChange({ target: { value: token } })
-    tree = await harness.render()
-    const confirm = desktopNodes(tree).find(node => node.type === 'button' && node.children?.includes('ç¡®è®¤å¹¶' + buttonName))
-    assert.ok(confirm)
-    await confirm.props.onClick()
-    tree = await waitForDesktopTree(harness, value => desktopText(value).includes(successText))
-  }
-
-  await runConfirmed('å…³é—­', `CLOSE ${entry.packageName} ${desktopCommit}`, 'DSH å®˜æ–¹æ’ä»¶ç®¡ç†å™¨å·²å®Œæˆå…³é—­')
-  assert.deepEqual(harness.calls.setBundleEnabled.at(-1), { name: entry.packageName, enabled: false })
-
-  const finishClose = desktopNodes(tree).find(node => node.type === 'button' && node.children?.includes('å®Œæˆ'))
-  finishClose.props.onClick()
-  tree = await waitForDesktopTree(harness, value => desktopNodes(value)
-    .some(node => node.type === 'button' && node.children?.includes('å¯åŠ¨')))
-  assert.ok(desktopNodes(tree).some(node => node.type === 'button' && node.children?.includes('å¯åŠ¨')))
-  await runConfirmed('å¯åŠ¨', `START ${entry.packageName} ${desktopCommit}`, 'DSH å®˜æ–¹æ’ä»¶ç®¡ç†å™¨å·²å®Œæˆå¯åŠ¨')
-  assert.deepEqual(harness.calls.setBundleEnabled.at(-1), { name: entry.packageName, enabled: true })
-
-  const finishStart = desktopNodes(tree).find(node => node.type === 'button' && node.children?.includes('å®Œæˆ'))
-  finishStart.props.onClick()
-  tree = await waitForDesktopTree(harness, value => desktopNodes(value)
-    .some(node => node.type === 'button' && node.children?.includes('å¸è½½')))
-  await runConfirmed('å¸è½½', `REMOVE ${entry.packageName} ${desktopCommit}`, 'DSH å®˜æ–¹æ’ä»¶ç®¡ç†å™¨å·²å®Œæˆå¸è½½')
-  assert.deepEqual(harness.calls.removeBundle, [entry.packageName])
-  assert.equal(harness.calls.installBundle.length, 0)
-  assert.equal(harness.calls.setBundleEnabled.length, 2)
-})
-
-test('official Desktop keeps lifecycle operations disabled when an installed package source differs from the Catalog', async () => {
-  const entry = desktopEntry({ id: 'dsh-source-mismatch', packageName: '@acme/dsh-source-mismatch', commit: desktopCommit })
-  const harness = createDesktopHarness({
-    catalog: desktopCatalog([entry]),
-    installed: [{ name: entry.packageName, official: false, installed: true, removable: true, enabled: true,
-      version: '1.0.0', source: `git+https://github.com/other-owner/other-repo.git#${'b'.repeat(40)}` }],
-  })
-  await harness.ready
-  await harness.render()
-  await harness.runEffects(harness.getComponent('DesktopStorePanel'))
-  const tree = await waitForDesktopTree(harness, value => desktopText(value).includes('Name dsh-source-mismatch'))
-  const card = desktopNodes(tree).find(node => node.type === 'article' && desktopText(node).includes(entry.packageName))
-  assert.ok(card)
-  assert.match(desktopText(card), /å·²å®‰è£…æ¥æºä¸Žå•†åŸŽè®°å½•ä¸ä¸€è‡´/)
-  for (const label of ['å…³é—­', 'å¸è½½']) {
-    const button = desktopNodes(card).find(node => node.type === 'button' && node.children?.includes(label))
-    assert.ok(button, `${label} remains visible in the card`)
-    assert.equal(button.props.disabled, true)
-  }
-  const details = desktopNodes(card).find(node => node.type === 'button' && node.children?.includes('æŸ¥çœ‹è¯¦æƒ…'))
-  details.props.onClick()
-  const detailTree = await harness.render()
-  assert.match(desktopText(detailTree), /æ¥æºä¸Ž Catalog ä»“åº“ä¸ä¸€è‡´ï¼Œå•†åŸŽä¸ä¼šç®¡ç†/)
-  for (const label of ['å…³é—­', 'å¸è½½']) {
-    const button = desktopNodes(detailTree).find(node => node.type === 'button' && node.children?.includes(label))
-    assert.ok(button, label + ' remains visible in details')
-    assert.equal(button.props.disabled, true)
-    assert.equal(button.props.onClick, undefined)
-  }
-  assert.equal(harness.calls.installBundle.length, 0)
-  assert.equal(harness.calls.removeBundle.length, 0)
-  assert.equal(harness.calls.setBundleEnabled.length, 0)
-})
-
-test('official Desktop fails closed for malformed Catalog data and oversized response headers', async () => {
-  const malformed = desktopEntry({ id: 'bad-entry', packageName: '@acme/bad-entry', commit: desktopCommit })
-  malformed.categories = 'tools'
-  const malformedHarness = createDesktopHarness({ catalog: desktopCatalog([malformed]) })
-  await malformedHarness.ready
-  await malformedHarness.render()
-  await malformedHarness.runEffects(malformedHarness.getComponent('DesktopStorePanel'))
-  const malformedTree = await waitForDesktopTree(malformedHarness, value => desktopText(value).includes('CATALOG_ENTRY_0_CATEGORIES_INVALID'))
-  assert.match(desktopText(malformedTree), /CATALOG_ENTRY_0_CATEGORIES_INVALID/)
-  assert.equal(desktopNodes(malformedTree).some(node => node.type === 'button' && node.children?.includes('å®‰è£…')), false)
-
-  const missingProfiles = desktopEntry({ id: 'missing-profiles', packageName: '@acme/missing-profiles', commit: desktopCommit })
-  missingProfiles.compatibility.profiles = null
-  const missingProfilesHarness = createDesktopHarness({ catalog: desktopCatalog([missingProfiles]) })
-  await missingProfilesHarness.ready
-  await missingProfilesHarness.render()
-  await missingProfilesHarness.runEffects(missingProfilesHarness.getComponent('DesktopStorePanel'))
-  const profilesTree = await waitForDesktopTree(missingProfilesHarness, value => desktopText(value).includes('CATALOG_ENTRY_0_PROFILES_INVALID'))
-  assert.match(desktopText(profilesTree), /CATALOG_ENTRY_0_PROFILES_INVALID/)
-  assert.equal(desktopNodes(profilesTree).some(node => node.type === 'button' && node.children?.includes('å®‰è£…')), false)
-
-  const oversizedHarness = createDesktopHarness({
-    responseFactory: async () => ({ ok: true, url: desktopCatalogUrl,
-      headers: { get: name => name === 'content-length' ? String(4 * 1024 * 1024 + 1) : null },
-      body: { getReader: () => { throw new Error('must reject before reading') } },
-    }),
-  })
-  await oversizedHarness.ready
-  await oversizedHarness.render()
-  await oversizedHarness.runEffects(oversizedHarness.getComponent('DesktopStorePanel'))
-  const oversizedTree = await waitForDesktopTree(oversizedHarness, value => desktopText(value).includes('DESKTOP_CATALOG_TOO_LARGE'))
-  assert.match(desktopText(oversizedTree), /DESKTOP_CATALOG_TOO_LARGE/)
-  assert.equal(oversizedHarness.calls.listBundles, 1)
-  assert.equal(desktopNodes(oversizedTree).some(node => node.type === 'button' && node.children?.includes('å®‰è£…')), false)
-})
-
-test('Desktop does not label a mismatched website index as the complete directory', async () => {
-  const entry = desktopEntry({ id: 'catalog-index-drift', packageName: '@acme/catalog-index-drift', commit: desktopCommit })
-  const catalog = desktopCatalog([entry])
-  const directoryDocuments = desktopDirectoryDocuments(catalog)
-  directoryDocuments.catalogIndex.entries[0].nameZh = 'X'.repeat(directoryDocuments.catalogIndex.entries[0].nameZh.length)
-  directoryDocuments.catalogIndexRaw = JSON.stringify(directoryDocuments.catalogIndex)
-  const harness = createDesktopHarness({ catalog, directoryDocuments })
-  await harness.ready
-  await harness.render()
-  await harness.runEffects(harness.getComponent('DesktopStorePanel'))
-  const tree = await waitForDesktopTree(harness, value => desktopText(value).includes('DESKTOP_CATALOG_INDEX_INTEGRITY_MISMATCH'))
-  assert.match(desktopText(tree), /å…¨éƒ¨å·²çŸ¥æ’ä»¶ Â· æš‚ä¸å¯ç”¨/)
-  assert.match(desktopText(tree), /ä¸‹æ–¹ä»…æ˜¾ç¤º Catalog å›žé€€è®°å½•ï¼Œæœç´¢ç»“æžœä¸ä»£è¡¨å…¨éƒ¨æ’ä»¶/)
-  assert.equal(desktopNodes(tree).some(node => node.type === 'article'), true,
-    'Catalog fallback remains readable without being called the complete directory')
-  assert.equal(harness.calls.installBundle.length, 0)
-})
-
-test('current trusted Registry Catalog is accepted by the Desktop reader', async () => {
-  const catalog = JSON.parse(await readFile(new URL('../registry/catalog.json', import.meta.url), 'utf8'))
-  const catalogIndexRaw = await readFile(new URL('../registry/catalog-index.json', import.meta.url), 'utf8')
-  const catalogIndex = JSON.parse(await readFile(new URL('../registry/catalog-index.json', import.meta.url), 'utf8'))
-  const discovery = JSON.parse(await readFile(new URL('../registry/discovery-index.json', import.meta.url), 'utf8'))
-  const candidates = JSON.parse(await readFile(new URL('../registry/candidates.json', import.meta.url), 'utf8'))
-  const expectedDirectory = createKnownPluginDirectory(catalogIndex.entries, candidates.entries, { discoveryIndex: discovery })
-  const catalogIndexById = new Map(catalogIndex.entries.map(entry => [entry.id, entry]))
-  const expectedDirectoryStatusCount = status => expectedDirectory.filter(entry => entry.collectedBy
-    && catalogIndexById.get(entry.collectedBy)?.status === status).length
-  const expectedApproved = catalog.entries.filter(entry => entry.status === 'approved').length
-  const expectedBlocked = catalog.entries.filter(entry => entry.status === 'blocked').length
-  const harness = createDesktopHarness({ catalog, directoryDocuments: { catalogIndex, catalogIndexRaw, discovery, candidates } })
-  await harness.ready
-  await harness.render()
-  await harness.runEffects(harness.getComponent('DesktopStorePanel'))
-  let tree = await waitForDesktopTree(harness, value => desktopText(value).includes(`å…¨éƒ¨å·²çŸ¥æ’ä»¶ Â· ${expectedDirectory.length}`))
-  const text = desktopText(tree)
-  assert.match(text, new RegExp(`å…¨éƒ¨å·²çŸ¥æ’ä»¶ Â· ${expectedDirectory.length}`))
-  assert.match(text, new RegExp(`Catalog æœ‰è®°å½• Â· ${expectedDirectory.filter(entry => entry.collected).length}`))
-  assert.match(text, new RegExp(`Catalog æœªæ”¶å½• Â· ${expectedDirectory.filter(entry => !entry.collected).length}`))
-  assert.match(text, new RegExp(`Catalog å®¡æ ¸è®°å½• Â· ${catalog.entries.filter(entry => entry.status !== 'unlisted').length}`))
-  assert.match(text, new RegExp(`Catalog å·²å®¡æ ¸ Â· ${expectedDirectoryStatusCount('approved')}`))
-  assert.match(text, new RegExp(`Catalog å·²æ‹¦æˆª Â· ${expectedDirectoryStatusCount('blocked')}`))
-  const categoryOptions = desktopNodes(tree).find(node => node.type === 'select' && node.props?.['aria-label'] === 'æŒ‰åˆ†ç±»ç­›é€‰')
-    .children.flat(Infinity).filter(node => node?.type === 'option')
-  const expectedCategoryCount = new Set(expectedDirectory.flatMap(entry => entry.categories || [])).size
-  assert.equal(categoryOptions.length, expectedCategoryCount + 1)
-  const firstPageCardCount = desktopNodes(tree).filter(node => node.type === 'article').length
-  const expectedPageCount = Math.ceil(expectedDirectory.length / firstPageCardCount)
-  assert.match(text, new RegExp(`${expectedPageCount} é¡µ`))
-  const viewport = desktopNodes(tree).find(node => node.props?.['aria-label'] === 'å…¨éƒ¨å·²çŸ¥æ’ä»¶ç»“æžœ')
-  assert.equal(viewport.props.style.overflow, 'visible')
-  const root = desktopNodes(tree).find(node => node.type === 'section' && node.props?.['aria-label'].startsWith('æ’ä»¶å•†åŸŽï¼ˆDSH-Storeï¼‰'))
-  assert.equal(root.props.style.overflowY, 'auto')
-  assert.equal(expectedApproved, 33)
-  assert.equal(expectedBlocked, 746)
-  const nextPage = desktopNodes(tree).find(node => node.type === 'button' && node.props?.['aria-label'] === 'ä¸‹ä¸€é¡µ')
-  assert.ok(nextPage)
-  assert.equal(nextPage.props.disabled, false)
-  nextPage.props.onClick()
-  tree = await harness.render()
-  assert.match(desktopText(tree), new RegExp(`2 \/ ${expectedPageCount} é¡µ`))
-  const expectedDesktop = catalog.entries.filter(entry => entry.status !== 'unlisted' && entry.compatibility?.profiles?.includes('desktop')).length
-  assert.ok(expectedDesktop > 0)
-  const search = desktopNodes(tree).find(node => node.type === 'input' && node.props['aria-label'] === 'æœç´¢å…¨éƒ¨å·²çŸ¥æ’ä»¶')
-  assert.ok(search)
-  const farRow = discovery.entries.at(-1)
-  search.props.onChange({ target: { value: farRow.sourceId } })
-  const searchedPublic = await harness.render()
-  const publicMatches = desktopNodes(searchedPublic).filter(node => node.type === 'article')
-  assert.equal(publicMatches.length, 1)
-  assert.ok(desktopText(publicMatches[0]).includes(farRow.sourceId))
-  const expectedFarRow = expectedDirectory.find(entry => entry.sourceId === farRow.sourceId)
-  const category = desktopNodes(searchedPublic).find(node => node.type === 'select' && node.props?.['aria-label'] === 'æŒ‰åˆ†ç±»ç­›é€‰')
-  assert.ok(category)
-  category.props.onChange({ target: { value: expectedFarRow.categories[0] } })
-  const categoryFiltered = await harness.render()
-  assert.match(desktopText(categoryFiltered), /1 æ¡ç»“æžœ/)
-  const sort = desktopNodes(categoryFiltered).find(node => node.type === 'select' && node.props?.['aria-label'] === 'æŽ’åºæ–¹å¼')
-  sort.props.onChange({ target: { value: 'stars' } })
-  assert.match(desktopText(await harness.render()), /1 æ¡ç»“æžœ/)
-  const listedFilter = desktopNodes(searchedPublic).find(node => node.type === 'button'
-    && String(node.children?.[0] || node.children).startsWith('Catalog æœªæ”¶å½• Â· '))
-  assert.ok(listedFilter)
-  listedFilter.props.onClick()
-  const listingFiltered = await harness.render()
-  assert.match(desktopText(listingFiltered), expectedFarRow.collected ? /0 æ¡ç»“æžœ/ : /1 æ¡ç»“æžœ/)
-  const clearDirectoryFilters = desktopNodes(listingFiltered).find(node => node.type === 'button'
-    && node.children?.includes('æ¸…é™¤ç­›é€‰'))
-  assert.ok(clearDirectoryFilters)
-  clearDirectoryFilters.props.onClick()
-  const clearedDirectoryFilters = await harness.render()
-  const clearedSearch = desktopNodes(clearedDirectoryFilters).find(node => node.type === 'input'
-    && node.props['aria-label'] === 'æœç´¢å…¨éƒ¨å·²çŸ¥æ’ä»¶')
-  clearedSearch.props.onChange({ target: { value: 'build-dsh-plugin' } })
-  const searched = await harness.render()
-  const matches = desktopNodes(searched).filter(node => node.type === 'article')
-  assert.ok(matches.length >= 1)
-  const blockedPlugin = matches.find(node => desktopText(node).includes('dsh-build-plugin')
-    && desktopText(node).includes('Catalog å·²æ‹¦æˆª Â· DSH å¯æ£€æŸ¥'))
-  assert.ok(blockedPlugin)
-  const reviewFilter = desktopNodes(searched).find(node => node.type === 'select'
-    && node.props?.['aria-label'] === 'æŒ‰ DSH STORE å®¡æ ¸çŠ¶æ€ç­›é€‰')
-  reviewFilter.props.onChange({ target: { value: 'blocked' } })
-  const reviewFiltered = await harness.render()
-  assert.equal(desktopNodes(reviewFiltered).filter(node => node.type === 'article').length, 1)
-  assert.match(desktopText(blockedPlugin), /build-dsh-plugin/)
-  const handoff = desktopNodes(blockedPlugin).find(node => node.type === 'button' && node.children?.includes('äº¤ç”± DSH æ£€æŸ¥å®‰è£…'))
-  assert.ok(handoff)
-  assert.equal(handoff.props.disabled, false)
-  assert.equal(harness.requests[0].url, desktopCatalogUrl)
-  assert.ok(harness.directoryRequests.some(request => request.url === desktopCatalogIndexUrl))
-  assert.ok(harness.directoryRequests.some(request => request.url === desktopDiscoveryUrl))
-  assert.ok(harness.directoryRequests.some(request => request.url === desktopCandidatesUrl))
-})
-
-test('website SEO and LLM guidance separates Desktop adaptation labels from installation', async () => {
-  const home = await readFile(new URL('../marketplace/index.html', import.meta.url), 'utf8')
-  const directory = await readFile(new URL('../marketplace/plugins/index.html', import.meta.url), 'utf8')
-  const buildPage = await readFile(new URL('../marketplace/build/index.html', import.meta.url), 'utf8')
-  const buildScript = await readFile(new URL('../marketplace/build/build.js', import.meta.url), 'utf8')
-  const llms = await readFile(new URL('../marketplace/llms.txt', import.meta.url), 'utf8')
-  assert.match(home, /DSH STORE å·²é€‚é… DSH å®˜æ–¹æ¡Œé¢ç«¯/)
-  assert.match(home, /DSH Desktop å®˜æ–¹æ’ä»¶ç®¡ç†å™¨/)
-  assert.match(home, /DSH Desktop å†…é€šè¿‡ DSH STORE æŸ¥çœ‹å’Œç®¡ç†å·²å®¡æ ¸æ¡ç›®/)
-  assert.match(home, /"name": "DSH STORE â€” DSH Desktop Plugin Marketplace"/)
-  assert.match(directory, /client-adaptation labels do not gate installation/)
-  assert.match(directory, /DSH Desktop å†…çš„ DSH STORE å¯æŸ¥çœ‹å’Œç®¡ç†å·²å®¡æ ¸æ’ä»¶/)
-  assert.match(buildPage, /user-confirmed fixed sources with Store review advice/)
-  assert.match(buildPage, /ç”¨ build-dsh-plugin ä¸º DSH Web æˆ–å®˜æ–¹ DSH Desktop è®¾è®¡å’ŒéªŒè¯æ’ä»¶/)
-  assert.match(buildScript, /å®¢æˆ·ç«¯é€‚é…æ ‡è¯†ä¸ä½œå®‰è£…é—¨æ§›/)
-  assert.match(buildScript, /Client-adaptation labels do not decide installation eligibility/)
-  assert.match(llms, /informational and does not decide installation eligibility/)
-  assert.match(llms, /user-confirmed fixed sources with Store review advice/)
-})
+ýK®Ïó†‹±‰ª&Šx?m«!¦ºŠW¥Šwµëõ,z»?Î.Æ&¨š)àþZj_ÛŠÞžóh²ç!~)^¢·b­ç-¢¼š[\Ü\ÜÙ\œ›ÛH	Û›ÙN˜\ÜÙ\ÜÝšXÝ	Âš[\ÜÈÜ™X]R\ÚÙX˜Üž\ÈHœ›ÛH	Û›ÙN˜Üž\ÉÂš[\ÜÈZÙ[\ZÙ\‹™XYš[K›KÜš]Qš[HHœ›ÛH	Û›ÙN™œËÜ›ÛZ\Ù\ÉÂš[\ÜÈ\\ˆHœ›ÛH	Û›ÙN›ÜÉÂš[\ÜÈ›Ú[ˆHœ›ÛH	Û›ÙNœ]	Âš[\ÜÈ™XYX›HHœ›ÛH	Û›ÙNœÝ™X[IÂš[\ÜÈ[’[“™]ÐÛÛ^Hœ›ÛH	Û›ÙN›IÂš[\Ü\Ýœ›ÛH	Û›ÙN\Ý	Âš[\ÜÈÜ™X]RÛ›ÝÛ”YÚ[‘\™XÝÜžHHœ›ÛH	Ë‹‹ÛX\šÙ]XÙKÛX‹ÜYÚ[‹Y\™XÝÜžKšœÉÂš[\ÜÈ˜[šÚ[™Ñ[šY\ÈHœ›ÛH	Ë‹‹ÛX\šÙ]XÙKÜ˜[šÚ[™ÜËÛ[Ù[šœÉÂš[\ÜÈ™\ÛÛ™RÜÝÜ[ÛœÈHœ›ÛH	Ë‹‹ÜÜ˜ËÚ[™^›ZœÉÂš[\ÜÈÜ™X]T[[YTÝ]\ÈHœ›ÛH	Ë‹‹ÜÜ˜ËÜ[[YK›ZœÉÂš[\ÜÂˆ[™Q^XÝ]T™\]Y\Ý[™QÝX\™X[‘^XÝ]T™\]Y\Ý[™QÝX\™X[”[”™\]Y\Ýˆ[™QÝX\™X[”™\]Y\Ý[™R[™[ÜžT™\]Y\Ý[™T[”™\]Y\Ýˆ[™T™\Ý\^XÝ]T™\]Y\Ý[™T™\Ý\[”™\]Y\Ý[™T[[YT™\]Y\ÝŸHœ›ÛH	Ë‹‹ÜÜ˜ËÜ[™[›ZœÉÂ‚™[˜Ý[Ûˆ™\]Y\Ý
+›ÙHHßK[[H[
+HÂˆÛÛœÝ™\HH™XYX›K™œ›ÛJÒ”ÓÓ‹œÝš[™ÚYžJ›ÙJWJBˆ™\K›Y]ÙH	ÔÔÕ	Âˆ™\KšXY\œÈHÂˆÜÝˆ	ÌLËŒŒŒN	ËÜšYÚ[Žˆ	Ú‹ËÌLËŒŒŒN	Ëˆ	ØÛÛ[]\IÎˆ	Ø\XØ][Û‹ÚœÛÛ‰Ëˆ‹‹Š[[ÈÈ	ÞYÚ\ØY™KZ[[	Îˆ[[HˆßJKˆBˆ™]\›ˆ™\BŸB‚™[˜Ý[Ûˆ™\ÜÛœÙJ
+HÂˆ™]\›ˆÂˆÝ]\Îˆ[›ÙNˆ	ÉËˆÜš]RXY
+Ý]\ÊHÈ\ËœÝ]\ÈHÝ]\ÈKˆ[™
+˜[YHH	ÉÊHÈ\Ë˜›ÙH
+ÏHÝš[™Ê˜[YJHKˆBŸB‚\Ý
+	ÛÙ™šXÚX[\ÚÝÜÛÛ^š[™È[™[ÜžHÈ\ÚÝÜ[™\ØX›\ÈÝÜ™H]]][ÛœÉË
+
+HOˆÂˆÛÛœÝÝHÈ›Ùš[PÛÛ^ˆÈ˜[YNˆ	Ù\ÚÝÜ	ËÛYNˆ	ËÙ\ÜÜØX›KÙÚZÛYIË[œÝ[[˜ÚÜŽˆ	ËÙ\ÜÜØX›KÜ[[YKÜXÚØYÙKšœÛÛ‰ÈHBˆÛÛœÝÜ[ÛœÈH™\ÛÛ™RÜÝÜ[ÛœÊÝÈY˜][›Ùš[Nˆ	ÝÙX‰ËÚÛYNˆ	ËÝÜ›Û™ËZÛYIË]]][ÛœÑ[˜X›YˆYHJBˆ\ÜÙ\™\]X[
+Ü[ÛœË™Y˜][›Ùš[K	Ù\ÚÝÜ	ÊBˆ\ÜÙ\™\]X[
+Ü[ÛœË™ÚÛYKÝœ›Ùš[PÛÛ^šÛYJBˆ\ÜÙ\™\]X[
+Ü[ÛœË™ÚX[šY™\Ý]Ýœ›Ùš[PÛÛ^š[œÝ[[˜ÚÜŠBˆ\ÜÙ\™\]X[
+Ü[ÛœË›]]][ÛœÑ[˜X›Y˜[ÙJBˆ\ÜÙ\™\]X[
+Ü[ÛœË™\ÚÝÜ[ÙKYJBˆ\ÜÙ\™\]X[
+Ü[ÛœË™ÚÛT][
+BˆÛÛœÝ[[YHHÜ™X]T[[YTÝ]\ÊÈ›Ùš[Nˆ	Ù\ÚÝÜ	Ë\ÚÝÜ[ÙNˆYK™\Ý\ÛÛ[X[™ˆ×HJBˆ\ÜÙ\™\]X[
+[[YKœ™\Ý\Ý\ÜY˜[ÙJBˆ\ÜÙ\™\]X[
+[[YKœ™\Ý\[ÙK	ÛÙ™šXÚX[Y\ÚÝÜ	ÊBˆ\ÜÙ\™Y\\]X[
+[[YKœ™\Ý\ÛÛ[X[™×JBŸJB‚\Ý
+	Ñ\ÚÝÜ™Z™XÝÈ]™\žHÝÜ™HÜš]H[™Ú[™Y›Ü™HØ[[™ÈH]]][ÛˆÙ\šXÙIË\Þ[˜È
+
+HOˆÂˆÛÛœÝ›Ü˜šY[ˆH
+
+HOˆÈ›ÝÈ™]È\œ›ÜŠ	Û]]][ÛˆÙ\šXÙH]\Ý›Ý[‰ÊHBˆÛÛœÝÜ[ÛœÈHÂˆ\ÚÝÜ[ÙNˆYKˆÜ\˜][Û”Ù\šXÙNˆÈÜ™X]T[Žˆ›Ü˜šY[‹Ý\ˆ›Ü˜šY[ˆKˆ™\Ý\Ù\šXÙNˆÈÜ™X]T[Žˆ›Ü˜šY[‹^XÝ]Nˆ›Ü˜šY[ˆKˆÝX\™X[”Ù\šXÙNˆÈÜ™X]R[œÝ[[Žˆ›Ü˜šY[‹^XÝ]R[œÝ[ˆ›Ü˜šY[ˆKˆBˆÛÛœÝ[™Ú[ÈHÂˆÚ[™T[”™\]Y\Ý	Ü[‰×KÚ[™Q^XÝ]T™\]Y\Ý	Ù^XÝ]I×KˆÚ[™T™\Ý\[”™\]Y\Ý	Ü™\Ý\\[‰×KÚ[™T™\Ý\^XÝ]T™\]Y\Ý	Ü™\Ý\Y^XÝ]I×KˆÚ[™QÝX\™X[”[”™\]Y\Ý	ÙÝX\™X[‹\[‰×KÚ[™QÝX\™X[‘^XÝ]T™\]Y\Ý	ÙÝX\™X[‹Y^XÝ]I×KˆBˆ›Üˆ
+ÛÛœÝÚ[™\‹[[HÙˆ[™Ú[ÊHÂˆÛÛœÝ™\ÈH™\ÜÛœÙJ
+Bˆ]ØZ][™\Š™\]Y\Ý
+È›Ùš[Nˆ	ÝÙX‰ÈK[[
+K™\ËÜ[ÛœÊBˆ\ÜÙ\™\]X[
+™\ËœÝ]\ËJBˆ\ÜÙ\™\]X[
+”ÓÓ‹œ\œÙJ™\Ë˜›ÙJK™\œ›Ü‹˜ÛÙK	ÑTÒÕÔÓUUUSÓ—ÕS”ÕTÔ•Q	ÊBˆBŸJB‚\Ý
+	Ñ\ÚÝÜ[™[ÜžH™XYÈ]ÈÝÛˆ›Ùš[H[™™Y\Ù\ÈH›Ü™ÙYÙXˆ›Ùš[IË\Þ[˜È
+
+HOˆÂˆÛÛœÝ›ÛÝH]ØZ]ZÙ[\
+›Ú[Š\\Š
+K	ÙÚ\ÝÜ™KY\ÚÝÜIÊJBˆžHÂˆÛÛœÝ\ˆH›Ú[Š›ÛÝ	Ü›Ùš[\ÉË	Ù\ÚÝÜ	ÊBˆ]ØZ]ZÙ\Š\‹È™XÝ\œÚ]™NˆYHJBˆ]ØZ]Üš]Qš[J›Ú[Š\‹	ÜXÚØYÙKšœÛÛ‰ÊK”ÓÓ‹œÝš[™ÚYžJÂˆ˜[YNˆ	Ùš^\™KY\ÚÝÜ	Ë\[™[˜ÚY\ÎˆßKÚˆÈ›Ùš[NˆÈ[™\Îˆ×HHKˆJJBˆÛÛœÝÜ[ÛœÈHÈ\ÚÝÜ[ÙNˆYKY˜][›Ùš[Nˆ	Ù\ÚÝÜ	ËÚÛYNˆ›ÛÝBˆÛÛœÝÚÈH™\ÜÛœÙJ
+Bˆ]ØZ][™R[™[ÜžT™\]Y\Ý
+™\]Y\Ý
+
+KÚËÜ[ÛœÊBˆ\ÜÙ\™\]X[
+ÚËœÝ]\ËŒ
+Bˆ\ÜÙ\™\]X[
+”ÓÓ‹œ\œÙJÚË˜›ÙJK˜[YKœ›Ùš[K	Ù\ÚÝÜ	ÊBˆÛÛœÝ[šYYH™\ÜÛœÙJ
+Bˆ]ØZ][™R[™[ÜžT™\]Y\Ý
+™\]Y\Ý
+È›Ùš[Nˆ	ÝÙX‰ÈJK[šYYÜ[ÛœÊBˆ\ÜÙ\™\]X[
+[šYYœÝ]\ËJBˆÛÛœÝ[[YHH™\ÜÛœÙJ
+Bˆ]ØZ][™T[[YT™\]Y\Ý
+™\]Y\Ý
+È›Ùš[Nˆ	ÝÙX‰ÈJK[[YKÂˆ‹‹›Ü[ÛœË[[YTÝ]\ÎˆÜ™X]T[[YTÝ]\ÊÈ›Ùš[Nˆ	Ù\ÚÝÜ	Ë\ÚÝÜ[ÙNˆYHJKˆJBˆ\ÜÙ\™\]X[
+”ÓÓ‹œ\œÙJ[[YK˜›ÙJK™\œ›Ü‹˜ÛÙK	ÑTÒÕÔÔ“Ñ’SWÓRTÓPUÒ	ÊBˆHš[˜[HÂˆ]ØZ]›J›ÛÝÈ™XÝ\œÚ]™NˆYK›Ü˜ÙNˆYHJBˆBŸJB‚\Ý
+	Ñ\ÚÝÜÝX\™X[ˆÝ]\È™\ÜÈÙ™šXÚX[ÝÛ™\œÚ\Ú]Ý]›Øš[™È][˜Ú	Ë\Þ[˜È
+
+HOˆÂˆÛÛœÝ™\ÈH™\ÜÛœÙJ
+Bˆ]ØZ][™QÝX\™X[”™\]Y\Ý
+™\]Y\Ý
+
+K™\ËÈ\ÚÝÜ[ÙNˆYKÝX\™X[”Ù\šXÙNˆÈÝ]\Îˆ
+
+HOˆÈ›ÝÈ™]È\œ›ÜŠ	Û]\Ý›Ý›Ø™IÊHHHJBˆ\ÜÙ\™\]X[
+™\ËœÝ]\ËŒ
+Bˆ\ÜÙ\™\]X[
+”ÓÓ‹œ\œÙJ™\Ë˜›ÙJK˜[YK™\œ›ÜÛÙK	ÓÑ‘’PÒPSÑTÒÕÔÓÕÓ”×ÒÔÕ	ÊBŸJB‚˜ÛÛœÝ\ÚÝÜØ][ÙÕ\›H	ÚÎ‹ËÜ˜]Ë™Ú]X\Ù\˜ÛÛ[˜ÛÛKÐRKTØØ\›]ÑÒTÝÜ™KÛXZ[‹Ü™YÚ\ÝžKØØ][ÙËšœÛÛ‰Â˜ÛÛœÝ\ÚÝÜØ][ÙÒ[™^\›H	ÚÎ‹ËÜ˜]Ë™Ú]X\Ù\˜ÛÛ[˜ÛÛKÐRKTØØ\›]ÑÒTÝÜ™KÛXZ[‹Ü™YÚ\ÝžKØØ][ÙËZ[™^šœÛÛ‰Â˜ÛÛœÝ\ÚÝÜ\ØÛÝ™\žU\›H	ÚÎ‹ËÜ˜]Ë™Ú]X\Ù\˜ÛÛ[˜ÛÛKÐRKTØØ\›]ÑÒTÝÜ™KÛXZ[‹Ü™YÚ\ÝžKÙ\ØÛÝ™\žKZ[™^šœÛÛ‰Â˜ÛÛœÝ\ÚÝÜØ[™Y]\Õ\›H	ÚÎ‹ËÜ˜]Ë™Ú]X\Ù\˜ÛÛ[˜ÛÛKÐRKTØØ\›]ÑÒTÝÜ™KÛXZ[‹Ü™YÚ\ÝžKØØ[™Y]\ËšœÛÛ‰Â˜ÛÛœÝ\ÚÝÜ˜[šÚ[™Ò[™^\›H	ÚÎ‹ËØZK\ØØ\›]™Ú]X‹š[ËÑÒTÝÜ™KÛX\šÙ]XÙKÜ˜[šÚ[™ÜËÚ[™^š[	Â˜ÛÛœÝ\ÚÝÜ˜[šÚ[™Ñ]U\›H	ÚÎ‹ËØZK\ØØ\›]™Ú]X‹š[ËÑÒTÝÜ™KÛX\šÙ]XÙKÜ˜[šÚ[™ÜËÙ]KšœÛÛ‰Â˜ÛÛœÝ\ÚÝÜÛÛ[Z]H	ØIËœ™\X]
+
+B‚™[˜Ý[Ûˆ\ÚÝÜ[žJÈYXÚØYÙS˜[YKÛÛ[Z]ÛÛ\]Xš[]HH	ØÛÛ\]X›IË›Ùš[\ÈHÉÙ\ÚÝÜ	×KÝ]\ÈH	Ø\›Ý™Y	ËÝ]\Ô™X\ÛÛ‹ˆ™\ÜÚ]ÜžU\›HÎ‹ËÙÚ]X‹˜ÛÛKØXÛYKÉÚYXÛÝ\˜ÙK[œÝ[]H[ˆX[šY™\Ý]H[œÝ[]È	Ú[œÝ[]KÜXÚØYÙKšœÛÛ˜ˆ	ÜXÚØYÙKšœÛÛ‰Ë[žRYÈHÚYHJHÂˆ™]\›ˆÂˆY˜[YNˆYOOH	ÙÚ\ØY™K\YÚ[‹[X[˜YÙ\‰ÈÈ	ùk¢yaj9£ä¹.í¹ea¹gã»ï"ÒTÝÜ™{ï"IÈˆ˜[YH	ÚYXˆXÚØYÙS˜[YK\ØÜš\[ÛŽˆ\ØÜš\[Ûˆ›Üˆ	ÚYXˆ™\ÜÚ]ÜžU\›ÛÛ[Z]™\œÚ[ÛŽˆ	ÌKŒ‹ŒÉËˆÛÝ\˜ÙNˆÛÝ\˜ÙHÏÈÈ›Ý™[˜[˜ÙNˆ	ÙÚ]X‹XÛÛ[Z]	Ë\]Y]ˆ	ÌŒ‹LLLÌŒŒ‰ÈKˆ[œÝ[]X[šY™\Ý][žRYËØ]YÛÜšY\ÎˆÉÝÛÛÉ×KˆÙX\˜Ú\›\ÎˆÚYKÝ]\Ë‹‹ŠÝ]\Ô™X\ÛÛˆÈÈÝ]\Ô™X\ÛÛˆHˆßJKˆÛÛ\]Xš[]NˆÈÚ™[X\Ù\ÎˆÈ	ÌŒ‹Œ‹X[KŒ‰ÎˆÛÛ\]Xš[]HK›Ùš[\ÈKˆ]Z[ÎˆÂˆXÙ[œÙNˆ	ÓRU	Ë^\›˜[\[™[˜ÚY\Îˆ×Kˆ\›Z\ÜÚ[ÛœÎˆÈ]™[ˆ	ÛÝÉËš[\Îˆ	Û›Û™IË™]ÛÜšÎˆ	Û›Û™IËÛÛ[X[™Îˆ	Û›Û™IËÜ™Y[X[ÎˆÉÛ›Û™I×HKˆKˆš\ÚÎˆÈ[œÝ[ØÜš\Îˆ×HKˆBŸB‚™[˜Ý[Ûˆ\ÚÝÜ˜[šÚ[™Ñ[žJÈY˜[YHHY™\ÜÚ]ÜžU\›HÎ‹ËÙÚ]X‹˜ÛÛKØXÛYKÉÚYXÛÝ\˜ÙHH	ØØ][ÙÉËˆ™]šY]ÔÝ]\ÈH	Ø\›Ý™Y	Ë\Ý[™ÔÝ]\ÈHÛÝ\˜ÙHOOH	ØØ][ÙÉÈ	‰ˆ™]šY]ÔÝ]\ÈOOH	Ø\›Ý™Y	ÈÈ	Û\ÝY	Èˆ	Û›Ý[\ÝY	Ëˆ\Ý[™Ô™X\ÛÛˆH\Ý[™ÔÝ]\ÈOOH	Û\ÝY	ÈÈ[ˆ	Õ\È[žH\È›Ý\›Ý™Y›ÜˆÝÜ™H\Ý[™Ë‰ËˆØ]YÛÜšY\ÈHÉÝÛÛÉ×KÙYZÛPØ]YÛÜšY\ÈHØ]YÛÜšY\ËÙYZÛTÝ\œÈHÛÛ[][š]T™XÛÛ[Y[™][ÛˆJHÂˆ™]\›ˆÂˆY˜[YVšˆ˜[YK˜[YQ[Žˆ˜[YK™\œÚ[ÛŽˆ	ÌKŒŒ	Ë™\ÜÚ]ÜžU\›\ØÜš\[ÛŽˆ	Û˜[Y_H\ØÜš\[Û˜Ø]YÛÜšY\Ëˆ\Ý[™ÔÝ]\Ë\Ý[™Ô™X\ÛÛ‹ÛÝ\˜ÙK™]šY]ÔÝ]\ËÝ\œÎˆÙYZÛTÝ\œËÙYZÛTÝ\œËˆÙYZÛTÛ˜\ÚÝY[X™\ŽˆYKÙYZÛPØ]YÛÜšY\Ëˆ‹‹ŠÛÛ[][š]T™XÛÛ[Y[™][ÛˆÈÈÛÛ[][š]T™XÛÛ[Y[™][ÛˆHˆßJKˆBŸB‚™[˜Ý[Ûˆ\ÚÝÜ˜[šÚ[™ÔÛ˜\ÚÝ
+[šY\ÊHÂˆ™]\›ˆÂˆØÚ[XU™\œÚ[ÛŽˆÛÝ\˜ÙPÛÛ[Z]ˆ\ÚÝÜÛÛ[Z]Ø][ÙÕ\]Y]ˆ	ÌŒ‹LLKL•ŒŒŒ‰ËˆØ[™Y]\Õ\]Y]ˆ	ÌŒ‹LLKL•ŒŒŒ‰ËÝ\œÓØœÙ\™Y]ˆ	ÌŒ‹LLKL•ŒŒŒ‰ËˆÙYZÛTÝ\œÓØœÙ\™Y]ˆ	ÌŒ‹LLKL•ŒŒŒ‰ËˆØ]YÛÜšY\ÎˆÞÈYˆ	ÝÛÛÉËšˆ	ùméyamÉË[Žˆ	ÕÛÛÉÈKÈYˆ	ØZIËšˆ	ÐRIË[Žˆ	ÐRIÈWK[šY\ËˆBŸB‚™[˜Ý[Ûˆ\ÚÝÜØ][ÙÊ[šY\ÊHÂˆÛÛœÝ\]Y]H	ÌŒ‹LLLÌŒŒ‰ÂˆÛÛœÝØ][ÙÒ[™^HÂˆØÚ[XU™\œÚ[ÛŽˆ‹Ø][ÙÕ\Nˆ	Ú[™^	Ëˆ™YÚ\ÝžNˆÈ™\ÜÚ]ÜžU\›ˆ	ÚÎ‹ËÙÚ]X‹˜ÛÛKÐRKTØØ\›]ÑÒTÝÜ™IË\]Y]]Z[Ô]ˆ	ØØ][ÙËÙ]Z[ÉÈKˆ[šY\Îˆ[šY\Ë›X\
+
+[žKÜ™\ŠHOˆ
+ÂˆYˆ[žKšY˜[YVšˆ[žK›˜[YK˜[YQ[Žˆ[žK›˜[YKXÚØYÙS˜[YNˆ[žKœXÚØYÙS˜[YKˆ™\œÚ[ÛŽˆ[žK™\œÚ[Û‹™X]\™Yˆ˜[ÙKÜ™\‹™\ÜÚ]ÜžU\›ˆ[žKœ™\ÜÚ]ÜžU\›ˆ]Z[]ˆØ][ÙËÙ]Z[ËÉÙ[žKšYKšœÛÛ˜Ý]\Îˆ[žKœÝ]\ËˆØ]YÛÜšY\Îˆ[žK˜Ø]YÛÜšY\ËÙX\˜Ú\›\Îˆ[žKœÙX\˜Ú\›\È×KˆJJKˆBˆÛÛœÝØ][ÙÒ[™^ž]\ÈHY™™\‹™œ›ÛJ”ÓÓ‹œÝš[™ÚYžJØ][ÙÒ[™^
+JBˆ™]\›ˆÂˆØÚ[XU™\œÚ[ÛŽˆKˆ™YÚ\ÝžNˆÂˆ™\ÜÚ]ÜžU\›ˆ	ÚÎ‹ËÙÚ]X‹˜ÛÛKÐRKTØØ\›]ÑÒTÝÜ™IËØ]YÛÜšY\ÎˆÈÛÛÎˆ	ùméyamÉÈK\]Y]ˆ[™^]ˆ	ØØ][ÙËZ[™^šœÛÛ‰Ë[™^ÚLMŽˆÜ™X]R\Ú
+	ÜÚLM‰ÊK\]JØ][ÙÒ[™^ž]\ÊK™YÙ\Ý
+	Ú^	ÊKˆ[™^ž]\ÎˆØ][ÙÒ[™^ž]\Ë˜ž]S[™Ý[™^[žPÛÝ[ˆ[šY\Ë›[™ÝˆKˆ[šY\ËˆBŸB‚™[˜Ý[Ûˆ\ÚÝÜ\™XÝÜžQØÝ[Y[ÊØ][ÙËÈ^˜PØ[™Y]\ÈH×HHHßJHÂˆÛÛœÝ[šY\ÈHØ][ÙË™[šY\Ë™š[\Š[žHOˆ[žKœÝ]\ÈOOH	Ý[›\ÝY	ÊK›X\
+
+[žKÛÝ\˜ÙR[™^
+HOˆ
+ÂˆÛÝ\˜ÙR[™^ÛÝ\˜ÙRYˆ[žKšY[X\Îˆ[žKœXÚØYÙS˜[YK˜[YNˆ[žK›˜[YKˆ\ØÜš\[ÛŽˆ[žK™\ØÜš\[Û‹Ý\œÎˆHHÛÝ\˜ÙR[™^Ø]YÛÜšY\ÎˆÉØZI×KÚ[™ˆ	ÙÚ\YÚ[‰Ëˆ™\ÜÚ]ÜžU\›ˆ[žKœ™\ÜÚ]ÜžU\›]Z[\›ˆÎ‹ËÝÝÝË™ÚœÛËØ\Y˜XÝÉÙ[žKšYKØˆJJBˆ[šY\Ëœ\Ú
+ÈÛÝ\˜ÙR[™^ˆ[šY\Ë›[™ÝÛÝ\˜ÙRYˆ	ÜX›XË[Û›IË[X\Îˆ	ÐXÛYKÜX›XË[Û›IË˜[YNˆ	ÔX›XÈÛ›HYÚ[‰Ëˆ\ØÜš\[ÛŽˆ	Ó\ÝY[ˆHX›XÈ\ØÛÝ™\žH[™^Û›K‰ËÝ\œÎˆËØ]YÛÜšY\ÎˆÉØZI×KÚ[™ˆ	ÙÚ\YÚ[‰Ëˆ™\ÜÚ]ÜžU\›ˆ	ÚÎ‹ËÙÚ]X‹˜ÛÛKØXÛYKÜX›XË[Û›IË]Z[\›ˆ	ÚÎ‹ËÝÝÝË™ÚœÛËØ\Y˜XÝÜX›XË[Û›KÉÈJBˆÛÛœÝØ[™Y]\ÈHÞÈYˆ	ØZ[YÚ\YÚ[‰Ë˜[YNˆ	ÑÒZ[Ø[™Y]IË\ØÜš\[ÛŽˆ	ÐØ[™Y]H™]šY]ÈY]Y]H›ÜˆHØ][ÙÈ[žK‰Ëˆ™\ÜÚ]ÜžU\›ˆ	ÚÎ‹ËÙÚ]X‹˜ÛÛKØXÛYKØZ[YÚ\YÚ[‰ËÝ]\Îˆ	Ü™]šY]Ú[™ÉË]\ÝÛÛ[Z]ˆ	ÎIËœ™\X]
+
+KÜXÜÎˆÉØZI×HKˆ‹‹™^˜PØ[™Y]\×Bˆ™]\›ˆÂˆØ][ÙÒ[™^ˆ\ÚÝÜØ][ÙÒ[™^
+Ø][ÙË™[šY\ÊKˆØ][ÙÒ[™^˜]Îˆ”ÓÓ‹œÝš[™ÚYžJ\ÚÝÜØ][ÙÒ[™^
+Ø][ÙË™[šY\ÊJKˆ\ØÛÝ™\žNˆÂˆØÚ[XU™\œÚ[ÛŽˆKˆÛÝ\˜ÙNˆÈ˜[YNˆ	ÙÚœÛÈX›XÈ\ØÛÝ™\žH[™^	Ë\›ˆ	ÚÎ‹ËÝÝÝË™ÚœÛËÜYÚ[œËZ[™^šœÛÛ‰ËˆÙ[™\˜]Y]ˆ	ÌŒ‹LLLLÕŒNNŒÍKŒÌL‰Ë™XÛÜ™ÛÝ[ˆ[šY\Ë›[™ÝˆXÙ[œÙNˆÈÜˆ	ÐÐËP–KMŒ	Ë]šX][ÛŽˆ	ÙÚœÛÈ8 %Ò]™[Ü\ˆXˆ
+Î‹ËÝÝÝË™ÚœÛÊIÈHKˆ[šY\ËˆKˆØ[™Y]\ÎˆÈØÚ[XU™\œÚ[ÛŽˆK™YÚ\ÝžNˆÂˆ™\ÜÚ]ÜžU\›ˆ	ÚÎ‹ËÙÚ]X‹˜ÛÛKÐRKTØØ\›]ÑÒTÝÜ™IËˆ\Ý›Ý[™\žNˆÈ[œÝ[XÝ[ÛœÑ\ØX›YˆYKØ][ÙÔ›Û[Ý[Û”™\]Z\™YˆYK[šÛ›ÝÛ’\Ó›Ý™\šYšYYˆYHKˆK[šY\ÎˆØ[™Y]\ÈKˆBŸB‚™[˜Ý[Ûˆ\ÚÝÜ˜[šÚ[™Ñš^\™J
+HÂˆÛÛœÝ˜[šÚ[™ÔÛ˜\ÚÝH\ÚÝÜ˜[šÚ[™ÔÛ˜\ÚÝ
+Âˆ\ÚÝÜ˜[šÚ[™Ñ[žJÈYˆ	ÙÚ\˜[šËX[IË˜[YNˆ	Ð[H˜[šÙYYÚ[‰ËÙYZÛTÝ\œÎˆMKØ]YÛÜšY\ÎˆÉÝÛÛÉ×HJKˆ\ÚÝÜ˜[šÚ[™Ñ[žJÈYˆ	ÙÚ\˜[šËX™]IË˜[YNˆ	Ð™]H˜[šÙYYÚ[‰ËÙYZÛTÝ\œÎˆKØ]YÛÜšY\ÎˆÉØZI×HJKˆ\ÚÝÜ˜[šÚ[™Ñ[žJÈYˆ	ØØ[™Y]Nœ[™[™Ë\™]šY]ÉË˜[YNˆ	Ô[™[™È™]šY]ÈYÚ[‰ËÛÝ\˜ÙNˆ	ØØ[™Y]IËˆ™]šY]ÔÝ]\Îˆ	Ü™]šY]Ú[™ÉË\Ý[™Ô™X\ÛÛŽˆ	ÔÝÜ™H™]šY]È\ÈÝ[[™[™È›Üˆ\ÈYÚ[‹‰Ëˆ™\ÜÚ]ÜžU\›ˆ	ÚÎ‹ËÙÚ]X‹˜ÛÛKØXÛYKÜ[™[™Ë\™]šY]ÉËÙYZÛTÝ\œÎˆÍKØ]YÛÜšY\ÎˆÉÝÛÛÉË	ØZI×KˆÛÛ[][š]T™XÛÛ[Y[™][ÛŽˆÈ˜\Ú\Îˆ	Ø]]Ü‹Z[\˜XÝ[Û‰Ë]šY[˜ÙU\›ˆ	ÚÎ‹ËÙÚ]X‹˜ÛÛKÐRKTØØ\›]ÑÒTÝÜ™KÚ\ÜÝY\ËÌMÌÚ\ÜÝYXÛÛ[Y[LIËØØÝ\œ™Y]ˆ	ÌŒ‹LLKLULŽŒŒŒ‰ÈHJKˆ\ÚÝÜ˜[šÚ[™Ñ[žJÈYˆ	ÙÚ\˜[šËX›ØÚÙY	Ë˜[YNˆ	Ð›ØÚÙYYÚ[‰Ë™]šY]ÔÝ]\Îˆ	Ø›ØÚÙY	Ë\Ý[™Ô™X\ÛÛŽˆ	ÐHÛXÞH›ØÚÙ\‹‰ËˆÙYZÛTÝ\œÎˆLØ]YÛÜšY\ÎˆÉÝÛÛÉ×HJKˆ\ÚÝÜ˜[šÚ[™Ñ[žJÈYˆ	ØØ[™Y]Nœ™Z™XÝY\™]šY]ÉË˜[YNˆ	Ô™Z™XÝYYÚ[‰ËÛÝ\˜ÙNˆ	ØØ[™Y]IË™]šY]ÔÝ]\Îˆ	Ü™Z™XÝY	Ëˆ\Ý[™Ô™X\ÛÛŽˆ	Ñš^Y\ÛÝ\˜ÙH™]šY]È™Z™XÝY\ÈYÚ[‹‰Ë™\ÜÚ]ÜžU\›ˆ	ÚÎ‹ËÙÚ]X‹˜ÛÛKØXÛYKÜ™Z™XÝY\™]šY]ÉËˆÙYZÛTÝ\œÎˆLØ]YÛÜšY\ÎˆÉØZI×HJKˆ\ÚÝÜ˜[šÚ[™Ñ[žJÈYˆ	ÙÚ\ÝÜ™K]ÛÛ	Ë˜[YNˆ	ÑÒÝÜ™HÛÛ	Ë™\ÜÚ]ÜžU\›ˆ	ÚÎ‹ËÙÚ]X‹˜ÛÛKÐRKTØØ\›]ÑÒTÝÜ™IËˆÙYZÛTÝ\œÎˆLØ]YÛÜšY\ÎˆÉÝÛÛÉ×HJKˆ\ÚÝÜ˜[šÚ[™Ñ[žJÈYˆ	ØZ[YÚ\YÚ[‰Ë˜[YNˆ	ÐZ[ÒYÚ[‰Ë™\ÜÚ]ÜžU\›ˆ	ÚÎ‹ËÙÚ]X‹˜ÛÛKÐRKTØØ\›]ØZ[YÚ\YÚ[‰ËˆÙYZÛTÝ\œÎˆKØ]YÛÜšY\ÎˆÉØZI×HJKˆ\ÚÝÜ˜[šÚ[™Ñ[žJÈYˆ	Þ™\›Ë\Ý\‹XØ]YÛÜžK[XY\‰Ë˜[YNˆ	Ö™\›ÈÝ\ˆØ]YÛÜžHXY\‰ËÙYZÛTÝ\œÎˆØ]YÛÜšY\ÎˆÉÞ™\›Ë]ÙYZÛI×HJKˆ\ÚÝÜ˜[šÚ[™Ñ[žJÈYˆ	Ý[šÛ›ÝÛ‹\Ý\œË]ÛÛË\YÚ[‰Ë˜[YNˆ	Õ[šÛ›ÝÛˆÝ\œÈÛÛÈYÚ[‰Ë™]šY]ÔÝ]\Îˆ	Ý[›\ÝY	Ëˆ\Ý[™ÔÝ]\Îˆ	Û›Ý[\ÝY	Ë\Ý[™Ô™X\ÛÛŽˆ	Õ\È[žH\È›Ý\›Ý™Y›ÜˆÝÜ™H\Ý[™Ë‰ËÙYZÛTÝ\œÎˆ[Ø]YÛÜšY\ÎˆÉÝÛÛÉ×HJKˆJBˆ˜[šÚ[™ÔÛ˜\ÚÝ˜Ø]YÛÜšY\Ëœ\Ú
+ÈYˆ	Þ™\›Ë]ÙYZÛIËšˆ	úfí¹¦'ù¨!ÉË[Žˆ	Ö™\›ÈÝ\œÉÈJBˆÛÛœÝØ][ÙÑ[šY\ÈH˜[šÚ[™ÔÛ˜\ÚÝ™[šY\Ë™š[\Š[žHOˆ[žKœÛÝ\˜ÙHOOH	ØØ][ÙÉÊK›X\
+[žHOˆ\ÚÝÜ[žJÂˆYˆ[žKšYXÚØYÙS˜[YNˆXÛYKÉÙ[žKšYXÛÛ[Z]ˆ\ÚÝÜÛÛ[Z]Ý]\Îˆ[žKœ™]šY]ÔÝ]\ËˆÝ]\Ô™X\ÛÛŽˆ[žK›\Ý[™Ô™X\ÛÛˆ[™Yš[™Y™\ÜÚ]ÜžU\›ˆ[žKœ™\ÜÚ]ÜžU\›ˆJJBˆÛÛœÝØ[™Y]\ÈH˜[šÚ[™ÔÛ˜\ÚÝ™[šY\Ë™š[\Š[žHOˆ[žKœÛÝ\˜ÙHOOH	ØØ[™Y]IÊK›X\
+[žHOˆ
+ÂˆYˆ[žKšYœ™\XÙJ×˜Ø[™Y]N‹Ë	ÉÊK˜[YNˆ[žK›˜[YVš\ØÜš\[ÛŽˆ[žK™\ØÜš\[Û‹ˆ™\ÜÚ]ÜžU\›ˆ[žKœ™\ÜÚ]ÜžU\›Ý]\Îˆ[žKœ™]šY]ÔÝ]\ËÝ]\Ô™X\ÛÛŽˆ[žK›\Ý[™Ô™X\ÛÛ‹ˆ]\ÝÛÛ[Z]ˆ	ÎIËœ™\X]
+
+KÜXÜÎˆ[žK˜Ø]YÛÜšY\ËˆJJBˆÛÛœÝØ][ÙÈH\ÚÝÜØ][ÙÊØ][ÙÑ[šY\ÊBˆ™]\›ˆÈ˜[šÚ[™ÔÛ˜\ÚÝØ][ÙË\™XÝÜžQØÝ[Y[Îˆ\ÚÝÜ\™XÝÜžQØÝ[Y[ÊØ][ÙËÈ^˜PØ[™Y]\ÎˆØ[™Y]\ÈJHBŸB‚™[˜Ý[Ûˆ\ÚÝÜØ][ÙÒ[™^
+[šY\ÊHÂˆÛÛœÝ\]Y]H	ÌŒ‹LLLÌŒŒ‰Âˆ™]\›ˆÂˆØÚ[XU™\œÚ[ÛŽˆ‹Ø][ÙÕ\Nˆ	Ú[™^	Ëˆ™YÚ\ÝžNˆÈ™\ÜÚ]ÜžU\›ˆ	ÚÎ‹ËÙÚ]X‹˜ÛÛKÐRKTØØ\›]ÑÒTÝÜ™IË\]Y]]Z[Ô]ˆ	ØØ][ÙËÙ]Z[ÉÈKˆ[šY\Îˆ[šY\Ë›X\
+
+[žKÜ™\ŠHOˆ
+ÂˆYˆ[žKšY˜[YVšˆ[žK›˜[YK˜[YQ[Žˆ[žK›˜[YKXÚØYÙS˜[YNˆ[žKœXÚØYÙS˜[YKˆ™\œÚ[ÛŽˆ[žK™\œÚ[Û‹™X]\™Yˆ˜[ÙKÜ™\‹™\ÜÚ]ÜžU\›ˆ[žKœ™\ÜÚ]ÜžU\›ˆ]Z[]ˆØ][ÙËÙ]Z[ËÉÙ[žKšYKšœÛÛ˜Ý]\Îˆ[žKœÝ]\ËˆØ]YÛÜšY\Îˆ[žK˜Ø]YÛÜšY\ËÙX\˜Ú\›\Îˆ[žKœÙX\˜Ú\›\È×KˆJJKˆBŸB‚™[˜Ý[ÛˆÜ™X]Q\ÚÝÜ\›™\ÜÊÈØ][ÙË[œÝ[YH×K™\ÜÛœÙQ˜XÝÜžK\ÚÝÜ[[YU™\œÚ[ÛˆH	ÌŒ‹Œ‹X[KŒ‰Ëˆ[œÜXÝ™\Ý[[œÝ[™\Ý[[œÝ[YY\’[œÝ[™\Ý[H[™[[Ý™T™\Ý[H[ˆ™]Z[’[œÝ[YY\”™[[Ý™HH˜[ÙK[œÜXÝ]˜Z[X›HHYK™[[Ý™P[™P]˜Z[X›HHYKˆ›ÝØÛÛH	ÙÚX\‰Ë\™XÝÜžQØÝ[Y[ÈH[™Yš[™Y˜[šÚ[™ÔÛ˜\ÚÝH[˜[šÚ[™Ò[™^YÙ\ÝH[ˆ\Ý[™\Ñ\œ›ÜˆH˜[ÙHHHßJHÂˆÛÛœÝXÝ]™Q\™XÝÜžQØÝ[Y[ÈH\™XÝÜžQØÝ[Y[ÈOOH[™Yš[™YˆÈ
+Ø][ÙÈÈ\ÚÝÜ\™XÝÜžQØÝ[Y[ÊØ][ÙÊHˆ[
+Hˆ\™XÝÜžQØÝ[Y[ÂˆÛÛœÝÛÝ\˜ÙT›ÛZ\ÙHH™XYš[J™]ÈT“
+	Ë‹‹ÜÜ˜ËØÛY[šœÉË[\Ü›Y]K\›
+K	Ý]Ž	ÊBˆÛÛœÝÙ][™ÜÔ™YÚ\Ý˜][ÛœÈH×BˆÛÛœÝÛÝ™YÚ\Ý˜][ÛœÈH×BˆÛÛœÝ[š™XÝ[ÛœÈH×BˆÛÛœÝ[Ù[Q\[™[˜ÚY\ÈH×BˆÛÛœÝ™\]Y\ÝÈH×BˆÛÛœÝ\™XÝÜžT™\]Y\ÝÈH×BˆÛÛœÝ[Y\Ø[˜XÚÜÈH×BˆÛÛœÝ[Y\‘[^\ÈH×BˆÛÛœÝØ[ÈHÈ\Ý[™\Îˆ[œÜXÝˆ×K[œÝ[[™Nˆ×K™[[Ý™P[™Nˆ×KÙ][™Q[˜X›Yˆ×KØZ]›Ü’[œÝ[ˆ×HBˆÛÛœÝÛÛ\Û™[™XÛÜ™ÈH™]ÈX\
+
+Bˆ]XÝ]™PÛÛ\Û™[H[ˆ][™[ˆ]XÝ]™TÛÝ™YÚ\Ý˜][ÛˆH[ˆ][œÝ[Y[™\ÈH[œÝ[Yˆ]™^[Y\ˆH‚ˆÛÛœÝ™XÛÜ™›ÜˆHÛÛ\Û™[OˆÂˆYˆ
+XÛÛ\Û™[™XÛÜ™Ëš\ÊÛÛ\Û™[
+JHÛÛ\Û™[™XÛÜ™ËœÙ]
+ÛÛ\Û™[ÈÝ]\Îˆ×K™YœÎˆ×KY™™XÝÎˆ×KØ[˜XÚÜÎˆ×KÝ\œÛÜŽˆJBˆ™]\›ˆÛÛ\Û™[™XÛÜ™Ë™Ù]
+ÛÛ\Û™[
+BˆBˆÛÛœÝØ[YQ\[™[˜ÚY\ÈH
+YšYÚ
+HOˆ\œ˜^Kš\Ð\œ˜^JY
+H	‰ˆ\œ˜^Kš\Ð\œ˜^JšYÚ
+Bˆ	‰ˆY›[™ÝOOHšYÚ›[™Ý	‰ˆY™]™\žJ
+˜[YK[™^
+HOˆØš™XÝš\Ê˜[YKšYÚÚ[™^JJBˆÛÛœÝ™XXÝHÂˆœ˜YÛY[ˆÞ[X›Û
+	Ñœ˜YÛY[	ÊKˆÜ™X]Q[[Y[
+\K›ÜË‹‹˜Ú[™[ŠHÂˆÛÛœÝ˜[Y\ÈHÚ[™[‹›[™ÝOOHHÈÚ[™[–ÌHˆÚ[™[‚ˆ™]\›ˆÈ\K›ÜÎˆÈ‹‹Š›ÜÈßJK‹‹ŠÚ[™[‹›[™ÝÈÈÚ[™[Žˆ˜[Y\ÈHˆßJHKÚ[™[ˆBˆKˆ\ÙPØ[˜XÚÊØ[˜XÚË\[™[˜ÚY\ÊHÂˆÛÛœÝ™XÛÜ™HXÝ]™PÛÛ\Û™[ˆÛÛœÝ[™^H™XÛÜ™˜Ý\œÛÜŠÊÂˆÛÛœÝØXÚYH™XÛÜ™˜Ø[˜XÚÜÖÚ[™^BˆYˆ
+ØXÚY	‰ˆØ[YQ\[™[˜ÚY\ÊØXÚY™\[™[˜ÚY\Ë\[™[˜ÚY\ÊJH™]\›ˆØXÚY˜Ø[˜XÚÂˆ™XÛÜ™˜Ø[˜XÚÜÖÚ[™^HHÈØ[˜XÚË\[™[˜ÚY\ÈBˆ™]\›ˆØ[˜XÚÂˆKˆ\ÙQY™™XÝ
+Y™™XÝ\[™[˜ÚY\ÊHÂˆÛÛœÝ™XÛÜ™HXÝ]™PÛÛ\Û™[ˆÛÛœÝ[™^H™XÛÜ™˜Ý\œÛÜŠÊÂˆÛÛœÝ™]š[Ý\ÈH™XÛÜ™™Y™™XÝÖÚ[™^BˆYˆ
+\™]š[Ý\ÊH™XÛÜ™™Y™™XÝÖÚ[™^HHÈY™™XÝÛX[\ˆ[\[™[˜ÚY\Ë[™[™ÎˆYHBˆ[ÙHYˆ
+\[™[˜ÚY\ÈOOH[™Yš[™Y™]š[Ý\Ë™\[™[˜ÚY\ÈOOH[™Yš[™Yˆ\Ø[YQ\[™[˜ÚY\Ê™]š[Ý\Ë™\[™[˜ÚY\Ë\[™[˜ÚY\ÊJHÂˆ™XÛÜ™™Y™™XÝÖÚ[™^HHÈY™™XÝÛX[\ˆ™]š[Ý\Ë˜ÛX[\\[™[˜ÚY\Ë[™[™ÎˆYHBˆBˆKˆ\ÙSY[[Ê˜XÝÜžJHÈXÝ]™PÛÛ\Û™[˜Ý\œÛÜŠÊÎÈ™]\›ˆ˜XÝÜžJ
+HKˆ\ÙT™YŠ[š]X[
+HÂˆÛÛœÝ™XÛÜ™HXÝ]™PÛÛ\Û™[ˆÛÛœÝ[™^H™XÛÜ™˜Ý\œÛÜŠÊÂˆYˆ
+J[™^[ˆ™XÛÜ™œ™YœÊJH™XÛÜ™œ™YœÖÚ[™^HHÈÝ\œ™[ˆ[š]X[Bˆ™]\›ˆ™XÛÜ™œ™YœÖÚ[™^BˆKˆ\ÙTÝ]J[š]X[
+HÂˆÛÛœÝ™XÛÜ™HXÝ]™PÛÛ\Û™[ˆÛÛœÝ[™^H™XÛÜ™˜Ý\œÛÜŠÊÂˆYˆ
+J[™^[ˆ™XÛÜ™œÝ]\ÊJH™XÛÜ™œÝ]\ÖÚ[™^HH\[Ùˆ[š]X[OOH	Ù[˜Ý[Û‰ÈÈ[š]X[
+
+Hˆ[š]X[ˆ™]\›ˆÜ™XÛÜ™œÝ]\ÖÚ[™^K˜[YHOˆÈ™XÛÜ™œÝ]\ÖÚ[™^HH\[Ùˆ˜[YHOOH	Ù[˜Ý[Û‰ÈÈ˜[YJ™XÛÜ™œÝ]\ÖÚ[™^JHˆ˜[YHWBˆKˆBˆÛÛœÝ[Ù[H›ÜÈOˆ™XXÝ˜Ü™X]Q[[Y[
+	Ù]‰ËÈ›ÛNˆ	ÙX[ÙÉË	Ø\šXK[X™[	Îˆ›ÜË]HK›ÜË]K›ÜË˜Ú[™[‹›ÜË™›ÛÝ\ŠBˆÛÛœÝÚ]ÛÛ\Û™[H
+ÛÛ\Û™[›ÜÈHßJHOˆÂˆÛÛœÝ™]š[Ý\ÈHXÝ]™PÛÛ\Û™[ˆÛÛœÝ™XÛÜ™H™XÛÜ™›ÜŠÛÛ\Û™[
+Bˆ™XÛÜ™˜Ý\œÛÜˆHˆXÝ]™PÛÛ\Û™[H™XÛÜ™ˆžHÈ™]\›ˆÛÛ\Û™[
+›ÜÊHHš[˜[HÈXÝ]™PÛÛ\Û™[H™]š[Ý\ÈBˆBˆÛÛœÝ™\ÛÛ™U™YHH˜[YHOˆÂˆYˆ
+\œ˜^Kš\Ð\œ˜^J˜[YJJH™]\›ˆ˜[YK›X\
+™\ÛÛ™U™YJBˆYˆ
+]˜[YH\[Ùˆ˜[YHOOH	ÛØš™XÝ	ÈSØš™XÝš\ÓÝÛŠ˜[YK	Ý\IÊJH™]\›ˆ˜[YBˆYˆ
+\[Ùˆ˜[YK\HOOH	Ù[˜Ý[Û‰ÊH™]\›ˆ™\ÛÛ™U™YJÚ]ÛÛ\Û™[
+˜[YK\K˜[YKœ›ÜÊJBˆ™]\›ˆÈ\Nˆ˜[YK\K›ÜÎˆ˜[YKœ›ÜËÚ[™[Žˆ™\ÛÛ™U™YJ˜[YK˜Ú[™[ŠHBˆBˆÛÛœÝX[˜YÙ\ˆHÂˆ\Þ[˜È\Ý[™\Ê
+HÂˆØ[Ë›\Ý[™\ÊÊÂˆYˆ
+\Ý[™\Ñ\œ›ÜŠH›ÝÈØš™XÝ˜\ÜÚYÛŠ™]È\œ›ÜŠ	ÑTÒÕÔÒS•‘S•Ô–WÑRSQ	ÊKÈÛÙNˆ	ÑTÒÕÔÒS•‘S•Ô–WÑRSQ	ÈJBˆ™]\›ˆÂˆ‹‹Š\ÚÝÜ[[YU™\œÚ[ÛˆÈÞÈ˜[YNˆ	ÙÚ™\ÚÝÜ\[[YIËÙ™šXÚX[ˆYKˆ[œÝ[\™Ù]ˆÈ™\œÚ[ÛŽˆ\ÚÝÜ[[YU™\œÚ[ÛˆK[œÝ[YˆYHWHˆ×JKˆ‹‹š[œÝ[Y[™\ËˆBˆKˆ\Þ[˜È[œÜXÝ
+ÜXÊHÂˆØ[Ëš[œÜXÝœ\Ú
+ÜXÊBˆ™]\›ˆ\[Ùˆ[œÜXÝ™\Ý[OOH	Ù[˜Ý[Û‰ÈÈ[œÜXÝ™\Ý[
+ÜXÊHˆ[œÜXÝ™\Ý[ÏÈÈÝ]\Îˆ	ØXØÙ\Y	ËÚ[™ˆ	ÙÚ]	ÈBˆKˆ\Þ[˜È[œÝ[[™JÜXËÜ[ÛœÊHÂˆØ[Ëš[œÝ[[™Kœ\Ú
+ÈÜXËÜ[ÛœÈJBˆÛÛœÝ™\]Y\ÝY™\Ý[H\[Ùˆ[œÝ[™\Ý[OOH	Ù[˜Ý[Û‰ÈÈ]ØZ][œÝ[™\Ý[
+ÜXËÜ[ÛœÊHˆ[œÝ[™\Ý[ˆYˆ
+™\]Y\ÝY™\Ý[
+HÂˆYˆ
+\œ˜^Kš\Ð\œ˜^J[œÝ[YY\’[œÝ[™\Ý[
+JH[œÝ[Y[™\ÈH[œÝ[YY\’[œÝ[™\Ý[ˆ™]\›ˆ™\]Y\ÝY™\Ý[ˆBˆÛÛœÝ[žHHØ][ÙË™[šY\Ë™š[™
+][HOˆÜXËœÝ\ÕÚ]
+Ú]
+ÉÚ][Kœ™\ÜÚ]ÜžU\›K™Ú]Ø
+JBˆ[œÝ[Y[™\ÈHË‹‹š[œÝ[Y[™\Ë™š[\Š[™HOˆ[™K›˜[YHOOH[žOËœXÚØYÙS˜[YJKÂˆ˜[YNˆ[žOËœXÚØYÙS˜[YH	ÐXÛYKÙÚZ[œÝ[X›IËÙ™šXÚX[ˆ˜[ÙK[œÝ[YˆYKˆ™[[Ý˜X›NˆYK[˜X›YˆÜ[ÛœË™[˜X›Y™\œÚ[ÛŽˆ[žOË™\œÚ[Û‹ÛÝ\˜ÙNˆÜXËˆWBˆ™]\›ˆÈ\XØ][ÛŽˆ	Ø\YY	ËÚ[™ÙYˆYKÝYÙNˆ	Ú[œÝ[	Ë\™Ù]ˆÜXÈBˆKˆ\Þ[˜È™[[Ý™P[™J˜[YJHÂˆØ[Ëœ™[[Ý™P[™Kœ\Ú
+˜[YJBˆÛÛœÝ™\Ý[H™[[Ý™T™\Ý[ÏÈÈ\XØ][ÛŽˆ	Ø\YY	ËÚ[™ÙYˆYKÝYÙNˆ	Ü™[[Ý™IË\™Ù]ˆ˜[YHBˆYˆ
+\™]Z[’[œÝ[YY\”™[[Ý™H	‰ˆÉØ\YY	Ë	Ü™\Ý\\™\]Z\™Y	×Kš[˜ÛY\Ê™\Ý[˜\XØ][ÛŠJHÂˆ[œÝ[Y[™\ÈH[œÝ[Y[™\Ë™š[\Š[™HOˆ[™K›˜[YHOOH˜[YJBˆBˆ™]\›ˆ™\Ý[ˆKˆ\Þ[˜ÈÙ][™Q[˜X›Y
+˜[YK[˜X›Y
+HÂˆØ[ËœÙ][™Q[˜X›Yœ\Ú
+È˜[YK[˜X›YJBˆ[œÝ[Y[™\ÈH[œÝ[Y[™\Ë›X\
+[™HOˆ[™K›˜[YHOOH˜[YHÈÈ‹‹˜[™K[˜X›YHˆ[™JBˆ™]\›ˆÈ\XØ][ÛŽˆ	Ø\YY	ËÚ[™ÙYˆYKÝYÙNˆ	Ù[˜X›IË\™Ù]ˆ˜[YK[˜X›YBˆKˆ\Þ[˜ÈØZ]›Ü’[œÝ[
+™\]Y\ÝY
+HÈØ[ËØZ]›Ü’[œÝ[œ\Ú
+™\]Y\ÝY
+NÈ™]\›ˆ[KˆBˆYˆ
+Z[œÜXÝ]˜Z[X›JH[]HX[˜YÙ\‹š[œÜXÝˆYˆ
+\™[[Ý™P[™P]˜Z[X›JH[]HX[˜YÙ\‹œ™[[Ý™P[™BˆÛÛœÝœÛÛ”™\ÜÛœÙHH
+\›^[ØY˜]Õ^H”ÓÓ‹œÝš[™ÚYžJ^[ØY
+JHOˆÂˆÛÛœÝž]\ÈH™]È^[˜ÛÙ\Š
+K™[˜ÛÙJ˜]Õ^
+Bˆ]Ù™œÙ]Hˆ™]\›ˆÂˆÚÎˆYK\›ˆXY\œÎˆÈÙ]ˆ˜[YHOˆ˜[YHOOH	ØÛÛ[[[™Ý	ÈÈÝš[™Êž]\Ë˜ž]S[™Ý
+Hˆ[Kˆ›ÙNˆÈÙ]™XY\Žˆ
+
+HOˆ
+Âˆ\Þ[˜È™XY
+
+HÂˆYˆ
+Ù™œÙ]Hž]\Ë˜ž]S[™Ý
+H™]\›ˆÈÛ™NˆYHBˆÛÛœÝ˜[YHHž]\ËœÝX˜\œ˜^JÙ™œÙ]X]›Z[ŠÙ™œÙ]
+ÈM‹ž]\Ë˜ž]S[™Ý
+JBˆÙ™œÙ]
+ÏH˜[YK˜ž]S[™Ýˆ™]\›ˆÈÛ™Nˆ˜[ÙK˜[YHBˆKˆ\Þ[˜ÈØ[˜Ù[
+
+HßK™[X\ÙSØÚÊ
+HßKˆJHKˆBˆBˆÛÛœÝ™]ÚH\Þ[˜È
+\›Ü[ÛœÊHOˆÂˆYˆ
+\›OOH\ÚÝÜØ][ÙÕ\›
+HÂˆ™\]Y\ÝËœ\Ú
+È\›Ü[ÛœÈJBˆYˆ
+™\ÜÛœÙQ˜XÝÜžJH™]\›ˆ™\ÜÛœÙQ˜XÝÜžJ
+Bˆ™]\›ˆœÛÛ”™\ÜÛœÙJ\›Ø][ÙÊBˆBˆ\™XÝÜžT™\]Y\ÝËœ\Ú
+È\›Ü[ÛœÈJBˆYˆ
+\›OOH\ÚÝÜ˜[šÚ[™Ò[™^\›
+HÂˆÛÛœÝYÙ\ÝH˜[šÚ[™Ò[™^YÙ\ÝÜ™X]R\Ú
+	ÜÚLM‰ÊK\]J”ÓÓ‹œÝš[™ÚYžJ˜[šÚ[™ÔÛ˜\ÚÝ
+JK™YÙ\Ý
+	Ú^	ÊBˆ™]\›ˆœÛÛ”™\ÜÛœÙJ\›[Y]H˜[YOH™Ú\˜[šÚ[™ÜË\ÚLMˆˆÛÛ[H‰ÙYÙ\ÝH˜
+BˆBˆÛÛœÝ^[ØYH\›š[˜ÛY\Ê	ËØØ][ÙËZ[™^šœÛÛ‰ÊHÈXÝ]™Q\™XÝÜžQØÝ[Y[ÏË˜Ø][ÙÒ[™^ˆˆ\›š[˜ÛY\Ê	ËÙ\ØÛÝ™\žKZ[™^šœÛÛ‰ÊHÈXÝ]™Q\™XÝÜžQØÝ[Y[ÏË™\ØÛÝ™\žBˆˆ\›š[˜ÛY\Ê	ËØØ[™Y]\ËšœÛÛ‰ÊHÈXÝ]™Q\™XÝÜžQØÝ[Y[ÏË˜Ø[™Y]\Âˆˆ\›OOH\ÚÝÜ˜[šÚ[™Ñ]U\›È˜[šÚ[™ÔÛ˜\ÚÝˆ[ˆYˆ
+\^[ØY
+H›ÝÈ™]È\œ›ÜŠ	Ù\™XÝÜžHš^\™H[˜]˜Z[X›IÊBˆÛÛœÝ˜]Õ^H\›š[˜ÛY\Ê	ËØØ][ÙËZ[™^šœÛÛ‰ÊHÈXÝ]™Q\™XÝÜžQØÝ[Y[ÏË˜Ø][ÙÒ[™^˜]Èˆ[ˆ™]\›ˆœÛÛ”™\ÜÛœÙJ\›^[ØY˜]Õ^”ÓÓ‹œÝš[™ÚYžJ^[ØY
+JBˆBˆÛÛœÝÚ[™ÝÈHÂˆØØ][ÛŽˆÈ›ÝØÛÛÜšYÚ[Žˆ›ÝØÛÛOOH	ÙÚX\‰ÈÈ	ÙÚX\‹ËØ\	Èˆ	ÚÎ‹ËÙÚ\Ý	Ëˆ™YŽˆ›ÝØÛÛOOH	ÙÚX\‰ÈÈ	ÙÚX\‹ËØ\ÜÙ][™ÜÉÈˆ	ÚÎ‹ËÙÚ\ÝÜÙ][™ÜÉÈKˆØØ[ÝÜ˜YÙNˆÈÙ]][Nˆ
+
+HOˆ[Ù]][Nˆ
+
+HOˆßK™[[Ý™R][Nˆ
+
+HOˆßHKˆÜž\ÎˆÈ˜[™ÛUURQˆ
+
+HOˆ	ÌLLLLLLLKLLLLKMLLKNLLKLLLLLLLLLLLLIËÝXNˆÙX˜Üž\ËœÝXHKˆÙ][Y[Ý]ˆ
+Ø[˜XÚË[^JHOˆÈ[Y\Ø[˜XÚÜËœ\Ú
+Ø[˜XÚÊNÈ[Y\‘[^\Ëœ\Ú
+[^JNÈ™]\›ˆ
+ÊÛ™^[Y\ˆKˆÛX\•[Y[Ý]ˆ
+
+HOˆßKˆ×Ó[Ù[SØY\—×ÎˆÈØY
+È˜XÝÜžHJHÂˆÛÛœÝYÚ[ˆH˜XÝÜžJ˜[YHOˆ˜[YHOOH	Ü™XXÝ	ÈÈ™XXÝˆ
+È[Ù[JJBˆ[Ù[Q\[™[˜ÚY\Ëœ\Ú
+‹‹œYÚ[‹š[š™XÝ
+BˆÛÛœÝXÛ\™Y\[™[˜ÚY\ÈH™]ÈÙ]
+YÚ[‹š[š™XÝ
+BˆYÚ[‹˜\JÂˆ‹‹ŠXÛ\™Y\[™[˜ÚY\Ëš\Ê	Ü™[[ÝIÊH	‰ˆXÛ\™Y\[™[˜ÚY\Ëš\Ê	Ü™[[ÝKœYÚ[“X[˜YÙ\‰ÊBˆÈÈ™[[ÝNˆÈYÚ[“X[˜YÙ\ŽˆX[˜YÙ\ˆHHˆßJKˆ[š™XÝ
+]ËØ[˜XÚÊHÂˆ[š™XÝ[ÛœËœ\Ú
+]ÊBˆYˆ
+]Ë™]™\žJ]OˆXÛ\™Y\[™[˜ÚY\Ëš\Ê]
+JJHØ[˜XÚÊ
+BˆKˆY™™XÝ
+
+HßKˆÛÝÎˆÂˆ[š™XÝ
+ÛÝ™YÚ\Ý\ŠHÂˆÛÛœÝÝ\œ™[HÈÛÝBˆÛÝ™YÚ\Ý˜][ÛœËœ\Ú
+Ý\œ™[
+BˆYˆ
+ÛÝOOH	ÜÙ][™ÜËœÙXÝ[Û‰ÊHÙ][™ÜÔ™YÚ\Ý˜][ÛœËœ\Ú
+Ý\œ™[
+BˆXÝ]™TÛÝ™YÚ\Ý˜][ÛˆHÝ\œ™[ˆ™YÚ\Ý\Š
+BˆXÝ]™TÛÝ™YÚ\Ý˜][ÛˆH[ˆKˆ™YÚ\Ý\ŠY]Y]KÛÛ\Û™[
+HÂˆXÝ]™TÛÝ™YÚ\Ý˜][Û‹›Y]Y]HHY]Y]BˆXÝ]™TÛÝ™YÚ\Ý˜][Û‹˜ÛÛ\Û™[HÛÛ\Û™[ˆYˆ
+XÝ]™TÛÝ™YÚ\Ý˜][Û‹œÛÝOOH	ÜÙ][™ÜËœÙXÝ[Û‰ÊH[™[HÛÛ\Û™[ˆKˆKˆJBˆHKˆBˆÛÛœÝ™XYHHÛÝ\˜ÙT›ÛZ\ÙK[ŠÛÝ\˜ÙHOˆ[’[“™]ÐÛÛ^
+ÛÝ\˜ÙKÂˆÚ[™ÝË™]ÚT“X›ÜÛÛ›Û\‹^XÛÙ\‹^[˜ÛÙ\‹Z[\œ˜^KˆJJBˆÛÛœÝ™[™\ˆH\Þ[˜È
+
+HOˆÂˆ]ØZ]™XYBˆ™]\›ˆ™\ÛÛ™U™YJÚ]ÛÛ\Û™[
+[™[
+JBˆBˆÛÛœÝ™[™\ÛÛ\Û™[H\Þ[˜È
+ÛÛ\Û™[›ÜÊHOˆÂˆ]ØZ]™XYBˆ™]\›ˆ™\ÛÛ™U™YJÚ]ÛÛ\Û™[
+ÛÛ\Û™[›ÜÊJBˆBˆÛÛœÝ[‘Y™™XÝÈH\Þ[˜ÈÛÛ\Û™[OˆÂˆ]ØZ]™XYBˆÛÛœÝY™™XÝÈH™XÛÜ™›ÜŠÛÛ\Û™[
+K™Y™™XÝÂˆ›Üˆ
+ÛÛœÝ™XÛÜ™ÙˆY™™XÝÊHÂˆYˆ
+\™XÛÜ™\™XÛÜ™œ[™[™ÊHÛÛ[YBˆ™XÛÜ™œ[™[™ÈH˜[ÙBˆ™XÛÜ™˜ÛX[\ËŠ
+Bˆ™XÛÜ™˜ÛX[\H™XÛÜ™™Y™™XÝ
+
+BˆBˆBˆ™]\›ˆÈ™XYK™[™\‹[‘Y™™XÝËÙ][œÝ[Y[™\Îˆ˜[YHOˆÈ[œÝ[Y[™\ÈH˜[YHKˆÙ]ÛÛ\Û™[ˆ˜[YHOˆË‹‹˜ÛÛ\Û™[™XÛÜ™ËšÙ^\Ê
+WK™š[™
+ÛÛ\Û™[OˆÛÛ\Û™[›˜[YHOOH˜[YJKˆÙ][™ÜÔ™YÚ\Ý˜][ÛœËÛÝ™YÚ\Ý˜][ÛœË™[™\ÛÛ\Û™[[š™XÝ[ÛœË[Ù[Q\[™[˜ÚY\Ë™\]Y\ÝË\™XÝÜžT™\]Y\ÝËˆØ[Ë[Y\Ø[˜XÚÜË[Y\‘[^\ËˆÙ][œÝ[Yˆ˜[YHOˆÈ[œÝ[Y[™\ÈH˜[YHHBŸB‚™[˜Ý[Ûˆ\ÚÝÜ›Ù\Ê™YJHÂˆÛÛœÝ™\Ý[H×BˆÛÛœÝš\Ú]H˜[YHOˆÂˆYˆ
+\œ˜^Kš\Ð\œ˜^J˜[YJJHÈ˜[YK™›Ü‘XXÚ
+š\Ú]
+NÈ™]\›ˆBˆYˆ
+]˜[YH\[Ùˆ˜[YHOOH	ÛØš™XÝ	ÊH™]\›‚ˆ™\Ý[œ\Ú
+˜[YJBˆš\Ú]
+˜[YK˜Ú[™[ŠBˆBˆš\Ú]
+™YJBˆ™]\›ˆ™\Ý[ŸB‚™[˜Ý[Ûˆ\ÚÝÜ^
+™YJHÂˆÛÛœÝÝ]]H×BˆÛÛœÝš\Ú]H˜[YHOˆÂˆYˆ
+\[Ùˆ˜[YHOOH	ÜÝš[™ÉÈ\[Ùˆ˜[YHOOH	Û[X™\‰ÊHÈÝ]]œ\Ú
+Ýš[™Ê˜[YJJNÈ™]\›ˆBˆYˆ
+\œ˜^Kš\Ð\œ˜^J˜[YJJHÈ˜[YK™›Ü‘XXÚ
+š\Ú]
+NÈ™]\›ˆBˆYˆ
+˜[YH	‰ˆ\[Ùˆ˜[YHOOH	ÛØš™XÝ	ÊHš\Ú]
+˜[YK˜Ú[™[ŠBˆBˆš\Ú]
+™YJBˆ™]\›ˆÝ]]š›Ú[Š	È	ÊBŸB‚˜\Þ[˜È[˜Ý[ÛˆØZ]›Ü‘\ÚÝÜ™YJ\›™\ÜË™YXØ]JHÂˆ]™YBˆ›Üˆ
+]][\HÈ][\LÈ][\
+ÊÊHÂˆ]ØZ]™]È›ÛZ\ÙJ™\ÛÛ™HOˆÙ][[YYX]J™\ÛÛ™JJBˆ™YHH]ØZ]\›™\ÜËœ™[™\Š
+BˆYˆ
+™YXØ]J™YJJH™]\›ˆ™YBˆBˆ™]\›ˆ™YBŸB‚\Ý
+	ÛÙ™šXÚX[\ÚÝÜ™YÚ\Ý\œÈ9£ä¹.í¹ea¹gãˆ[™Z\œ›ÜœÈHÛÛ\]HÙXœÚ]H\™XÝÜžHÚ]ÙX\˜Ú[™ØÜ›Û[™ÉË\Þ[˜È
+
+HOˆÂˆÛÛœÝ[žHH\ÚÝÜ[žJÈYˆ	ÙÚZ[œÝ[Y	ËXÚØYÙS˜[YNˆ	ÐXÛYKÙÚZ[œÝ[Y	ËÛÛ[Z]ˆ	Ø‰Ëœ™\X]
+
+HJBˆÛÛœÝØ][ÙÈH\ÚÝÜØ][ÙÊÂˆ[žKˆ\ÚÝÜ[žJÈYˆ	ÙÚZ[œÝ[X›IËXÚØYÙS˜[YNˆ	ÐXÛYKÙÚZ[œÝ[X›IËÛÛ[Z]ˆ\ÚÝÜÛÛ[Z]JKˆ\ÚÝÜ[žJÈYˆ	ÙÚZ[˜ÛÛ\]X›IËXÚØYÙS˜[YNˆ	ÐXÛYKÙÚZ[˜ÛÛ\]X›IËÛÛ[Z]ˆ	ØÉËœ™\X]
+
+KÛÛ\]Xš[]Nˆ	Ú[˜ÛÛ\]X›IÈJKˆ\ÚÝÜ[žJÈYˆ	ÙÚ][šÛ›ÝÛ‰ËXÚØYÙS˜[YNˆ	ÐXÛYKÙÚ][šÛ›ÝÛ‰ËÛÛ[Z]ˆ	ÙIËœ™\X]
+
+KÛÛ\]Xš[]Nˆ	Ý[šÛ›ÝÛ‰ÈJKˆ\ÚÝÜ[žJÈYˆ	ÙÚ]ÙX‹[Û›IËXÚØYÙS˜[YNˆ	ÐXÛYKÙÚ]ÙX‹[Û›IËÛÛ[Z]ˆ	Ù‰Ëœ™\X]
+
+K›Ùš[\ÎˆÉÝÙX‰×HJKˆ\ÚÝÜ[žJÈYˆ	ÙÚ\ØY™K\YÚ[‹[X[˜YÙ\‰ËXÚØYÙS˜[YNˆ	ÙÚ\ØY™K\YÚ[‹[X[˜YÙ\‰ËÛÛ[Z]ˆ	Ù	Ëœ™\X]
+
+K›Ùš[\ÎˆÉÝÙX‰×HJKˆ\ÚÝÜ[žJÈYˆ	ØZ[YÚ\YÚ[‰ËXÚØYÙS˜[YNˆ	ÙÚXZ[\YÚ[‰ËÛÛ[Z]ˆ	ÎIËœ™\X]
+
+K›Ùš[\Îˆ×KÝ]\Îˆ	Ø›ØÚÙY	ËˆÝ]\Ô™X\ÛÛŽˆ	Ð]]ÛX]XÈÛXÞH›ØÚÙY[œÝ[][ÛŽˆš^Y\ÛÝ\˜ÙHÙXÝ\š]HØ\›š[™ÜÈ™\]Z\™H™]šY]ÉÈJKˆ\ÚÝÜ[žJÈYˆ	ÝÚ]˜]Û‹\YÚ[‰ËXÚØYÙS˜[YNˆ	ÐXÛYKÝÚ]˜]Û‹\YÚ[‰ËÛÛ[Z]ˆ	Î	Ëœ™\X]
+
+KÝ]\Îˆ	Ý[›\ÝY	ÈJKˆJBˆÛÛœÝ\›™\ÜÈHÜ™X]Q\ÚÝÜ\›™\ÜÊÂˆØ][ÙËˆ\™XÝÜžQØÝ[Y[Îˆ\ÚÝÜ\™XÝÜžQØÝ[Y[ÊØ][ÙËÈ^˜PØ[™Y]\ÎˆÂˆÈYˆ	ØØ[™Y]K[Û›IË˜[YNˆ	ÐØ[™Y]HÛ›HYÚ[‰Ë\ØÜš\[ÛŽˆ	ÐHØ[™Y]HÚ]›ÈØ][ÙÈ™XÛÜ™‰Ëˆ™\ÜÚ]ÜžU\›ˆ	ÚÎ‹ËÙÚ]X‹˜ÛÛKØXÛYKØØ[™Y]K[Û›IËÝ]\Îˆ	Ü™Z™XÝY	Ë]\ÝÛÛ[Z]ˆ	ÍÉËœ™\X]
+
+KÜXÜÎˆÉØZI×HKˆHJKˆ[œÝ[YˆÞÈ˜[YNˆ	ÐXÛYKÙÚZ[œÝ[Y	ËÙ™šXÚX[ˆ˜[ÙK[œÝ[YˆYK™[[Ý˜X›NˆYK[˜X›YˆYKˆ™\œÚ[ÛŽˆ	ÌKŒŒ	ËÛÝ\˜ÙNˆÚ]
+ÚÎ‹ËÙÚ]X‹˜ÛÛKØXÛYKÙÚZ[œÝ[Y™Ú]ÉÉØ‰Ëœ™\X]
+
+_XWKˆJBˆ]ØZ]\›™\ÜËœ™XYBˆ\ÜÙ\™\]X[
+\›™\ÜËœÙ][™ÜÔ™YÚ\Ý˜][ÛœË›[™ÝJBˆ\ÜÙ\™\]X[
+\›™\ÜËœÙ][™ÜÔ™YÚ\Ý˜][ÛœÖÌKœÛÝ	ÜÙ][™ÜËœÙXÝ[Û‰ÊBˆ\ÜÙ\™\]X[
+\›™\ÜËœÙ][™ÜÔ™YÚ\Ý˜][ÛœÖÌK›Y]Y]KšY	ÙÚ\ÝÜ™IÊBˆ\ÜÙ\™\]X[
+\›™\ÜËœÙ][™ÜÔ™YÚ\Ý˜][ÛœÖÌK›Y]Y]K›X™[
+
+K	ù£ä¹.í¹ea¹gã‰ÊBˆ\ÜÙ\™Y\\]X[
+\›™\ÜËœÛÝ™YÚ\Ý˜][ÛœË›X\
+›ÝÈOˆ›ÝËœÛÝ
+KÉÜÙ][™ÜËœÙXÝ[Û‰Ë	ÛXZ[‰Ë	ÜÚYX˜\‹œ[™[\Ý	×JBˆÛÛœÝÝÜ™T[™[H\›™\ÜËœÛÝ™YÚ\Ý˜][ÛœË™š[™
+›ÝÈOˆ›ÝËœÛÝOOH	ÛXZ[‰ÊBˆ\ÜÙ\™\]X[
+ÝÜ™T[™[›Y]Y]KšÙ^K	ÙÚ\ÝÜ™IÊBˆ\ÜÙ\™\]X[
+ÝÜ™T[™[˜ÛÛ\Û™[›˜[YK	ÓX[˜YÙ\”[™[	ÊBˆÛÛœÝÚYX˜\‘[žHH\›™\ÜËœÛÝ™YÚ\Ý˜][ÛœË™š[™
+›ÝÈOˆ›ÝËœÛÝOOH	ÜÚYX˜\‹œ[™[\Ý	ÊBˆ\ÜÙ\™\]X[
+ÚYX˜\‘[žK›Y]Y]KšYÝÜ™T[™[›Y]Y]KšÙ^JBˆ\ÜÙ\™\]X[
+ÚYX˜\‘[žK›Y]Y]K›X™[	ù£ä¹.í¹ea¹gã‰ÊBˆ\ÜÙ\™\]X[
+ÚYX˜\‘[žK›Y]Y]K›Ü™\‹L
+BˆÛÛœÝXÛÛˆH]ØZ]\›™\ÜËœ™[™\ÛÛ\Û™[
+ÚYX˜\‘[žK˜ÛÛ\Û™[ÈÚ^™NˆNXÝ]™NˆYHJBˆ\ÜÙ\™\]X[
+\ÚÝÜ›Ù\ÊXÛÛŠK™š[™
+›ÙHOˆ›ÙK\HOOH	ÜÝ™ÉÊOËœ›ÜËÚYN
+BˆÛÛœÝX[šY™\ÝH”ÓÓ‹œ\œÙJ]ØZ]™XYš[J™]ÈT“
+	Ë‹‹ÜXÚØYÙKšœÛÛ‰Ë[\Ü›Y]K\›
+K	Ý]Ž	ÊJBˆ\ÜÙ\›ÚÊX[šY™\Ý™Ú˜ÛY[š[š™XÝš[˜ÛY\Ê	ÐY\ÙYZËXZKÙÚXÛY[]ZK[^[Ý]	ÊJBˆ\ÜÙ\›ÚÊX[šY™\Ý™Ú˜ÛY[š[š™XÝš[˜ÛY\Ê	ÐY\ÙYZËXZKÙÚXÛY[]ZK\ÚYX˜\‰ÊJBˆ\ÜÙ\™Y\\]X[
+\›™\ÜË›[Ù[Q\[™[˜ÚY\ËÉÜÛÝÉË	Ü™[[ÝIË	Ü™[[ÝKœYÚ[“X[˜YÙ\‰×JBˆ\ÜÙ\™\]X[
+”ÓÓ‹œÝš[™ÚYžJ\›™\ÜËš[š™XÝ[ÛœÖÌJK	ÖÈœ™[[ÝH‹œ™[[ÝKœYÚ[“X[˜YÙ\ˆ—IÊB‚ˆÛÛœÝ[š]X[H]ØZ]\›™\ÜËœ™[™\Š
+BˆÛÛœÝ\ÚÝÜ[™[H\›™\ÜË™Ù]ÛÛ\Û™[
+	Ñ\ÚÝÜÝÜ™T[™[	ÊBˆ\ÜÙ\™\]X[
+\[Ùˆ\ÚÝÜ[™[	Ù[˜Ý[Û‰ÊBˆ]ØZ]\›™\ÜËœ[‘Y™™XÝÊ\ÚÝÜ[™[
+BˆÛÛœÝ™YHH]ØZ]ØZ]›Ü‘\ÚÝÜ™YJ\›™\ÜË˜[YHOˆ\ÚÝÜ^
+˜[YJKš[˜ÛY\Ê	Ó˜[YHÚZ[œÝ[X›IÊJBˆÛÛœÝ^H\ÚÝÜ^
+™YJBˆ\ÜÙ\›X]Ú
+^ÑÒTÝÜ™KÊBˆ\ÜÙ\›X]Ú
+^ù£ä¹.í¹ea¹gã»ï"ÒTÝÜ™{ï"KÊBˆ\ÜÙ\›X]Ú
+^ùaj:`ê9mì¹çéy£ä¹.íˆ0­ÈLÊBˆ\ÜÙ\›X]Ú
+^Ó˜[YHÚZ[œÝ[YŠ¹mì¹d+ùbª9mì¹d+ùbªŠ“˜[YHÚZ[œÝ[YÊBˆ\ÜÙ\›X]Ú
+^ù¥-¹oeyâ­¹  y.#¹k¨y¨.9nîº+«¹b!¹o 9leyé.‹ÊBˆ\ÜÙ\›X]Ú
+^ÐØ][ÙÈ9mì¹¢é¹¢*ˆ0­ÈÒ9cëù¨à9§éKÊBˆ\ÜÙ\›ÚÊ\ÚÝÜ›Ù\Ê[š]X[
+K›[™Ýˆ
+Bˆ\ÜÙ\™\]X[
+\›™\ÜË˜Ø[Ë›\Ý[™\ËJBˆ\ÜÙ\™\]X[
+\›™\ÜËœ™\]Y\ÝË›[™ÝJBˆ\ÜÙ\™\]X[
+\›™\ÜËœ™\]Y\ÝÖÌK\›\ÚÝÜØ][ÙÕ\›
+Bˆ\ÜÙ\™\]X[
+\›™\ÜËœ™\]Y\ÝÖÌK›Ü[ÛœËœ™Y\™XÝ	Ù\œ›Ü‰ÊBˆ\ÜÙ\™\]X[
+\ÚÝÜ›Ù\Ê™YJKœÛÛYJ›ÙHOˆ›ÙK\HOOH	Ø]Û‰È	‰ˆ›ÙK˜Ú[™[Ëš[˜ÛY\Ê	ùk¢z(áIÊJKYJBˆÛÛœÝ[œÝ[YØ\™H\ÚÝÜ›Ù\Ê™YJK™š[™
+›ÙHOˆ›ÙK\HOOH	Ø\XÛIÈ	‰ˆ\ÚÝÜ^
+›ÙJKš[˜ÛY\Ê	ÐXÛYKÙÚZ[œÝ[Y	ÊJBˆÛÛœÝ[˜ÛÛ\]X›PØ\™H\ÚÝÜ›Ù\Ê™YJK™š[™
+›ÙHOˆ›ÙK\HOOH	Ø\XÛIÈ	‰ˆ\ÚÝÜ^
+›ÙJKš[˜ÛY\Ê	ÐXÛYKÙÚZ[˜ÛÛ\]X›IÊJBˆÛÛœÝ[šÛ›ÝÛØ\™H\ÚÝÜ›Ù\Ê™YJK™š[™
+›ÙHOˆ›ÙK\HOOH	Ø\XÛIÈ	‰ˆ\ÚÝÜ^
+›ÙJKš[˜ÛY\Ê	ÐXÛYKÙÚ][šÛ›ÝÛ‰ÊJBˆÛÛœÝÙX“Û›PØ\™H\ÚÝÜ›Ù\Ê™YJK™š[™
+›ÙHOˆ›ÙK\HOOH	Ø\XÛIÈ	‰ˆ\ÚÝÜ^
+›ÙJKš[˜ÛY\Ê	ÐXÛYKÙÚ]ÙX‹[Û›IÊJBˆÛÛœÝX›XÓÛ›PØ\™H\ÚÝÜ›Ù\Ê™YJK™š[™
+›ÙHOˆ›ÙK\HOOH	Ø\XÛIÈ	‰ˆ\ÚÝÜ^
+›ÙJKš[˜ÛY\Ê	ÐXÛYKÜX›XË[Û›IÊJBˆÛÛœÝØ[™Y]SÛ›PØ\™H\ÚÝÜ›Ù\Ê™YJK™š[™
+›ÙHOˆ›ÙK\HOOH	Ø\XÛIÈ	‰ˆ\ÚÝÜ^
+›ÙJKš[˜ÛY\Ê	ÐØ[™Y]HÛ›HYÚ[‰ÊJBˆÛÛœÝÚ]˜]ÛØ\™H\ÚÝÜ›Ù\Ê™YJK™š[™
+›ÙHOˆ›ÙK\HOOH	Ø\XÛIÈ	‰ˆ\ÚÝÜ^
+›ÙJKš[˜ÛY\Ê	ÐXÛYKÝÚ]˜]Û‹\YÚ[‰ÊJBˆÛÛœÝ›ØÚÙYYÚ[Ø\™H\ÚÝÜ›Ù\Ê™YJK™š[™
+›ÙHOˆ›ÙK\HOOH	Ø\XÛIÈ	‰ˆ\ÚÝÜ^
+›ÙJKš[˜ÛY\Ê	ÙÚXZ[\YÚ[‰ÊJBˆ\ÜÙ\›ÚÊ[œÝ[YØ\™
+Bˆ\ÜÙ\›ÚÊ[˜ÛÛ\]X›PØ\™
+Bˆ\ÜÙ\›ÚÊ[šÛ›ÝÛØ\™
+Bˆ\ÜÙ\›ÚÊÙX“Û›PØ\™
+Bˆ\ÜÙ\›ÚÊX›XÓÛ›PØ\™	Ù\ØÛÝ™\žK[Û›HYÚ[œÈ™[XZ[ˆš\ÚX›H[ˆH[\™XÝÜžIÊBˆ\ÜÙ\›ÚÊØ[™Y]SÛ›PØ\™	ØØ[™Y]K[Û›HYÚ[œÈ™[XZ[ˆš\ÚX›H[ˆH[\™XÝÜžIÊBˆ\ÜÙ\›ÚÊÚ]˜]ÛØ\™	Ý[›\ÝYØ][ÙÈ™XÛÜ™È™[XZ[ˆš\ÚX›H[ˆH[\™XÝÜžIÊBˆ\ÜÙ\›ÚÊ›ØÚÙYYÚ[Ø\™	ÐØ][ÙËX›ØÚÙYYÚ[œÈ™[XZ[ˆÙX\˜ÚX›H[™Ø[ˆ™H[™YÈÒ›ÜˆHš[˜[ÚXÚÉÊBˆ\ÜÙ\›X]Ú
+\ÚÝÜ^
+›ØÚÙYYÚ[Ø\™
+KÐØ][ÙÈ9mì¹¢é¹¢*ˆ0­ÈÒ9cëù¨à9§éKÊBˆÛÛœÝ›ØÚÙY[œÝ[Ø\™H\ÚÝÜ›Ù\Ê›ØÚÙYYÚ[Ø\™
+K™š[™
+›ÙHOˆ›ÙK\HOOH	Ø]Û‰È	‰ˆ›ÙK˜Ú[™[Ëš[˜ÛY\Ê	ù.©9å,HÒ9¨à9§éyk¢z(áIÊJBˆ\ÜÙ\›ÚÊ›ØÚÙY[œÝ[Ø\™
+Bˆ\ÜÙ\™\]X[
+›ØÚÙY[œÝ[Ø\™œ›ÜË™\ØX›Y˜[ÙJBˆ\ÜÙ\™\]X[
+\[Ùˆ›ØÚÙY[œÝ[Ø\™œ›ÜË›ÛÛXÚË	Ù[˜Ý[Û‰ÊBˆ›Üˆ
+ÛÛœÝØ\™ÙˆÜX›XÓÛ›PØ\™Ø[™Y]SÛ›PØ\™Ú]˜]ÛØ\™JHÂˆÛÛœÝÚ]X’[œÝ[H\ÚÝÜ›Ù\ÊØ\™
+K™š[™
+›ÙHOˆ›ÙK\HOOH	Ø]Û‰Âˆ	‰ˆ›ÙK˜Ú[™[Ëš[˜ÛY\Ê	ÑÚ]Xˆ9g,9g`9.©9å,HÒ9k¢z(áIÊJBˆ\ÜÙ\›ÚÊÚ]X’[œÝ[	Ý[›\ÝYØ[™Y]K[™X›XË[Û›HÒYÚ[œÈÚ\™HHÒ[œÝ[[™Ù™‰ÊBˆ\ÜÙ\™\]X[
+Ú]X’[œÝ[œ›ÜË™\ØX›Y˜[ÙJBˆBˆ\ÜÙ\›X]Ú
+\ÚÝÜ^
+™YJKÐRH9.#¹¦nº ïy/dËÊBˆÛÛœÝ\™XÝÜžTÙX\˜ÚH\ÚÝÜ›Ù\Ê™YJK™š[™
+›ÙHOˆ›ÙK\HOOH	Ú[œ]	È	‰ˆ›ÙKœ›ÜÖÉØ\šXK[X™[	×HOOH	ù¤'9í(¹aj:`ê9mì¹çéy£ä¹.í‰ÊBˆ\ÜÙ\›ÚÊ\™XÝÜžTÙX\˜Ú
+BˆÛÛœÝšY]ÜÜH\ÚÝÜ›Ù\Ê™YJK™š[™
+›ÙHOˆ›ÙKœ›ÜÏË–ÉØ\šXK[X™[	×HOOH	ùaj:`ê9mì¹çéy£ä¹.í¹îäù§§	ÊBˆ\ÜÙ\™\]X[
+šY]ÜÜœ›ÜËœÝ[K›Ý™\™›ÝË	Ýš\ÚX›IÊBˆ\ÜÙ\™\]X[
+šY]ÜÜ˜Ú[™[‹›[™ÝK	ÝH\Ý[™YÚ[˜][ÛˆÚ\™HHX\šÙ]XÙHØÜ›Û›ÝÉÊBˆÛÛœÝ›ÛÝH\ÚÝÜ›Ù\Ê™YJK™š[™
+›ÙHOˆ›ÙK\HOOH	ÜÙXÝ[Û‰È	‰ˆ›ÙKœ›ÜÏË–ÉØ\šXK[X™[	×KœÝ\ÕÚ]
+	ù£ä¹.í¹ea¹gã»ï"ÒTÝÜ™{ï"IÊJBˆ\ÜÙ\›X]Ú
+›ÛÝœ›ÜËœÝ[KšZYÚÌLšÊBˆ\ÜÙ\™\]X[
+›ÛÝœ›ÜËœÝ[K›Ý™\™›ÝÖK	Ø]]ÉÊBˆ\ÜÙ\™\]X[
+›ÛÝœ›ÜËœÝ[K›X\™Ú[’[›[™K	Ø]]ÉÊBˆ\ÜÙ\™\]X[
+›ÛÝœ›ÜËœÝ[KœY[™Ë	ÌMÛ[\
+Mœ‹]ËÌ
+HŽ	ÊBˆ\ÜÙ\™\]X[
+\ÚÝÜ›Ù\Ê™YJK™š[™
+›ÙHOˆ›ÙKœ›ÜÏË–ÉØ\šXK[X™[	×HOOH	ùaj:`ê9mì¹çéy£ä¹.í‰ÊKœ›ÜËœÝ[K™Ø\	ÌM	ÊBˆ\ÜÙ\™\]X[
+›ÛÝœ›ÜËX’[™^
+Bˆ\ÜÙ\™\]X[
+\ÚÝÜ›Ù\Ê™YJK™š[™
+›ÙHOˆ›ÙKœ›ÜÏË–ÉØ\šXK[X™[	×HOOH	ùæë¹oey¤'9í(¹d£9ëfú`"IÊKœ›ÜËœÝ[KœÜÚ][Û‹	ÜÝXÚÞIÊBˆ›Üˆ
+ÛÛœÝX™[ÙˆÉùalúeëIË	ùcn:/oIË	ù§éyç"ú+é¹ áI×JHÂˆ\ÜÙ\™\]X[
+\ÚÝÜ›Ù\Ê[œÝ[YØ\™
+KœÛÛYJ›ÙHOˆ›ÙK\HOOH	Ø]Û‰È	‰ˆ›ÙK˜Ú[™[Ëš[˜ÛY\ÊX™[
+JKYK	ÛX™[H\È]˜Z[X›H›ÜˆHX]Ú[™È[œÝ[Y\™\\H[™X
+BˆBˆ\ÜÙ\™\]X[
+\ÚÝÜ›Ù\Ê[œÝ[YØ\™
+KœÛÛYJ›ÙHOˆ›ÙK\HOOH	Ø]Û‰È	‰ˆ›ÙK˜Ú[™[Ëš[˜ÛY\Ê	ùk¢z(áIÊJK˜[ÙJBˆ›Üˆ
+ÛÛœÝØ\™ÙˆÚ[˜ÛÛ\]X›PØ\™[šÛ›ÝÛØ\™ÙX“Û›PØ\™JHÂˆÛÛœÝ[œÝ[H\ÚÝÜ›Ù\ÊØ\™
+K™š[™
+›ÙHOˆ›ÙK\HOOH	Ø]Û‰È	‰ˆ›ÙK˜Ú[™[Ëš[˜ÛY\Ê	ùk¢z(áIÊJBˆ\ÜÙ\›ÚÊ[œÝ[	ÝHÙ™šXÚX[\ÚÝÜX[˜YÙ\ˆÙ]ÈÈXÚYH[œÝ[ÛÛ\]Xš[]IÊBˆ\ÜÙ\™\]X[
+[œÝ[œ›ÜË™\ØX›Y˜[ÙJBˆ\ÜÙ\™\]X[
+\[Ùˆ[œÝ[œ›ÜË›ÛÛXÚË	Ù[˜Ý[Û‰ÊBˆBˆÛÛœÝÝÜ™PØ\™H\ÚÝÜ›Ù\Ê™YJK™š[™
+›ÙHOˆ›ÙK\HOOH	Ø\XÛIÈ	‰ˆ\ÚÝÜ^
+›ÙJKš[˜ÛY\Ê	ÙÚ\ØY™K\YÚ[‹[X[˜YÙ\‰ÊJBˆ\ÜÙ\›ÚÊÝÜ™PØ\™
+Bˆ\ÜÙ\™\]X[
+\ÚÝÜ›Ù\ÊÝÜ™PØ\™
+KœÛÛYJ›ÙHOˆ›ÙK\HOOH	Ø]Û‰È	‰ˆÉùd+ùbª	Ë	ùalúeëIË	ùcn:/oI×KœÛÛYJX™[Oˆ›ÙK˜Ú[™[Ëš[˜ÛY\ÊX™[
+JJK˜[ÙJB‚ˆÛÛœÝ]Z[]ÛˆH\ÚÝÜ›Ù\Ê[œÝ[YØ\™
+K™š[™
+›ÙHOˆ›ÙK\HOOH	Ø]Û‰È	‰ˆ›ÙK˜Ú[™[Ëš[˜ÛY\Ê	ù§éyç"ú+é¹ áIÊJBˆ]Z[]Û‹œ›ÜË›ÛÛXÚÊ
+BˆÛÛœÝ]Z[™YHH]ØZ]\›™\ÜËœ™[™\Š
+Bˆ\ÜÙ\›X]Ú
+\ÚÝÜ^
+]Z[™YJKÓ˜[YHÚZ[œÝ[Y0­È9£ä¹.íº+é¹ áKÊBˆ\ÜÙ\›X]Ú
+\ÚÝÜ^
+]Z[™YJKÑÚ]Xˆ9.äùn¤ûï&šÎ—×ÙÚ]X—˜ÛÛWØXÛYWÙÚZ[œÝ[YÊBˆ\ÜÙ\›X]Ú
+\ÚÝÜ^
+]Z[™YJKù§`úfdÝËÊBˆÛÛœÝ[œÝ[Y]Z[XÝ[ÛœÈH\ÚÝÜ›Ù\Ê]Z[™YJK™š[™
+›ÙHOˆ›ÙKœ›ÜÏË–ÉØ\šXK[X™[	×HOOH	ù£ä¹.í¹¤ãy/g	ÊBˆ\ÜÙ\›ÚÊ[œÝ[Y]Z[XÝ[ÛœÊBˆ›Üˆ
+ÛÛœÝX™[ÙˆÉùk¢z(áIË	ùd+ùbª	Ë	ùalúeëIË	ùcn:/oI×JHÂˆ\ÜÙ\™\]X[
+\ÚÝÜ›Ù\Ê[œÝ[Y]Z[XÝ[ÛœÊKœÛÛYJ›ÙHOˆ›ÙK\HOOH	Ø]Û‰È	‰ˆ›ÙK˜Ú[™[Ëš[˜ÛY\ÊX™[
+JKYKˆ	ÛX™[H™[XZ[œÈš\ÚX›H[ˆYÚ[ˆ]Z[Ø
+BˆBˆ\ÜÙ\™\]X[
+\ÚÝÜ›Ù\Ê[œÝ[Y]Z[XÝ[ÛœÊK™š[™
+›ÙHOˆ›ÙK\HOOH	Ø]Û‰È	‰ˆ›ÙK˜Ú[™[Ëš[˜ÛY\Ê	ùk¢z(áIÊJKœ›ÜË™\ØX›YYJBˆ\ÜÙ\™\]X[
+\ÚÝÜ›Ù\Ê[œÝ[Y]Z[XÝ[ÛœÊK™š[™
+›ÙHOˆ›ÙK\HOOH	Ø]Û‰È	‰ˆ›ÙK˜Ú[™[Ëš[˜ÛY\Ê	ùcn:/oIÊJKœ›ÜË™\ØX›Y˜[ÙJB‚ˆÛÛœÝ[šÛ›ÝÛ‘]Z[]ÛˆH\ÚÝÜ›Ù\Ê[šÛ›ÝÛØ\™
+K™š[™
+›ÙHOˆ›ÙK\HOOH	Ø]Û‰È	‰ˆ›ÙK˜Ú[™[Ëš[˜ÛY\Ê	ù§éyç"ú+é¹ áIÊJBˆ[šÛ›ÝÛ‘]Z[]Û‹œ›ÜË›ÛÛXÚÊ
+BˆÛÛœÝ[šÛ›ÝÛ‘]Z[™YHH]ØZ]\›™\ÜËœ™[™\Š
+BˆÛÛœÝ[šÛ›ÝÛ‘]Z[XÝ[ÛœÈH\ÚÝÜ›Ù\Ê[šÛ›ÝÛ‘]Z[™YJK™š[™
+›ÙHOˆ›ÙKœ›ÜÏË–ÉØ\šXK[X™[	×HOOH	ù£ä¹.í¹¤ãy/g	ÊBˆ\ÜÙ\›ÚÊ[šÛ›ÝÛ‘]Z[XÝ[ÛœÊBˆÛÛœÝ›ØÚÙY[œÝ[H\ÚÝÜ›Ù\Ê[šÛ›ÝÛ‘]Z[XÝ[ÛœÊK™š[™
+›ÙHOˆ›ÙK\HOOH	Ø]Û‰È	‰ˆ›ÙK˜Ú[™[Ëš[˜ÛY\Ê	ùk¢z(áIÊJBˆ\ÜÙ\›ÚÊ›ØÚÙY[œÝ[
+Bˆ\ÜÙ\™\]X[
+›ØÚÙY[œÝ[œ›ÜË™\ØX›Y˜[ÙJBˆ\ÜÙ\™\]X[
+\[Ùˆ›ØÚÙY[œÝ[œ›ÜË›ÛÛXÚË	Ù[˜Ý[Û‰ÊBˆ›Üˆ
+ÛÛœÝX™[ÙˆÉùd+ùbª	Ë	ùalúeëIË	ùcn:/oI×JHÂˆÛÛœÝ]ÛˆH\ÚÝÜ›Ù\Ê[šÛ›ÝÛ‘]Z[XÝ[ÛœÊK™š[™
+›ÙHOˆ›ÙK\HOOH	Ø]Û‰È	‰ˆ›ÙK˜Ú[™[Ëš[˜ÛY\ÊX™[
+JBˆ\ÜÙ\›ÚÊ]Û‹	ÛX™[H™[XZ[œÈš\ÚX›H[ˆYÚ[ˆ]Z[Ø
+Bˆ\ÜÙ\™\]X[
+]Û‹œ›ÜË™\ØX›YYJBˆ\ÜÙ\™\]X[
+]Û‹œ›ÜË]K	ùodùbcH›Ùš[H9l&¹§*¹k¢z(áy«i9£ä¹.í¸à ‰ÊBˆBˆ\ÜÙ\™Ù\Ó›ÝX]Ú
+\ÚÝÜ^
+[šÛ›ÝÛ‘]Z[™YJKùk¢z(áymì¹é yå*ÊB‚ˆÛÛœÝÙX\˜ÚH\ÚÝÜ›Ù\Ê]Z[™YJK™š[™
+›ÙHOˆ›ÙK\HOOH	Ú[œ]	È	‰ˆ›ÙKœ›ÜÖÉØ\šXK[X™[	×HOOH	ù¤'9í(¹aj:`ê9mì¹çéy£ä¹.í‰ÊBˆ\ÜÙ\›ÚÊÙX\˜Ú
+BˆÙX\˜Úœ›ÜË›ÛÚ[™ÙJÈ\™Ù]ˆÈ˜[YNˆ	ØZ[YÚ\YÚ[‰ÈHJBˆÛÛœÝ›ØÚÙYÙX\˜Ú™YHH]ØZ]\›™\ÜËœ™[™\Š
+BˆÛÛœÝÙX\˜Ú™\Ý[ÈH\ÚÝÜ›Ù\Ê›ØÚÙYÙX\˜Ú™YJK™š[\Š›ÙHOˆ›ÙK\HOOH	Ø\XÛIÊBˆ\ÜÙ\™\]X[
+ÙX\˜Ú™\Ý[Ë›[™ÝJBˆ\ÜÙ\›X]Ú
+\ÚÝÜ^
+ÙX\˜Ú™\Ý[ÖÌJKÙÚXZ[\YÚ[‹ÊBˆ\ÜÙ\›ÚÊ\ÚÝÜ^
+›ØÚÙYÙX\˜Ú™YJKš[˜ÛY\Ê	ÐØ][ÙÈ9mì¹¢é¹¢*ˆ0­ÈIÊJBˆÛÛœÝ›ØÚÙY]Z[Ð]ÛˆH\ÚÝÜ›Ù\ÊÙX\˜Ú™\Ý[ÖÌJK™š[™
+›ÙHOˆ›ÙK\HOOH	Ø]Û‰È	‰ˆ›ÙK˜Ú[™[Ëš[˜ÛY\Ê	ù§éyç"ú+é¹ áIÊJBˆ›ØÚÙY]Z[Ð]Û‹œ›ÜË›ÛÛXÚÊ
+BˆÛÛœÝ›ØÚÙY]Z[Õ™YHH]ØZ]\›™\ÜËœ™[™\Š
+Bˆ\ÜÙ\›X]Ú
+\ÚÝÜ^
+›ØÚÙY]Z[Õ™YJKùea¹gã¹k¨y¨.9nîº+«‹ÊBˆ\ÜÙ\›X]Ú
+\ÚÝÜ^
+›ØÚÙY]Z[Õ™YJKÐ]]ÛX]XÈÛXÞH›ØÚÙY[œÝ[][Û‹ÊBˆ\ÜÙ\›X]Ú
+\ÚÝÜ^
+›ØÚÙY]Z[Õ™YJKù§éyç"ù¢ 9§+ù¨à9§éz+é¹ áKÊBˆÛÛœÝ›ØÚÙY]Z[XÝ[ÛœÈH\ÚÝÜ›Ù\Ê›ØÚÙY]Z[Õ™YJK™š[™
+›ÙHOˆ›ÙKœ›ÜÏË–ÉØ\šXK[X™[	×HOOH	ù£ä¹.í¹¤ãy/g	ÊBˆ\ÜÙ\™\]X[
+\ÚÝÜ›Ù\Ê›ØÚÙY]Z[XÝ[ÛœÊK™š[™
+›ÙHOˆ›ÙK\HOOH	Ø]Û‰È	‰ˆ›ÙK˜Ú[™[Ëš[˜ÛY\Ê	ù.©9å,HÒ9¨à9§éyk¢z(áIÊJKœ›ÜË™\ØX›Y˜[ÙJBˆÛÛœÝÛX\›ØÚÙYÙX\˜ÚH\ÚÝÜ›Ù\Ê›ØÚÙY]Z[Õ™YJK™š[™
+›ÙHOˆ›ÙK\HOOH	Ø]Û‰È	‰ˆ›ÙK˜Ú[™[Ëš[˜ÛY\Ê	ù®!zfi9ëfú`"IÊJBˆÛX\›ØÚÙYÙX\˜Úœ›ÜË›ÛÛXÚÊ
+BˆÛÛœÝ™\Ù]™YHH]ØZ]\›™\ÜËœ™[™\Š
+BˆÛÛœÝ™\Ù]ÙX\˜ÚH\ÚÝÜ›Ù\Ê™\Ù]™YJK™š[™
+›ÙHOˆ›ÙK\HOOH	Ú[œ]	È	‰ˆ›ÙKœ›ÜÖÉØ\šXK[X™[	×HOOH	ù¤'9í(¹aj:`ê9mì¹çéy£ä¹.í‰ÊBˆ™\Ù]ÙX\˜Úœ›ÜË›ÛÚ[™ÙJÈ\™Ù]ˆÈ˜[YNˆ	ÙÚ]ÙX‹[Û›IÈHJBˆÛÛœÝÙX\˜ÚY™YHH]ØZ]\›™\ÜËœ™[™\Š
+Bˆ\ÜÙ\™\]X[
+\ÚÝÜ›Ù\ÊÙX\˜ÚY™YJK™š[\Š›ÙHOˆ›ÙK\HOOH	Ø\XÛIÊK›[™ÝJBˆ\ÜÙ\›X]Ú
+\ÚÝÜ^
+ÙX\˜ÚY™YJKÓ˜[YHÚ]ÙX‹[Û›KÊBˆ\ÜÙ\›ÚÊ\ÚÝÜ›Ù\ÊÙX\˜ÚY™YJKœÛÛYJ›ÙHOˆ›ÙK\HOOH	ÜÙ[XÝ	È	‰ˆ›ÙKœ›ÜÖÉØ\šXK[X™[	×HOOH	ù£"yb!¹ìnùëfú`"IÊJBˆ\ÜÙ\›ÚÊ\ÚÝÜ›Ù\ÊÙX\˜ÚY™YJKœÛÛYJ›ÙHOˆ›ÙK\HOOH	ÜÙ[XÝ	È	‰ˆ›ÙKœ›ÜÖÉØ\šXK[X™[	×HOOH	ù£¤¹n£ù¥®yo#ÉÊJBˆ\ÜÙ\›ÚÊ\ÚÝÜ›Ù\ÊÙX\˜ÚY™YJKœÛÛYJ›ÙHOˆ›ÙK\HOOH	ÜÙ[XÝ	È	‰ˆ›ÙKœ›ÜÖÉØ\šXK[X™[	×HOOH	ù£"HÒÕÔ‘H9k¨y¨.9â­¹  yëfú`"IÊJBŸJB‚\Ý
+	Ñ\ÚÝÜ\™XÝÜžHÙY\È™XÛÜ™È™^[Û™H›Ü›Y\ˆÌZ][H˜[™ÙHÙX\˜ÚX›IË\Þ[˜È
+
+HOˆÂˆÛÛœÝØ][ÙÈH\ÚÝÜØ][ÙÊÙ\ÚÝÜ[žJÈYˆ	Û\™ÙKY\™XÝÜžKX[˜ÚÜ‰ËXÚØYÙS˜[YNˆ	ÐXÛYKÛ\™ÙKY\™XÝÜžKX[˜ÚÜ‰ËÛÛ[Z]ˆ\ÚÝÜÛÛ[Z]JWJBˆÛÛœÝ\™XÝÜžQØÝ[Y[ÈH\ÚÝÜ\™XÝÜžQØÝ[Y[ÊØ][ÙÊBˆÛÛœÝ[š]X[ÛÝ[H\™XÝÜžQØÝ[Y[Ë™\ØÛÝ™\žK™[šY\Ë›[™ÝˆÛÛœÝY][Û˜[™XÛÜ™ÈHBˆ›Üˆ
+][™^HÈ[™^Y][Û˜[™XÛÜ™ÎÈ[™^
+ÊÊHÂˆÛÛœÝÛÝ\˜ÙR[™^H[š]X[ÛÝ[
+È[™^ˆÛÛœÝYH[ËYÚ\YÚ[‹IÚ[™^Xˆ\™XÝÜžQØÝ[Y[Ë™\ØÛÝ™\žK™[šY\Ëœ\Ú
+ÂˆÛÝ\˜ÙR[™^ÛÝ\˜ÙRYˆY[X\ÎˆXÛYKÉÚYX˜[YNˆ[ÈÒYÚ[ˆ	Ú[™^Xˆ\ØÜš\[ÛŽˆ\™ÙH\™XÝÜžHš^\™H	Ú[™^XÝ\œÎˆY][Û˜[™XÛÜ™ÈH[™^Ø]YÛÜšY\ÎˆÉØZI×KˆÚ[™ˆ	ÙÚ\YÚ[‰Ë™\ÜÚ]ÜžU\›ˆÎ‹ËÙÚ]X‹˜ÛÛKØXÛYKÉÚYXˆ]Z[\›ˆÎ‹ËÝÝÝË™ÚœÛËØ\Y˜XÝÉÚYKØˆJBˆBˆ\™XÝÜžQØÝ[Y[Ë™\ØÛÝ™\žKœÛÝ\˜ÙKœ™XÛÜ™ÛÝ[H\™XÝÜžQØÝ[Y[Ë™\ØÛÝ™\žK™[šY\Ë›[™ÝˆÛÛœÝ^XÝY\™XÝÜžHHÜ™X]RÛ›ÝÛ”YÚ[‘\™XÝÜžJØ][ÙË™[šY\Ë™š[\Š›ÝÈOˆ›ÝËœÝ]\ÈOOH	Ý[›\ÝY	ÊKˆ\™XÝÜžQØÝ[Y[Ë˜Ø[™Y]\Ë™[šY\ËÈ\ØÛÝ™\žR[™^ˆ\™XÝÜžQØÝ[Y[Ë™\ØÛÝ™\žHJBˆÛÛœÝ\›™\ÜÈHÜ™X]Q\ÚÝÜ\›™\ÜÊÈØ][ÙË\™XÝÜžQØÝ[Y[ÈJBˆ]ØZ]\›™\ÜËœ™XYBˆ]ØZ]\›™\ÜËœ™[™\Š
+Bˆ]ØZ]\›™\ÜËœ[‘Y™™XÝÊ\›™\ÜË™Ù]ÛÛ\Û™[
+	Ñ\ÚÝÜÝÜ™T[™[	ÊJBˆ]™YHH]ØZ]ØZ]›Ü‘\ÚÝÜ™YJ\›™\ÜË˜[YHOˆ\ÚÝÜ^
+˜[YJKš[˜ÛY\Ê9aj:`ê9mì¹çéy£ä¹.íˆ0­È	Ù^XÝY\™XÝÜžK›[™ÝX
+JBˆÛÛœÝÙX\˜ÚH\ÚÝÜ›Ù\Ê™YJK™š[™
+›ÙHOˆ›ÙK\HOOH	Ú[œ]	È	‰ˆ›ÙKœ›ÜÖÉØ\šXK[X™[	×HOOH	ù¤'9í(¹aj:`ê9mì¹çéy£ä¹.í‰ÊBˆÙX\˜Úœ›ÜË›ÛÚ[™ÙJÈ\™Ù]ˆÈ˜[YNˆ[ËYÚ\YÚ[‹IØY][Û˜[™XÛÜ™ÈH_XHJBˆ™YHH]ØZ]\›™\ÜËœ™[™\Š
+BˆÛÛœÝ™\Ý[ÈH\ÚÝÜ›Ù\Ê™YJK™š[\Š›ÙHOˆ›ÙK\HOOH	Ø\XÛIÊBˆ\ÜÙ\™\]X[
+™\Ý[Ë›[™ÝJBˆ\ÜÙ\›X]Ú
+\ÚÝÜ^
+™\Ý[ÖÌJK™]È™YÑ^
+[ÈÒYÚ[ˆ	ØY][Û˜[™XÛÜ™ÈH_X
+JBˆ\ÜÙ\›X]Ú
+\ÚÝÜ^
+™YJKÌH9§hyîäù§§0­È9ë+HÈH:hmKÊBŸJB‚\Ý
+	Ñ\ÚÝÜ[Y\™XÝÜžHÙX\˜ÚYÛ›Ü™\È[Ù\˜][Ûˆ›Ú[\œ]H[™˜[šÜÈYÚ[ˆY[]HX]Ú\Èš\œÝ	Ë\Þ[˜È
+
+HOˆÂˆÛÛœÝ[XYÙHH\ÚÝÜ[žJÈYˆ	ÙÚZ[XYÙK]ÛÛ	ËXÚØYÙS˜[YNˆ	ÐXÛYKÙÚZ[XYÙK]ÛÛ	ËÛÛ[Z]ˆ\ÚÝÜÛÛ[Z]JBˆ[XYÙK›˜[YHH	ÙÚZ[XYÙK]ÛÛ	Âˆ[XYÙK™\ØÜš\[ÛˆH	ÐÜ™X]\È[™Y]È[XYÙ\Ë‰Âˆ[XYÙKœÙX\˜Ú\›\ÈHÉÚ[XYÙHÙ[™\˜][Û‰×BˆÛÛœÝ›ÙSÛ›HH\ÚÝÜ[žJÈYˆ	Ý^]ÛÛ	ËXÚØYÙS˜[YNˆ	ÐXÛYKÝ^]ÛÛ	ËÛÛ[Z]ˆ	Ø‰Ëœ™\X]
+
+HJBˆ›ÙSÛ›K›˜[YHH	Ý^]ÛÛ	Âˆ›ÙSÛ›K™\ØÜš\[ÛˆH	ÐHÚ[\H[XYÙH][]K‰ÂˆÛÛœÝ›Ú[\œ]SÛ›HH\ÚÝÜ[žJÈYˆ	ÜÙXÝ\š]KX]Y]Z[\‰ËXÚØYÙS˜[YNˆ	ÐXÛYKÜÙXÝ\š]KX]Y]Z[\‰ËˆÛÛ[Z]ˆ	ØÉËœ™\X]
+
+KÝ]\Îˆ	Ø›ØÚÙY	ËˆÝ]\Ô™X\ÛÛŽˆ	Ð]]ÛX]XÈÛXÞH›ØÚÙY[œÝ[][ÛŽˆ[[YHÙXÝ\š]HØ\›š[™ÜÈ™\]Z\™H™]šY]ÉÈJBˆ›Ú[\œ]SÛ›K›˜[YHH	ÜÙXÝ\š]KX]Y]Z[\‰Âˆ›Ú[\œ]SÛ›K™\ØÜš\[ÛˆH	Ô™]šY]ÜÈXÚØYÙHÙXÝ\š]K‰ÂˆÛÛœÝØ][ÙÈH\ÚÝÜØ][ÙÊÚ[XYÙK›ÙSÛ›K›Ú[\œ]SÛ›WJBˆÛÛœÝ\›™\ÜÈHÜ™X]Q\ÚÝÜ\›™\ÜÊÈØ][ÙË\™XÝÜžQØÝ[Y[Îˆ\ÚÝÜ\™XÝÜžQØÝ[Y[ÊØ][ÙÊHJBˆ]ØZ]\›™\ÜËœ™XYBˆ]ØZ]\›™\ÜËœ™[™\Š
+Bˆ]ØZ]\›™\ÜËœ[‘Y™™XÝÊ\›™\ÜË™Ù]ÛÛ\Û™[
+	Ñ\ÚÝÜÝÜ™T[™[	ÊJBˆ]™YHH]ØZ]ØZ]›Ü‘\ÚÝÜ™YJ\›™\ÜË˜[YHOˆ\ÚÝÜ^
+˜[YJKš[˜ÛY\Ê	ùaj:`ê9mì¹çéy£ä¹.íˆ0­ÈÉÊJBˆÛÛœÝÙX\˜ÚH\ÚÝÜ›Ù\Ê™YJK™š[™
+›ÙHOˆ›ÙK\HOOH	Ú[œ]	È	‰ˆ›ÙKœ›ÜÖÉØ\šXK[X™[	×HOOH	ù¤'9í(¹aj:`ê9mì¹çéy£ä¹.í‰ÊBˆ\ÜÙ\›ÚÊÙX\˜Ú
+B‚ˆÙX\˜Úœ›ÜË›ÛÚ[™ÙJÈ\™Ù]ˆÈ˜[YNˆ	Ú[IÈHJBˆ™YHH]ØZ]\›™\ÜËœ™[™\Š
+Bˆ]™\Ý[ÈH\ÚÝÜ›Ù\Ê™YJK™š[\Š›ÙHOˆ›ÙK\HOOH	Ø\XÛIÊBˆ\ÜÙ\™\]X[
+™\Ý[Ë›[™ÝK	ÜÚÜÙX\˜Ú^ÛY\È[˜ÚY[[\ØÜš\[Ûˆ[™[Ù\˜][Û‹\™X\ÛÛˆX]Ú\ÉÊBˆ\ÜÙ\›X]Ú
+\ÚÝÜ^
+™\Ý[ÖÌJKÙÚZ[XYÙK]ÛÛÊB‚ˆÛÛœÝ\]YÙX\˜ÚH\ÚÝÜ›Ù\Ê™YJK™š[™
+›ÙHOˆ›ÙK\HOOH	Ú[œ]	È	‰ˆ›ÙKœ›ÜÖÉØ\šXK[X™[	×HOOH	ù¤'9í(¹aj:`ê9mì¹çéy£ä¹.í‰ÊBˆ\]YÙX\˜Úœ›ÜË›ÛÚ[™ÙJÈ\™Ù]ˆÈ˜[YNˆ	Ú[XYÙIÈHJBˆ™YHH]ØZ]\›™\ÜËœ™[™\Š
+Bˆ™\Ý[ÈH\ÚÝÜ›Ù\Ê™YJK™š[\Š›ÙHOˆ›ÙK\HOOH	Ø\XÛIÊBˆ\ÜÙ\™\]X[
+™\Ý[Ë›[™Ý‹	ÛÛ™Ù\ˆÙX\˜Ú\È[ÛÈX]Ú™[]˜[\ØÜš\[Ûˆ^	ÊBˆ\ÜÙ\›X]Ú
+\ÚÝÜ^
+™\Ý[ÖÌJKÙÚZ[XYÙK]ÛÛË	ÜYÚ[ˆ˜[YH[™XÚØYÙHX]Ú\È˜[šÈ™Y›Ü™H›ÙK[Û›HX]Ú\ÉÊBˆ\ÜÙ\›X]Ú
+\ÚÝÜ^
+™\Ý[ÖÌWJKÝ^]ÛÛÊB‚ˆÛÛœÝ[XYÙTÙX\˜ÚH\ÚÝÜ›Ù\Ê™YJK™š[™
+›ÙHOˆ›ÙK\HOOH	Ú[œ]	È	‰ˆ›ÙKœ›ÜÖÉØ\šXK[X™[	×HOOH	ù¤'9í(¹aj:`ê9mì¹çéy£ä¹.í‰ÊBˆ[XYÙTÙX\˜Úœ›ÜË›ÛÚ[™ÙJÈ\™Ù]ˆÈ˜[YNˆ	Ú[œÝ[][Û‰ÈHJBˆ™YHH]ØZ]\›™\ÜËœ™[™\Š
+Bˆ\ÜÙ\™\]X[
+\ÚÝÜ›Ù\Ê™YJK™š[\Š›ÙHOˆ›ÙK\HOOH	Ø\XÛIÊK›[™Ýˆ	Û[Ù\˜][Ûˆ˜][Û˜[H\È›Ý\Ù\‹\ÙX\˜ÚX›HYÚ[ˆY]Y]IÊBŸJB‚\Ý
+	ÔÝÜ™H™]šY]ÈYšXÙH\ÈZ[‹[[™ÝXYÙKÙY\ÈXÚšXØ[]šY[˜ÙH^[™X›K[™X]™\ÈHš[˜[XÚ\Ú[ÛˆÈ\ÚÝÜ	Ë\Þ[˜È
+
+HOˆÂˆÛÛœÝ›ØÚÙYH\ÚÝÜ[žJÈYˆ	Ü™]šY]ËXYšXÙK\YÚ[‰ËXÚØYÙS˜[YNˆ	ÐXÛYKÜ™]šY]ËXYšXÙK\YÚ[‰ËˆÛÛ[Z]ˆ\ÚÝÜÛÛ[Z]Ý]\Îˆ	Ø›ØÚÙY	ËˆÝ]\Ô™X\ÛÛŽˆ	Ð]]ÛX]XÈÛXÞH›ØÚÙY[œÝ[][ÛŽˆ™]ÛÜšÈ\›Z\ÜÚ[ÛˆÚYÛ˜[È[œÝ[Y™XÞXÛHØÜš\È\™H™\Ù[ˆ™\\™IÈJBˆÛÛœÝ\›™\ÜÈHÜ™X]Q\ÚÝÜ\›™\ÜÊÈØ][ÙÎˆ\ÚÝÜØ][ÙÊØ›ØÚÙYJHJBˆ]ØZ]\›™\ÜËœ™XYBˆ]ØZ]\›™\ÜËœ™[™\Š
+Bˆ]ØZ]\›™\ÜËœ[‘Y™™XÝÊ\›™\ÜË™Ù]ÛÛ\Û™[
+	Ñ\ÚÝÜÝÜ™T[™[	ÊJBˆ]™YHH]ØZ]ØZ]›Ü‘\ÚÝÜ™YJ\›™\ÜË˜[YHOˆ\ÚÝÜ^
+˜[YJKš[˜ÛY\Ê	Ü™]šY]ËXYšXÙK\YÚ[‰ÊJBˆ]Ø\™H\ÚÝÜ›Ù\Ê™YJK™š[™
+›ÙHOˆ›ÙK\HOOH	Ø\XÛIÈ	‰ˆ\ÚÝÜ^
+›ÙJKš[˜ÛY\Ê	Ü™]šY]ËXYšXÙK\YÚ[‰ÊJBˆ\ÜÙ\›X]Ú
+\ÚÝÜ^
+Ø\™
+Kù£ä¹.í¹/&º/ç¹£©yïdyîçÊBˆ\ÜÙ\›X]Ú
+\ÚÝÜ^
+Ø\™
+Kùk¢z(áy¢%¹¦í9¥¬9¥í¹/&º!ê¹bª:/ä:(c:!&¹§+;ï"™\\™{ï"KÊBˆ\ÜÙ\›X]Ú
+\ÚÝÜ^
+Ø\™
+Kù.#y.èú(jÒ\ÚÝÜ9mì¹¢ä¹îçyk¢z(áKÊBˆ\ÜÙ\›X]Ú
+\ÚÝÜ^
+Ø\™
+KÐ]]ÛX]XÈÛXÞH›ØÚÙY[œÝ[][Û‹ÊBˆ\ÜÙ\›ÚÊ\ÚÝÜ›Ù\ÊØ\™
+KœÛÛYJ›ÙHOˆ›ÙK\HOOH	Ù]Z[ÉÊK	ÝH^XÝØØ[›™\ˆ™X\ÛÛˆ\È™Z[™H\ØÛÜÝ\™HÛÛ›Û	ÊB‚ˆÛÛœÝ]Z[Ð]ÛˆH\ÚÝÜ›Ù\ÊØ\™
+K™š[™
+›ÙHOˆ›ÙK\HOOH	Ø]Û‰È	‰ˆ›ÙK˜Ú[™[Ëš[˜ÛY\Ê	ù§éyç"ú+é¹ áIÊJBˆ]Z[Ð]Û‹œ›ÜË›ÛÛXÚÊ
+Bˆ™YHH]ØZ]\›™\ÜËœ™[™\Š
+Bˆ]X[ÙÈH\ÚÝÜ›Ù\Ê™YJK™š[™
+›ÙHOˆ›ÙKœ›ÜËœ›ÛHOOH	ÙX[ÙÉÊBˆ\ÜÙ\›ÚÊX[ÙÊBˆ\ÜÙ\›X]Ú
+\ÚÝÜ^
+X[ÙÊKù£ä¹.í¹/&º/ç¹£©yïdyîçÊBˆ\ÜÙ\›X]Ú
+\ÚÝÜ^
+X[ÙÊKù§éyç"ù¢ 9§+ù¨à9§éz+é¹ áKÊBˆ\ÜÙ\›X]Ú
+\ÚÝÜ^
+X[ÙÊKù§ 9îâ9îäù§§9.éHÒ9k¦9¥®y£ä¹.í¹ë¨yä!¹fj:/å9fç¹..¹aá‹ÊBˆ\ÚÝÜ›Ù\ÊX[ÙÊK™š[™
+›ÙHOˆ›ÙK\HOOH	Ø]Û‰È	‰ˆ›ÙK˜Ú[™[Ëš[˜ÛY\Ê	ùalúeëz+é¹ áIÊJKœ›ÜË›ÛÛXÚÊ
+B‚ˆ™YHH]ØZ]\›™\ÜËœ™[™\Š
+BˆØ\™H\ÚÝÜ›Ù\Ê™YJK™š[™
+›ÙHOˆ›ÙK\HOOH	Ø\XÛIÈ	‰ˆ\ÚÝÜ^
+›ÙJKš[˜ÛY\Ê	Ü™]šY]ËXYšXÙK\YÚ[‰ÊJBˆÛÛœÝ[™Ù™ˆH\ÚÝÜ›Ù\ÊØ\™
+K™š[™
+›ÙHOˆ›ÙK\HOOH	Ø]Û‰È	‰ˆ›ÙK˜Ú[™[Ëš[˜ÛY\Ê	ù.©9å,HÒ9¨à9§éyk¢z(áIÊJBˆ\ÜÙ\›ÚÊ[™Ù™ŠBˆ\ÜÙ\™\]X[
+[™Ù™‹œ›ÜË™\ØX›Y˜[ÙJBˆ[™Ù™‹œ›ÜË›ÛÛXÚÊ
+Bˆ™YHH]ØZ]\›™\ÜËœ™[™\Š
+BˆX[ÙÈH\ÚÝÜ›Ù\Ê™YJK™š[™
+›ÙHOˆ›ÙKœ›ÜËœ›ÛHOOH	ÙX[ÙÉÊBˆ\ÜÙ\›X]Ú
+\ÚÝÜ^
+X[ÙÊKùea¹gã¹k¨y¨.9nîº+«‹ÊBˆ\ÜÙ\›X]Ú
+\ÚÝÜ^
+X[ÙÊKù§ 9îâ9îäù§§9.éHÒ9k¦9¥®y£ä¹.í¹ë¨yä!¹fj:/å9fç¹..¹aá‹ÊBˆ\ÜÙ\™\]X[
+\›™\ÜË˜Ø[Ëš[œÝ[[™K›[™Ý	ÝHÝÜ™HYšXÙH\ÈÚÝÛˆ™Y›Ü™HH\Ù\ˆÝX›Z]ÈH™\]Y\ÝÈ\ÚÝÜ	ÊBŸJB‚\Ý
+	Ñ\ÚÝÜ™XÛÛ[Y[™][Ûˆ[™\ÜÙ[X[›Ø\™ÈX]ÚHÙ™šXÚX[ÙXœÚ]H˜[šÚ[™È[ÛÜš]H[™ÚÝÈ™]šY]È™X\ÛÛœÉË\Þ[˜È
+
+HOˆÂˆÛÛœÝÈ˜[šÚ[™ÔÛ˜\ÚÝØ][ÙË\™XÝÜžQØÝ[Y[ÈHH\ÚÝÜ˜[šÚ[™Ñš^\™J
+BˆÛÛœÝ\›™\ÜÈHÜ™X]Q\ÚÝÜ\›™\ÜÊÈØ][ÙË\™XÝÜžQØÝ[Y[Ë˜[šÚ[™ÔÛ˜\ÚÝJBˆ]ØZ]\›™\ÜËœ™XYBˆ]ØZ]\›™\ÜËœ™[™\Š
+BˆÛÛœÝ[™[H\›™\ÜË™Ù]ÛÛ\Û™[
+	Ñ\ÚÝÜÝÜ™T[™[	ÊBˆ]ØZ]\›™\ÜËœ[‘Y™™XÝÊ[™[
+Bˆ]ØZ]ØZ]›Ü‘\ÚÝÜ™YJ\›™\ÜË™YHOˆ\ÚÝÜ^
+™YJKš[˜ÛY\Ê	ùaj:`ê9mì¹çéy£ä¹.í‰ÊJBˆÛÛœÝ^XÝYÛÝ[ÈHØš™XÝ™œ›ÛQ[šY\ÊÉÜ™XÛÛ[Y[™Y	Ë	Ù\ÜÙ[X[	×K›X\
+\HOˆÝ\K˜[šÚ[™Ñ[šY\Ê˜[šÚ[™ÔÛ˜\ÚÝ\JK›[™ÝJJBˆ\ÜÙ\››Ý\]X[
+^XÝYÛÝ[Ëœ™XÛÛ[Y[™Y^XÝYÛÝ[Ë™\ÜÙ[X[	Ùš^\™H^ÜÙ\ÈÜ›ÜÜËX›Ø\™ÛÝ[XZØYÙIÊB‚ˆ›Üˆ
+ÛÛœÝÝ\KX”™Yš^HÙˆÖÉÜ™XÛÛ[Y[™Y	Ë	ù£ª:#d9©§9ceI×KÉÙ\ÜÙ[X[	Ë	ùoáz(áy©§9ceI×WJHÂˆ]™YHH]ØZ]\›™\ÜËœ™[™\Š
+BˆÛÛœÝXˆH\ÚÝÜ›Ù\Ê™YJK™š[™
+›ÙHOˆ›ÙK\HOOH	Ø]Û‰È	‰ˆ›ÙKœ›ÜËœ›ÛHOOH	ÝX‰Âˆ	‰ˆ›ÙK˜Ú[™[ËœÛÛYJ˜[YHOˆÝš[™Ê˜[YJKœÝ\ÕÚ]
+X”™Yš^
+JJBˆ\ÜÙ\›ÚÊX‹	ÝX”™Yš^HXˆ\Èš\ÚX›X
+BˆX‹œ›ÜË›ÛÛXÚÊ
+Bˆ™YHH]ØZ]\›™\ÜËœ™[™\Š
+Bˆ]ØZ]\›™\ÜËœ[‘Y™™XÝÊ[™[
+Bˆ™YHH]ØZ]ØZ]›Ü‘\ÚÝÜ™YJ\›™\ÜË˜[YHOˆ\ÚÝÜ^
+˜[YJKš[˜ÛY\Ê\HOOH	Ü™XÛÛ[Y[™Y	ÈÈ	ùk¦9ïdy£ª:#d9©§	Èˆ	ùk¦9ïdyoáz(áy©§	ÊBˆ	‰ˆY\ÚÝÜ^
+˜[YJKš[˜ÛY\Ê	ù«hùg*:+îùcå¹k¦9ïdy©§9ceIÊJBˆ›Üˆ
+ÛÛœÝØÛÝ[\KÛÝ[X™[HÙˆÖÉÜ™XÛÛ[Y[™Y	Ë	ù£ª:#d9©§9ceI×KÉÙ\ÜÙ[X[	Ë	ùoáz(áy©§9ceI×WJHÂˆÛÛœÝÛÝ[XˆH\ÚÝÜ›Ù\Ê™YJK™š[™
+›ÙHOˆ›ÙK\HOOH	Ø]Û‰È	‰ˆ›ÙKœ›ÜËœ›ÛHOOH	ÝX‰Âˆ	‰ˆ›ÙK˜Ú[™[ËœÛÛYJ˜[YHOˆÝš[™Ê˜[YJKœÝ\ÕÚ]
+ÛÝ[X™[
+JJBˆ\ÜÙ\›ÚÊÛÝ[X‹	ØÛÝ[X™[HXˆ\Èš\ÚX›X
+Bˆ\ÜÙ\›X]Ú
+\ÚÝÜ^
+ÛÝ[XŠK™]È™YÑ^
+	ØÛÝ[X™[H0­È	Ù^XÝYÛÝ[ÖØÛÝ[\W_I
+Kˆ	ØÛÝ[X™[HÛÝ[Ý^\È›Ý[™È]ÈÝÛˆ˜[šÚ[™ÈY\ˆÝÚ]Ú[™ÈÈ	Ý\_X
+BˆB‚ˆÛÛœÝ^XÝYYÈH˜[šÚ[™Ñ[šY\Ê˜[šÚ[™ÔÛ˜\ÚÝ\JK›X\
+[žHOˆ[žKšY
+BˆÛÛœÝYÙPÛÝ[HX]›X^
+KX]˜ÙZ[
+^XÝYYË›[™ÝÈÌ
+JBˆ›Üˆ
+]YÙHHNÈYÙHHYÙPÛÝ[ÈYÙJÊÊHÂˆYˆ
+YÙHˆJHÂˆÛÛœÝ™^H\ÚÝÜ›Ù\Ê™YJK™š[™
+›ÙHOˆ›ÙK\HOOH	Ø]Û‰È	‰ˆ›ÙKœ›ÜÖÉØ\šXK[X™[	×HOOH	ù."ù. :hmIÊBˆ\ÜÙ\›ÚÊ™^	ÝX”™Yš^H^ÜÙ\ÈYÙH	ÜYÙ_X
+Bˆ™^œ›ÜË›ÛÛXÚÊ
+Bˆ™YHH]ØZ]\›™\ÜËœ™[™\Š
+Bˆ\ÜÙ\›ÚÊ\ÚÝÜ^
+™YJKš[˜ÛY\Ê	ÜYÙ_HÈ	ÜYÙPÛÝ[H:hmX
+JBˆBˆÛÛœÝXÝX[YÈH\ÚÝÜ›Ù\Ê™YJK™š[\Š›ÙHOˆ›ÙK\HOOH	Ø\XÛIÊBˆ›X\
+›ÙHOˆ›ÙKœ›ÜÖÉÙ]K[X\šÙ]Y[žKZY	×JBˆ\ÜÙ\™Y\\]X[
+XÝX[YË^XÝYYËœÛXÙJ
+YÙHHJH
+ˆÌYÙH
+ˆÌ
+Kˆ	ÝX”™Yš^HYÙH	ÜYÙ_H›ÛÝÜÈX\šÙ]XÙKÜ˜[šÚ[™ÜËÛ[Ù[šœØ
+BˆBˆYˆ
+\HOOH	Ü™XÛÛ[Y[™Y	ÊHÂˆÛÛœÝØ[™Y]PØ\™H\ÚÝÜ›Ù\Ê™YJK™š[™
+›ÙHOˆ›ÙK\HOOH	Ø\XÛIÂˆ	‰ˆ›ÙKœ›ÜÖÉÙ]K[X\šÙ]Y[žKZY	×HOOH	ØØ[™Y]Nœ[™[™Ë\™]šY]ÉÊBˆ\ÜÙ\›ÚÊØ[™Y]PØ\™
+Bˆ\ÜÙ\›X]Ú
+\ÚÝÜ^
+Ø[™Y]PØ\™
+KÑÒÝÜ™H:/æ9¬¨y§"yk£9¢$:/æzhny§iy®¤9æ¡9¥-¹oeyk¨y¨.ÊBˆ\ÜÙ\›X]Ú
+\ÚÝÜ^
+Ø[™Y]PØ\™
+Kù§éyç"ù¢ 9§+ù¨à9§éz+é¹ áKÊBˆ\ÜÙ\›X]Ú
+\ÚÝÜ^
+Ø[™Y]PØ\™
+KÔÝÜ™H™]šY]È\ÈÝ[[™[™È›Üˆ\ÈYÚ[—‹ÊBˆ\ÜÙ\›X]Ú
+\ÚÝÜ^
+Ø[™Y]PØ\™
+Kù/g: !y.¤¹bª9£ª:#dÊBˆH[ÙHÂˆÛÛœÝÝ\[Y[H\ÚÝÜ›Ù\Ê™YJK™š[™
+›ÙHOˆ›ÙK\HOOH	Ø\XÛIÂˆ	‰ˆ›ÙKœ›ÜÖÉÙ]K[X\šÙ]Y[žKZY	×H	‰ˆ\ÚÝÜ^
+›ÙJKš[˜ÛY\Ê	ùméyamÈ0­È9b!¹ìnú(iy/cH0­È9cëù§éy¦'ù¨!ùë+	ÊJBˆ\ÜÙ\›ÚÊÝ\[Y[	Ñ\ÚÝÜX™[ÈØ]YÛÜžHÝ\[Y[ÈÚ]Z\ˆØ]YÛÜžH[™ØœÙ\™Y˜[šÉÊBˆ\ÜÙ\›X]Ú
+\ÚÝÜ^
+Ý\[Y[
+KÌH9.*¹£ä¹.í¹¦'ù¨!ù§*¹çé{ï#9a¨9a¦ù§*¹èkº+©ÊBˆBˆB‚ˆ\ÜÙ\™\]X[
+\›™\ÜË™\™XÝÜžT™\]Y\ÝË™š[\Š][HOˆ][K\›OOH\ÚÝÜ˜[šÚ[™Ò[™^\›
+K›[™ÝJBˆ\ÜÙ\™\]X[
+\›™\ÜË™\™XÝÜžT™\]Y\ÝË™š[\Š][HOˆ][K\›OOH\ÚÝÜ˜[šÚ[™Ñ]U\›
+K›[™ÝJBŸJB‚\Ý
+	ØH˜[šÚ[™ÈYÙ\ÝZ\ÛX]Ú˜Z[ÈH›Ø\™ÛÜÙYÚ]Ý]\ØX›[™È[Y\™XÝÜžHÙX\˜Ú	Ë\Þ[˜È
+
+HOˆÂˆÛÛœÝÈ˜[šÚ[™ÔÛ˜\ÚÝØ][ÙË\™XÝÜžQØÝ[Y[ÈHH\ÚÝÜ˜[šÚ[™Ñš^\™J
+BˆÛÛœÝ\›™\ÜÈHÜ™X]Q\ÚÝÜ\›™\ÜÊÈØ][ÙË\™XÝÜžQØÝ[Y[Ë˜[šÚ[™ÔÛ˜\ÚÝ˜[šÚ[™Ò[™^YÙ\Ýˆ	Ù‰Ëœ™\X]
+
+HJBˆ]ØZ]\›™\ÜËœ™XYBˆ]ØZ]\›™\ÜËœ™[™\Š
+BˆÛÛœÝ[™[H\›™\ÜË™Ù]ÛÛ\Û™[
+	Ñ\ÚÝÜÝÜ™T[™[	ÊBˆ]ØZ]\›™\ÜËœ[‘Y™™XÝÊ[™[
+Bˆ]™YHH]ØZ]ØZ]›Ü‘\ÚÝÜ™YJ\›™\ÜË˜[YHOˆ\ÚÝÜ^
+˜[YJKš[˜ÛY\Ê	ùaj:`ê9mì¹çéy£ä¹.í‰ÊJBˆ]XˆH\ÚÝÜ›Ù\Ê™YJK™š[™
+›ÙHOˆ›ÙK\HOOH	Ø]Û‰È	‰ˆ›ÙKœ›ÜËœ›ÛHOOH	ÝX‰Âˆ	‰ˆ›ÙK˜Ú[™[ËœÛÛYJ˜[YHOˆÝš[™Ê˜[YJKœÝ\ÕÚ]
+	ù£ª:#d9©§9ceIÊJJBˆX‹œ›ÜË›ÛÛXÚÊ
+Bˆ™YHH]ØZ]\›™\ÜËœ™[™\Š
+Bˆ]ØZ]\›™\ÜËœ[‘Y™™XÝÊ[™[
+Bˆ™YHH]ØZ]ØZ]›Ü‘\ÚÝÜ™YJ\›™\ÜË˜[YHOˆ\ÚÝÜ^
+˜[YJKš[˜ÛY\Ê	ÑTÒÕÔÔS’ÒS‘×ÒS•QÔ’UWÓRTÓPUÒ	ÊJBˆ\ÜÙ\›X]Ú
+\ÚÝÜ^
+™YJKùk¦9ïdy©§9cey¦ ¹.#ycëùå*ÊBˆ\ÜÙ\™\]X[
+\ÚÝÜ›Ù\Ê™YJKœÛÛYJ›ÙHOˆ›ÙK\HOOH	Ø\XÛIÊK˜[ÙJB‚ˆXˆH\ÚÝÜ›Ù\Ê™YJK™š[™
+›ÙHOˆ›ÙK\HOOH	Ø]Û‰È	‰ˆ›ÙKœ›ÜËœ›ÛHOOH	ÝX‰Âˆ	‰ˆ›ÙK˜Ú[™[ËœÛÛYJ˜[YHOˆÝš[™Ê˜[YJKœÝ\ÕÚ]
+	ùaj:`ê9mì¹çéy£ä¹.í‰ÊJJBˆX‹œ›ÜË›ÛÛXÚÊ
+Bˆ™YHH]ØZ]\›™\ÜËœ™[™\Š
+Bˆ\ÜÙ\›ÚÊ\ÚÝÜ›Ù\Ê™YJKœÛÛYJ›ÙHOˆ›ÙK\HOOH	Ø\XÛIÈ	‰ˆ\ÚÝÜ^
+›ÙJKš[˜ÛY\Ê	Ó˜[YHÚ\˜[šËX[IÊJJBˆÛÛœÝÙX\˜ÚH\ÚÝÜ›Ù\Ê™YJK™š[™
+›ÙHOˆ›ÙK\HOOH	Ú[œ]	È	‰ˆ›ÙKœ›ÜÖÉØ\šXK[X™[	×HOOH	ù¤'9í(¹aj:`ê9mì¹çéy£ä¹.í‰ÊBˆÙX\˜Úœ›ÜË›ÛÚ[™ÙJÈ\™Ù]ˆÈ˜[YNˆ	ÜX›XË[Û›IÈHJBˆ™YHH]ØZ]\›™\ÜËœ™[™\Š
+Bˆ\ÜÙ\™\]X[
+\ÚÝÜ›Ù\Ê™YJK™š[\Š›ÙHOˆ›ÙK\HOOH	Ø\XÛIÊK›[™ÝJBˆ\ÜÙ\›X]Ú
+\ÚÝÜ^
+™YJKÔX›XÈÛ›HYÚ[‹ÊBŸJB‚\Ý
+	Ñ\ÚÝÜ]ÈÒXÚYHH™Z™XÝYØ[™Y]HY\ˆ^XÝÚ]XˆÛÝ\˜ÙHÛÛ™š\›X][Û‰Ë\Þ[˜È
+
+HOˆÂˆÛÛœÝØ][ÙÈH\ÚÝÜØ][ÙÊÂˆ\ÚÝÜ[žJÈYˆ	Ø˜\Ù[[™KY[žIËXÚØYÙS˜[YNˆ	ÐXÛYKØ˜\Ù[[™KY[žIËÛÛ[Z]ˆ\ÚÝÜÛÛ[Z]JKˆJBˆÛÛœÝØ[™Y]HHÈYˆ	ØØ[™Y]K[Û›IË˜[YNˆ	ÐØ[™Y]HÛ›HYÚ[‰Ë\ØÜš\[ÛŽˆ	ÐHØ[™Y]HÚ]›ÈØ][ÙÈ™XÛÜ™‰Ëˆ™\ÜÚ]ÜžU\›ˆ	ÚÎ‹ËÙÚ]X‹˜ÛÛKØXÛYKØØ[™Y]K[Û›IËÝ]\Îˆ	Ü™Z™XÝY	Ë]\ÝÛÛ[Z]ˆ	ÍÉËœ™\X]
+
+KˆÝ]\Ô™X\ÛÛŽˆ	ÔÝ]XÈÝÜ™H™]šY]ÈY›Ýš[™HÝ[™\™Ò[™K‰ËÜXÜÎˆÉØZI×HBˆÛÛœÝ\›™\ÜÈHÜ™X]Q\ÚÝÜ\›™\ÜÊÂˆØ][ÙËˆ\™XÝÜžQØÝ[Y[Îˆ\ÚÝÜ\™XÝÜžQØÝ[Y[ÊØ][ÙËÈ^˜PØ[™Y]\ÎˆØØ[™Y]WHJKˆ[œÜXÝ™\Ý[ˆÈÝ]\Îˆ	Ü™Z™XÝY	Ë™X\ÛÛŽˆ	ÑÒ™Y›YÚÛÝ[›Ý™\šYžH\È™\ÜÚ]ÜžHY]	ÈKˆJBˆ]ØZ]\›™\ÜËœ™XYBˆ]ØZ]\›™\ÜËœ™[™\Š
+Bˆ]ØZ]\›™\ÜËœ[‘Y™™XÝÊ\›™\ÜË™Ù]ÛÛ\Û™[
+	Ñ\ÚÝÜÝÜ™T[™[	ÊJBˆ]™YHH]ØZ]ØZ]›Ü‘\ÚÝÜ™YJ\›™\ÜË˜[YHOˆ\ÚÝÜ^
+˜[YJKš[˜ÛY\Ê	ÐØ[™Y]HÛ›HYÚ[‰ÊJBˆÛÛœÝØ\™H\ÚÝÜ›Ù\Ê™YJK™š[™
+›ÙHOˆ›ÙK\HOOH	Ø\XÛIÈ	‰ˆ\ÚÝÜ^
+›ÙJKš[˜ÛY\ÊØ[™Y]K›˜[YJJBˆ\ÜÙ\›ÚÊØ\™\ÚÝÜ^
+™YJJBˆ\ÜÙ\›X]Ú
+\ÚÝÜ^
+Ø\™
+Kù`&z`"yk¨y¨.9§*º`&º/áËÊBˆ\ÜÙ\›X]Ú
+\ÚÝÜ^
+Ø\™
+KÔÝ]XÈÝÜ™H™]šY]ÈY›Ýš[™HÝ[™\™Ò[™KÊBˆÛÛœÝ[œÝ[H\ÚÝÜ›Ù\ÊØ\™
+K™š[™
+›ÙHOˆ›ÙK\HOOH	Ø]Û‰È	‰ˆ›ÙK˜Ú[™[Ëš[˜ÛY\Ê	ÑÚ]Xˆ9g,9g`9.©9å,HÒ9k¢z(áIÊJBˆ\ÜÙ\›ÚÊ[œÝ[
+Bˆ\ÜÙ\™\]X[
+[œÝ[œ›ÜË™\ØX›Y˜[ÙJBˆ[œÝ[œ›ÜË›ÛÛXÚÊ
+Bˆ™YHH]ØZ]\›™\ÜËœ™[™\Š
+Bˆ\ÜÙ\›X]Ú
+\ÚÝÜ^
+™YJKÔÝÜ™H9`&z`"yk¨y¨.9â­¹  {ï&œ™Z™XÝYÊBˆ\ÜÙ\›X]Ú
+\ÚÝÜ^
+™YJKú/æy¦+ùea¹gã¹nîº+«»ï#9.#y¦+ÈÒ9æ¡9k¢z(áyîäú+®‹ÊBˆ\ÜÙ\™\]X[
+\›™\ÜË˜Ø[Ëš[œÝ[[™K›[™Ý
+B‚ˆÛÛœÝÛÛ™š\›X][ÛˆH	ÒS”ÕSÒUPˆXÛYKØØ[™Y]K[Û›HQUS	Âˆ\ÚÝÜ›Ù\Ê™YJK™š[™
+›ÙHOˆ›ÙK\HOOH	Ú[œ]	È	‰ˆ›ÙKœ›ÜËœXÙZÛ\ˆOOHÛÛ™š\›X][ÛŠBˆœ›ÜË›ÛÚ[™ÙJÈ\™Ù]ˆÈ˜[YNˆÛÛ™š\›X][ÛˆHJBˆ™YHH]ØZ]\›™\ÜËœ™[™\Š
+BˆÛÛœÝÛÛ™š\›HH\ÚÝÜ›Ù\Ê™YJK™š[™
+›ÙHOˆ›ÙK\HOOH	Ø]Û‰È	‰ˆ›ÙK˜Ú[™[Ëš[˜ÛY\Ê	ùèkº+©9nm¹k¢z(áIÊJBˆ\ÜÙ\™\]X[
+ÛÛ™š\›Kœ›ÜË™\ØX›Y˜[ÙJBˆ]ØZ]ÛÛ™š\›Kœ›ÜË›ÛÛXÚÊ
+Bˆ™YHH]ØZ]ØZ]›Ü‘\ÚÝÜ™YJ\›™\ÜË˜[YHOˆ\ÚÝÜ^
+˜[YJKš[˜ÛY\Ê	ÑÒ9k¦9¥®y£ä¹.í¹ë¨yä!¹fj9mì¹k£9¢$9k¢z(áIÊBˆ	‰ˆ\ÚÝÜ^
+˜[YJKš[˜ÛY\Ê	ÑÒ9mì¹k¢z(áH0­È9mì¹d+ùbª	ÊJB‚ˆ\ÜÙ\™Y\\]X[
+\›™\ÜË˜Ø[Ëš[œÜXÝÉÙÚ]
+ÚÎ‹ËÙÚ]X‹˜ÛÛKØXÛYKØØ[™Y]K[Û›K™Ú]	×JBˆ\ÜÙ\™\]X[
+\›™\ÜË˜Ø[Ëš[œÝ[[™K›[™ÝJBˆ\ÜÙ\™\]X[
+\›™\ÜË˜Ø[Ëš[œÝ[[™VÌKœÜXË	ÙÚ]
+ÚÎ‹ËÙÚ]X‹˜ÛÛKØXÛYKØØ[™Y]K[Û›K™Ú]	ÊBˆ\ÜÙ\™\]X[
+\›™\ÜË˜Ø[Ëš[œÝ[[™VÌK›Ü[ÛœË™[˜X›YYJBˆ\ÜÙ\›X]Ú
+\ÚÝÜ^
+™YJKÑÒ\ÚÝÜ:h¡9¨à9£ä9é.»ï&‘Ò™Y›YÚÛÝ[›Ý™\šYžH\È™\ÜÚ]ÜžHY]ÊBˆÛÛœÝ[œÝ[YØ\™H\ÚÝÜ›Ù\Ê™YJK™š[™
+›ÙHOˆ›ÙK\HOOH	Ø\XÛIÈ	‰ˆ\ÚÝÜ^
+›ÙJKš[˜ÛY\ÊØ[™Y]K›˜[YJJBˆ\ÜÙ\›X]Ú
+\ÚÝÜ^
+[œÝ[YØ\™
+KÑÒ9mì¹k¢z(áH0­È9mì¹d+ùbªÊBˆ\ÜÙ\›X]Ú
+\ÚÝÜ^
+[œÝ[YØ\™
+Kùmì¹å,HÒ\ÚÝÜ9k¢z(áKÊBˆ\ÜÙ\™\]X[
+\ÚÝÜ›Ù\Ê[œÝ[YØ\™
+KœÛÛYJ›ÙHOˆ›ÙK\HOOH	Ø]Û‰Âˆ	‰ˆ›ÙK˜Ú[™[Ëš[˜ÛY\Ê	ÑÚ]Xˆ9g,9g`9.©9å,HÒ9k¢z(áIÊJK˜[ÙJBŸJB‚\Ý
+	ÕÙXˆ™[™\™\ˆ™]Z[œÈHÙ][™ÜÈ[žHÚ]Ý]™YÚ\Ý\š[™ÈH\ÚÝÜÛYH[™[	Ë\Þ[˜È
+
+HOˆÂˆÛÛœÝ\›™\ÜÈHÜ™X]Q\ÚÝÜ\›™\ÜÊÈØ][ÙÎˆ\ÚÝÜØ][ÙÊ×JK›ÝØÛÛˆ	ÚÎ‰ÈJBˆ]ØZ]\›™\ÜËœ™XYBˆ\ÜÙ\™Y\\]X[
+\›™\ÜËœÛÝ™YÚ\Ý˜][ÛœË›X\
+›ÝÈOˆ›ÝËœÛÝ
+KÉÜÙ][™ÜËœÙXÝ[Û‰×JBˆ\ÜÙ\™\]X[
+\›™\ÜËœÙ][™ÜÔ™YÚ\Ý˜][ÛœÖÌK›Y]Y]KšY	ÙÚ\ÝÜ™IÊBŸJB‚\Ý
+	Ñ\ÚÝÜÙY\ÈHÛÛ\]H\™XÝÜžHÙX\˜ÚX›HÚ[ˆ]ÈÙ™šXÚX[[œÝ[[™[ÜžH\È[˜]˜Z[X›IË\Þ[˜È
+
+HOˆÂˆÛÛœÝ[žHH\ÚÝÜ[žJÈYˆ	Ú[™[ÜžKZ[™\[™[	ËXÚØYÙS˜[YNˆ	ÐXÛYKÚ[™[ÜžKZ[™\[™[	ËÛÛ[Z]ˆ\ÚÝÜÛÛ[Z]JBˆÛÛœÝØ][ÙÈH\ÚÝÜØ][ÙÊÙ[žWJBˆÛÛœÝ\™XÝÜžQØÝ[Y[ÈH\ÚÝÜ\™XÝÜžQØÝ[Y[ÊØ][ÙÊBˆÛÛœÝ^XÝY\™XÝÜžHHÜ™X]RÛ›ÝÛ”YÚ[‘\™XÝÜžJØ][ÙË™[šY\Ë™š[\Š›ÝÈOˆ›ÝËœÝ]\ÈOOH	Ý[›\ÝY	ÊKˆ\™XÝÜžQØÝ[Y[Ë˜Ø[™Y]\Ë™[šY\ËÈ\ØÛÝ™\žR[™^ˆ\™XÝÜžQØÝ[Y[Ë™\ØÛÝ™\žHJBˆÛÛœÝ\›™\ÜÈHÜ™X]Q\ÚÝÜ\›™\ÜÊÈØ][ÙË\™XÝÜžQØÝ[Y[Ë\Ý[™\Ñ\œ›ÜŽˆYHJBˆ]ØZ]\›™\ÜËœ™XYBˆ]ØZ]\›™\ÜËœ™[™\Š
+Bˆ]ØZ]\›™\ÜËœ[‘Y™™XÝÊ\›™\ÜË™Ù]ÛÛ\Û™[
+	Ñ\ÚÝÜÝÜ™T[™[	ÊJBˆ]™YHH]ØZ]ØZ]›Ü‘\ÚÝÜ™YJ\›™\ÜË˜[YHOˆ\ÚÝÜ^
+˜[YJKš[˜ÛY\Ê9aj:`ê9mì¹çéy£ä¹.íˆ0­È	Ù^XÝY\™XÝÜžK›[™ÝX
+JBˆ\ÜÙ\›X]Ú
+\ÚÝÜ^
+™YJKÑÒ9k¢z(áy®!ycey¦ ¹.#ycëùå*;ï"TÒÕÔÒS•‘S•Ô–WÑRSQ;ï"KÊBˆ\ÜÙ\›X]Ú
+\ÚÝÜ^
+™YJKùk£9¥m9æë¹oeyd£9¤'9í(¹.ãycëù/oùå*ÊBˆÛÛœÝÙX\˜ÚH\ÚÝÜ›Ù\Ê™YJK™š[™
+›ÙHOˆ›ÙK\HOOH	Ú[œ]	È	‰ˆ›ÙKœ›ÜÖÉØ\šXK[X™[	×HOOH	ù¤'9í(¹aj:`ê9mì¹çéy£ä¹.í‰ÊBˆ\ÜÙ\›ÚÊÙX\˜Ú
+BˆÙX\˜Úœ›ÜË›ÛÚ[™ÙJÈ\™Ù]ˆÈ˜[YNˆ	ÜX›XË[Û›IÈHJBˆ™YHH]ØZ]\›™\ÜËœ™[™\Š
+BˆÛÛœÝX›XÐØ\™H\ÚÝÜ›Ù\Ê™YJK™š[™
+›ÙHOˆ›ÙK\HOOH	Ø\XÛIÈ	‰ˆ\ÚÝÜ^
+›ÙJKš[˜ÛY\Ê	ÔX›XÈÛ›HYÚ[‰ÊJBˆ\ÜÙ\›ÚÊX›XÐØ\™	Ù\™XÝÜžHÙX\˜Ú™[XZ[œÈ[™\[™[ÙˆHÒ[œÝ[Y\Ý	ÊBˆÙX\˜Úœ›ÜË›ÛÚ[™ÙJÈ\™Ù]ˆÈ˜[YNˆ	Ú[™[ÜžKZ[™\[™[	ÈHJBˆ™YHH]ØZ]\›™\ÜËœ™[™\Š
+BˆÛÛœÝØ][ÙÐØ\™H\ÚÝÜ›Ù\Ê™YJK™š[™
+›ÙHOˆ›ÙK\HOOH	Ø\XÛIÈ	‰ˆ\ÚÝÜ^
+›ÙJKš[˜ÛY\Ê	ÐXÛYKÚ[™[ÜžKZ[™\[™[	ÊJBˆÛÛœÝ[œÝ[H\ÚÝÜ›Ù\ÊØ][ÙÐØ\™
+K™š[™
+›ÙHOˆ›ÙK\HOOH	Ø]Û‰È	‰ˆ›ÙK˜Ú[™[Ëš[˜ÛY\Ê	ùk¢z(áIÊJBˆ\ÜÙ\›ÚÊ[œÝ[
+Bˆ\ÜÙ\™\]X[
+[œÝ[œ›ÜË™\ØX›YYK	ÜÝ]KY\[™[[œÝ[ÈØZ]›Üˆ[ˆ]]Üš]]]™HÒ[™[ÜžIÊBˆ\ÜÙ\›X]Ú
+[œÝ[œ›ÜË]KÑÒ9k¢z(áy®!ycey¦ ¹.#ycëùå*ÊBŸJB‚\Ý
+	Ø›ØÚÙYš^Y\ÛÝ\˜ÙH[šY\È\ÙHÒ[œÜXÝ[™[œÝ[Û›HY\ˆ^XÚ]ÛÛ™š\›X][Û‰Ë\Þ[˜È
+
+HOˆÂˆÛÛœÝÛÛ[Z]H	ÎIËœ™\X]
+
+BˆÛÛœÝ[žHH\ÚÝÜ[žJÈYˆ	ØZ[YÚ\YÚ[‰ËXÚØYÙS˜[YNˆ	ÙÚXZ[\YÚ[‰ËÛÛ[Z]ˆ™\ÜÚ]ÜžU\›ˆ	ÚÎ‹ËÙÚ]X‹˜ÛÛKÐRKTØØ\›]ØZ[YÚ\YÚ[‰Ë›Ùš[\Îˆ×KÝ]\Îˆ	Ø›ØÚÙY	ËˆÝ]\Ô™X\ÛÛŽˆ	Ð]]ÛX]XÈÛXÞH›ØÚÙY[œÝ[][ÛŽˆ[[YHÛÝ\˜ÙHÛÛZ[œÈš[\È[™ÛÛ[X[™È\›Z\ÜÚ[ÛˆÚYÛ˜[ÉÈJBˆ[žK\]TÛXÞHH	Ù^\›˜[[Û›IÂˆÛÛœÝ\›™\ÜÈHÜ™X]Q\ÚÝÜ\›™\ÜÊÈØ][ÙÎˆ\ÚÝÜØ][ÙÊÙ[žWJHJBˆ]ØZ]\›™\ÜËœ™XYBˆ]ØZ]\›™\ÜËœ™[™\Š
+BˆÛÛœÝ\ÚÝÜ[™[H\›™\ÜË™Ù]ÛÛ\Û™[
+	Ñ\ÚÝÜÝÜ™T[™[	ÊBˆ]ØZ]\›™\ÜËœ[‘Y™™XÝÊ\ÚÝÜ[™[
+Bˆ]™YHH]ØZ]ØZ]›Ü‘\ÚÝÜ™YJ\›™\ÜË˜[YHOˆ\ÚÝÜ^
+˜[YJKš[˜ÛY\Ê	ÐØ][ÙÈ9mì¹¢é¹¢*ˆ0­ÈÒ9cëù¨à9§éIÊJBˆÛÛœÝØ\™H\ÚÝÜ›Ù\Ê™YJK™š[™
+›ÙHOˆ›ÙK\HOOH	Ø\XÛIÈ	‰ˆ\ÚÝÜ^
+›ÙJKš[˜ÛY\Ê	ÙÚXZ[\YÚ[‰ÊJBˆÛÛœÝ[œÝ[H\ÚÝÜ›Ù\ÊØ\™
+K™š[™
+›ÙHOˆ›ÙK\HOOH	Ø]Û‰È	‰ˆ›ÙK˜Ú[™[Ëš[˜ÛY\Ê	ù.©9å,HÒ9¨à9§éyk¢z(áIÊJBˆ\ÜÙ\›ÚÊ[œÝ[
+Bˆ\ÜÙ\™\]X[
+[œÝ[œ›ÜË™\ØX›Y˜[ÙJBˆ[œÝ[œ›ÜË›ÛÛXÚÊ
+Bˆ™YHH]ØZ]\›™\ÜËœ™[™\Š
+BˆÛÛœÝØ\›š[™ÈH\ÚÝÜ^
+™YJBˆ\ÜÙ\›X]Ú
+Ø\›š[™Ëùea¹gã¹k¨y¨.9nîº+«‹ÊBˆ\ÜÙ\›X]Ú
+Ø\›š[™ËÐ]]ÛX]XÈÛXÞH›ØÚÙY[œÝ[][Û‹ÊBˆ\ÜÙ\›X]Ú
+Ø\›š[™ËÑÒÝÜ™H9æ¡9càº  ù£ä9é.»ï#9.#y.èú(jÒ\ÚÝÜ9mì¹¢ä¹îçyk¢z(áKÊBˆ\ÜÙ\›X]Ú
+Ø\›š[™ËÙ^\›˜[[Û›KÊBˆ\ÜÙ\™\]X[
+\›™\ÜË˜Ø[Ëš[œÜXÝ›[™Ý
+Bˆ\ÜÙ\™\]X[
+\›™\ÜË˜Ø[Ëš[œÝ[[™K›[™Ý
+B‚ˆÛÛœÝÛÛ™š\›X][ÛˆHS”ÕSÚXZ[\YÚ[ˆ	ØÛÛ[Z]XˆÛÛœÝ[œ]H\ÚÝÜ›Ù\Ê™YJK™š[™
+›ÙHOˆ›ÙK\HOOH	Ú[œ]	È	‰ˆ›ÙKœ›ÜËœXÙZÛ\ˆOOHÛÛ™š\›X][ÛŠBˆ\ÜÙ\›ÚÊ[œ]
+Bˆ[œ]œ›ÜË›ÛÚ[™ÙJÈ\™Ù]ˆÈ˜[YNˆÛÛ™š\›X][ÛˆHJBˆ™YHH]ØZ]\›™\ÜËœ™[™\Š
+BˆÛÛœÝÛÛ™š\›HH\ÚÝÜ›Ù\Ê™YJK™š[™
+›ÙHOˆ›ÙK\HOOH	Ø]Û‰È	‰ˆ›ÙK˜Ú[™[Ëš[˜ÛY\Ê	ùèkº+©9nm¹k¢z(áIÊJBˆ\ÜÙ\›ÚÊÛÛ™š\›JBˆ\ÜÙ\™\]X[
+ÛÛ™š\›Kœ›ÜË™\ØX›Y˜[ÙJBˆ]ØZ]ÛÛ™š\›Kœ›ÜË›ÛÛXÚÊ
+B‚ˆ\ÜÙ\™Y\\]X[
+\›™\ÜË˜Ø[Ëš[œÜXÝØÚ]
+ÚÎ‹ËÙÚ]X‹˜ÛÛKÐRKTØØ\›]ØZ[YÚ\YÚ[‹™Ú]ÉØÛÛ[Z]XJBˆ\ÜÙ\™\]X[
+\›™\ÜË˜Ø[Ëš[œÝ[[™K›[™ÝJBˆ\ÜÙ\™\]X[
+\›™\ÜË˜Ø[Ëš[œÝ[[™VÌK›Ü[ÛœË™[˜X›YYJBˆ™YHH]ØZ]ØZ]›Ü‘\ÚÝÜ™YJ\›™\ÜË˜[YHOˆ\ÚÝÜ^
+˜[YJKš[˜ÛY\Ê	ÑÒ9k¦9¥®y£ä¹.í¹ë¨yä!¹fj9mì¹k£9¢$9k¢z(áIÊBˆ	‰ˆ\ÚÝÜ^
+˜[YJKš[˜ÛY\Ê	ÑÒ9mì¹k¢z(áH0­È9mì¹d+ùbª	ÊJBˆÛÛœÝ[œÝ[Y›ØÚÙYØ\™H\ÚÝÜ›Ù\Ê™YJK™š[™
+›ÙHOˆ›ÙK\HOOH	Ø\XÛIÈ	‰ˆ\ÚÝÜ^
+›ÙJKš[˜ÛY\Ê	ÙÚXZ[\YÚ[‰ÊJBˆ\ÜÙ\›X]Ú
+\ÚÝÜ^
+[œÝ[Y›ØÚÙYØ\™
+KÐØ][ÙÈ9mì¹¢é¹¢*‹ÊBˆ\ÜÙ\›X]Ú
+\ÚÝÜ^
+[œÝ[Y›ØÚÙYØ\™
+KÑÒ9mì¹k¢z(áH0­È9mì¹d+ùbªÊBŸJB‚\Ý
+	ÑÒ[œÜXÝ[ÛˆØ\›š[™È\ÈÚÝÛˆÚ[HHÛÛ™š\›YY™\]Y\Ý™XXÚ\È[œÝ[[™IË\Þ[˜È
+
+HOˆÂˆÛÛœÝÛÛ[Z]H	Î	Ëœ™\X]
+
+BˆÛÛœÝ[žHH\ÚÝÜ[žJÈYˆ	Ü™]šY]Ë\™Z™XÝY	ËXÚØYÙS˜[YNˆ	ÙÚ\™]šY]Ë\™Z™XÝY	ËÛÛ[Z]Ý]\Îˆ	Ø›ØÚÙY	ËˆÝ]\Ô™X\ÛÛŽˆ	Ñš^Y\ÛÝ\˜ÙH™]šY]È™\]Z\™Y	ÈJBˆÛÛœÝ\›™\ÜÈHÜ™X]Q\ÚÝÜ\›™\ÜÊÈØ][ÙÎˆ\ÚÝÜØ][ÙÊÙ[žWJKˆ[œÜXÝ™\Ý[ˆÈÝ]\Îˆ	Ü™Z™XÝY	Ë™X\ÛÛŽˆ	ÑÒ[[YH™\]Z\™[Y[\È›ÝY]	ÈHJBˆ]ØZ]\›™\ÜËœ™XYBˆ]ØZ]\›™\ÜËœ™[™\Š
+Bˆ]ØZ]\›™\ÜËœ[‘Y™™XÝÊ\›™\ÜË™Ù]ÛÛ\Û™[
+	Ñ\ÚÝÜÝÜ™T[™[	ÊJBˆ]™YHH]ØZ]ØZ]›Ü‘\ÚÝÜ™YJ\›™\ÜË˜[YHOˆ\ÚÝÜ^
+˜[YJKš[˜ÛY\Ê	ÐØ][ÙÈ9mì¹¢é¹¢*ˆ0­ÈÒ9cëù¨à9§éIÊJBˆÛÛœÝ[œÝ[H\ÚÝÜ›Ù\Ê™YJK™š[™
+›ÙHOˆ›ÙK\HOOH	Ø]Û‰È	‰ˆ›ÙK˜Ú[™[Ëš[˜ÛY\Ê	ù.©9å,HÒ9¨à9§éyk¢z(áIÊJBˆ[œÝ[œ›ÜË›ÛÛXÚÊ
+Bˆ™YHH]ØZ]\›™\ÜËœ™[™\Š
+BˆÛÛœÝ˜\ÙHHS”ÕS	Ù[žKœXÚØYÙS˜[Y_H	ØÛÛ[Z]Xˆ\ÚÝÜ›Ù\Ê™YJK™š[™
+›ÙHOˆ›ÙK\HOOH	Ú[œ]	È	‰ˆ›ÙKœ›ÜËœXÙZÛ\ˆOOH˜\ÙJBˆœ›ÜË›ÛÚ[™ÙJÈ\™Ù]ˆÈ˜[YNˆ˜\ÙHHJBˆ™YHH]ØZ]\›™\ÜËœ™[™\Š
+BˆÛÛœÝÛÛ™š\›HH\ÚÝÜ›Ù\Ê™YJK™š[™
+›ÙHOˆ›ÙK\HOOH	Ø]Û‰È	‰ˆ›ÙK˜Ú[™[Ëš[˜ÛY\Ê	ùèkº+©9nm¹k¢z(áIÊJBˆ]ØZ]ÛÛ™š\›Kœ›ÜË›ÛÛXÚÊ
+Bˆ™YHH]ØZ]ØZ]›Ü‘\ÚÝÜ™YJ\›™\ÜË˜[YHOˆ\ÚÝÜ^
+˜[YJKš[˜ÛY\Ê	ÑÒ9k¦9¥®y£ä¹.í¹ë¨yä!¹fj9mì¹k£9¢$9k¢z(áIÊJBˆ\ÜÙ\™\]X[
+\›™\ÜË˜Ø[Ëš[œÜXÝ›[™ÝJBˆ\ÜÙ\™\]X[
+\›™\ÜË˜Ø[Ëš[œÝ[[™K›[™ÝJBˆ\ÜÙ\›X]Ú
+\ÚÝÜ^
+™YJKÑÒ\ÚÝÜ:h¡9¨à9£ä9é.»ï&‘Ò[[YH™\]Z\™[Y[\È›ÝY]ÊBŸJB‚\Ý
+	Ø›ØÚÙY[PÛÛ[Z][šY\È\™H›ÝØ]YžHØ][ÙÈ›Ý™[˜[˜ÙHX™[ÈÜˆ[Y\Ý[\ÉË\Þ[˜È
+
+HOˆÂˆÛÛœÝ[žHH\ÚÝÜ[žJÈYˆ	Ü™\ÜÚ]ÜžK\›Ý™[˜[˜ÙIËXÚØYÙS˜[YNˆ	ÙÚ\™\ÜÚ]ÜžK\›Ý™[˜[˜ÙIËˆÛÛ[Z]ˆ	Í‰Ëœ™\X]
+
+KÝ]\Îˆ	Ø›ØÚÙY	ËÝ]\Ô™X\ÛÛŽˆ	Ñš^Y\ÛÝ\˜ÙH™]šY]È™\]Z\™Y	ËˆÛÝ\˜ÙNˆÈ›Ý™[˜[˜ÙNˆ	ÙÚ]X‹\™\ÜÚ]ÜžIÈHJBˆÛÛœÝ\›™\ÜÈHÜ™X]Q\ÚÝÜ\›™\ÜÊÈØ][ÙÎˆ\ÚÝÜØ][ÙÊÙ[žWJHJBˆ]ØZ]\›™\ÜËœ™XYBˆ]ØZ]\›™\ÜËœ™[™\Š
+Bˆ]ØZ]\›™\ÜËœ[‘Y™™XÝÊ\›™\ÜË™Ù]ÛÛ\Û™[
+	Ñ\ÚÝÜÝÜ™T[™[	ÊJBˆÛÛœÝ™YHH]ØZ]ØZ]›Ü‘\ÚÝÜ™YJ\›™\ÜË˜[YHOˆ\ÚÝÜ^
+˜[YJKš[˜ÛY\Ê	ÐØ][ÙÈ9mì¹¢é¹¢*ˆ0­ÈÒ9cëù¨à9§éIÊJBˆÛÛœÝ[œÝ[H\ÚÝÜ›Ù\Ê™YJK™š[™
+›ÙHOˆ›ÙK\HOOH	Ø]Û‰È	‰ˆ›ÙK˜Ú[™[Ëš[˜ÛY\Ê	ù.©9å,HÒ9¨à9§éyk¢z(áIÊJBˆ\ÜÙ\›ÚÊ[œÝ[
+Bˆ\ÜÙ\™\]X[
+[œÝ[œ›ÜË™\ØX›Y˜[ÙJBŸJB‚\Ý
+	Ø›ØÚÙY[šY\ÈÚ]ØY™H[šXÛÙH[œÝ[]È\™H[™YÈÒ\È[›™Y[™HÜXÜÉË\Þ[˜È
+
+HOˆÂˆÛÛœÝÛÛ[Z]H	ÍIËœ™\X]
+
+BˆÛÛœÝ[œÝ[]H	ùam¹k ùioyå*9æ¡9méyamËÙÚYY\ÙYZËX˜[[˜ÙIÂˆÛÛœÝ[žHH\ÚÝÜ[žJÈYˆ	ØÚšËZ[œÝ[\]	ËXÚØYÙS˜[YNˆ	ÙÚXÚšËZ[œÝ[\]	ËÛÛ[Z]ˆ™\ÜÚ]ÜžU\›ˆ	ÚÎ‹ËÙÚ]X‹˜ÛÛKÒØXÞ™]‹ÙÚRØ^“[ÙIËÝ]\Îˆ	Ø›ØÚÙY	Ëˆ[œÝ[]X[šY™\Ý]ˆ	Ú[œÝ[]KÜXÚØYÙKšœÛÛ˜Ý]\Ô™X\ÛÛŽˆ	ÐÛÛ\]Xš[]H™]šY]È™\]Z\™Y	ÈJBˆÛÛœÝ\›™\ÜÈHÜ™X]Q\ÚÝÜ\›™\ÜÊÈØ][ÙÎˆ\ÚÝÜØ][ÙÊÙ[žWJHJBˆ]ØZ]\›™\ÜËœ™XYBˆ]ØZ]\›™\ÜËœ™[™\Š
+Bˆ]ØZ]\›™\ÜËœ[‘Y™™XÝÊ\›™\ÜË™Ù]ÛÛ\Û™[
+	Ñ\ÚÝÜÝÜ™T[™[	ÊJBˆ]™YHH]ØZ]ØZ]›Ü‘\ÚÝÜ™YJ\›™\ÜË˜[YHOˆ\ÚÝÜ^
+˜[YJKš[˜ÛY\Ê	ÐØ][ÙÈ9mì¹¢é¹¢*ˆ0­ÈÒ9cëù¨à9§éIÊJBˆÛÛœÝ[œÝ[H\ÚÝÜ›Ù\Ê™YJK™š[™
+›ÙHOˆ›ÙK\HOOH	Ø]Û‰È	‰ˆ›ÙK˜Ú[™[Ëš[˜ÛY\Ê	ù.©9å,HÒ9¨à9§éyk¢z(áIÊJBˆ\ÜÙ\›ÚÊ[œÝ[
+Bˆ\ÜÙ\™\]X[
+[œÝ[œ›ÜË™\ØX›Y˜[ÙJBˆ[œÝ[œ›ÜË›ÛÛXÚÊ
+Bˆ™YHH]ØZ]\›™\ÜËœ™[™\Š
+BˆÛÛœÝÛÛ™š\›X][ÛˆHS”ÕS	Ù[žKœXÚØYÙS˜[Y_H	ØÛÛ[Z]Xˆ\ÚÝÜ›Ù\Ê™YJK™š[™
+›ÙHOˆ›ÙK\HOOH	Ú[œ]	È	‰ˆ›ÙKœ›ÜËœXÙZÛ\ˆOOHÛÛ™š\›X][ÛŠBˆœ›ÜË›ÛÚ[™ÙJÈ\™Ù]ˆÈ˜[YNˆÛÛ™š\›X][ÛˆHJBˆ™YHH]ØZ]\›™\ÜËœ™[™\Š
+BˆÛÛœÝÛÛ™š\›HH\ÚÝÜ›Ù\Ê™YJK™š[™
+›ÙHOˆ›ÙK\HOOH	Ø]Û‰È	‰ˆ›ÙK˜Ú[™[Ëš[˜ÛY\Ê	ùèkº+©9nm¹k¢z(áIÊJBˆ]ØZ]ÛÛ™š\›Kœ›ÜË›ÛÛXÚÊ
+Bˆ\ÜÙ\™Y\\]X[
+\›™\ÜË˜Ø[Ëš[œÜXÝÂˆÚ]
+ÚÎ‹ËÙÚ]X‹˜ÛÛKÒØXÞ™]‹ÙÚRØ^“[ÙK™Ú]ÉØÛÛ[Z]Iœ]‰Ú[œÝ[]XˆJBˆ\ÜÙ\™\]X[
+\›™\ÜË˜Ø[Ëš[œÝ[[™K›[™ÝJBŸJB‚\Ý
+	Ñ\ÚÝÜ™XÚXÚÜÈHÛÛ™š\›YYÛÝ\˜ÙHY[]H™Y›Ü™HØ[[™ÈHÙ™šXÚX[X[˜YÙ\‰Ë\Þ[˜È
+
+HOˆÂˆÛÛœÝÛÛ[Z]H	ÍÉËœ™\X]
+
+BˆÛÛœÝ[žHH\ÚÝÜ[žJÈYˆ	ÜÛÝ\˜ÙKXÚ[™ÙY	ËXÚØYÙS˜[YNˆ	ÙÚ\ÛÝ\˜ÙKXÚ[™ÙY	ËÛÛ[Z]Ý]\Îˆ	Ø›ØÚÙY	ËˆÝ]\Ô™X\ÛÛŽˆ	Ñš^Y\ÛÝ\˜ÙH™]šY]È™\]Z\™Y	ÈJBˆ]™\]Y\ÝÛÝ[HˆÛÛœÝ™\ÜÛœÙQ˜XÝÜžHH
+
+HOˆÂˆÛÛœÝÝ\œ™[H™\]Y\ÝÛÝ[
+ÊÈOOHÈ[žHˆÈ‹‹™[žKÛÛ[Z]ˆ	Í‰Ëœ™\X]
+
+HBˆÛÛœÝž]\ÈH™]È^[˜ÛÙ\Š
+K™[˜ÛÙJ”ÓÓ‹œÝš[™ÚYžJ\ÚÝÜØ][ÙÊØÝ\œ™[JJJBˆ]Ù™œÙ]Hˆ™]\›ˆÂˆÚÎˆYK\›ˆ\ÚÝÜØ][ÙÕ\›ˆXY\œÎˆÈÙ]ˆ˜[YHOˆ˜[YHOOH	ØÛÛ[[[™Ý	ÈÈÝš[™Êž]\Ë˜ž]S[™Ý
+Hˆ[Kˆ›ÙNˆÈÙ]™XY\Žˆ
+
+HOˆ
+Âˆ\Þ[˜È™XY
+
+HÂˆYˆ
+Ù™œÙ]Hž]\Ë˜ž]S[™Ý
+H™]\›ˆÈÛ™NˆYHBˆÛÛœÝ˜[YHHž]\ËœÝX˜\œ˜^JÙ™œÙ]X]›Z[ŠÙ™œÙ]
+ÈM‹ž]\Ë˜ž]S[™Ý
+JBˆÙ™œÙ]
+ÏH˜[YK˜ž]S[™Ýˆ™]\›ˆÈÛ™Nˆ˜[ÙK˜[YHBˆKˆ\Þ[˜ÈØ[˜Ù[
+
+HßK™[X\ÙSØÚÊ
+HßKˆJHKˆBˆBˆÛÛœÝ\›™\ÜÈHÜ™X]Q\ÚÝÜ\›™\ÜÊÈØ][ÙÎˆ\ÚÝÜØ][ÙÊÙ[žWJK™\ÜÛœÙQ˜XÝÜžHJBˆ]ØZ]\›™\ÜËœ™XYBˆ]ØZ]\›™\ÜËœ™[™\Š
+Bˆ]ØZ]\›™\ÜËœ[‘Y™™XÝÊ\›™\ÜË™Ù]ÛÛ\Û™[
+	Ñ\ÚÝÜÝÜ™T[™[	ÊJBˆ]™YHH]ØZ]ØZ]›Ü‘\ÚÝÜ™YJ\›™\ÜË˜[YHOˆ\ÚÝÜ^
+˜[YJKš[˜ÛY\Ê	ÐØ][ÙÈ9mì¹¢é¹¢*ˆ0­ÈÒ9cëù¨à9§éIÊJBˆ\ÚÝÜ›Ù\Ê™YJK™š[™
+›ÙHOˆ›ÙK\HOOH	Ø]Û‰È	‰ˆ›ÙK˜Ú[™[Ëš[˜ÛY\Ê	ù.©9å,HÒ9¨à9§éyk¢z(áIÊJKœ›ÜË›ÛÛXÚÊ
+Bˆ™YHH]ØZ]\›™\ÜËœ™[™\Š
+BˆÛÛœÝ˜\ÙHHS”ÕS	Ù[žKœXÚØYÙS˜[Y_H	ØÛÛ[Z]Xˆ\ÚÝÜ›Ù\Ê™YJK™š[™
+›ÙHOˆ›ÙK\HOOH	Ú[œ]	È	‰ˆ›ÙKœ›ÜËœXÙZÛ\ˆOOH˜\ÙJBˆœ›ÜË›ÛÚ[™ÙJÈ\™Ù]ˆÈ˜[YNˆ˜\ÙHHJBˆ™YHH]ØZ]\›™\ÜËœ™[™\Š
+BˆÛÛœÝÛÛ™š\›HH\ÚÝÜ›Ù\Ê™YJK™š[™
+›ÙHOˆ›ÙK\HOOH	Ø]Û‰È	‰ˆ›ÙK˜Ú[™[Ëš[˜ÛY\Ê	ùèkº+©9nm¹k¢z(áIÊJBˆ]ØZ]ÛÛ™š\›Kœ›ÜË›ÛÛXÚÊ
+Bˆ™YHH]ØZ]\›™\ÜËœ™[™\Š
+Bˆ\ÜÙ\™\]X[
+\›™\ÜË˜Ø[Ëš[œÜXÝ›[™Ý
+Bˆ\ÜÙ\™\]X[
+\›™\ÜË˜Ø[Ëš[œÝ[[™K›[™Ý
+Bˆ\ÜÙ\›X]Ú
+\ÚÝÜ^
+™YJKÐÐUSÑ×ÓÔ—Ô“Ñ’SWÔÕUWÐÒS‘ÑQÊBŸJB‚\Ý
+	Ø›ØÚÙY[žH[™Ù™ˆÝ[˜Z[ÈÛÜÙYÛˆ[˜[YÛÝ\˜ÙK[œØY™H]Ë[™›ÝXÝY\™Ù]ÉË\Þ[˜È
+
+HOˆÂˆÛÛœÝ›ÝÜÈHÂˆ\ÚÝÜ[žJÈYˆ	Ø˜Y\™\ÜÚ]ÜžIËXÚØYÙS˜[YNˆ	ÙÚX˜Y\™\ÜÚ]ÜžIËÛÛ[Z]ˆ	ÌIËœ™\X]
+
+KÝ]\Îˆ	Ø›ØÚÙY	Ëˆ™\ÜÚ]ÜžU\›ˆ	ÚÎ‹ËÙ^[\K˜ÛÛKÜYÚ[‰ÈJKˆ\ÚÝÜ[žJÈYˆ	Ù›Ø][™Ë\ÛÝ\˜ÙIËXÚØYÙS˜[YNˆ	ÙÚY›Ø][™Ë\ÛÝ\˜ÙIËÛÛ[Z]ˆ	ÛXZ[‰ËÝ]\Îˆ	Ø›ØÚÙY	ÈJKˆ\ÚÝÜ[žJÈYˆ	Ý[œØY™K\]	ËXÚØYÙS˜[YNˆ	ÙÚ][œØY™K\]	ËÛÛ[Z]ˆ	Ì‰Ëœ™\X]
+
+KÝ]\Îˆ	Ø›ØÚÙY	Ëˆ[œÝ[]ˆ	Ë‹‹ÛÝ]ÚYIËX[šY™\Ý]ˆ	Ë‹‹ÛÝ]ÚYKÜXÚØYÙKšœÛÛ‰ÈJKˆ\ÚÝÜ[žJÈYˆ	Ü›ÝXÝYY[žIËXÚØYÙS˜[YNˆ	ÙÚ\›ÝXÝYY[žIËÛÛ[Z]ˆ	ÌÉËœ™\X]
+
+KÝ]\Îˆ	Ø›ØÚÙY	Ëˆ[žRYÎˆÉÝZK\Ù][™ÜË\YÚ[‹Z[™[ÜžI×HJKˆ\ÚÝÜ[žJÈYˆ	Ü›ÝXÝY\XÚØYÙIËXÚØYÙS˜[YNˆ	ÐY\ÙYZËXZKÙÚ\›ÝXÝY\XÚØYÙIËÛÛ[Z]ˆ	Í	Ëœ™\X]
+
+KÝ]\Îˆ	Ø›ØÚÙY	ÈJKˆBˆÛÛœÝ\›™\ÜÈHÜ™X]Q\ÚÝÜ\›™\ÜÊÈØ][ÙÎˆ\ÚÝÜØ][ÙÊ›ÝÜÊHJBˆ]ØZ]\›™\ÜËœ™XYBˆ]ØZ]\›™\ÜËœ™[™\Š
+Bˆ]ØZ]\›™\ÜËœ[‘Y™™XÝÊ\›™\ÜË™Ù]ÛÛ\Û™[
+	Ñ\ÚÝÜÝÜ™T[™[	ÊJBˆÛÛœÝ™YHH]ØZ]ØZ]›Ü‘\ÚÝÜ™YJ\›™\ÜË˜[YHOˆ\ÚÝÜ^
+˜[YJKš[˜ÛY\Ê	ÍHØ][ÙÈ9mì¹¢é¹¢*‰ÊJBˆÛÛœÝØ\™ÈH\ÚÝÜ›Ù\Ê™YJK™š[\Š›ÙHOˆ›ÙK\HOOH	Ø\XÛIÊBˆ\ÜÙ\™\]X[
+Ø\™Ë›[™Ý›ÝÜË›[™Ý
+Bˆ›Üˆ
+ÛÛœÝØ\™ÙˆØ\™ÊHÂˆÛÛœÝ]ÛˆH\ÚÝÜ›Ù\ÊØ\™
+K™š[™
+›ÙHOˆ›ÙK\HOOH	Ø]Û‰È	‰ˆ›ÙK˜Ú[™[Ëš[˜ÛY\Ê	ù.©9å,HÒ9¨à9§éyk¢z(áIÊJBˆ\ÜÙ\›ÚÊ]Û‹	ÝH™]šY]È™X\ÛÛˆ™[XZ[œÈš\ÚX›HÚ][ˆ[˜]˜Z[X›HXÝ[Û‰ÊBˆ\ÜÙ\™\]X[
+]Û‹œ›ÜË™\ØX›YYJBˆBˆ\ÜÙ\™\]X[
+\›™\ÜË˜Ø[Ëš[œÜXÝ›[™Ý
+Bˆ\ÜÙ\™\]X[
+\›™\ÜË˜Ø[Ëš[œÝ[[™K›[™Ý
+BŸJB‚\Ý
+	ÛÙ™šXÚX[\ÚÝÜ™\ÝÈÙ™šXÚX[[™[œÝ[YYÚ[ˆšY]ÜÈ[™Ü™XYÈX\šÙ]XÙHXœÈXÜ›ÜÜÈH]˜Z[X›HÚY	Ë\Þ[˜È
+
+HOˆÂˆÛÛœÝØ][ÙÒ[œÝ[YH\ÚÝÜ[žJÈYˆ	ÙÚZ[œÝ[Y]šY]ÉËXÚØYÙS˜[YNˆ	ÐXÛYKÙÚZ[œÝ[Y]šY]ÉËÛÛ[Z]ˆ	Ø‰Ëœ™\X]
+
+HJBˆÛÛœÝ\›™\ÜÈHÜ™X]Q\ÚÝÜ\›™\ÜÊÂˆØ][ÙÎˆ\ÚÝÜØ][ÙÊØØ][ÙÒ[œÝ[YJKˆ[œÝ[YˆÂˆÈ˜[YNˆ	ÐY\ÙYZËXZKÙÚ[Ù™šXÚX[\YÚ[‰ËÙ™šXÚX[ˆYK[œÝ[YˆYK™[[Ý˜X›Nˆ˜[ÙK[˜X›YˆYKˆ™\œÚ[ÛŽˆ	ÌŒ‹Œ‹X[KŒ‰ËÛÝ\˜ÙNˆ	ÛœNY\ÙYZËXZKÙÚ[Ù™šXÚX[\YÚ[Œ‹Œ‹X[KŒ‰ÈKˆÈ˜[YNˆ	ÐXÛYKÙÚZ[œÝ[Y]šY]ÉËÙ™šXÚX[ˆ˜[ÙK[œÝ[YˆYK™[[Ý˜X›NˆYK[˜X›Yˆ˜[ÙKˆ™\œÚ[ÛŽˆ	ÌKŒŒ	ËÛÝ\˜ÙNˆÚ]
+ÚÎ‹ËÙÚ]X‹˜ÛÛKØXÛYKÙÚZ[œÝ[Y]šY]Ë™Ú]ÉÉØ‰Ëœ™\X]
+
+_XKˆÈ˜[YNˆ	ÛØØ[][›\ÝY\YÚ[‰ËÙ™šXÚX[ˆ˜[ÙK[œÝ[YˆYK™[[Ý˜X›NˆYK[˜X›YˆYKˆ™\œÚ[ÛŽˆ	Ì‹ŒŒ	ËÛÝ\˜ÙNˆÚ]
+ÚÎ‹ËÙÚ]X‹˜ÛÛKØXÛYKÛØØ[][›\ÝY\YÚ[‹™Ú]ÉÉØÉËœ™\X]
+
+_XKˆKˆJBˆ]ØZ]\›™\ÜËœ™XYBˆ]ØZ]\›™\ÜËœ™[™\Š
+Bˆ]ØZ]\›™\ÜËœ[‘Y™™XÝÊ\›™\ÜË™Ù]ÛÛ\Û™[
+	Ñ\ÚÝÜÝÜ™T[™[	ÊJBˆÛÛœÝØ][ÙÕ™YHH]ØZ]ØZ]›Ü‘\ÚÝÜ™YJ\›™\ÜË™YHOˆ\ÚÝÜ^
+™YJKš[˜ÛY\Ê	Ó˜[YHÚZ[œÝ[Y]šY]ÉÊJBˆÛÛœÝØ][ÙÕXˆH\ÚÝÜ›Ù\ÊØ][ÙÕ™YJK™š[™
+›ÙHOˆ›ÙK\HOOH	Ø]Û‰È	‰ˆ›ÙKœ›ÜËœ›ÛHOOH	ÝX‰Âˆ	‰ˆ›ÙK˜Ú[™[ËœÛÛYJ˜[YHOˆÝš[™Ê˜[YJKœÝ\ÕÚ]
+	ÐØ][ÙÈ9k¨y¨.:+¬9oeH0­È	ÊJJBˆ\ÜÙ\›ÚÊØ][ÙÕXŠB‚ˆÛÛœÝX“\ÝH\ÚÝÜ›Ù\ÊØ][ÙÕ™YJK™š[™
+›ÙHOˆ›ÙKœ›ÜËœ›ÛHOOH	ÝX›\Ý	È	‰ˆ›ÙKœ›ÜÖÉØ\šXK[X™[	×HOOH	ù£ä¹.í¹ea¹gãº)á¹fï‰ÊBˆ\ÜÙ\›ÚÊX“\Ý
+Bˆ\ÜÙ\™\]X[
+X“\Ýœ›ÜËœÝ[K™\Ü^K	ÙÜšY	ÊBˆ\ÜÙ\›X]Ú
+X“\Ýœ›ÜËœÝ[K™ÜšY[\]PÛÛ[[œËÌNÊBˆÛÛœÝšY]ÕXœÈH\ÚÝÜ›Ù\ÊX“\Ý
+K™š[\Š›ÙHOˆ›ÙK\HOOH	Ø]Û‰È	‰ˆ›ÙKœ›ÜËœ›ÛHOOH	ÝX‰ÊBˆ\ÜÙ\™\]X[
+šY]ÕXœË›[™ÝJBˆ\ÜÙ\›ÚÊšY]ÕXœË™]™\žJ›ÙHOˆ›ÙKœ›ÜËœÝ[KÚYOOH	ÌL	IÊK	ÙXXÚ˜]šYØ][ÛˆXˆ\Ù\È]ÈÚ\™HÙˆH]˜Z[X›H›ÝÉÊBˆ\ÜÙ\›ÚÊšY]ÕXœË™]™\žJ›ÙHOˆ›ÙKœ›ÜËœÝ[K›Z[’ZYÚOOH	Íœ	ÊJBˆ\ÜÙ\™\]X[
+\ÚÝÜ›Ù\ÊØ][ÙÕ™YJKœÛÛYJ›ÙHOˆ›ÙKœ›ÜÏË–ÉØ\šXK[X™[	×HOOH	ù§+9§.¹£ä¹.íº)á¹fï‰ÊK˜[ÙKˆ	ÛÙ™šXÚX[[™[œÝ[YXœÈÝ^H[œÚYHHYÚ[ˆÙXÝ[Û‰ÊB‚ˆÛÛœÝ\™XÝÜžTÙX\˜ÚH\ÚÝÜ›Ù\ÊØ][ÙÕ™YJK™š[™
+›ÙHOˆ›ÙK\HOOH	Ú[œ]	È	‰ˆ›ÙKœ›ÜÖÉØ\šXK[X™[	×HOOH	ù¤'9í(¹aj:`ê9mì¹çéy£ä¹.í‰ÊBˆ\™XÝÜžTÙX\˜Úœ›ÜË›ÛÚ[™ÙJÈ\™Ù]ˆÈ˜[YNˆ	ÛØØ[][›\ÝY\YÚ[‰ÈHJBˆ]ÙX\˜ÚY\™XÝÜžHH]ØZ]\›™\ÜËœ™[™\Š
+BˆÛÛœÝØØ[YÚ[œÕXˆH\ÚÝÜ›Ù\ÊÙX\˜ÚY\™XÝÜžJK™š[™
+›ÙHOˆ›ÙK\HOOH	Ø]Û‰È	‰ˆ›ÙKœ›ÜËœ›ÛHOOH	ÝX‰Âˆ	‰ˆ›ÙK˜Ú[™[Ëš[˜ÛY\Ê	ù§+9§.¹£ä¹.í‰ÊJBˆ\ÜÙ\›ÚÊØØ[YÚ[œÕXŠBˆØØ[YÚ[œÕX‹œ›ÜË›ÛÛXÚÊ
+Bˆ]YÚ[•™YHH]ØZ]\›™\ÜËœ™[™\Š
+Bˆ]YÚ[•X“\ÝH\ÚÝÜ›Ù\ÊYÚ[•™YJK™š[™
+›ÙHOˆ›ÙKœ›ÜËœ›ÛHOOH	ÝX›\Ý	È	‰ˆ›ÙKœ›ÜÖÉØ\šXK[X™[	×HOOH	ù§+9§.¹£ä¹.íº)á¹fï‰ÊBˆ\ÜÙ\›ÚÊYÚ[•X“\Ý
+Bˆ\ÜÙ\™\]X[
+YÚ[•X“\Ýœ›ÜËœÝ[K™\Ü^K	ÙÜšY	ÊBˆ\ÜÙ\›X]Ú
+YÚ[•X“\Ýœ›ÜËœÝ[K™ÜšY[\]PÛÛ[[œËÌŒŒÊBˆ\ÜÙ\™\]X[
+\ÚÝÜ›Ù\ÊYÚ[•X“\Ý
+K™š[\Š›ÙHOˆ›ÙK\HOOH	Ø]Û‰È	‰ˆ›ÙKœ›ÜËœ›ÛHOOH	ÝX‰ÊK›[™ÝŠBˆ][œÝ[YXˆH\ÚÝÜ›Ù\ÊYÚ[•X“\Ý
+K™š[™
+›ÙHOˆ›ÙK\HOOH	Ø]Û‰Âˆ	‰ˆ›ÙK˜Ú[™[ËœÛÛYJ˜[YHOˆÝš[™Ê˜[YJKœÝ\ÕÚ]
+	ùmì¹k¢z(áy£ä¹.íˆ0­È‰ÊJJBˆ]Ù™šXÚX[XˆH\ÚÝÜ›Ù\ÊYÚ[•X“\Ý
+K™š[™
+›ÙHOˆ›ÙK\HOOH	Ø]Û‰Âˆ	‰ˆ›ÙK˜Ú[™[ËœÛÛYJ˜[YHOˆÝš[™Ê˜[YJKœÝ\ÕÚ]
+	ùk¦9¥®y£ä¹.íˆ0­È‰ÊJJBˆ\ÜÙ\›ÚÊ[œÝ[YXŠBˆ\ÜÙ\›ÚÊÙ™šXÚX[XŠBˆ\ÜÙ\™\]X[
+[œÝ[YX‹œ›ÜÖÉØ\šXK\Ù[XÝY	×KYJBˆ\ÜÙ\™\]X[
+Ù™šXÚX[X‹œ›ÜÖÉØ\šXK\Ù[XÝY	×K˜[ÙJBˆÙ™šXÚX[X‹œ›ÜË›ÛÛXÚÊ
+B‚ˆÛÛœÝÙ™šXÚX[™YHH]ØZ]\›™\ÜËœ™[™\Š
+Bˆ\ÜÙ\›ÚÊ\ÚÝÜ›Ù\ÊÙ™šXÚX[™YJKœÛÛYJ›ÙHOˆ›ÙK\HOOH	Ø]Û‰È	‰ˆ›ÙKœ›ÜËœ›ÛHOOH	ÝX‰Âˆ	‰ˆ›ÙKœ›ÜÖÉØ\šXK\Ù[XÝY	×HOOHYH	‰ˆ›ÙK˜Ú[™[ËœÛÛYJ˜[YHOˆÝš[™Ê˜[YJKœÝ\ÕÚ]
+	ùk¦9¥®y£ä¹.íˆ0­È	ÊJJJBˆ\ÜÙ\›X]Ú
+\ÚÝÜ^
+Ù™šXÚX[™YJKú/æzaã9cê¹leyé.ˆ\ÚÝÜ9k¢z(áy®!ycey.+y¨!ú+¬9..¹k¦9¥®y¢%ºf£ÈÒ9£ä9/¦ùæ¡9îá9.í‹ÊBˆ\ÜÙ\›X]Ú
+\ÚÝÜ^
+Ù™šXÚX[™YJKÐY\ÙYZËXZWÙÚ[Ù™šXÚX[\YÚ[‹ÊBˆ\ÜÙ\›X]Ú
+\ÚÝÜ^
+Ù™šXÚX[™YJKÙÚ™\ÚÝÜ\[[YKÊBˆ\ÜÙ\™Ù\Ó›ÝX]Ú
+\ÚÝÜ^
+Ù™šXÚX[™YJKÛØØ[][›\ÝY\YÚ[ŸXÛYWÙÚZ[œÝ[Y]šY]ËÊBˆÛÛœÝÙ™šXÚX[Ø\™H\ÚÝÜ›Ù\ÊÙ™šXÚX[™YJK™š[™
+›ÙHOˆ›ÙK\HOOH	Ø\XÛIÈ	‰ˆ\ÚÝÜ^
+›ÙJKš[˜ÛY\Ê	ÐY\ÙYZËXZKÙÚ[Ù™šXÚX[\YÚ[‰ÊJBˆ\ÜÙ\›ÚÊÙ™šXÚX[Ø\™
+Bˆ\ÜÙ\›ÚÊ\ÚÝÜ›Ù\ÊÙ™šXÚX[Ø\™
+KœÛÛYJ›ÙHOˆ›ÙK\HOOH	Ø]Û‰È	‰ˆ›ÙK˜Ú[™[Ëš[˜ÛY\Ê	ÑÒ9k¦9¥®yë¨yä!‰ÊH	‰ˆ›ÙKœ›ÜË™\ØX›Y
+JB‚ˆÛÛœÝÙ™šXÚX[ÙX\˜ÚH\ÚÝÜ›Ù\ÊÙ™šXÚX[™YJK™š[™
+›ÙHOˆ›ÙK\HOOH	Ú[œ]	È	‰ˆ›ÙKœ›ÜÖÉØ\šXK[X™[	×HOOH	ù¤'9í(¹k¦9¥®y£ä¹.í‰ÊBˆÙ™šXÚX[ÙX\˜Úœ›ÜË›ÛÚ[™ÙJÈ\™Ù]ˆÈ˜[YNˆ	ÐY\ÙYZËXZIÈHJBˆ\ÜÙ\›X]Ú
+\ÚÝÜ^
+]ØZ]\›™\ÜËœ™[™\Š
+JKÌH9§hyîäù§§ÊBˆÛÛœÝš[\™YÙ™šXÚX[™YHH]ØZ]\›™\ÜËœ™[™\Š
+BˆÛÛœÝ[œÝ[YXY\”ÙX\˜ÚH\ÚÝÜ›Ù\Êš[\™YÙ™šXÚX[™YJK™š[™
+›ÙHOˆ›ÙK\HOOH	Ø]Û‰È	‰ˆ›ÙKœ›ÜËœ›ÛHOOH	ÝX‰Âˆ	‰ˆ›ÙK˜Ú[™[ËœÛÛYJ˜[YHOˆÝš[™Ê˜[YJKœÝ\ÕÚ]
+	ùmì¹k¢z(áy£ä¹.íˆ0­È	ÊJJBˆ[œÝ[YXY\”ÙX\˜Úœ›ÜË›ÛÛXÚÊ
+B‚ˆÛÛœÝ[œÝ[Y™YHH]ØZ]\›™\ÜËœ™[™\Š
+Bˆ\ÜÙ\›ÚÊ\ÚÝÜ›Ù\Ê[œÝ[Y™YJKœÛÛYJ›ÙHOˆ›ÙK\HOOH	Ø]Û‰È	‰ˆ›ÙKœ›ÜËœ›ÛHOOH	ÝX‰Âˆ	‰ˆ›ÙKœ›ÜÖÉØ\šXK\Ù[XÝY	×HOOHYH	‰ˆ›ÙK˜Ú[™[ËœÛÛYJ˜[YHOˆÝš[™Ê˜[YJKœÝ\ÕÚ]
+	ùmì¹k¢z(áy£ä¹.íˆ0­È	ÊJJJBˆ\ÜÙ\›X]Ú
+\ÚÝÜ^
+[œÝ[Y™YJKÌˆ9mì¹k¢z(áy£ä¹.í‹ÊBˆ\ÜÙ\›X]Ú
+\ÚÝÜ^
+[œÝ[Y™YJKùæë¹oeyi%¹cêº+îËÊBˆ\ÜÙ\›X]Ú
+\ÚÝÜ^
+[œÝ[Y™YJKÛØØ[][›\ÝY\YÚ[‹ÊBˆ\ÜÙ\™Ù\Ó›ÝX]Ú
+\ÚÝÜ^
+[œÝ[Y™YJKÐY\ÙYZËXZWÙÚ[Ù™šXÚX[\YÚ[ŸÚ™\ÚÝÜ\[[YKÊBˆÛÛœÝ^\›˜[Ø\™H\ÚÝÜ›Ù\Ê[œÝ[Y™YJK™š[™
+›ÙHOˆ›ÙK\HOOH	Ø\XÛIÈ	‰ˆ\ÚÝÜ^
+›ÙJKš[˜ÛY\Ê	ÛØØ[][›\ÝY\YÚ[‰ÊJBˆ\ÜÙ\›ÚÊ^\›˜[Ø\™
+Bˆ\ÜÙ\›X]Ú
+\ÚÝÜ^
+^\›˜[Ø\™
+Kù«i9£ä¹.í¹¬¨y§"ycëùc.zacyæ¡9mì¹k¨y¨.Ø][ÙÈ9fî¹k¦¹§iy®¤:+¬9oeKÊBˆ\ÜÙ\›ÚÊ\ÚÝÜ›Ù\Ê^\›˜[Ø\™
+KœÛÛYJ›ÙHOˆ›ÙK\HOOH	Ø]Û‰È	‰ˆ›ÙK˜Ú[™[Ëš[˜ÛY\Ê	ùea¹gã¹.#yë¨yä!‰ÊH	‰ˆ›ÙKœ›ÜË™\ØX›Y
+JBˆ\ÜÙ\™\]X[
+\ÚÝÜ›Ù\Ê^\›˜[Ø\™
+KœÛÛYJ›ÙHOˆ›ÙK\HOOH	Ø]Û‰È	‰ˆÉùk¢z(áIË	ùd+ùbª	Ë	ùalúeëIË	ùcn:/oI×KœÛÛYJX™[Oˆ›ÙK˜Ú[™[Ëš[˜ÛY\ÊX™[
+JJK˜[ÙJB‚ˆÛÛœÝÙX\˜ÚH\ÚÝÜ›Ù\Ê[œÝ[Y™YJK™š[™
+›ÙHOˆ›ÙK\HOOH	Ú[œ]	È	‰ˆ›ÙKœ›ÜÖÉØ\šXK[X™[	×HOOH	ù¤'9í(¹£ä¹.í‰ÊBˆÙX\˜Úœ›ÜË›ÛÚ[™ÙJÈ\™Ù]ˆÈ˜[YNˆ	ÛØØ[][›\ÝY\YÚ[‰ÈHJBˆÛÛœÝÙX\˜ÚY™YHH]ØZ]\›™\ÜËœ™[™\Š
+Bˆ\ÜÙ\™\]X[
+\ÚÝÜ›Ù\ÊÙX\˜ÚY™YJK™š[\Š›ÙHOˆ›ÙK\HOOH	Ø\XÛIÊK›[™ÝJBˆ\ÜÙ\›X]Ú
+\ÚÝÜ^
+ÙX\˜ÚY™YJKÑÚ]Xˆ9§iy®¤;ï&šÎ—×ÙÚ]X—˜ÛÛWØXÛYWÛØØ[][›\ÝY\YÚ[‹ÊBŸJB‚\Ý
+	ÛÙ™šXÚX[\ÚÝÜ™\]Z\™\ÈH[XÚØYÙH[™ÛÛ[Z]ÛÛ™š\›X][Ûˆ™Y›Ü™H\Ú[™ÈHÒ[œÝ[\‰Ë\Þ[˜È
+
+HOˆÂˆÛÛœÝ\›™\ÜÈHÜ™X]Q\ÚÝÜ\›™\ÜÊÂˆØ][ÙÎˆ\ÚÝÜØ][ÙÊÙ\ÚÝÜ[žJÈYˆ	ÙÚZ[œÝ[X›IËXÚØYÙS˜[YNˆ	ÐXÛYKÙÚZ[œÝ[X›IËÛÛ[Z]ˆ\ÚÝÜÛÛ[Z]JWJKˆJBˆ]ØZ]\›™\ÜËœ™XYBˆ]ØZ]\›™\ÜËœ™[™\Š
+Bˆ]ØZ]\›™\ÜËœ[‘Y™™XÝÊ\›™\ÜË™Ù]ÛÛ\Û™[
+	Ñ\ÚÝÜÝÜ™T[™[	ÊJBˆ]™YHH]ØZ]ØZ]›Ü‘\ÚÝÜ™YJ\›™\ÜË˜[YHOˆ\ÚÝÜ^
+˜[YJKš[˜ÛY\Ê	Ó˜[YHÚZ[œÝ[X›IÊJBˆÛÛœÝ[œÝ[]ÛˆH\ÚÝÜ›Ù\Ê™YJK™š[™
+›ÙHOˆ›ÙK\HOOH	Ø]Û‰È	‰ˆ›ÙK˜Ú[™[Ëš[˜ÛY\Ê	ùk¢z(áIÊJBˆ\ÜÙ\›ÚÊ[œÝ[]ÛŠBˆ[œÝ[]Û‹œ›ÜË›ÛÛXÚÊ
+Bˆ™YHH]ØZ]\›™\ÜËœ™[™\Š
+BˆÛÛœÝ^XÝYHS”ÕSXÛYKÙÚZ[œÝ[X›H	Ù\ÚÝÜÛÛ[Z]Xˆ\ÜÙ\›ÚÊ\ÚÝÜ^
+™YJKš[˜ÛY\Ê^XÝY
+JBˆ]ÛÛ™š\›X][Û’[œ]H\ÚÝÜ›Ù\Ê™YJK™š[™
+›ÙHOˆ›ÙK\HOOH	Ú[œ]	È	‰ˆ›ÙKœ›ÜËœXÙZÛ\ˆOOH^XÝY
+Bˆ\ÜÙ\›ÚÊÛÛ™š\›X][Û’[œ]
+Bˆ]ÛÛ™š\›P]ÛˆH\ÚÝÜ›Ù\Ê™YJK™š[™
+›ÙHOˆ›ÙK\HOOH	Ø]Û‰È	‰ˆ›ÙK˜Ú[™[Ëš[˜ÛY\Ê	ùèkº+©9nm¹k¢z(áIÊJBˆ\ÜÙ\™\]X[
+ÛÛ™š\›P]Û‹œ›ÜË™\ØX›YYJBˆÛÛ™š\›X][Û’[œ]œ›ÜË›ÛÚ[™ÙJÈ\™Ù]ˆÈ˜[YNˆS”ÕSXÛYKÙÚZ[œÝ[X›H	Ù\ÚÝÜÛÛ[Z]œÛXÙJLŠ_XHJBˆ™YHH]ØZ]\›™\ÜËœ™[™\Š
+BˆÛÛ™š\›P]ÛˆH\ÚÝÜ›Ù\Ê™YJK™š[™
+›ÙHOˆ›ÙK\HOOH	Ø]Û‰È	‰ˆ›ÙK˜Ú[™[Ëš[˜ÛY\Ê	ùèkº+©9nm¹k¢z(áIÊJBˆ\ÜÙ\™\]X[
+ÛÛ™š\›P]Û‹œ›ÜË™\ØX›YYJBˆ\ÜÙ\™\]X[
+\›™\ÜË˜Ø[Ëš[œÝ[[™K›[™Ý
+B‚ˆÛÛ™š\›X][Û’[œ]H\ÚÝÜ›Ù\Ê™YJK™š[™
+›ÙHOˆ›ÙK\HOOH	Ú[œ]	È	‰ˆ›ÙKœ›ÜËœXÙZÛ\ˆOOH^XÝY
+BˆÛÛ™š\›X][Û’[œ]œ›ÜË›ÛÚ[™ÙJÈ\™Ù]ˆÈ˜[YNˆ^XÝYHJBˆ™YHH]ØZ]\›™\ÜËœ™[™\Š
+BˆÛÛ™š\›P]ÛˆH\ÚÝÜ›Ù\Ê™YJK™š[™
+›ÙHOˆ›ÙK\HOOH	Ø]Û‰È	‰ˆ›ÙK˜Ú[™[Ëš[˜ÛY\Ê	ùèkº+©9nm¹k¢z(áIÊJBˆ\ÜÙ\™\]X[
+ÛÛ™š\›P]Û‹œ›ÜË™\ØX›Y˜[ÙJBˆ]ØZ]ÛÛ™š\›P]Û‹œ›ÜË›ÛÛXÚÊ
+Bˆ™YHH]ØZ]ØZ]›Ü‘\ÚÝÜ™YJ\›™\ÜË˜[YHOˆ\ÚÝÜ^
+˜[YJKš[˜ÛY\Ê	ÑÒ9k¦9¥®y£ä¹.í¹ë¨yä!¹fj9mì¹k£9¢$9k¢z(áIÊJBˆ\ÜÙ\™\]X[
+\›™\ÜË˜Ø[Ëš[œÜXÝ›[™ÝJBˆ\ÜÙ\™\]X[
+\›™\ÜË˜Ø[Ëš[œÜXÝÌKÚ]
+ÚÎ‹ËÙÚ]X‹˜ÛÛKØXÛYKÙÚZ[œÝ[X›K™Ú]ÉÙ\ÚÝÜÛÛ[Z]X
+Bˆ\ÜÙ\™\]X[
+\›™\ÜË˜Ø[Ëš[œÝ[[™K›[™ÝJBˆ\ÜÙ\™\]X[
+\›™\ÜË˜Ø[Ëš[œÝ[[™VÌKœÜXË\›™\ÜË˜Ø[Ëš[œÜXÝÌJBˆ\ÜÙ\™\]X[
+\›™\ÜË˜Ø[Ëš[œÝ[[™VÌK›Ü[ÛœË™[˜X›YYJBˆ\ÜÙ\™\]X[
+\›™\ÜË˜Ø[Ëš[œÝ[[™VÌK›Ü[ÛœËœ™\]Y\ÝY	ÌLLLLLLLKLLLLKMLLKNLLKLLLLLLLLLLLLIÊBˆ\ÜÙ\™\]X[
+Øš™XÝš\ÓÝÛŠ\›™\ÜË˜Ø[Ëš[œÝ[[™VÌK›Ü[ÛœË	Ø\›Ý™YZ[ÉÊK˜[ÙJBˆ\ÜÙ\™\]X[
+\›™\ÜË˜Ø[ËØZ]›Ü’[œÝ[›[™Ý
+Bˆ\ÜÙ\™\]X[
+\›™\ÜËœ™\]Y\ÝË™]™\žJ][HOˆ][K\›OOH\ÚÝÜØ][ÙÕ\›
+KYJBˆ\ÜÙ\›X]Ú
+\ÚÝÜ^
+™YJKùmì¹k¢z(áKÊBŸJB‚\Ý
+	ÛÙ™šXÚX[\ÚÝÜ™XÙZ]™\È[˜Y\Y[šÛ›ÝÛˆ[šY\È[™\Ü^\ÈÒÛÛ\]Xš[]H™Y\Ø[	Ë\Þ[˜È
+
+HOˆÂˆÛÛœÝ[žHH\ÚÝÜ[žJÈYˆ	ÙÚ][šÛ›ÝÛ‰ËXÚØYÙS˜[YNˆ	ÐXÛYKÙÚ][šÛ›ÝÛ‰ËÛÛ[Z]ˆ\ÚÝÜÛÛ[Z]ˆÛÛ\]Xš[]Nˆ	Ý[šÛ›ÝÛ‰Ë›Ùš[\ÎˆÉÝÙX‰×HJBˆÛÛœÝ[˜ÛÛ\]X›HHÞÈ˜[YNˆ[žKœXÚØYÙS˜[YK™\œÚ[ÛŽˆ[žK™\œÚ[Û‹[[YU™\œÚ[ÛŽˆ	ÌŒ‹Œ‹X[KŒ‰Ëˆ™\]Z\™[Y[ÎˆÈ	Ù[™Ú[™\Ë™Ú	Îˆ	×ŒŒKŒ	ÈHWBˆÛÛœÝ\›™\ÜÈHÜ™X]Q\ÚÝÜ\›™\ÜÊÂˆØ][ÙÎˆ\ÚÝÜØ][ÙÊÙ[žWJK\ÚÝÜ[[YU™\œÚ[ÛŽˆ[ˆ[œÝ[™\Ý[ˆÈ\XØ][ÛŽˆ	Ù˜Z[Y	ËÚ[™ÙYˆ˜[ÙKÝYÙNˆ	Ú[œÝ[	Ë\™Ù]ˆ[žKœXÚØYÙS˜[YKˆ\œ›ÜŽˆÈÛÙNˆ	Ú[˜ÛÛ\]X›K]™\œÚ[Û‰Ë[˜ÛÛ\]X›HKXÚØYÙT™\Ý[ˆÈ^]ÛÙNˆKÝ]]ˆ	ÉË[˜Ø]Yˆ˜[ÙKˆÙÔ]ˆ	ËÙ\ÜÜØX›KÛX[˜YÙ\‹›ÙÉË[˜ÛÛ\]X›HHKˆJBˆ]ØZ]\›™\ÜËœ™XYBˆ]ØZ]\›™\ÜËœ™[™\Š
+Bˆ]ØZ]\›™\ÜËœ[‘Y™™XÝÊ\›™\ÜË™Ù]ÛÛ\Û™[
+	Ñ\ÚÝÜÝÜ™T[™[	ÊJBˆ]™YHH]ØZ]ØZ]›Ü‘\ÚÝÜ™YJ\›™\ÜË˜[YHOˆ\ÚÝÜ^
+˜[YJKš[˜ÛY\Ê[žKœXÚØYÙS˜[YJJBˆ\ÜÙ\›X]Ú
+\ÚÝÜ^
+™YJKùk¢z(áy.ãy/&¹.©9å,H\ÚÝÜ9k¦9¥®y£ä¹.í¹ë¨yä!¹fj9£"yodùbcz/ä:(c9ã«ùh ù¨(zj£ÊBˆÛÛœÝØ\™H\ÚÝÜ›Ù\Ê™YJK™š[™
+›ÙHOˆ›ÙK\HOOH	Ø\XÛIÈ	‰ˆ\ÚÝÜ^
+›ÙJKš[˜ÛY\Ê[žKœXÚØYÙS˜[YJJBˆÛÛœÝ[œÝ[H\ÚÝÜ›Ù\ÊØ\™
+K™š[™
+›ÙHOˆ›ÙK\HOOH	Ø]Û‰È	‰ˆ›ÙK˜Ú[™[Ëš[˜ÛY\Ê	ùk¢z(áIÊJBˆ\ÜÙ\›ÚÊ[œÝ[
+Bˆ\ÜÙ\™\]X[
+[œÝ[œ›ÜË™\ØX›Y˜[ÙJBˆ\ÜÙ\™\]X[
+\[Ùˆ[œÝ[œ›ÜË›ÛÛXÚË	Ù[˜Ý[Û‰ÊBˆÛÛœÝ]Z[ÈH\ÚÝÜ›Ù\ÊØ\™
+K™š[™
+›ÙHOˆ›ÙK\HOOH	Ø]Û‰È	‰ˆ›ÙK˜Ú[™[Ëš[˜ÛY\Ê	ù§éyç"ú+é¹ áIÊJBˆ]Z[Ëœ›ÜË›ÛÛXÚÊ
+Bˆ™YHH]ØZ]\›™\ÜËœ™[™\Š
+Bˆ\ÜÙ\›X]Ú
+\ÚÝÜ^
+™YJKÑÒ\ÚÝÜ9k¨¹¢-ùêëûï&¹§*¹hì9¦#º` ºacKÊBˆ\ÜÙ\›X]Ú
+\ÚÝÜ^
+™YJKÐØ][ÙÈ9ao9k®y )ùcàº  ûï&‘Ò9§*¹çéHÈ[šÛ›ÝÛ‹ÊBˆÛÛœÝ]Z[[œÝ[H\ÚÝÜ›Ù\Ê™YJK™š[™
+›ÙHOˆ›ÙK\HOOH	Ø]Û‰È	‰ˆ›ÙK˜Ú[™[Ëš[˜ÛY\Ê	ùk¢z(áIÊJBˆ\ÜÙ\™\]X[
+]Z[[œÝ[œ›ÜË™\ØX›Y˜[ÙJBˆ]Z[[œÝ[œ›ÜË›ÛÛXÚÊ
+Bˆ™YHH]ØZ]\›™\ÜËœ™[™\Š
+BˆÛÛœÝÛÛ™š\›X][ÛˆHS”ÕS	Ù[žKœXÚØYÙS˜[Y_H	Ù[žK˜ÛÛ[Z]XˆÛÛœÝ[œ]H\ÚÝÜ›Ù\Ê™YJK™š[™
+›ÙHOˆ›ÙK\HOOH	Ú[œ]	È	‰ˆ›ÙKœ›ÜËœXÙZÛ\ˆOOHÛÛ™š\›X][ÛŠBˆ\ÜÙ\›ÚÊ[œ]
+Bˆ[œ]œ›ÜË›ÛÚ[™ÙJÈ\™Ù]ˆÈ˜[YNˆÛÛ™š\›X][ÛˆHJBˆ™YHH]ØZ]\›™\ÜËœ™[™\Š
+BˆÛÛœÝÛÛ™š\›HH\ÚÝÜ›Ù\Ê™YJK™š[™
+›ÙHOˆ›ÙK\HOOH	Ø]Û‰È	‰ˆ›ÙK˜Ú[™[Ëš[˜ÛY\Ê	ùèkº+©9nm¹k¢z(áIÊJBˆ]ØZ]ÛÛ™š\›Kœ›ÜË›ÛÛXÚÊ
+Bˆ™YHH]ØZ]ØZ]›Ü‘\ÚÝÜ™YJ\›™\ÜË˜[YHOˆ\ÚÝÜ^
+˜[YJKš[˜ÛY\Ê	ÑÒ9k¦9¥®yao9k®y )ù¨(zj£9¢ä¹îçIÊJBˆ\ÜÙ\›X]Ú
+\ÚÝÜ^
+™YJKÚ[˜ÛÛ\]X›K]™\œÚ[Û‹ÊBˆ\ÜÙ\›X]Ú
+\ÚÝÜ^
+™YJKÐXÛYWÙÚ][šÛ›ÝÛWŒ—ŒËÊBˆ\ÜÙ\›X]Ú
+\ÚÝÜ^
+™YJKÙ[™Ú[™\×™ÚWŒŒWŒÊBˆ\ÜÙ\™\]X[
+\›™\ÜË˜Ø[Ëš[œÜXÝ›[™ÝJBˆ\ÜÙ\™\]X[
+\›™\ÜË˜Ø[Ëš[œÝ[[™K›[™ÝJBˆ\ÜÙ\™\]X[
+\›™\ÜË˜Ø[Ëœ™[[Ý™P[™K›[™Ý
+Bˆ\ÜÙ\™\]X[
+\›™\ÜË˜Ø[ËœÙ][™Q[˜X›Y›[™Ý
+BŸJB‚\Ý
+	ÛÙ™šXÚX[\ÚÝÜ[œÜXÝ[Ûˆ™Y\Ø[\ÈYš\ÛÜžH[™[œÝ[[™H]\›Z[™\ÈHš[˜[™\Ý[	Ë\Þ[˜È
+
+HOˆÂˆÛÛœÝ[žHH\ÚÝÜ[žJÈYˆ	ÙÚ[›ËX[™IËXÚØYÙS˜[YNˆ	ÐXÛYKÙÚ[›ËX[™IËÛÛ[Z]ˆ\ÚÝÜÛÛ[Z]ˆÛÛ\]Xš[]Nˆ	Ú[˜ÛÛ\]X›IË›Ùš[\Îˆ×HJBˆÛÛœÝ\›™\ÜÈHÜ™X]Q\ÚÝÜ\›™\ÜÊÈØ][ÙÎˆ\ÚÝÜØ][ÙÊÙ[žWJKˆ[œÜXÝ™\Ý[ˆÈÝ]\Îˆ	Ü™Y\ÙY	Ë›Ø›[Nˆ	Û›ÝXKX[™IË™X\ÛÛŽˆ	ÝHÚ]ÛÝ\˜ÙH\È›ÈÒ[™H]Ú	ÈKˆ[œÝ[™\Ý[ˆÈ\XØ][ÛŽˆ	Ù˜Z[Y	ËÚ[™ÙYˆ˜[ÙKÝYÙNˆ	Ú[œÝ[	Ë\™Ù]ˆ[žKœXÚØYÙS˜[YKˆ\œ›ÜŽˆÈÛÙNˆ	Û›ÝXKX[™IÈHHJBˆ]ØZ]\›™\ÜËœ™XYBˆ]ØZ]\›™\ÜËœ™[™\Š
+Bˆ]ØZ]\›™\ÜËœ[‘Y™™XÝÊ\›™\ÜË™Ù]ÛÛ\Û™[
+	Ñ\ÚÝÜÝÜ™T[™[	ÊJBˆ]™YHH]ØZ]ØZ]›Ü‘\ÚÝÜ™YJ\›™\ÜË˜[YHOˆ\ÚÝÜ^
+˜[YJKš[˜ÛY\Ê[žKœXÚØYÙS˜[YJJBˆÛÛœÝ[œÝ[H\ÚÝÜ›Ù\Ê™YJK™š[™
+›ÙHOˆ›ÙK\HOOH	Ø]Û‰È	‰ˆ›ÙK˜Ú[™[Ëš[˜ÛY\Ê	ùk¢z(áIÊJBˆ\ÜÙ\›ÚÊ[œÝ[
+Bˆ\ÜÙ\™\]X[
+[œÝ[œ›ÜË™\ØX›Y˜[ÙJBˆ[œÝ[œ›ÜË›ÛÛXÚÊ
+Bˆ™YHH]ØZ]\›™\ÜËœ™[™\Š
+BˆÛÛœÝÛÛ™š\›X][ÛˆHS”ÕS	Ù[žKœXÚØYÙS˜[Y_H	Ù[žK˜ÛÛ[Z]XˆÛÛœÝ[œ]H\ÚÝÜ›Ù\Ê™YJK™š[™
+›ÙHOˆ›ÙK\HOOH	Ú[œ]	È	‰ˆ›ÙKœ›ÜËœXÙZÛ\ˆOOHÛÛ™š\›X][ÛŠBˆ[œ]œ›ÜË›ÛÚ[™ÙJÈ\™Ù]ˆÈ˜[YNˆÛÛ™š\›X][ÛˆHJBˆ™YHH]ØZ]\›™\ÜËœ™[™\Š
+BˆÛÛœÝÛÛ™š\›HH\ÚÝÜ›Ù\Ê™YJK™š[™
+›ÙHOˆ›ÙK\HOOH	Ø]Û‰È	‰ˆ›ÙK˜Ú[™[Ëš[˜ÛY\Ê	ùèkº+©9nm¹k¢z(áIÊJBˆ]ØZ]ÛÛ™š\›Kœ›ÜË›ÛÛXÚÊ
+Bˆ™YHH]ØZ]ØZ]›Ü‘\ÚÝÜ™YJ\›™\ÜË˜[YHOˆ\ÚÝÜ^
+˜[YJKš[˜ÛY\Ê	ù¤ãy/g9§*¹k£9¢$;ï"›ÝXKX[™{ï"IÊJBˆ\ÜÙ\›X]Ú
+\ÚÝÜ^
+™YJKÑÒ\ÚÝÜ:h¡9¨à9£ä9é.»ï&HÚ]ÛÝ\˜ÙH\È›ÈÒ[™H]ÚÊBˆ\ÜÙ\›X]Ú
+\ÚÝÜ^
+™YJKÝHÚ]ÛÝ\˜ÙH\È›ÈÒ[™H]ÚÊBˆ\ÜÙ\›X]Ú
+\ÚÝÜ^
+™YJKÛ›ÝXKX[™KÊBˆ\ÜÙ\™\]X[
+\›™\ÜË˜Ø[Ëš[œÜXÝ›[™ÝJBˆ\ÜÙ\™\]X[
+\›™\ÜË˜Ø[Ëš[œÝ[[™K›[™ÝJBŸJB‚\Ý
+	ÛÙ™šXÚX[\ÚÝÜ[œÝ[™\Ý[Ø[ˆÝXØÙYYY\ˆ]È[œÜXÝ[ÛˆYš\ÛÜžIË\Þ[˜È
+
+HOˆÂˆÛÛœÝ[žHH\ÚÝÜ[žJÈYˆ	ÙÚZ[œÜXÝ[Û‹XYš\ÛÜžIËXÚØYÙS˜[YNˆ	ÐXÛYKÙÚZ[œÜXÝ[Û‹XYš\ÛÜžIËÛÛ[Z]ˆ\ÚÝÜÛÛ[Z]JBˆÛÛœÝ\›™\ÜÈHÜ™X]Q\ÚÝÜ\›™\ÜÊÈØ][ÙÎˆ\ÚÝÜØ][ÙÊÙ[žWJKˆ[œÜXÝ™\Ý[ˆÈÝ]\Îˆ	Ü™Y\ÙY	Ë™X\ÛÛŽˆ	Ñ\ÚÝÜ™Y›YÚÛÝ[›ÝÛÛ™š\›H\ÈÛÝ\˜ÙIÈHJBˆ]ØZ]\›™\ÜËœ™XYBˆ]ØZ]\›™\ÜËœ™[™\Š
+Bˆ]ØZ]\›™\ÜËœ[‘Y™™XÝÊ\›™\ÜË™Ù]ÛÛ\Û™[
+	Ñ\ÚÝÜÝÜ™T[™[	ÊJBˆ]™YHH]ØZ]ØZ]›Ü‘\ÚÝÜ™YJ\›™\ÜË˜[YHOˆ\ÚÝÜ^
+˜[YJKš[˜ÛY\Ê[žKœXÚØYÙS˜[YJJBˆÛÛœÝ[œÝ[H\ÚÝÜ›Ù\Ê™YJK™š[™
+›ÙHOˆ›ÙK\HOOH	Ø]Û‰È	‰ˆ›ÙK˜Ú[™[Ëš[˜ÛY\Ê	ùk¢z(áIÊJBˆ[œÝ[œ›ÜË›ÛÛXÚÊ
+Bˆ™YHH]ØZ]\›™\ÜËœ™[™\Š
+BˆÛÛœÝÛÛ™š\›X][ÛˆHS”ÕS	Ù[žKœXÚØYÙS˜[Y_H	Ù\ÚÝÜÛÛ[Z]Xˆ\ÚÝÜ›Ù\Ê™YJK™š[™
+›ÙHOˆ›ÙK\HOOH	Ú[œ]	È	‰ˆ›ÙKœ›ÜËœXÙZÛ\ˆOOHÛÛ™š\›X][ÛŠBˆœ›ÜË›ÛÚ[™ÙJÈ\™Ù]ˆÈ˜[YNˆÛÛ™š\›X][ÛˆHJBˆ™YHH]ØZ]\›™\ÜËœ™[™\Š
+Bˆ]ØZ]\ÚÝÜ›Ù\Ê™YJK™š[™
+›ÙHOˆ›ÙK\HOOH	Ø]Û‰È	‰ˆ›ÙK˜Ú[™[Ëš[˜ÛY\Ê	ùèkº+©9nm¹k¢z(áIÊJKœ›ÜË›ÛÛXÚÊ
+Bˆ™YHH]ØZ]ØZ]›Ü‘\ÚÝÜ™YJ\›™\ÜË˜[YHOˆ\ÚÝÜ^
+˜[YJKš[˜ÛY\Ê	ÑÒ9k¦9¥®y£ä¹.í¹ë¨yä!¹fj9mì¹k£9¢$9k¢z(áIÊJBˆ\ÜÙ\›X]Ú
+\ÚÝÜ^
+™YJKÑÒ\ÚÝÜ:h¡9¨à9£ä9é.»ï&‘\ÚÝÜ™Y›YÚÛÝ[›ÝÛÛ™š\›H\ÈÛÝ\˜ÙKÊBˆ\ÜÙ\™\]X[
+\›™\ÜË˜Ø[Ëš[œÜXÝ›[™ÝJBˆ\ÜÙ\™\]X[
+\›™\ÜË˜Ø[Ëš[œÝ[[™K›[™ÝJBŸJB‚\Ý
+	Ø[ˆ[™XYH[œÝ[Y^XÝXÚØYÙH™\ÜYžH\ÚÝÜ™XÛÛ˜Ú[\ÈH›ËXÚ[™ÙH[œÝ[˜Z[\™IË\Þ[˜È
+
+HOˆÂˆÛÛœÝ[žHH\ÚÝÜ[žJÈYˆ	ÙÚ[›ËXÚ[™ÙKZ[œÝ[Y	ËXÚØYÙS˜[YNˆ	ÐXÛYKÙÚ[›ËXÚ[™ÙKZ[œÝ[Y	ËÛÛ[Z]ˆ\ÚÝÜÛÛ[Z]JBˆÛÛœÝ[œÝ[YXÚØYÙHHÈ˜[YNˆ[žKœXÚØYÙS˜[YKÙ™šXÚX[ˆ˜[ÙK[œÝ[YˆYK™[[Ý˜X›NˆYKˆ[˜X›YˆYK™\œÚ[ÛŽˆ[žK™\œÚ[Û‹ÛÝ\˜ÙNˆÚ]
+ÉÙ[žKœ™\ÜÚ]ÜžU\›K™Ú]ÉÙ\ÚÝÜÛÛ[Z]XBˆÛÛœÝ\›™\ÜÈHÜ™X]Q\ÚÝÜ\›™\ÜÊÈØ][ÙÎˆ\ÚÝÜØ][ÙÊÙ[žWJKˆ[œÝ[™\Ý[ˆÈ\XØ][ÛŽˆ	Ù˜Z[Y	ËÚ[™ÙYˆ˜[ÙKÝYÙNˆ	Ú[œÝ[	Ë\™Ù]ˆ[žKœXÚØYÙS˜[YKˆ\œ›ÜŽˆÈÛÙNˆ	Ó“×ÑTS‘SÖWÐÒS‘ÑTÉÈHKˆ[œÝ[YY\’[œÝ[™\Ý[ˆÚ[œÝ[YXÚØYÙWHJBˆ]ØZ]\›™\ÜËœ™XYBˆ]ØZ]\›™\ÜËœ™[™\Š
+Bˆ]ØZ]\›™\ÜËœ[‘Y™™XÝÊ\›™\ÜË™Ù]ÛÛ\Û™[
+	Ñ\ÚÝÜÝÜ™T[™[	ÊJBˆ]™YHH]ØZ]ØZ]›Ü‘\ÚÝÜ™YJ\›™\ÜË˜[YHOˆ\ÚÝÜ^
+˜[YJKš[˜ÛY\Ê[žKœXÚØYÙS˜[YJJBˆÛÛœÝ[œÝ[H\ÚÝÜ›Ù\Ê™YJK™š[™
+›ÙHOˆ›ÙK\HOOH	Ø]Û‰È	‰ˆ›ÙK˜Ú[™[Ëš[˜ÛY\Ê	ùk¢z(áIÊJBˆ[œÝ[œ›ÜË›ÛÛXÚÊ
+Bˆ™YHH]ØZ]\›™\ÜËœ™[™\Š
+BˆÛÛœÝÛÛ™š\›X][ÛˆHS”ÕS	Ù[žKœXÚØYÙS˜[Y_H	Ù\ÚÝÜÛÛ[Z]Xˆ\ÚÝÜ›Ù\Ê™YJK™š[™
+›ÙHOˆ›ÙK\HOOH	Ú[œ]	È	‰ˆ›ÙKœ›ÜËœXÙZÛ\ˆOOHÛÛ™š\›X][ÛŠBˆœ›ÜË›ÛÚ[™ÙJÈ\™Ù]ˆÈ˜[YNˆÛÛ™š\›X][ÛˆHJBˆ™YHH]ØZ]\›™\ÜËœ™[™\Š
+Bˆ]ØZ]\ÚÝÜ›Ù\Ê™YJK™š[™
+›ÙHOˆ›ÙK\HOOH	Ø]Û‰È	‰ˆ›ÙK˜Ú[™[Ëš[˜ÛY\Ê	ùèkº+©9nm¹k¢z(áIÊJKœ›ÜË›ÛÛXÚÊ
+Bˆ™YHH]ØZ]ØZ]›Ü‘\ÚÝÜ™YJ\›™\ÜË˜[YHOˆ\ÚÝÜ^
+˜[YJKš[˜ÛY\Ê	ÑÒ\ÚÝÜ9mì¹k¢z(áy®!yceyèkº+©9æë¹¨!ùc!yodùbcymì¹k¢z(áIÊJBˆ\ÜÙ\™Ù\Ó›ÝX]Ú
+\ÚÝÜ^
+™YJKù¤ãy/g9§*¹k£9¢$“×ÑTS‘SÖWÐÒS‘ÑTËÊBˆ\ÜÙ\™\]X[
+\›™\ÜË˜Ø[Ëš[œÝ[[™K›[™ÝJBˆ\ÜÙ\›ÚÊ\›™\ÜË˜Ø[Ë›\Ý[™\ÈHŠBˆ\ÜÙ\™\]X[
+\›™\ÜË˜Ø[ËØZ]›Ü’[œÝ[›[™Ý
+BŸJB‚\Ý
+	Ñ\ÚÝÜ\]\È[ˆÛ\ˆš^YÚ]Xˆ™]š\Ú[Ûˆ›ÝYÚÒ™[[Ý™H[™[œÝ[Y\ˆ^XÝÛÛ[Z]ÛÛ™š\›X][Û‰Ë\Þ[˜È
+
+HOˆÂˆÛÛœÝ[žHH\ÚÝÜ[žJÈYˆ	ÙÚ]\]K]\™Ù]	ËXÚØYÙS˜[YNˆ	ÐXÛYKÙÚ]\]K]\™Ù]	ËÛÛ[Z]ˆ\ÚÝÜÛÛ[Z]JBˆÛÛœÝÛÛÛ[Z]H	Ø‰Ëœ™\X]
+
+BˆÛÛœÝ[œÝ[YHÈ˜[YNˆ[žKœXÚØYÙS˜[YKÙ™šXÚX[ˆ˜[ÙK[œÝ[YˆYK™[[Ý˜X›NˆYKˆ[˜X›Yˆ˜[ÙK™\œÚ[ÛŽˆ	ÌKŒŒ	ËÛÝ\˜ÙNˆÚ]
+ÉÙ[žKœ™\ÜÚ]ÜžU\›K™Ú]ÉÛÛÛÛ[Z]XBˆÛÛœÝ\]YHÈ‹‹š[œÝ[Y[˜X›Yˆ˜[ÙK™\œÚ[ÛŽˆ[žK™\œÚ[Û‹ˆÛÝ\˜ÙNˆÚ]
+ÉÙ[žKœ™\ÜÚ]ÜžU\›K™Ú]ÉÙ\ÚÝÜÛÛ[Z]XBˆÛÛœÝ\›™\ÜÈHÜ™X]Q\ÚÝÜ\›™\ÜÊÈØ][ÙÎˆ\ÚÝÜØ][ÙÊÙ[žWJK[œÝ[YˆÚ[œÝ[YKˆ[œÝ[™\Ý[ˆÈ\XØ][ÛŽˆ	Ø\YY	ËÚ[™ÙYˆYKÝYÙNˆ	Ú[œÝ[	Ë\™Ù]ˆ[žKœXÚØYÙS˜[YHKˆ[œÝ[YY\’[œÝ[™\Ý[ˆÝ\]YHJBˆ]ØZ]\›™\ÜËœ™XYBˆ]ØZ]\›™\ÜËœ™[™\Š
+Bˆ]ØZ]\›™\ÜËœ[‘Y™™XÝÊ\›™\ÜË™Ù]ÛÛ\Û™[
+	Ñ\ÚÝÜÝÜ™T[™[	ÊJBˆ]™YHH]ØZ]ØZ]›Ü‘\ÚÝÜ™YJ\›™\ÜË˜[YHOˆ\ÚÝÜ^
+˜[YJKš[˜ÛY\Ê[žKœXÚØYÙS˜[YJJBˆÛÛœÝØ\™H\ÚÝÜ›Ù\Ê™YJK™š[™
+›ÙHOˆ›ÙK\HOOH	Ø\XÛIÈ	‰ˆ\ÚÝÜ^
+›ÙJKš[˜ÛY\Ê[žKœXÚØYÙS˜[YJJBˆÛÛœÝ\]HH\ÚÝÜ›Ù\ÊØ\™
+K™š[™
+›ÙHOˆ›ÙK\HOOH	Ø]Û‰È	‰ˆ›ÙK˜Ú[™[Ëš[˜ÛY\Ê	ù¦í9¥¬	ÊJBˆ\ÜÙ\›ÚÊ\]JBˆ\ÜÙ\™\]X[
+\]Kœ›ÜË™\ØX›Y˜[ÙJBˆ\]Kœ›ÜË›ÛÛXÚÊ
+Bˆ™YHH]ØZ]\›™\ÜËœ™[™\Š
+BˆÛÛœÝÛÛ™š\›X][ÛˆHTUH	Ù[žKœXÚØYÙS˜[Y_H	Ù\ÚÝÜÛÛ[Z]Xˆ\ÜÙ\›X]Ú
+\ÚÝÜ^
+™YJK™]È™YÑ^
+9¦í9¥¬ÜXûï&™Ú]
+ÉÙ[žKœ™\ÜÚ]ÜžU\›W™Ú]ÉÙ\ÚÝÜÛÛ[Z]X
+JBˆ\ÚÝÜ›Ù\Ê™YJK™š[™
+›ÙHOˆ›ÙK\HOOH	Ú[œ]	È	‰ˆ›ÙKœ›ÜËœXÙZÛ\ˆOOHÛÛ™š\›X][ÛŠBˆœ›ÜË›ÛÚ[™ÙJÈ\™Ù]ˆÈ˜[YNˆÛÛ™š\›X][ÛˆHJBˆ™YHH]ØZ]\›™\ÜËœ™[™\Š
+Bˆ]ØZ]\ÚÝÜ›Ù\Ê™YJK™š[™
+›ÙHOˆ›ÙK\HOOH	Ø]Û‰È	‰ˆ›ÙK˜Ú[™[Ëš[˜ÛY\Ê	ùèkº+©9nm¹¦í9¥¬	ÊJKœ›ÜË›ÛÛXÚÊ
+Bˆ™YHH]ØZ]ØZ]›Ü‘\ÚÝÜ™YJ\›™\ÜË˜[YHOˆ\ÚÝÜ^
+˜[YJKš[˜ÛY\Ê	ÑÒ9k¦9¥®y£ä¹.í¹ë¨yä!¹fj9mì¹k£9¢$9¦í9¥¬	ÊJBˆ\ÜÙ\™Y\\]X[
+\›™\ÜË˜Ø[Ëš[œÜXÝØÚ]
+ÉÙ[žKœ™\ÜÚ]ÜžU\›K™Ú]ÉÙ\ÚÝÜÛÛ[Z]XJBˆ\ÜÙ\™\]X[
+\›™\ÜË˜Ø[Ëš[œÝ[[™K›[™ÝJBˆ\ÜÙ\™\]X[
+\›™\ÜË˜Ø[Ëš[œÝ[[™VÌKœÜXË\›™\ÜË˜Ø[Ëš[œÜXÝÌJBˆ\ÜÙ\™\]X[
+\›™\ÜË˜Ø[Ëš[œÝ[[™VÌK›Ü[ÛœË™[˜X›Y˜[ÙJBˆ\ÜÙ\›ÚÊ\›™\ÜË[Y\‘[^\Ëš[˜ÛY\ÊLÌ
+K	ÑÒÜ\˜][ÛœÈ™]Z[ˆZ\ˆL\ÙXÛÛ™XY[™IÊBˆ\ÜÙ\™Y\\]X[
+\›™\ÜË˜Ø[Ëœ™[[Ý™P[™KÙ[žKœXÚØYÙS˜[YWJBŸJB‚\Ý
+	ÑÒÝÜ™HØ[ˆ\]H]ÈÝÛˆ[œÝ[YXÚØYÙH›ÝYÚHÙ™šXÚX[\ÚÝÜX[˜YÙ\‰Ë\Þ[˜È
+
+HOˆÂˆÛÛœÝ[žHH\ÚÝÜ[žJÈYˆ	ÙÚ\ØY™K\YÚ[‹[X[˜YÙ\‰ËXÚØYÙS˜[YNˆ	ÙÚ\ØY™K\YÚ[‹[X[˜YÙ\‰ËÛÛ[Z]ˆ\ÚÝÜÛÛ[Z]ˆ™\ÜÚ]ÜžU\›ˆ	ÚÎ‹ËÙÚ]X‹˜ÛÛKÐRKTØØ\›]ÑÒTÝÜ™IÈJBˆ[žK™\œÚ[ÛˆH	ÌŽKŒIÂˆÛÛœÝÛÛÛ[Z]H	Ø‰Ëœ™\X]
+
+BˆÛÛœÝ[œÝ[YHÈ˜[YNˆ[žKœXÚØYÙS˜[YKÙ™šXÚX[ˆ˜[ÙK[œÝ[YˆYK™[[Ý˜X›Nˆ˜[ÙKˆ[˜X›YˆYK™\œÚ[ÛŽˆ	ÌŽKŒ	ËÛÝ\˜ÙNˆÚ]
+ÉÙ[žKœ™\ÜÚ]ÜžU\›K™Ú]ÉÛÛÛÛ[Z]XBˆÛÛœÝ\]YHÈ‹‹š[œÝ[Y™\œÚ[ÛŽˆ[žK™\œÚ[Û‹ÛÝ\˜ÙNˆÚ]
+ÉÙ[žKœ™\ÜÚ]ÜžU\›K™Ú]ÉÙ\ÚÝÜÛÛ[Z]XBˆÛÛœÝ\›™\ÜÈHÜ™X]Q\ÚÝÜ\›™\ÜÊÈØ][ÙÎˆ\ÚÝÜØ][ÙÊÙ[žWJK[œÝ[YˆÚ[œÝ[YKˆ[œÝ[™\Ý[ˆÈ\XØ][ÛŽˆ	Ù˜Z[Y	ËÚ[™ÙYˆ˜[ÙKÝYÙNˆ	Ú[œÝ[	Ë\™Ù]ˆ[žKœXÚØYÙS˜[YKˆ\œ›ÜŽˆÈÛÙNˆ	ÔPÒÐQÑWÐÒS‘ÑWÐSP’QÕSÕTÉÈHKˆ[œÝ[YY\’[œÝ[™\Ý[ˆÝ\]YHJBˆ]ØZ]\›™\ÜËœ™XYBˆ]ØZ]\›™\ÜËœ™[™\Š
+Bˆ]ØZ]\›™\ÜËœ[‘Y™™XÝÊ\›™\ÜË™Ù]ÛÛ\Û™[
+	Ñ\ÚÝÜÝÜ™T[™[	ÊJBˆ]™YHH]ØZ]ØZ]›Ü‘\ÚÝÜ™YJ\›™\ÜË˜[YHOˆ\ÚÝÜ^
+˜[YJKš[˜ÛY\Ê[žKœXÚØYÙS˜[YJJBˆÛÛœÝØ\™H\ÚÝÜ›Ù\Ê™YJK™š[™
+›ÙHOˆ›ÙK\HOOH	Ø\XÛIÈ	‰ˆ\ÚÝÜ^
+›ÙJKš[˜ÛY\Ê[žKœXÚØYÙS˜[YJJBˆÛÛœÝ\]HH\ÚÝÜ›Ù\ÊØ\™
+K™š[™
+›ÙHOˆ›ÙK\HOOH	Ø]Û‰È	‰ˆ›ÙK˜Ú[™[Ëš[˜ÛY\Ê	ù¦í9¥¬	ÊJBˆ\ÜÙ\›ÚÊ\]K	ÝHÝÜ™H[žH^ÜÙ\È]Èš^YPÛÛ[Z]\]HXÝ[Û‰ÊBˆ\]Kœ›ÜË›ÛÛXÚÊ
+Bˆ™YHH]ØZ]\›™\ÜËœ™[™\Š
+BˆÛÛœÝÛÛ™š\›X][ÛˆHTUH	Ù[žKœXÚØYÙS˜[Y_H	Ù\ÚÝÜÛÛ[Z]Xˆ\ÚÝÜ›Ù\Ê™YJK™š[™
+›ÙHOˆ›ÙK\HOOH	Ú[œ]	È	‰ˆ›ÙKœ›ÜËœXÙZÛ\ˆOOHÛÛ™š\›X][ÛŠBˆœ›ÜË›ÛÚ[™ÙJÈ\™Ù]ˆÈ˜[YNˆÛÛ™š\›X][ÛˆHJBˆ™YHH]ØZ]\›™\ÜËœ™[™\Š
+Bˆ]ØZ]\ÚÝÜ›Ù\Ê™YJK™š[™
+›ÙHOˆ›ÙK\HOOH	Ø]Û‰È	‰ˆ›ÙK˜Ú[™[Ëš[˜ÛY\Ê	ùèkº+©9nm¹¦í9¥¬	ÊJKœ›ÜË›ÛÛXÚÊ
+Bˆ™YHH]ØZ]ØZ]›Ü‘\ÚÝÜ™YJ\›™\ÜË˜[YHOˆ\ÚÝÜ^
+˜[YJKš[˜ÛY\Ê	ÑÒ\ÚÝÜ9mì¹k¢z(áy®!yceyèkº+©9odùbcy§iy®¤9.#¹æë¹¨!ùfî¹k¦ˆÛÛ[Z]9. :!í	ÊJBˆ\ÜÙ\™\]X[
+\›™\ÜË˜Ø[Ëš[œÝ[[™K›[™ÝJBˆ\ÜÙ\™\]X[
+\›™\ÜË˜Ø[Ëš[œÝ[[™VÌKœÜXËÚ]
+ÉÙ[žKœ™\ÜÚ]ÜžU\›K™Ú]ÉÙ\ÚÝÜÛÛ[Z]X
+Bˆ\ÜÙ\™Y\\]X[
+\›™\ÜË˜Ø[Ëœ™[[Ý™P[™K×JBˆ\ÜÙ\›ÚÊ\›™\ÜË˜Ø[Ë›\Ý[™\ÈHŠBŸJB‚\Ý
+	ÔÝÜ™HÙ[‹]\]HXØÙ\ÈHYØXÞH[œÝ[Ú]›È[ÛÝ\˜ÙHÛÛ[Z][™›È™[[Ý™P[™HTIË\Þ[˜È
+
+HOˆÂˆÛÛœÝ[žHH\ÚÝÜ[žJÈYˆ	ÙÚ\ØY™K\YÚ[‹[X[˜YÙ\‰ËXÚØYÙS˜[YNˆ	ÙÚ\ØY™K\YÚ[‹[X[˜YÙ\‰ËÛÛ[Z]ˆ\ÚÝÜÛÛ[Z]ˆ™\ÜÚ]ÜžU\›ˆ	ÚÎ‹ËÙÚ]X‹˜ÛÛKÐRKTØØ\›]ÑÒTÝÜ™IÈJBˆ[žK™\œÚ[ÛˆH	ÌŽKŒÉÂˆÛÛœÝ[œÝ[YHÈ˜[YNˆ[žKœXÚØYÙS˜[YKÙ™šXÚX[ˆ˜[ÙK[œÝ[YˆYK™[[Ý˜X›Nˆ˜[ÙKˆ[˜X›YˆYK™\œÚ[ÛŽˆ	ÌŽKŒ‰ËÛÝ\˜ÙNˆ	ÙÚ]
+ÚÎ‹ËÙÚ]X‹˜ÛÛKÐRKTØØ\›]ÑÒTÝÜ™K™Ú]	ÈBˆÛÛœÝ\]YHÈ‹‹š[œÝ[Y™\œÚ[ÛŽˆ[žK™\œÚ[Û‹ÛÝ\˜ÙNˆÚ]
+ÉÙ[žKœ™\ÜÚ]ÜžU\›K™Ú]ÉÙ\ÚÝÜÛÛ[Z]XBˆÛÛœÝ\›™\ÜÈHÜ™X]Q\ÚÝÜ\›™\ÜÊÈØ][ÙÎˆ\ÚÝÜØ][ÙÊÙ[žWJK[œÝ[YˆÚ[œÝ[YKˆ™[[Ý™P[™P]˜Z[X›Nˆ˜[ÙKˆ[œÝ[™\Ý[ˆÈ\XØ][ÛŽˆ	Ù˜Z[Y	ËÚ[™ÙYˆ˜[ÙKÝYÙNˆ	Ú[œÝ[	Ë\™Ù]ˆ[žKœXÚØYÙS˜[YKˆ\œ›ÜŽˆÈÛÙNˆ	ÔPÒÐQÑWÐÒS‘ÑWÐSP’QÕSÕTÉÈHKˆ[œÝ[YY\’[œÝ[™\Ý[ˆÝ\]YHJBˆ]ØZ]\›™\ÜËœ™XYBˆ]ØZ]\›™\ÜËœ™[™\Š
+Bˆ]ØZ]\›™\ÜËœ[‘Y™™XÝÊ\›™\ÜË™Ù]ÛÛ\Û™[
+	Ñ\ÚÝÜÝÜ™T[™[	ÊJBˆ]™YHH]ØZ]ØZ]›Ü‘\ÚÝÜ™YJ\›™\ÜË˜[YHOˆ\ÚÝÜ^
+˜[YJKš[˜ÛY\Ê[žKœXÚØYÙS˜[YJJBˆÛÛœÝØ\™H\ÚÝÜ›Ù\Ê™YJK™š[™
+›ÙHOˆ›ÙK\HOOH	Ø\XÛIÈ	‰ˆ\ÚÝÜ^
+›ÙJKš[˜ÛY\Ê[žKœXÚØYÙS˜[YJJBˆÛÛœÝ\]HH\ÚÝÜ›Ù\ÊØ\™
+K™š[™
+›ÙHOˆ›ÙK\HOOH	Ø]Û‰È	‰ˆ›ÙK˜Ú[™[Ëš[˜ÛY\Ê	ù¦í9¥¬	ÊJBˆ\ÜÙ\›ÚÊ\]K	ÝHÛ\ˆÝÜ™H™\œÚ[Ûˆ^ÜÙ\ÈHÒÙ[‹]\]HXÝ[ÛˆÚ]Ý]™[[Ý™P[™IÊBˆ\]Kœ›ÜË›ÛÛXÚÊ
+Bˆ™YHH]ØZ]\›™\ÜËœ™[™\Š
+BˆÛÛœÝÛÛ™š\›X][ÛˆHTUH	Ù[žKœXÚØYÙS˜[Y_H	Ù\ÚÝÜÛÛ[Z]Xˆ\ÚÝÜ›Ù\Ê™YJK™š[™
+›ÙHOˆ›ÙK\HOOH	Ú[œ]	È	‰ˆ›ÙKœ›ÜËœXÙZÛ\ˆOOHÛÛ™š\›X][ÛŠBˆœ›ÜË›ÛÚ[™ÙJÈ\™Ù]ˆÈ˜[YNˆÛÛ™š\›X][ÛˆHJBˆ™YHH]ØZ]\›™\ÜËœ™[™\Š
+Bˆ]ØZ]\ÚÝÜ›Ù\Ê™YJK™š[™
+›ÙHOˆ›ÙK\HOOH	Ø]Û‰È	‰ˆ›ÙK˜Ú[™[Ëš[˜ÛY\Ê	ùèkº+©9nm¹¦í9¥¬	ÊJKœ›ÜË›ÛÛXÚÊ
+Bˆ™YHH]ØZ]ØZ]›Ü‘\ÚÝÜ™YJ\›™\ÜË˜[YHOˆ\ÚÝÜ^
+˜[YJKš[˜ÛY\Ê	ÑÒ\ÚÝÜ9mì¹k¢z(áy®!yceyèkº+©9odùbcy§iy®¤9.#¹æë¹¨!ùfî¹k¦ˆÛÛ[Z]9. :!í	ÊJBˆ\ÜÙ\™\]X[
+\›™\ÜË˜Ø[Ëš[œÝ[[™K›[™ÝJBˆ\ÜÙ\™\]X[
+\›™\ÜË˜Ø[Ëš[œÝ[[™VÌKœÜXËÚ]
+ÉÙ[žKœ™\ÜÚ]ÜžU\›K™Ú]ÉÙ\ÚÝÜÛÛ[Z]X
+Bˆ\ÜÙ\™Y\\]X[
+\›™\ÜË˜Ø[Ëœ™[[Ý™P[™K×JBˆ\ÜÙ\™\]X[
+\›™\ÜË˜Ø[ËØZ]›Ü’[œÝ[›[™Ý
+BŸJB‚\Ý
+	ÔÝÜ™HÙ[‹]\]H™\Ù\™\ÈHÒ™Z™XÝ[Ûˆ›Üˆ[ˆ[œ[›™YÛÛÝ\˜ÙH[™™]™\ˆ™]šY\ÉË\Þ[˜È
+
+HOˆÂˆÛÛœÝ[žHH\ÚÝÜ[žJÈYˆ	ÙÚ\ØY™K\YÚ[‹[X[˜YÙ\‰ËXÚØYÙS˜[YNˆ	ÙÚ\ØY™K\YÚ[‹[X[˜YÙ\‰ËÛÛ[Z]ˆ\ÚÝÜÛÛ[Z]ˆ™\ÜÚ]ÜžU\›ˆ	ÚÎ‹ËÙÚ]X‹˜ÛÛKÐRKTØØ\›]ÑÒTÝÜ™IÈJBˆ[žK™\œÚ[ÛˆH	ÌŽKŒÉÂˆÛÛœÝ[œÝ[YHÈ˜[YNˆ[žKœXÚØYÙS˜[YKÙ™šXÚX[ˆ˜[ÙK[œÝ[YˆYK™[[Ý˜X›Nˆ˜[ÙKˆ[˜X›YˆYK™\œÚ[ÛŽˆ	ÌŽKŒ‰ËÛÝ\˜ÙNˆ	ÙÚ]
+ÚÎ‹ËÙÚ]X‹˜ÛÛKÐRKTØØ\›]ÑÒTÝÜ™K™Ú]	ÈBˆÛÛœÝ\›™\ÜÈHÜ™X]Q\ÚÝÜ\›™\ÜÊÈØ][ÙÎˆ\ÚÝÜØ][ÙÊÙ[žWJK[œÝ[YˆÚ[œÝ[YKˆ™[[Ý™P[™P]˜Z[X›Nˆ˜[ÙKˆ[œÝ[™\Ý[ˆÈ\XØ][ÛŽˆ	Ù˜Z[Y	ËÚ[™ÙYˆ˜[ÙKÝYÙNˆ	Ú[œÝ[	Ë\™Ù]ˆ[žKœXÚØYÙS˜[YKˆ\œ›ÜŽˆÈÛÙNˆ	ÑÒÑ’VQÔÓÕTÑWÔ‘R‘PÕQ	Ë™X\ÛÛŽˆ	ÛÙ™šXÚX[Ò™Z™XÝ[Û‰ÈHHJBˆ]ØZ]\›™\ÜËœ™XYBˆ]ØZ]\›™\ÜËœ™[™\Š
+Bˆ]ØZ]\›™\ÜËœ[‘Y™™XÝÊ\›™\ÜË™Ù]ÛÛ\Û™[
+	Ñ\ÚÝÜÝÜ™T[™[	ÊJBˆ]™YHH]ØZ]ØZ]›Ü‘\ÚÝÜ™YJ\›™\ÜË˜[YHOˆ\ÚÝÜ^
+˜[YJKš[˜ÛY\Ê[žKœXÚØYÙS˜[YJJBˆÛÛœÝØ\™H\ÚÝÜ›Ù\Ê™YJK™š[™
+›ÙHOˆ›ÙK\HOOH	Ø\XÛIÈ	‰ˆ\ÚÝÜ^
+›ÙJKš[˜ÛY\Ê[žKœXÚØYÙS˜[YJJBˆ\ÚÝÜ›Ù\ÊØ\™
+K™š[™
+›ÙHOˆ›ÙK\HOOH	Ø]Û‰È	‰ˆ›ÙK˜Ú[™[Ëš[˜ÛY\Ê	ù¦í9¥¬	ÊJKœ›ÜË›ÛÛXÚÊ
+Bˆ™YHH]ØZ]\›™\ÜËœ™[™\Š
+BˆÛÛœÝÛÛ™š\›X][ÛˆHTUH	Ù[žKœXÚØYÙS˜[Y_H	Ù\ÚÝÜÛÛ[Z]Xˆ\ÚÝÜ›Ù\Ê™YJK™š[™
+›ÙHOˆ›ÙK\HOOH	Ú[œ]	È	‰ˆ›ÙKœ›ÜËœXÙZÛ\ˆOOHÛÛ™š\›X][ÛŠBˆœ›ÜË›ÛÚ[™ÙJÈ\™Ù]ˆÈ˜[YNˆÛÛ™š\›X][ÛˆHJBˆ™YHH]ØZ]\›™\ÜËœ™[™\Š
+Bˆ]ØZ]\ÚÝÜ›Ù\Ê™YJK™š[™
+›ÙHOˆ›ÙK\HOOH	Ø]Û‰È	‰ˆ›ÙK˜Ú[™[Ëš[˜ÛY\Ê	ùèkº+©9nm¹¦í9¥¬	ÊJKœ›ÜË›ÛÛXÚÊ
+Bˆ™YHH]ØZ]ØZ]›Ü‘\ÚÝÜ™YJ\›™\ÜË˜[YHOˆ\ÚÝÜ^
+˜[YJKš[˜ÛY\Ê	ù¥éùfî¹k¦ˆÛÛ[Z]9§*¹çéH9/çyåfIÊJBˆ\ÜÙ\›ÚÊ\ÚÝÜ^
+™YJKš[˜ÛY\Ê	ÑÒÑ’VQÔÓÕTÑWÔ‘R‘PÕQ	ÊJBˆ\ÜÙ\™\]X[
+\›™\ÜË˜Ø[Ëš[œÝ[[™K›[™ÝJBˆ\ÜÙ\™Y\\]X[
+\›™\ÜË˜Ø[Ëœ™[[Ý™P[™K×JBˆ\ÜÙ\™\]X[
+\›™\ÜË˜Ø[ËØZ]›Ü’[œÝ[›[™Ý
+BŸJB‚\Ý
+	ÔÝÜ™HÙ[‹]\]HÙ\È›ÝÙ™™\ˆHÝÛ™Ü˜YHÚ[ˆ]È[œÝ[YÝX›H™\œÚ[Ûˆ\È™]Ù\‰Ë\Þ[˜È
+
+HOˆÂˆÛÛœÝ[žHH\ÚÝÜ[žJÈYˆ	ÙÚ\ØY™K\YÚ[‹[X[˜YÙ\‰ËXÚØYÙS˜[YNˆ	ÙÚ\ØY™K\YÚ[‹[X[˜YÙ\‰ËÛÛ[Z]ˆ\ÚÝÜÛÛ[Z]ˆ™\ÜÚ]ÜžU\›ˆ	ÚÎ‹ËÙÚ]X‹˜ÛÛKÐRKTØØ\›]ÑÒTÝÜ™IÈJBˆ[žK™\œÚ[ÛˆH	ÌŽKŒÉÂˆÛÛœÝ[œÝ[YHÈ˜[YNˆ[žKœXÚØYÙS˜[YKÙ™šXÚX[ˆ˜[ÙK[œÝ[YˆYK™[[Ý˜X›Nˆ˜[ÙKˆ[˜X›YˆYK™\œÚ[ÛŽˆ	ÌŽKŒŽ	ËÛÝ\˜ÙNˆ	ÙÚ]
+ÚÎ‹ËÙÚ]X‹˜ÛÛKÐRKTØØ\›]ÑÒTÝÜ™K™Ú]	ÈBˆÛÛœÝ\›™\ÜÈHÜ™X]Q\ÚÝÜ\›™\ÜÊÈØ][ÙÎˆ\ÚÝÜØ][ÙÊÙ[žWJK[œÝ[YˆÚ[œÝ[YKˆ™[[Ý™P[™P]˜Z[X›Nˆ˜[ÙHJBˆ]ØZ]\›™\ÜËœ™XYBˆ]ØZ]\›™\ÜËœ™[™\Š
+Bˆ]ØZ]\›™\ÜËœ[‘Y™™XÝÊ\›™\ÜË™Ù]ÛÛ\Û™[
+	Ñ\ÚÝÜÝÜ™T[™[	ÊJBˆÛÛœÝ™YHH]ØZ]ØZ]›Ü‘\ÚÝÜ™YJ\›™\ÜË˜[YHOˆ\ÚÝÜ^
+˜[YJKš[˜ÛY\Ê[žKœXÚØYÙS˜[YJJBˆÛÛœÝØ\™H\ÚÝÜ›Ù\Ê™YJK™š[™
+›ÙHOˆ›ÙK\HOOH	Ø\XÛIÈ	‰ˆ\ÚÝÜ^
+›ÙJKš[˜ÛY\Ê[žKœXÚØYÙS˜[YJJBˆÛÛœÝ\]HH\ÚÝÜ›Ù\ÊØ\™
+K™š[™
+›ÙHOˆ›ÙK\HOOH	Ø]Û‰È	‰ˆ›ÙK˜Ú[™[Ëš[˜ÛY\Ê	ù¦í9¥¬	ÊJBˆ\ÜÙ\›ÚÊ\]JBˆ\ÜÙ\™\]X[
+\]Kœ›ÜË™\ØX›YYJBˆ\ÜÙ\›X]Ú
+\]Kœ›ÜË]Kù§*¹£ä9.©:fcyî©ù¦í9¥¬ÊBˆ\ÜÙ\™\]X[
+\›™\ÜË˜Ø[Ëš[œÝ[[™K›[™Ý
+Bˆ\ÜÙ\™Y\\]X[
+\›™\ÜË˜Ø[Ëœ™[[Ý™P[™K×JBŸJB‚\Ý
+	ÑÒÝÜ\›Ùš[H™[[Ý˜[Ý]ÛÛYH›ÛÝÜÈHÙ™šXÚX[\]H][™Ý[ÝX›Z]ÈHš^YÛÛ[Z]	Ë\Þ[˜È
+
+HOˆÂˆÛÛœÝ[žHH\ÚÝÜ[žJÈYˆ	ÙÚ\ÝÜ\›Ùš[K]\]IËXÚØYÙS˜[YNˆ	ÐXÛYKÙÚ\ÝÜ\›Ùš[K]\]IËÛÛ[Z]ˆ\ÚÝÜÛÛ[Z]JBˆÛÛœÝÛÛÛ[Z]H	Ø‰Ëœ™\X]
+
+BˆÛÛœÝ[œÝ[YHÈ˜[YNˆ[žKœXÚØYÙS˜[YKÙ™šXÚX[ˆ˜[ÙK[œÝ[YˆYK™[[Ý˜X›NˆYKˆ[˜X›YˆYK™\œÚ[ÛŽˆ	ÌKŒŒ	ËÛÝ\˜ÙNˆÚ]
+ÉÙ[žKœ™\ÜÚ]ÜžU\›K™Ú]ÉÛÛÛÛ[Z]XBˆÛÛœÝ\]YHÈ‹‹š[œÝ[Y™\œÚ[ÛŽˆ[žK™\œÚ[Û‹ÛÝ\˜ÙNˆÚ]
+ÉÙ[žKœ™\ÜÚ]ÜžU\›K™Ú]ÉÙ\ÚÝÜÛÛ[Z]XBˆÛÛœÝ\›™\ÜÈHÜ™X]Q\ÚÝÜ\›™\ÜÊÈØ][ÙÎˆ\ÚÝÜØ][ÙÊÙ[žWJK[œÝ[YˆÚ[œÝ[YKˆ™[[Ý™T™\Ý[ˆÈ\XØ][ÛŽˆ	Ù˜Z[Y	ËÚ[™ÙYˆ˜[ÙKÝYÙNˆ	Ü™[[Ý™IË\™Ù]ˆ[žKœXÚØYÙS˜[YKˆ\œ›ÜŽˆÈÛÙNˆ	ÜÝÜ\›Ùš[IÈHKˆ[œÝ[™\Ý[ˆÈ\XØ][ÛŽˆ	Ø\YY	ËÚ[™ÙYˆYKÝYÙNˆ	Ú[œÝ[	Ë\™Ù]ˆ[žKœXÚØYÙS˜[YHKˆ[œÝ[YY\’[œÝ[™\Ý[ˆÝ\]YHJBˆ]ØZ]\›™\ÜËœ™XYBˆ]ØZ]\›™\ÜËœ™[™\Š
+Bˆ]ØZ]\›™\ÜËœ[‘Y™™XÝÊ\›™\ÜË™Ù]ÛÛ\Û™[
+	Ñ\ÚÝÜÝÜ™T[™[	ÊJBˆ]™YHH]ØZ]ØZ]›Ü‘\ÚÝÜ™YJ\›™\ÜË˜[YHOˆ\ÚÝÜ^
+˜[YJKš[˜ÛY\Ê[žKœXÚØYÙS˜[YJJBˆ\ÚÝÜ›Ù\Ê™YJK™š[™
+›ÙHOˆ›ÙK\HOOH	Ø]Û‰È	‰ˆ›ÙK˜Ú[™[Ëš[˜ÛY\Ê	ù¦í9¥¬	ÊJKœ›ÜË›ÛÛXÚÊ
+Bˆ™YHH]ØZ]\›™\ÜËœ™[™\Š
+BˆÛÛœÝÛÛ™š\›X][ÛˆHTUH	Ù[žKœXÚØYÙS˜[Y_H	Ù\ÚÝÜÛÛ[Z]Xˆ\ÚÝÜ›Ù\Ê™YJK™š[™
+›ÙHOˆ›ÙK\HOOH	Ú[œ]	È	‰ˆ›ÙKœ›ÜËœXÙZÛ\ˆOOHÛÛ™š\›X][ÛŠBˆœ›ÜË›ÛÚ[™ÙJÈ\™Ù]ˆÈ˜[YNˆÛÛ™š\›X][ÛˆHJBˆ™YHH]ØZ]\›™\ÜËœ™[™\Š
+Bˆ]ØZ]\ÚÝÜ›Ù\Ê™YJK™š[™
+›ÙHOˆ›ÙK\HOOH	Ø]Û‰È	‰ˆ›ÙK˜Ú[™[Ëš[˜ÛY\Ê	ùèkº+©9nm¹¦í9¥¬	ÊJKœ›ÜË›ÛÛXÚÊ
+Bˆ™YHH]ØZ]ØZ]›Ü‘\ÚÝÜ™YJ\›™\ÜË˜[YHOˆ\ÚÝÜ^
+˜[YJKš[˜ÛY\Ê	ÑÒ9k¦9¥®y£ä¹.í¹ë¨yä!¹fj9mì¹k£9¢$9¦í9¥¬	ÊJBˆ\ÜÙ\™Y\\]X[
+\›™\ÜË˜Ø[Ëœ™[[Ý™P[™KÙ[žKœXÚØYÙS˜[YWJBˆ\ÜÙ\™\]X[
+\›™\ÜË˜Ø[Ëš[œÝ[[™K›[™ÝJBˆ\ÜÙ\™\]X[
+\›™\ÜË˜Ø[Ëš[œÝ[[™VÌKœÜXËÚ]
+ÉÙ[žKœ™\ÜÚ]ÜžU\›K™Ú]ÉÙ\ÚÝÜÛÛ[Z]X
+BŸJB‚\Ý
+	Ø[ˆ\]HÚ]›È\[™[˜ÞHÚ[™Ù\È\È™XÛÛ˜Ú[YÛ›HÚ[ˆ\ÚÝÜÛÛ™š\›\ÈH^XÝ\™Ù]ÛÛ[Z]	Ë\Þ[˜È
+
+HOˆÂˆÛÛœÝ[žHH\ÚÝÜ[žJÈYˆ	ÙÚ]\]K[›ËXÚ[™ÙIËXÚØYÙS˜[YNˆ	ÐXÛYKÙÚ]\]K[›ËXÚ[™ÙIËÛÛ[Z]ˆ\ÚÝÜÛÛ[Z]JBˆÛÛœÝÛÛÛ[Z]H	Ø‰Ëœ™\X]
+
+BˆÛÛœÝ[œÝ[YHÈ˜[YNˆ[žKœXÚØYÙS˜[YKÙ™šXÚX[ˆ˜[ÙK[œÝ[YˆYK™[[Ý˜X›NˆYKˆ[˜X›YˆYK™\œÚ[ÛŽˆ	ÌKŒŒ	ËÛÝ\˜ÙNˆÚ]
+ÉÙ[žKœ™\ÜÚ]ÜžU\›K™Ú]ÉÛÛÛÛ[Z]XBˆÛÛœÝ\]YHÈ‹‹š[œÝ[Y™\œÚ[ÛŽˆ[žK™\œÚ[Û‹ÛÝ\˜ÙNˆÚ]
+ÉÙ[žKœ™\ÜÚ]ÜžU\›K™Ú]ÉÙ\ÚÝÜÛÛ[Z]XBˆÛÛœÝ\›™\ÜÈHÜ™X]Q\ÚÝÜ\›™\ÜÊÈØ][ÙÎˆ\ÚÝÜØ][ÙÊÙ[žWJK[œÝ[YˆÚ[œÝ[YKˆ[œÝ[™\Ý[ˆÈ\XØ][ÛŽˆ	Ù˜Z[Y	ËÚ[™ÙYˆ˜[ÙKÝYÙNˆ	Ú[œÝ[	Ë\™Ù]ˆ[žKœXÚØYÙS˜[YKˆ\œ›ÜŽˆÈÛÙNˆ	Ó“×ÑTS‘SÖWÐÒS‘ÑTÉÈHKˆ[œÝ[YY\’[œÝ[™\Ý[ˆÝ\]YHJBˆ]ØZ]\›™\ÜËœ™XYBˆ]ØZ]\›™\ÜËœ™[™\Š
+Bˆ]ØZ]\›™\ÜËœ[‘Y™™XÝÊ\›™\ÜË™Ù]ÛÛ\Û™[
+	Ñ\ÚÝÜÝÜ™T[™[	ÊJBˆ]™YHH]ØZ]ØZ]›Ü‘\ÚÝÜ™YJ\›™\ÜË˜[YHOˆ\ÚÝÜ^
+˜[YJKš[˜ÛY\Ê[žKœXÚØYÙS˜[YJJBˆ\ÚÝÜ›Ù\Ê™YJK™š[™
+›ÙHOˆ›ÙK\HOOH	Ø]Û‰È	‰ˆ›ÙK˜Ú[™[Ëš[˜ÛY\Ê	ù¦í9¥¬	ÊJKœ›ÜË›ÛÛXÚÊ
+Bˆ™YHH]ØZ]\›™\ÜËœ™[™\Š
+BˆÛÛœÝÛÛ™š\›X][ÛˆHTUH	Ù[žKœXÚØYÙS˜[Y_H	Ù\ÚÝÜÛÛ[Z]Xˆ\ÚÝÜ›Ù\Ê™YJK™š[™
+›ÙHOˆ›ÙK\HOOH	Ú[œ]	È	‰ˆ›ÙKœ›ÜËœXÙZÛ\ˆOOHÛÛ™š\›X][ÛŠBˆœ›ÜË›ÛÚ[™ÙJÈ\™Ù]ˆÈ˜[YNˆÛÛ™š\›X][ÛˆHJBˆ™YHH]ØZ]\›™\ÜËœ™[™\Š
+Bˆ]ØZ]\ÚÝÜ›Ù\Ê™YJK™š[™
+›ÙHOˆ›ÙK\HOOH	Ø]Û‰È	‰ˆ›ÙK˜Ú[™[Ëš[˜ÛY\Ê	ùèkº+©9nm¹¦í9¥¬	ÊJKœ›ÜË›ÛÛXÚÊ
+Bˆ™YHH]ØZ]ØZ]›Ü‘\ÚÝÜ™YJ\›™\ÜË˜[YHOˆ\ÚÝÜ^
+˜[YJKš[˜ÛY\Ê	ù«i9fî¹k¦ˆÛÛ[Z]9mì¹¦+ùodùbcyâb9§+	ÊJBˆ\ÜÙ\™\]X[
+\›™\ÜË˜Ø[Ëš[œÝ[[™K›[™ÝJBˆ\ÜÙ\›ÚÊ\›™\ÜË˜Ø[Ë›\Ý[™\ÈHŠBˆ\ÜÙ\™\]X[
+\›™\ÜË˜Ø[ËØZ]›Ü’[œÝ[›[™Ý
+BŸJB‚\Ý
+	Ñ\ÚÝÜ\]H™\Ù\™\ÈHÙ™šXÚX[™Z™XÝ[Ûˆ[™™]™\ˆ™\ÝX›Z]ÈH™\]Y\Ý	Ë\Þ[˜È
+
+HOˆÂˆÛÛœÝ[žHH\ÚÝÜ[žJÈYˆ	ÙÚ]\]K\™Y\ÙY	ËXÚØYÙS˜[YNˆ	ÐXÛYKÙÚ]\]K\™Y\ÙY	ËÛÛ[Z]ˆ\ÚÝÜÛÛ[Z]JBˆÛÛœÝÛÛÛ[Z]H	Ø‰Ëœ™\X]
+
+BˆÛÛœÝ[œÝ[YHÈ˜[YNˆ[žKœXÚØYÙS˜[YKÙ™šXÚX[ˆ˜[ÙK[œÝ[YˆYK™[[Ý˜X›NˆYKˆ[˜X›YˆYK™\œÚ[ÛŽˆ	ÌKŒŒ	ËÛÝ\˜ÙNˆÚ]
+ÉÙ[žKœ™\ÜÚ]ÜžU\›K™Ú]ÉÛÛÛÛ[Z]XBˆÛÛœÝ\›™\ÜÈHÜ™X]Q\ÚÝÜ\›™\ÜÊÈØ][ÙÎˆ\ÚÝÜØ][ÙÊÙ[žWJK[œÝ[YˆÚ[œÝ[YKˆ™[[Ý™T™\Ý[ˆÈ\XØ][ÛŽˆ	Ü™\Ý\\™\]Z\™Y	ËÚ[™ÙYˆYKÝYÙNˆ	Ü™[[Ý™IË\™Ù]ˆ[žKœXÚØYÙS˜[YHKˆ™]Z[’[œÝ[YY\”™[[Ý™NˆYKˆ[œÝ[™\Ý[ˆÈ\XØ][ÛŽˆ	Ù˜Z[Y	ËÚ[™ÙYˆ˜[ÙKÝYÙNˆ	Ú[œÝ[	Ë\™Ù]ˆ[žKœXÚØYÙS˜[YKˆ\œ›ÜŽˆÈÛÙNˆ	Ú[˜ÛÛ\]X›K]™\œÚ[Û‰ÈHHJBˆ]ØZ]\›™\ÜËœ™XYBˆ]ØZ]\›™\ÜËœ™[™\Š
+Bˆ]ØZ]\›™\ÜËœ[‘Y™™XÝÊ\›™\ÜË™Ù]ÛÛ\Û™[
+	Ñ\ÚÝÜÝÜ™T[™[	ÊJBˆ]™YHH]ØZ]ØZ]›Ü‘\ÚÝÜ™YJ\›™\ÜË˜[YHOˆ\ÚÝÜ^
+˜[YJKš[˜ÛY\Ê[žKœXÚØYÙS˜[YJJBˆ\ÚÝÜ›Ù\Ê™YJK™š[™
+›ÙHOˆ›ÙK\HOOH	Ø]Û‰È	‰ˆ›ÙK˜Ú[™[Ëš[˜ÛY\Ê	ù¦í9¥¬	ÊJKœ›ÜË›ÛÛXÚÊ
+Bˆ™YHH]ØZ]\›™\ÜËœ™[™\Š
+BˆÛÛœÝÛÛ™š\›X][ÛˆHTUH	Ù[žKœXÚØYÙS˜[Y_H	Ù\ÚÝÜÛÛ[Z]Xˆ\ÚÝÜ›Ù\Ê™YJK™š[™
+›ÙHOˆ›ÙK\HOOH	Ú[œ]	È	‰ˆ›ÙKœ›ÜËœXÙZÛ\ˆOOHÛÛ™š\›X][ÛŠBˆœ›ÜË›ÛÚ[™ÙJÈ\™Ù]ˆÈ˜[YNˆÛÛ™š\›X][ÛˆHJBˆ™YHH]ØZ]\›™\ÜËœ™[™\Š
+Bˆ]ØZ]\ÚÝÜ›Ù\Ê™YJK™š[™
+›ÙHOˆ›ÙK\HOOH	Ø]Û‰È	‰ˆ›ÙK˜Ú[™[Ëš[˜ÛY\Ê	ùèkº+©9nm¹¦í9¥¬	ÊJKœ›ÜË›ÛÛXÚÊ
+Bˆ™YHH]ØZ]ØZ]›Ü‘\ÚÝÜ™YJ\›™\ÜË˜[YHOˆ\ÚÝÜ^
+˜[YJKš[˜ÛY\Ê	ù¤ãy/g9§*¹k£9¢$;ï"[˜ÛÛ\]X›K]™\œÚ[Û»ï"IÊJBˆ\ÜÙ\›X]Ú
+\ÚÝÜ^
+™YJK™]È™YÑ^
+9¥éùfî¹k¦ˆÛÛ[Z]	ÛÛÛÛ[Z]H9/çyåfX
+JBˆ\ÜÙ\™\]X[
+\›™\ÜË˜Ø[Ëš[œÝ[[™K›[™ÝJBˆ\ÜÙ\™Y\\]X[
+\›™\ÜË˜Ø[Ëœ™[[Ý™P[™KÙ[žKœXÚØYÙS˜[YWJBˆ\ÜÙ\™\]X[
+\›™\ÜË˜Ø[ËØZ]›Ü’[œÝ[›[™Ý
+BŸJB‚\Ý
+	ØHYš[š]H\™Ù]˜Z[\™H™\ÝÜ™\ÈHš[Üˆš^YÛÝ\˜ÙH›ÝYÚÒ[™™\ÜÈ]È™[ØY™\Ý[	Ë\Þ[˜È
+
+HOˆÂˆÛÛœÝ[žHH\ÚÝÜ[žJÈYˆ	ÙÚ]\]K\™\ÝÜ™IËXÚØYÙS˜[YNˆ	ÐXÛYKÙÚ]\]K\™\ÝÜ™IËÛÛ[Z]ˆ\ÚÝÜÛÛ[Z]JBˆÛÛœÝÛÛÛ[Z]H	Ø‰Ëœ™\X]
+
+BˆÛÛœÝ[œÝ[YHÈ˜[YNˆ[žKœXÚØYÙS˜[YKÙ™šXÚX[ˆ˜[ÙK[œÝ[YˆYK™[[Ý˜X›NˆYKˆ[˜X›YˆYK™\œÚ[ÛŽˆ	ÌKŒŒ	ËÛÝ\˜ÙNˆÚ]
+ÉÙ[žKœ™\ÜÚ]ÜžU\›K™Ú]ÉÛÛÛÛ[Z]XBˆÛÛœÝ\™Ù]ÜXÈHÚ]
+ÉÙ[žKœ™\ÜÚ]ÜžU\›K™Ú]ÉÙ\ÚÝÜÛÛ[Z]XˆÛÛœÝÛÜXÈH[œÝ[YœÛÝ\˜ÙBˆÛÛœÝ\›™\ÜÈHÜ™X]Q\ÚÝÜ\›™\ÜÊÈØ][ÙÎˆ\ÚÝÜØ][ÙÊÙ[žWJK[œÝ[YˆÚ[œÝ[YKˆ[œÝ[™\Ý[ˆÜXÈOˆÜXÈOOH\™Ù]ÜXÂˆÈÈ\XØ][ÛŽˆ	Ù˜Z[Y	ËÚ[™ÙYˆ˜[ÙKÝYÙNˆ	Ú[œÝ[	Ë\œ›ÜŽˆÈÛÙNˆ	ÕT‘ÑUÐÓÓSRUÔ‘Q•TÑQ	ÈHBˆˆÈ\XØ][ÛŽˆ	Ü™\Ý\\™\]Z\™Y	ËÚ[™ÙYˆYKÝYÙNˆ	Ú[œÝ[	ÈKˆ[œÝ[YY\’[œÝ[™\Ý[ˆ×HJBˆ]ØZ]\›™\ÜËœ™XYBˆ]ØZ]\›™\ÜËœ™[™\Š
+Bˆ]ØZ]\›™\ÜËœ[‘Y™™XÝÊ\›™\ÜË™Ù]ÛÛ\Û™[
+	Ñ\ÚÝÜÝÜ™T[™[	ÊJBˆ]™YHH]ØZ]ØZ]›Ü‘\ÚÝÜ™YJ\›™\ÜË˜[YHOˆ\ÚÝÜ^
+˜[YJKš[˜ÛY\Ê[žKœXÚØYÙS˜[YJJBˆ\ÚÝÜ›Ù\Ê™YJK™š[™
+›ÙHOˆ›ÙK\HOOH	Ø]Û‰È	‰ˆ›ÙK˜Ú[™[Ëš[˜ÛY\Ê	ù¦í9¥¬	ÊJKœ›ÜË›ÛÛXÚÊ
+Bˆ™YHH]ØZ]\›™\ÜËœ™[™\Š
+BˆÛÛœÝÛÛ™š\›X][ÛˆHTUH	Ù[žKœXÚØYÙS˜[Y_H	Ù\ÚÝÜÛÛ[Z]Xˆ\ÚÝÜ›Ù\Ê™YJK™š[™
+›ÙHOˆ›ÙK\HOOH	Ú[œ]	È	‰ˆ›ÙKœ›ÜËœXÙZÛ\ˆOOHÛÛ™š\›X][ÛŠBˆœ›ÜË›ÛÚ[™ÙJÈ\™Ù]ˆÈ˜[YNˆÛÛ™š\›X][ÛˆHJBˆ™YHH]ØZ]\›™\ÜËœ™[™\Š
+Bˆ]ØZ]\ÚÝÜ›Ù\Ê™YJK™š[™
+›ÙHOˆ›ÙK\HOOH	Ø]Û‰È	‰ˆ›ÙK˜Ú[™[Ëš[˜ÛY\Ê	ùèkº+©9nm¹¦í9¥¬	ÊJKœ›ÜË›ÛÛXÚÊ
+Bˆ™YHH]ØZ]ØZ]›Ü‘\ÚÝÜ™YJ\›™\ÜË˜[YHOˆ\ÚÝÜ^
+˜[YJKš[˜ÛY\Ê	ÑÒ9mì¹£©ycåù h¹i#y¥éùfî¹k¦ˆÛÛ[Z]	ÊJBˆ\ÜÙ\™Y\\]X[
+\›™\ÜË˜Ø[Ëš[œÝ[[™K›X\
+Ø[OˆØ[œÜXÊKÝ\™Ù]ÜXËÛÜX×JBˆ\ÜÙ\›X]Ú
+\ÚÝÜ^
+™YJK™]È™YÑ^
+9¥éùfî¹k¦ˆÛÛ[Z]	ÛÛÛÛ[Z]{ï#:g 9£"HÒ9­`yê"úaãz/oX
+JBˆ\ÜÙ\™\]X[
+\›™\ÜË˜Ø[ËØZ]›Ü’[œÝ[›[™Ý
+BŸJB‚\Ý
+	Ø[ˆ[˜Ù\Z[ˆ\]H™\Ý[\È™XÛÛ˜Ú[YÛ˜ÙH[™™]™\ˆ™\ÝX›Z]YÜˆ›ÛY˜XÚÈ›[™IË\Þ[˜È
+
+HOˆÂˆÛÛœÝ[žHH\ÚÝÜ[žJÈYˆ	ÙÚ]\]K][šÛ›ÝÛ‰ËXÚØYÙS˜[YNˆ	ÐXÛYKÙÚ]\]K][šÛ›ÝÛ‰ËÛÛ[Z]ˆ\ÚÝÜÛÛ[Z]JBˆÛÛœÝÛÛÛ[Z]H	Ø‰Ëœ™\X]
+
+BˆÛÛœÝ[œÝ[YHÈ˜[YNˆ[žKœXÚØYÙS˜[YKÙ™šXÚX[ˆ˜[ÙK[œÝ[YˆYK™[[Ý˜X›NˆYKˆ[˜X›YˆYK™\œÚ[ÛŽˆ	ÌKŒŒ	ËÛÝ\˜ÙNˆÚ]
+ÉÙ[žKœ™\ÜÚ]ÜžU\›K™Ú]ÉÛÛÛÛ[Z]XBˆÛÛœÝ\›™\ÜÈHÜ™X]Q\ÚÝÜ\›™\ÜÊÈØ][ÙÎˆ\ÚÝÜØ][ÙÊÙ[žWJK[œÝ[YˆÚ[œÝ[YKˆ[œÝ[™\Ý[ˆ\Þ[˜È
+
+HOˆÈÛÛœÝ\œ›ÜˆH™]È\œ›ÜŠ	Ü™\Ý[[˜]˜Z[X›IÊNÈ\œ›Ü‹˜ÛÙHH	ÑTÒÕÔÒS”ÕSÕSQSÕU	ÎÈ›ÝÈ\œ›ÜˆHJBˆ]ØZ]\›™\ÜËœ™XYBˆ]ØZ]\›™\ÜËœ™[™\Š
+Bˆ]ØZ]\›™\ÜËœ[‘Y™™XÝÊ\›™\ÜË™Ù]ÛÛ\Û™[
+	Ñ\ÚÝÜÝÜ™T[™[	ÊJBˆ]™YHH]ØZ]ØZ]›Ü‘\ÚÝÜ™YJ\›™\ÜË˜[YHOˆ\ÚÝÜ^
+˜[YJKš[˜ÛY\Ê[žKœXÚØYÙS˜[YJJBˆ\ÚÝÜ›Ù\Ê™YJK™š[™
+›ÙHOˆ›ÙK\HOOH	Ø]Û‰È	‰ˆ›ÙK˜Ú[™[Ëš[˜ÛY\Ê	ù¦í9¥¬	ÊJKœ›ÜË›ÛÛXÚÊ
+Bˆ™YHH]ØZ]\›™\ÜËœ™[™\Š
+BˆÛÛœÝÛÛ™š\›X][ÛˆHTUH	Ù[žKœXÚØYÙS˜[Y_H	Ù\ÚÝÜÛÛ[Z]Xˆ\ÚÝÜ›Ù\Ê™YJK™š[™
+›ÙHOˆ›ÙK\HOOH	Ú[œ]	È	‰ˆ›ÙKœ›ÜËœXÙZÛ\ˆOOHÛÛ™š\›X][ÛŠBˆœ›ÜË›ÛÚ[™ÙJÈ\™Ù]ˆÈ˜[YNˆÛÛ™š\›X][ÛˆHJBˆ™YHH]ØZ]\›™\ÜËœ™[™\Š
+Bˆ]ØZ]\ÚÝÜ›Ù\Ê™YJK™š[™
+›ÙHOˆ›ÙK\HOOH	Ø]Û‰È	‰ˆ›ÙK˜Ú[™[Ëš[˜ÛY\Ê	ùèkº+©9nm¹¦í9¥¬	ÊJKœ›ÜË›ÛÛXÚÊ
+Bˆ™YHH]ØZ]ØZ]›Ü‘\ÚÝÜ™YJ\›™\ÜË˜[YHOˆ\ÚÝÜ^
+˜[YJKš[˜ÛY\Ê	ù¤ãy/g9îäù§§9¦ ¹¥í¹¥è9¬åyèkº+©	ÊJBˆ\ÜÙ\™\]X[
+\›™\ÜË˜Ø[Ëš[œÝ[[™K›[™ÝJBˆ\ÜÙ\™Y\\]X[
+\›™\ÜË˜Ø[Ëœ™[[Ý™P[™KÙ[žKœXÚØYÙS˜[YWJBˆ\ÜÙ\™\]X[
+\›™\ÜË˜Ø[ËØZ]›Ü’[œÝ[›[™ÝJBŸJB‚\Ý
+	ÑÒ™\Ý\\™\]Z\™Y\]H™\Ý[\ÈXØÙ\YÚ[H]È[œÝ[Y[™[ÜžH\ÈÝ[Ø]Ú[™È\	Ë\Þ[˜È
+
+HOˆÂˆÛÛœÝ[žHH\ÚÝÜ[žJÈYˆ	ÙÚ]\]K\™\Ý\	ËXÚØYÙS˜[YNˆ	ÐXÛYKÙÚ]\]K\™\Ý\	ËÛÛ[Z]ˆ\ÚÝÜÛÛ[Z]JBˆÛÛœÝÛÛÛ[Z]H	Ø‰Ëœ™\X]
+
+BˆÛÛœÝ[œÝ[YHÈ˜[YNˆ[žKœXÚØYÙS˜[YKÙ™šXÚX[ˆ˜[ÙK[œÝ[YˆYK™[[Ý˜X›NˆYKˆ[˜X›YˆYK™\œÚ[ÛŽˆ	ÌKŒŒ	ËÛÝ\˜ÙNˆÚ]
+ÉÙ[žKœ™\ÜÚ]ÜžU\›K™Ú]ÉÛÛÛÛ[Z]XBˆÛÛœÝ\›™\ÜÈHÜ™X]Q\ÚÝÜ\›™\ÜÊÈØ][ÙÎˆ\ÚÝÜØ][ÙÊÙ[žWJK[œÝ[YˆÚ[œÝ[YKˆ™[[Ý™T™\Ý[ˆÈ\XØ][ÛŽˆ	Ü™\Ý\\™\]Z\™Y	ËÚ[™ÙYˆYKÝYÙNˆ	Ü™[[Ý™IË\™Ù]ˆ[žKœXÚØYÙS˜[YHKˆ™]Z[’[œÝ[YY\”™[[Ý™NˆYKˆ[œÝ[™\Ý[ˆÈ\XØ][ÛŽˆ	Ü™\Ý\\™\]Z\™Y	ËÚ[™ÙYˆYKÝYÙNˆ	Ú[œÝ[	Ë\™Ù]ˆ[žKœXÚØYÙS˜[YHKˆ[œÝ[YY\’[œÝ[™\Ý[ˆÚ[œÝ[YHJBˆ]ØZ]\›™\ÜËœ™XYBˆ]ØZ]\›™\ÜËœ™[™\Š
+Bˆ]ØZ]\›™\ÜËœ[‘Y™™XÝÊ\›™\ÜË™Ù]ÛÛ\Û™[
+	Ñ\ÚÝÜÝÜ™T[™[	ÊJBˆ]™YHH]ØZ]ØZ]›Ü‘\ÚÝÜ™YJ\›™\ÜË˜[YHOˆ\ÚÝÜ^
+˜[YJKš[˜ÛY\Ê[žKœXÚØYÙS˜[YJJBˆ\ÚÝÜ›Ù\Ê™YJK™š[™
+›ÙHOˆ›ÙK\HOOH	Ø]Û‰È	‰ˆ›ÙK˜Ú[™[Ëš[˜ÛY\Ê	ù¦í9¥¬	ÊJKœ›ÜË›ÛÛXÚÊ
+Bˆ™YHH]ØZ]\›™\ÜËœ™[™\Š
+BˆÛÛœÝÛÛ™š\›X][ÛˆHTUH	Ù[žKœXÚØYÙS˜[Y_H	Ù\ÚÝÜÛÛ[Z]Xˆ\ÚÝÜ›Ù\Ê™YJK™š[™
+›ÙHOˆ›ÙK\HOOH	Ú[œ]	È	‰ˆ›ÙKœ›ÜËœXÙZÛ\ˆOOHÛÛ™š\›X][ÛŠBˆœ›ÜË›ÛÚ[™ÙJÈ\™Ù]ˆÈ˜[YNˆÛÛ™š\›X][ÛˆHJBˆ™YHH]ØZ]\›™\ÜËœ™[™\Š
+Bˆ]ØZ]\ÚÝÜ›Ù\Ê™YJK™š[™
+›ÙHOˆ›ÙK\HOOH	Ø]Û‰È	‰ˆ›ÙK˜Ú[™[Ëš[˜ÛY\Ê	ùèkº+©9nm¹¦í9¥¬	ÊJKœ›ÜË›ÛÛXÚÊ
+Bˆ™YHH]ØZ]ØZ]›Ü‘\ÚÝÜ™YJ\›™\ÜË˜[YHOˆ\ÚÝÜ^
+˜[YJKš[˜ÛY\Ê	ù¤ãy/g9mì¹a¦yaiH\ÚÝÜ›Ùš[IÊJBˆ\ÜÙ\™\]X[
+\›™\ÜË˜Ø[Ëš[œÝ[[™K›[™ÝJBˆ\ÜÙ\™Y\\]X[
+\›™\ÜË˜Ø[Ëœ™[[Ý™P[™KÙ[žKœXÚØYÙS˜[YWJBˆ\ÜÙ\™\]X[
+\›™\ÜË˜Ø[ËØZ]›Ü’[œÝ[›[™Ý
+BŸJB‚\Ý
+	ÑÒ™Y\Ø[È™[[Ý™H[ˆ[œÝ[Y[™H™]™[ÈH\]H[œÝ[™\]Y\Ý	Ë\Þ[˜È
+
+HOˆÂˆÛÛœÝ[žHH\ÚÝÜ[žJÈYˆ	ÙÚ]\]K\™[[Ý™K\™Y\ÙY	ËXÚØYÙS˜[YNˆ	ÐXÛYKÙÚ]\]K\™[[Ý™K\™Y\ÙY	ËÛÛ[Z]ˆ\ÚÝÜÛÛ[Z]JBˆÛÛœÝÛÛÛ[Z]H	Ø‰Ëœ™\X]
+
+BˆÛÛœÝ[œÝ[YHÈ˜[YNˆ[žKœXÚØYÙS˜[YKÙ™šXÚX[ˆ˜[ÙK[œÝ[YˆYK™[[Ý˜X›NˆYKˆ[˜X›YˆYK™\œÚ[ÛŽˆ	ÌKŒŒ	ËÛÝ\˜ÙNˆÚ]
+ÉÙ[žKœ™\ÜÚ]ÜžU\›K™Ú]ÉÛÛÛÛ[Z]XBˆÛÛœÝ\›™\ÜÈHÜ™X]Q\ÚÝÜ\›™\ÜÊÈØ][ÙÎˆ\ÚÝÜØ][ÙÊÙ[žWJK[œÝ[YˆÚ[œÝ[YKˆ™[[Ý™T™\Ý[ˆÈ\XØ][ÛŽˆ	Ù˜Z[Y	ËÚ[™ÙYˆ˜[ÙKÝYÙNˆ	Ü™[[Ý™IË\™Ù]ˆ[žKœXÚØYÙS˜[YKˆ\œ›ÜŽˆÈÛÙNˆ	ÔPÒÐQÑWÔ‘SSÕ‘WÔ‘Q•TÑQ	ÈHHJBˆ]ØZ]\›™\ÜËœ™XYBˆ]ØZ]\›™\ÜËœ™[™\Š
+Bˆ]ØZ]\›™\ÜËœ[‘Y™™XÝÊ\›™\ÜË™Ù]ÛÛ\Û™[
+	Ñ\ÚÝÜÝÜ™T[™[	ÊJBˆ]™YHH]ØZ]ØZ]›Ü‘\ÚÝÜ™YJ\›™\ÜË˜[YHOˆ\ÚÝÜ^
+˜[YJKš[˜ÛY\Ê[žKœXÚØYÙS˜[YJJBˆ\ÚÝÜ›Ù\Ê™YJK™š[™
+›ÙHOˆ›ÙK\HOOH	Ø]Û‰È	‰ˆ›ÙK˜Ú[™[Ëš[˜ÛY\Ê	ù¦í9¥¬	ÊJKœ›ÜË›ÛÛXÚÊ
+Bˆ™YHH]ØZ]\›™\ÜËœ™[™\Š
+BˆÛÛœÝÛÛ™š\›X][ÛˆHTUH	Ù[žKœXÚØYÙS˜[Y_H	Ù\ÚÝÜÛÛ[Z]Xˆ\ÚÝÜ›Ù\Ê™YJK™š[™
+›ÙHOˆ›ÙK\HOOH	Ú[œ]	È	‰ˆ›ÙKœ›ÜËœXÙZÛ\ˆOOHÛÛ™š\›X][ÛŠBˆœ›ÜË›ÛÚ[™ÙJÈ\™Ù]ˆÈ˜[YNˆÛÛ™š\›X][ÛˆHJBˆ™YHH]ØZ]\›™\ÜËœ™[™\Š
+Bˆ]ØZ]\ÚÝÜ›Ù\Ê™YJK™š[™
+›ÙHOˆ›ÙK\HOOH	Ø]Û‰È	‰ˆ›ÙK˜Ú[™[Ëš[˜ÛY\Ê	ùèkº+©9nm¹¦í9¥¬	ÊJKœ›ÜË›ÛÛXÚÊ
+Bˆ™YHH]ØZ]ØZ]›Ü‘\ÚÝÜ™YJ\›™\ÜË˜[YHOˆ\ÚÝÜ^
+˜[YJKš[˜ÛY\Ê	ÔPÒÐQÑWÔ‘SSÕ‘WÔ‘Q•TÑQ	ÊJBˆ\ÜÙ\™\]X[
+\›™\ÜË˜Ø[Ëš[œÝ[[™K›[™Ý
+Bˆ\ÜÙ\™Y\\]X[
+\›™\ÜË˜Ø[Ëœ™[[Ý™P[™KÙ[žKœXÚØYÙS˜[YWJBŸJB‚\Ý
+	Ñ\ÚÝÜY\ÈH\]HXÝ[ÛˆÚ[ˆH[œÝ[YÛÝ\˜ÙH[™XYHX]Ú\ÈHš^YÛÛ[Z]	Ë\Þ[˜È
+
+HOˆÂˆÛÛœÝ[žHH\ÚÝÜ[žJÈYˆ	ÙÚX[™XYKXÝ\œ™[	ËXÚØYÙS˜[YNˆ	ÐXÛYKÙÚX[™XYKXÝ\œ™[	ËÛÛ[Z]ˆ\ÚÝÜÛÛ[Z]JBˆÛÛœÝ[œÝ[YHÈ˜[YNˆ[žKœXÚØYÙS˜[YKÙ™šXÚX[ˆ˜[ÙK[œÝ[YˆYK™[[Ý˜X›NˆYKˆ[˜X›YˆYK™\œÚ[ÛŽˆ[žK™\œÚ[Û‹ÛÝ\˜ÙNˆÚ]
+ÉÙ[žKœ™\ÜÚ]ÜžU\›K™Ú]ÉÙ\ÚÝÜÛÛ[Z]XBˆÛÛœÝ\›™\ÜÈHÜ™X]Q\ÚÝÜ\›™\ÜÊÈØ][ÙÎˆ\ÚÝÜØ][ÙÊÙ[žWJK[œÝ[YˆÚ[œÝ[YHJBˆ]ØZ]\›™\ÜËœ™XYBˆ]ØZ]\›™\ÜËœ™[™\Š
+Bˆ]ØZ]\›™\ÜËœ[‘Y™™XÝÊ\›™\ÜË™Ù]ÛÛ\Û™[
+	Ñ\ÚÝÜÝÜ™T[™[	ÊJBˆÛÛœÝ™YHH]ØZ]ØZ]›Ü‘\ÚÝÜ™YJ\›™\ÜË˜[YHOˆ\ÚÝÜ^
+˜[YJKš[˜ÛY\Ê[žKœXÚØYÙS˜[YJJBˆÛÛœÝØ\™H\ÚÝÜ›Ù\Ê™YJK™š[™
+›ÙHOˆ›ÙK\HOOH	Ø\XÛIÈ	‰ˆ\ÚÝÜ^
+›ÙJKš[˜ÛY\Ê[žKœXÚØYÙS˜[YJJBˆÛÛœÝ\]HH\ÚÝÜ›Ù\ÊØ\™
+K™š[™
+›ÙHOˆ›ÙK\HOOH	Ø]Û‰È	‰ˆ›ÙK˜Ú[™[Ëš[˜ÛY\Ê	ù¦í9¥¬	ÊJBˆ\ÜÙ\›ÚÊ\]JBˆ\ÜÙ\™\]X[
+\]Kœ›ÜË™\ØX›YYJBˆ\ÜÙ\›X]Ú
+\]Kœ›ÜË]Kùodùbcyfî¹k¦ˆÛÛ[Z]ÊBˆ\ÜÙ\™\]X[
+\›™\ÜË˜Ø[Ëš[œÝ[[™K›[™Ý
+BŸJB‚\Ý
+	ØHÚ[™ÙY\ÚÝÜ[œÝ[][Ûˆ[˜[Y]\ÈH\]HÛÛ™š\›X][Ûˆ™Y›Ü™H[žHXÚØYÙH™\]Y\Ý	Ë\Þ[˜È
+
+HOˆÂˆÛÛœÝ[žHH\ÚÝÜ[žJÈYˆ	ÙÚ]\]K\Ý[IËXÚØYÙS˜[YNˆ	ÐXÛYKÙÚ]\]K\Ý[IËÛÛ[Z]ˆ\ÚÝÜÛÛ[Z]JBˆÛÛœÝÛÛÛ[Z]H	Ø‰Ëœ™\X]
+
+BˆÛÛœÝ[œÝ[YHÈ˜[YNˆ[žKœXÚØYÙS˜[YKÙ™šXÚX[ˆ˜[ÙK[œÝ[YˆYK™[[Ý˜X›NˆYKˆ[˜X›YˆYK™\œÚ[ÛŽˆ	ÌKŒŒ	ËÛÝ\˜ÙNˆÚ]
+ÉÙ[žKœ™\ÜÚ]ÜžU\›K™Ú]ÉÛÛÛÛ[Z]XBˆÛÛœÝ[™XYU\]YHÈ‹‹š[œÝ[Y™\œÚ[ÛŽˆ[žK™\œÚ[Û‹ÛÝ\˜ÙNˆÚ]
+ÉÙ[žKœ™\ÜÚ]ÜžU\›K™Ú]ÉÙ\ÚÝÜÛÛ[Z]XBˆÛÛœÝ\›™\ÜÈHÜ™X]Q\ÚÝÜ\›™\ÜÊÈØ][ÙÎˆ\ÚÝÜØ][ÙÊÙ[žWJK[œÝ[YˆÚ[œÝ[YHJBˆ]ØZ]\›™\ÜËœ™XYBˆ]ØZ]\›™\ÜËœ™[™\Š
+Bˆ]ØZ]\›™\ÜËœ[‘Y™™XÝÊ\›™\ÜË™Ù]ÛÛ\Û™[
+	Ñ\ÚÝÜÝÜ™T[™[	ÊJBˆ]™YHH]ØZ]ØZ]›Ü‘\ÚÝÜ™YJ\›™\ÜË˜[YHOˆ\ÚÝÜ^
+˜[YJKš[˜ÛY\Ê[žKœXÚØYÙS˜[YJJBˆ\ÚÝÜ›Ù\Ê™YJK™š[™
+›ÙHOˆ›ÙK\HOOH	Ø]Û‰È	‰ˆ›ÙK˜Ú[™[Ëš[˜ÛY\Ê	ù¦í9¥¬	ÊJKœ›ÜË›ÛÛXÚÊ
+Bˆ™YHH]ØZ]\›™\ÜËœ™[™\Š
+BˆÛÛœÝÛÛ™š\›X][ÛˆHTUH	Ù[žKœXÚØYÙS˜[Y_H	Ù\ÚÝÜÛÛ[Z]Xˆ\ÚÝÜ›Ù\Ê™YJK™š[™
+›ÙHOˆ›ÙK\HOOH	Ú[œ]	È	‰ˆ›ÙKœ›ÜËœXÙZÛ\ˆOOHÛÛ™š\›X][ÛŠBˆœ›ÜË›ÛÚ[™ÙJÈ\™Ù]ˆÈ˜[YNˆÛÛ™š\›X][ÛˆHJBˆ™YHH]ØZ]\›™\ÜËœ™[™\Š
+Bˆ\›™\ÜËœÙ][œÝ[Y[™\ÊØ[™XYU\]YJBˆ]ØZ]\ÚÝÜ›Ù\Ê™YJK™š[™
+›ÙHOˆ›ÙK\HOOH	Ø]Û‰È	‰ˆ›ÙK˜Ú[™[Ëš[˜ÛY\Ê	ùèkº+©9nm¹¦í9¥¬	ÊJKœ›ÜË›ÛÛXÚÊ
+Bˆ™YHH]ØZ]ØZ]›Ü‘\ÚÝÜ™YJ\›™\ÜË˜[YHOˆ\ÚÝÜ^
+˜[YJKš[˜ÛY\Ê	ÐÐUSÑ×ÓÔ—Ô“Ñ’SWÔÕUWÐÒS‘ÑQ	ÊJBˆ\ÜÙ\™\]X[
+\›™\ÜË˜Ø[Ëš[œÝ[[™K›[™Ý
+BŸJB‚\Ý
+	Ñ\ÚÝÜ[œÝ[[™H™[XZ[œÈ]˜Z[X›HÚ[ˆHÜ[Û˜[[œÜXÝY]Ù\ÈXœÙ[	Ë\Þ[˜È
+
+HOˆÂˆÛÛœÝ[žHH\ÚÝÜ[žJÈYˆ	ÙÚ[›ËZ[œÜXÝ	ËXÚØYÙS˜[YNˆ	ÐXÛYKÙÚ[›ËZ[œÜXÝ	ËÛÛ[Z]ˆ\ÚÝÜÛÛ[Z]JBˆÛÛœÝ\›™\ÜÈHÜ™X]Q\ÚÝÜ\›™\ÜÊÈØ][ÙÎˆ\ÚÝÜØ][ÙÊÙ[žWJK[œÜXÝ]˜Z[X›Nˆ˜[ÙHJBˆ]ØZ]\›™\ÜËœ™XYBˆ]ØZ]\›™\ÜËœ™[™\Š
+Bˆ]ØZ]\›™\ÜËœ[‘Y™™XÝÊ\›™\ÜË™Ù]ÛÛ\Û™[
+	Ñ\ÚÝÜÝÜ™T[™[	ÊJBˆ]™YHH]ØZ]ØZ]›Ü‘\ÚÝÜ™YJ\›™\ÜË˜[YHOˆ\ÚÝÜ^
+˜[YJKš[˜ÛY\Ê[žKœXÚØYÙS˜[YJJBˆ\ÚÝÜ›Ù\Ê™YJK™š[™
+›ÙHOˆ›ÙK\HOOH	Ø]Û‰È	‰ˆ›ÙK˜Ú[™[Ëš[˜ÛY\Ê	ùk¢z(áIÊJKœ›ÜË›ÛÛXÚÊ
+Bˆ™YHH]ØZ]\›™\ÜËœ™[™\Š
+BˆÛÛœÝÛÛ™š\›X][ÛˆHS”ÕS	Ù[žKœXÚØYÙS˜[Y_H	Ù\ÚÝÜÛÛ[Z]Xˆ\ÚÝÜ›Ù\Ê™YJK™š[™
+›ÙHOˆ›ÙK\HOOH	Ú[œ]	È	‰ˆ›ÙKœ›ÜËœXÙZÛ\ˆOOHÛÛ™š\›X][ÛŠBˆœ›ÜË›ÛÚ[™ÙJÈ\™Ù]ˆÈ˜[YNˆÛÛ™š\›X][ÛˆHJBˆ™YHH]ØZ]\›™\ÜËœ™[™\Š
+Bˆ]ØZ]\ÚÝÜ›Ù\Ê™YJK™š[™
+›ÙHOˆ›ÙK\HOOH	Ø]Û‰È	‰ˆ›ÙK˜Ú[™[Ëš[˜ÛY\Ê	ùèkº+©9nm¹k¢z(áIÊJKœ›ÜË›ÛÛXÚÊ
+Bˆ™YHH]ØZ]ØZ]›Ü‘\ÚÝÜ™YJ\›™\ÜË˜[YHOˆ\ÚÝÜ^
+˜[YJKš[˜ÛY\Ê	ÑÒ9k¦9¥®y£ä¹.í¹ë¨yä!¹fj9mì¹k£9¢$9k¢z(áIÊJBˆ\ÜÙ\™\]X[
+\›™\ÜË˜Ø[Ëš[œÜXÝ›[™Ý
+Bˆ\ÜÙ\™\]X[
+\›™\ÜË˜Ø[Ëš[œÝ[[™K›[™ÝJBŸJB‚\Ý
+	ÛÙ™šXÚX[\ÚÝÜ[œÝ[È[ˆ\›Ý™YYÚ[ˆÚ]Ý]\ÚÝÜY\][ÛˆÚ[ˆ]ÈX[˜YÙ\ˆXØÙ\È]	Ë\Þ[˜È
+
+HOˆÂˆÛÛœÝ[žHH\ÚÝÜ[žJÈYˆ	ÙÚZÜÝ[Û›IËXÚØYÙS˜[YNˆ	ÐXÛYKÙÚZÜÝ[Û›IËÛÛ[Z]ˆ\ÚÝÜÛÛ[Z]ˆÛÛ\]Xš[]Nˆ	Ý[šÛ›ÝÛ‰Ë›Ùš[\ÎˆÉÝÙX‰×HJBˆÛÛœÝ\›™\ÜÈHÜ™X]Q\ÚÝÜ\›™\ÜÊÈØ][ÙÎˆ\ÚÝÜØ][ÙÊÙ[žWJHJBˆ]ØZ]\›™\ÜËœ™XYBˆ]ØZ]\›™\ÜËœ™[™\Š
+Bˆ]ØZ]\›™\ÜËœ[‘Y™™XÝÊ\›™\ÜË™Ù]ÛÛ\Û™[
+	Ñ\ÚÝÜÝÜ™T[™[	ÊJBˆ]™YHH]ØZ]ØZ]›Ü‘\ÚÝÜ™YJ\›™\ÜË˜[YHOˆ\ÚÝÜ^
+˜[YJKš[˜ÛY\Ê[žKœXÚØYÙS˜[YJJBˆÛÛœÝØ\™H\ÚÝÜ›Ù\Ê™YJK™š[™
+›ÙHOˆ›ÙK\HOOH	Ø\XÛIÈ	‰ˆ\ÚÝÜ^
+›ÙJKš[˜ÛY\Ê[žKœXÚØYÙS˜[YJJBˆ\ÜÙ\›ÚÊØ\™
+Bˆ\ÜÙ\›X]Ú
+\ÚÝÜ^
+Ø\™
+KÑÒ\ÚÝÜ9k¨¹¢-ùêëûï&¹§*¹hì9¦#º` ºacKÊBˆÛÛœÝ[œÝ[H\ÚÝÜ›Ù\ÊØ\™
+K™š[™
+›ÙHOˆ›ÙK\HOOH	Ø]Û‰È	‰ˆ›ÙK˜Ú[™[Ëš[˜ÛY\Ê	ùk¢z(áIÊJBˆ\ÜÙ\›ÚÊ[œÝ[
+Bˆ\ÜÙ\™\]X[
+[œÝ[œ›ÜË™\ØX›Y˜[ÙJBˆ[œÝ[œ›ÜË›ÛÛXÚÊ
+Bˆ™YHH]ØZ]\›™\ÜËœ™[™\Š
+BˆÛÛœÝÛÛ™š\›X][ÛˆHS”ÕS	Ù[žKœXÚØYÙS˜[Y_H	Ù[žK˜ÛÛ[Z]XˆÛÛœÝ[œ]H\ÚÝÜ›Ù\Ê™YJK™š[™
+›ÙHOˆ›ÙK\HOOH	Ú[œ]	È	‰ˆ›ÙKœ›ÜËœXÙZÛ\ˆOOHÛÛ™š\›X][ÛŠBˆ\ÜÙ\›ÚÊ[œ]
+Bˆ[œ]œ›ÜË›ÛÚ[™ÙJÈ\™Ù]ˆÈ˜[YNˆÛÛ™š\›X][ÛˆHJBˆ™YHH]ØZ]\›™\ÜËœ™[™\Š
+BˆÛÛœÝÛÛ™š\›HH\ÚÝÜ›Ù\Ê™YJK™š[™
+›ÙHOˆ›ÙK\HOOH	Ø]Û‰È	‰ˆ›ÙK˜Ú[™[Ëš[˜ÛY\Ê	ùèkº+©9nm¹k¢z(áIÊJBˆ\ÜÙ\›ÚÊÛÛ™š\›JBˆ]ØZ]ÛÛ™š\›Kœ›ÜË›ÛÛXÚÊ
+Bˆ™YHH]ØZ]ØZ]›Ü‘\ÚÝÜ™YJ\›™\ÜË˜[YHOˆ\ÚÝÜ^
+˜[YJKš[˜ÛY\Ê	ÑÒ9k¦9¥®y£ä¹.í¹ë¨yä!¹fj9mì¹k£9¢$9k¢z(áIÊJBˆ\ÜÙ\™\]X[
+\›™\ÜË˜Ø[Ëš[œÜXÝ›[™ÝJBˆ\ÜÙ\™\]X[
+\›™\ÜË˜Ø[Ëš[œÜXÝÌKÚ]
+ÉÙ[žKœ™\ÜÚ]ÜžU\›K™Ú]ÉÙ\ÚÝÜÛÛ[Z]X
+Bˆ\ÜÙ\™\]X[
+\›™\ÜË˜Ø[Ëš[œÝ[[™K›[™ÝJBˆ\ÜÙ\™\]X[
+\›™\ÜË˜Ø[Ëš[œÝ[[™VÌKœÜXË\›™\ÜË˜Ø[Ëš[œÜXÝÌJBˆ\ÜÙ\™\]X[
+\›™\ÜË˜Ø[Ëš[œÝ[[™VÌK›Ü[ÛœË™[˜X›YYJBŸJB‚\Ý
+	ÛÙ™šXÚX[\ÚÝÜÝ\ËÛÜÙ\Ë[™[š[œÝ[ÈÛ›HHX]Ú[™ÈØ][ÙÈ[™H›ÝYÚYÚ[“X[˜YÙ\‰Ë\Þ[˜È
+
+HOˆÂˆÛÛœÝ[žHH\ÚÝÜ[žJÈYˆ	ÙÚ[X[˜YÙY	ËXÚØYÙS˜[YNˆ	ÐXÛYKÙÚ[X[˜YÙY	ËÛÛ[Z]ˆ\ÚÝÜÛÛ[Z]ˆÛÛ\]Xš[]Nˆ	Ú[˜ÛÛ\]X›IË›Ùš[\ÎˆÉÝÙX‰×HJBˆÛÛœÝÛÛÛ[Z]H	Ø‰Ëœ™\X]
+
+BˆÛÛœÝ\›™\ÜÈHÜ™X]Q\ÚÝÜ\›™\ÜÊÂˆØ][ÙÎˆ\ÚÝÜØ][ÙÊÙ[žWJKˆ[œÝ[YˆÞÈ˜[YNˆ[žKœXÚØYÙS˜[YKÙ™šXÚX[ˆ˜[ÙK[œÝ[YˆYK™[[Ý˜X›NˆYK[˜X›YˆYKˆ™\œÚ[ÛŽˆ	ÌKŒŒ	ËÛÝ\˜ÙNˆÚ]
+ÉÙ[žKœ™\ÜÚ]ÜžU\›K™Ú]ÉÛÛÛÛ[Z]XWKˆJBˆ]ØZ]\›™\ÜËœ™XYBˆ]ØZ]\›™\ÜËœ™[™\Š
+Bˆ]ØZ]\›™\ÜËœ[‘Y™™XÝÊ\›™\ÜË™Ù]ÛÛ\Û™[
+	Ñ\ÚÝÜÝÜ™T[™[	ÊJBˆ]™YHH]ØZ]ØZ]›Ü‘\ÚÝÜ™YJ\›™\ÜË˜[YHOˆ\ÚÝÜ^
+˜[YJKš[˜ÛY\Ê	Ó˜[YHÚ[X[˜YÙY	ÊJBˆÛÛœÝX[˜YÙYØ\™H\ÚÝÜ›Ù\Ê™YJK™š[™
+›ÙHOˆ›ÙK\HOOH	Ø\XÛIÈ	‰ˆ\ÚÝÜ^
+›ÙJKš[˜ÛY\Ê[žKœXÚØYÙS˜[YJJBˆ\ÜÙ\›ÚÊX[˜YÙYØ\™
+Bˆ\ÜÙ\™\]X[
+\ÚÝÜ›Ù\ÊX[˜YÙYØ\™
+KœÛÛYJ›ÙHOˆ›ÙK\HOOH	Ø]Û‰È	‰ˆ›ÙK˜Ú[™[Ëš[˜ÛY\Ê	ù¦í9¥¬	ÊJKYKˆ	ØHÚ[™ÙYØ][ÙÈÛÛ[Z]\ÈÙ[›ÝYÚÒ[œÝ[[™HY\ˆÛÛ™š\›X][Û‰ÊB‚ˆÛÛœÝ[ÛÛ™š\›YYH\Þ[˜È
+]Û“˜[YKÚÙ[‹ÝXØÙ\ÜÕ^
+HOˆÂˆÛÛœÝ]ÛˆH\ÚÝÜ›Ù\Ê™YJK™š[™
+›ÙHOˆ›ÙK\HOOH	Ø]Û‰È	‰ˆ›ÙK˜Ú[™[Ëš[˜ÛY\Ê]Û“˜[YJJBˆ\ÜÙ\›ÚÊ]Û‹	Ø]Û“˜[Y_H]Ûˆ\È]˜Z[X›X
+Bˆ]Û‹œ›ÜË›ÛÛXÚÊ
+Bˆ™YHH]ØZ]\›™\ÜËœ™[™\Š
+Bˆ\ÜÙ\›X]Ú
+\ÚÝÜ^
+™YJK™]È™YÑ^
+ÚÙ[‹œ™\XÙJÖËŠŠÏ×‰ßJ
+_×WKÙË	×		‰ÊJJBˆÛÛœÝ[œ]H\ÚÝÜ›Ù\Ê™YJK™š[™
+›ÙHOˆ›ÙK\HOOH	Ú[œ]	È	‰ˆ›ÙKœ›ÜËœXÙZÛ\ˆOOHÚÙ[ŠBˆ\ÜÙ\›ÚÊ[œ]
+Bˆ[œ]œ›ÜË›ÛÚ[™ÙJÈ\™Ù]ˆÈ˜[YNˆÚÙ[ˆHJBˆ™YHH]ØZ]\›™\ÜËœ™[™\Š
+BˆÛÛœÝÛÛ™š\›HH\ÚÝÜ›Ù\Ê™YJK™š[™
+›ÙHOˆ›ÙK\HOOH	Ø]Û‰È	‰ˆ›ÙK˜Ú[™[Ëš[˜ÛY\Ê	ùèkº+©9nm‰È
+È]Û“˜[YJJBˆ\ÜÙ\›ÚÊÛÛ™š\›JBˆ]ØZ]ÛÛ™š\›Kœ›ÜË›ÛÛXÚÊ
+Bˆ™YHH]ØZ]ØZ]›Ü‘\ÚÝÜ™YJ\›™\ÜË˜[YHOˆ\ÚÝÜ^
+˜[YJKš[˜ÛY\ÊÝXØÙ\ÜÕ^
+JBˆB‚ˆ]ØZ][ÛÛ™š\›YY
+	ùalúeëIËÓÔÑH	Ù[žKœXÚØYÙS˜[Y_H	Ù\ÚÝÜÛÛ[Z]X	ÑÒ9k¦9¥®y£ä¹.í¹ë¨yä!¹fj9mì¹k£9¢$9alúeëIÊBˆ\ÜÙ\™Y\\]X[
+\›™\ÜË˜Ø[ËœÙ][™Q[˜X›Y˜]
+LJKÈ˜[YNˆ[žKœXÚØYÙS˜[YK[˜X›Yˆ˜[ÙHJB‚ˆÛÛœÝš[š\ÚÛÜÙHH\ÚÝÜ›Ù\Ê™YJK™š[™
+›ÙHOˆ›ÙK\HOOH	Ø]Û‰È	‰ˆ›ÙK˜Ú[™[Ëš[˜ÛY\Ê	ùk£9¢$	ÊJBˆš[š\ÚÛÜÙKœ›ÜË›ÛÛXÚÊ
+Bˆ™YHH]ØZ]ØZ]›Ü‘\ÚÝÜ™YJ\›™\ÜË˜[YHOˆ\ÚÝÜ›Ù\Ê˜[YJBˆœÛÛYJ›ÙHOˆ›ÙK\HOOH	Ø]Û‰È	‰ˆ›ÙK˜Ú[™[Ëš[˜ÛY\Ê	ùd+ùbª	ÊJJBˆ\ÜÙ\›ÚÊ\ÚÝÜ›Ù\Ê™YJKœÛÛYJ›ÙHOˆ›ÙK\HOOH	Ø]Û‰È	‰ˆ›ÙK˜Ú[™[Ëš[˜ÛY\Ê	ùd+ùbª	ÊJJBˆ]ØZ][ÛÛ™š\›YY
+	ùd+ùbª	ËÕT•	Ù[žKœXÚØYÙS˜[Y_H	Ù\ÚÝÜÛÛ[Z]X	ÑÒ9k¦9¥®y£ä¹.í¹ë¨yä!¹fj9mì¹k£9¢$9d+ùbª	ÊBˆ\ÜÙ\™Y\\]X[
+\›™\ÜË˜Ø[ËœÙ][™Q[˜X›Y˜]
+LJKÈ˜[YNˆ[žKœXÚØYÙS˜[YK[˜X›YˆYHJB‚ˆÛÛœÝš[š\ÚÝ\H\ÚÝÜ›Ù\Ê™YJK™š[™
+›ÙHOˆ›ÙK\HOOH	Ø]Û‰È	‰ˆ›ÙK˜Ú[™[Ëš[˜ÛY\Ê	ùk£9¢$	ÊJBˆš[š\ÚÝ\œ›ÜË›ÛÛXÚÊ
+Bˆ™YHH]ØZ]ØZ]›Ü‘\ÚÝÜ™YJ\›™\ÜË˜[YHOˆ\ÚÝÜ›Ù\Ê˜[YJBˆœÛÛYJ›ÙHOˆ›ÙK\HOOH	Ø]Û‰È	‰ˆ›ÙK˜Ú[™[Ëš[˜ÛY\Ê	ùcn:/oIÊJJBˆ]ØZ][ÛÛ™š\›YY
+	ùcn:/oIË‘SSÕ‘H	Ù[žKœXÚØYÙS˜[Y_H	Ù\ÚÝÜÛÛ[Z]X	ÑÒ9k¦9¥®y£ä¹.í¹ë¨yä!¹fj9mì¹k£9¢$9cn:/oIÊBˆ\ÜÙ\™Y\\]X[
+\›™\ÜË˜Ø[Ëœ™[[Ý™P[™KÙ[žKœXÚØYÙS˜[YWJBˆ\ÜÙ\™\]X[
+\›™\ÜË˜Ø[Ëš[œÝ[[™K›[™Ý
+Bˆ\ÜÙ\™\]X[
+\›™\ÜË˜Ø[ËœÙ][™Q[˜X›Y›[™ÝŠBŸJB‚\Ý
+	ÛÙ™šXÚX[\ÚÝÜÙY\ÈY™XÞXÛHÜ\˜][ÛœÈ\ØX›YÚ[ˆ[ˆ[œÝ[YXÚØYÙHÛÝ\˜ÙHY™™\œÈœ›ÛHHØ][ÙÉË\Þ[˜È
+
+HOˆÂˆÛÛœÝ[žHH\ÚÝÜ[žJÈYˆ	ÙÚ\ÛÝ\˜ÙK[Z\ÛX]Ú	ËXÚØYÙS˜[YNˆ	ÐXÛYKÙÚ\ÛÝ\˜ÙK[Z\ÛX]Ú	ËÛÛ[Z]ˆ\ÚÝÜÛÛ[Z]JBˆÛÛœÝ\›™\ÜÈHÜ™X]Q\ÚÝÜ\›™\ÜÊÂˆØ][ÙÎˆ\ÚÝÜØ][ÙÊÙ[žWJKˆ[œÝ[YˆÞÈ˜[YNˆ[žKœXÚØYÙS˜[YKÙ™šXÚX[ˆ˜[ÙK[œÝ[YˆYK™[[Ý˜X›NˆYK[˜X›YˆYKˆ™\œÚ[ÛŽˆ	ÌKŒŒ	ËÛÝ\˜ÙNˆÚ]
+ÚÎ‹ËÙÚ]X‹˜ÛÛKÛÝ\‹[ÝÛ™\‹ÛÝ\‹\™\Ë™Ú]ÉÉØ‰Ëœ™\X]
+
+_XWKˆJBˆ]ØZ]\›™\ÜËœ™XYBˆ]ØZ]\›™\ÜËœ™[™\Š
+Bˆ]ØZ]\›™\ÜËœ[‘Y™™XÝÊ\›™\ÜË™Ù]ÛÛ\Û™[
+	Ñ\ÚÝÜÝÜ™T[™[	ÊJBˆÛÛœÝ™YHH]ØZ]ØZ]›Ü‘\ÚÝÜ™YJ\›™\ÜË˜[YHOˆ\ÚÝÜ^
+˜[YJKš[˜ÛY\Ê	Ó˜[YHÚ\ÛÝ\˜ÙK[Z\ÛX]Ú	ÊJBˆÛÛœÝØ\™H\ÚÝÜ›Ù\Ê™YJK™š[™
+›ÙHOˆ›ÙK\HOOH	Ø\XÛIÈ	‰ˆ\ÚÝÜ^
+›ÙJKš[˜ÛY\Ê[žKœXÚØYÙS˜[YJJBˆ\ÜÙ\›ÚÊØ\™
+Bˆ\ÜÙ\›X]Ú
+\ÚÝÜ^
+Ø\™
+Kùmì¹k¢z(áy§iy®¤9.#¹ea¹gãº+¬9oey.#y. :!íÊBˆ›Üˆ
+ÛÛœÝX™[ÙˆÉùalúeëIË	ùcn:/oI×JHÂˆÛÛœÝ]ÛˆH\ÚÝÜ›Ù\ÊØ\™
+K™š[™
+›ÙHOˆ›ÙK\HOOH	Ø]Û‰È	‰ˆ›ÙK˜Ú[™[Ëš[˜ÛY\ÊX™[
+JBˆ\ÜÙ\›ÚÊ]Û‹	ÛX™[H™[XZ[œÈš\ÚX›H[ˆHØ\™
+Bˆ\ÜÙ\™\]X[
+]Û‹œ›ÜË™\ØX›YYJBˆBˆÛÛœÝ]Z[ÈH\ÚÝÜ›Ù\ÊØ\™
+K™š[™
+›ÙHOˆ›ÙK\HOOH	Ø]Û‰È	‰ˆ›ÙK˜Ú[™[Ëš[˜ÛY\Ê	ù§éyç"ú+é¹ áIÊJBˆ]Z[Ëœ›ÜË›ÛÛXÚÊ
+BˆÛÛœÝ]Z[™YHH]ØZ]\›™\ÜËœ™[™\Š
+Bˆ\ÜÙ\›X]Ú
+\ÚÝÜ^
+]Z[™YJKù§iy®¤9.#ˆØ][ÙÈ9.äùn¤ù.#y. :!í;ï#9ea¹gã¹.#y/&¹ë¨yä!‹ÊBˆ›Üˆ
+ÛÛœÝX™[ÙˆÉùalúeëIË	ùcn:/oI×JHÂˆÛÛœÝ]ÛˆH\ÚÝÜ›Ù\Ê]Z[™YJK™š[™
+›ÙHOˆ›ÙK\HOOH	Ø]Û‰È	‰ˆ›ÙK˜Ú[™[Ëš[˜ÛY\ÊX™[
+JBˆ\ÜÙ\›ÚÊ]Û‹X™[
+È	È™[XZ[œÈš\ÚX›H[ˆ]Z[ÉÊBˆ\ÜÙ\™\]X[
+]Û‹œ›ÜË™\ØX›YYJBˆ\ÜÙ\™\]X[
+]Û‹œ›ÜË›ÛÛXÚË[™Yš[™Y
+BˆBˆ\ÜÙ\™\]X[
+\›™\ÜË˜Ø[Ëš[œÝ[[™K›[™Ý
+Bˆ\ÜÙ\™\]X[
+\›™\ÜË˜Ø[Ëœ™[[Ý™P[™K›[™Ý
+Bˆ\ÜÙ\™\]X[
+\›™\ÜË˜Ø[ËœÙ][™Q[˜X›Y›[™Ý
+BŸJB‚\Ý
+	ÛÙ™šXÚX[\ÚÝÜ˜Z[ÈÛÜÙY›ÜˆX[›Ü›YYØ][ÙÈ]H[™Ý™\œÚ^™Y™\ÜÛœÙHXY\œÉË\Þ[˜È
+
+HOˆÂˆÛÛœÝX[›Ü›YYH\ÚÝÜ[žJÈYˆ	Ø˜YY[žIËXÚØYÙS˜[YNˆ	ÐXÛYKØ˜YY[žIËÛÛ[Z]ˆ\ÚÝÜÛÛ[Z]JBˆX[›Ü›YY˜Ø]YÛÜšY\ÈH	ÝÛÛÉÂˆÛÛœÝX[›Ü›YY\›™\ÜÈHÜ™X]Q\ÚÝÜ\›™\ÜÊÈØ][ÙÎˆ\ÚÝÜØ][ÙÊÛX[›Ü›YYJHJBˆ]ØZ]X[›Ü›YY\›™\ÜËœ™XYBˆ]ØZ]X[›Ü›YY\›™\ÜËœ™[™\Š
+Bˆ]ØZ]X[›Ü›YY\›™\ÜËœ[‘Y™™XÝÊX[›Ü›YY\›™\ÜË™Ù]ÛÛ\Û™[
+	Ñ\ÚÝÜÝÜ™T[™[	ÊJBˆÛÛœÝX[›Ü›YY™YHH]ØZ]ØZ]›Ü‘\ÚÝÜ™YJX[›Ü›YY\›™\ÜË˜[YHOˆ\ÚÝÜ^
+˜[YJKš[˜ÛY\Ê	ÐÐUSÑ×ÑS•–WÌÐÐUQÓÔ’QT×ÒS•SQ	ÊJBˆ\ÜÙ\›X]Ú
+\ÚÝÜ^
+X[›Ü›YY™YJKÐÐUSÑ×ÑS•–WÌÐÐUQÓÔ’QT×ÒS•SQÊBˆ\ÜÙ\™\]X[
+\ÚÝÜ›Ù\ÊX[›Ü›YY™YJKœÛÛYJ›ÙHOˆ›ÙK\HOOH	Ø]Û‰È	‰ˆ›ÙK˜Ú[™[Ëš[˜ÛY\Ê	ùk¢z(áIÊJK˜[ÙJB‚ˆÛÛœÝZ\ÜÚ[™Ô›Ùš[\ÈH\ÚÝÜ[žJÈYˆ	ÛZ\ÜÚ[™Ë\›Ùš[\ÉËXÚØYÙS˜[YNˆ	ÐXÛYKÛZ\ÜÚ[™Ë\›Ùš[\ÉËÛÛ[Z]ˆ\ÚÝÜÛÛ[Z]JBˆZ\ÜÚ[™Ô›Ùš[\Ë˜ÛÛ\]Xš[]Kœ›Ùš[\ÈH[ˆÛÛœÝZ\ÜÚ[™Ô›Ùš[\Ò\›™\ÜÈHÜ™X]Q\ÚÝÜ\›™\ÜÊÈØ][ÙÎˆ\ÚÝÜØ][ÙÊÛZ\ÜÚ[™Ô›Ùš[\×JHJBˆ]ØZ]Z\ÜÚ[™Ô›Ùš[\Ò\›™\ÜËœ™XYBˆ]ØZ]Z\ÜÚ[™Ô›Ùš[\Ò\›™\ÜËœ™[™\Š
+Bˆ]ØZ]Z\ÜÚ[™Ô›Ùš[\Ò\›™\ÜËœ[‘Y™™XÝÊZ\ÜÚ[™Ô›Ùš[\Ò\›™\ÜË™Ù]ÛÛ\Û™[
+	Ñ\ÚÝÜÝÜ™T[™[	ÊJBˆÛÛœÝ›Ùš[\Õ™YHH]ØZ]ØZ]›Ü‘\ÚÝÜ™YJZ\ÜÚ[™Ô›Ùš[\Ò\›™\ÜË˜[YHOˆ\ÚÝÜ^
+˜[YJKš[˜ÛY\Ê	ÐÐUSÑ×ÑS•–WÌÔ“Ñ’ST×ÒS•SQ	ÊJBˆ\ÜÙ\›X]Ú
+\ÚÝÜ^
+›Ùš[\Õ™YJKÐÐUSÑ×ÑS•–WÌÔ“Ñ’ST×ÒS•SQÊBˆ\ÜÙ\™\]X[
+\ÚÝÜ›Ù\Ê›Ùš[\Õ™YJKœÛÛYJ›ÙHOˆ›ÙK\HOOH	Ø]Û‰È	‰ˆ›ÙK˜Ú[™[Ëš[˜ÛY\Ê	ùk¢z(áIÊJK˜[ÙJB‚ˆÛÛœÝÝ™\œÚ^™Y\›™\ÜÈHÜ™X]Q\ÚÝÜ\›™\ÜÊÂˆ™\ÜÛœÙQ˜XÝÜžNˆ\Þ[˜È
+
+HOˆ
+ÈÚÎˆYK\›ˆ\ÚÝÜØ][ÙÕ\›ˆXY\œÎˆÈÙ]ˆ˜[YHOˆ˜[YHOOH	ØÛÛ[[[™Ý	ÈÈÝš[™Ê
+ˆL
+ˆL
+ÈJHˆ[Kˆ›ÙNˆÈÙ]™XY\Žˆ
+
+HOˆÈ›ÝÈ™]È\œ›ÜŠ	Û]\Ý™Z™XÝ™Y›Ü™H™XY[™ÉÊHHKˆJKˆJBˆ]ØZ]Ý™\œÚ^™Y\›™\ÜËœ™XYBˆ]ØZ]Ý™\œÚ^™Y\›™\ÜËœ™[™\Š
+Bˆ]ØZ]Ý™\œÚ^™Y\›™\ÜËœ[‘Y™™XÝÊÝ™\œÚ^™Y\›™\ÜË™Ù]ÛÛ\Û™[
+	Ñ\ÚÝÜÝÜ™T[™[	ÊJBˆÛÛœÝÝ™\œÚ^™Y™YHH]ØZ]ØZ]›Ü‘\ÚÝÜ™YJÝ™\œÚ^™Y\›™\ÜË˜[YHOˆ\ÚÝÜ^
+˜[YJKš[˜ÛY\Ê	ÑTÒÕÔÐÐUSÑ×ÕÓ×ÓT‘ÑIÊJBˆ\ÜÙ\›X]Ú
+\ÚÝÜ^
+Ý™\œÚ^™Y™YJKÑTÒÕÔÐÐUSÑ×ÕÓ×ÓT‘ÑKÊBˆ\ÜÙ\™\]X[
+Ý™\œÚ^™Y\›™\ÜË˜Ø[Ë›\Ý[™\ËJBˆ\ÜÙ\™\]X[
+\ÚÝÜ›Ù\ÊÝ™\œÚ^™Y™YJKœÛÛYJ›ÙHOˆ›ÙK\HOOH	Ø]Û‰È	‰ˆ›ÙK˜Ú[™[Ëš[˜ÛY\Ê	ùk¢z(áIÊJK˜[ÙJBŸJB‚\Ý
+	Ñ\ÚÝÜÙ\È›ÝX™[HZ\ÛX]ÚYÙXœÚ]H[™^\ÈHÛÛ\]H\™XÝÜžIË\Þ[˜È
+
+HOˆÂˆÛÛœÝ[žHH\ÚÝÜ[žJÈYˆ	ØØ][ÙËZ[™^YšY	ËXÚØYÙS˜[YNˆ	ÐXÛYKØØ][ÙËZ[™^YšY	ËÛÛ[Z]ˆ\ÚÝÜÛÛ[Z]JBˆÛÛœÝØ][ÙÈH\ÚÝÜØ][ÙÊÙ[žWJBˆÛÛœÝ\™XÝÜžQØÝ[Y[ÈH\ÚÝÜ\™XÝÜžQØÝ[Y[ÊØ][ÙÊBˆ\™XÝÜžQØÝ[Y[Ë˜Ø][ÙÒ[™^™[šY\ÖÌK›˜[YVšH	Ö	Ëœ™\X]
+\™XÝÜžQØÝ[Y[Ë˜Ø][ÙÒ[™^™[šY\ÖÌK›˜[YVš›[™Ý
+Bˆ\™XÝÜžQØÝ[Y[Ë˜Ø][ÙÒ[™^˜]ÈH”ÓÓ‹œÝš[™ÚYžJ\™XÝÜžQØÝ[Y[Ë˜Ø][ÙÒ[™^
+BˆÛÛœÝ\›™\ÜÈHÜ™X]Q\ÚÝÜ\›™\ÜÊÈØ][ÙË\™XÝÜžQØÝ[Y[ÈJBˆ]ØZ]\›™\ÜËœ™XYBˆ]ØZ]\›™\ÜËœ™[™\Š
+Bˆ]ØZ]\›™\ÜËœ[‘Y™™XÝÊ\›™\ÜË™Ù]ÛÛ\Û™[
+	Ñ\ÚÝÜÝÜ™T[™[	ÊJBˆÛÛœÝ™YHH]ØZ]ØZ]›Ü‘\ÚÝÜ™YJ\›™\ÜË˜[YHOˆ\ÚÝÜ^
+˜[YJKš[˜ÛY\Ê	ÑTÒÕÔÐÐUSÑ×ÒS‘VÒS•QÔ’UWÓRTÓPUÒ	ÊJBˆ\ÜÙ\›X]Ú
+\ÚÝÜ^
+™YJKùaj:`ê9mì¹çéy£ä¹.íˆ0­È9¦ ¹.#ycëùå*ÊBˆ\ÜÙ\›X]Ú
+\ÚÝÜ^
+™YJKù."ù¥®y.áy¦/¹é.ˆØ][ÙÈ9fçº` :+¬9oe{ï#9¤'9í(¹îäù§§9.#y.èú(j9aj:`ê9£ä¹.í‹ÊBˆ\ÜÙ\™\]X[
+\ÚÝÜ›Ù\Ê™YJKœÛÛYJ›ÙHOˆ›ÙK\HOOH	Ø\XÛIÊKYKˆ	ÐØ][ÙÈ˜[˜XÚÈ™[XZ[œÈ™XYX›HÚ]Ý]™Z[™ÈØ[YHÛÛ\]H\™XÝÜžIÊBˆ\ÜÙ\™\]X[
+\›™\ÜË˜Ø[Ëš[œÝ[[™K›[™Ý
+BŸJB‚\Ý
+	ØÝ\œ™[\ÝY™YÚ\ÝžHØ][ÙÈ\ÈXØÙ\YžHH\ÚÝÜ™XY\‰Ë\Þ[˜È
+
+HOˆÂˆÛÛœÝØ][ÙÈH”ÓÓ‹œ\œÙJ]ØZ]™XYš[J™]ÈT“
+	Ë‹‹Ü™YÚ\ÝžKØØ][ÙËšœÛÛ‰Ë[\Ü›Y]K\›
+K	Ý]Ž	ÊJBˆÛÛœÝØ][ÙÒ[™^˜]ÈH]ØZ]™XYš[J™]ÈT“
+	Ë‹‹Ü™YÚ\ÝžKØØ][ÙËZ[™^šœÛÛ‰Ë[\Ü›Y]K\›
+K	Ý]Ž	ÊBˆÛÛœÝØ][ÙÒ[™^H”ÓÓ‹œ\œÙJ]ØZ]™XYš[J™]ÈT“
+	Ë‹‹Ü™YÚ\ÝžKØØ][ÙËZ[™^šœÛÛ‰Ë[\Ü›Y]K\›
+K	Ý]Ž	ÊJBˆÛÛœÝ\ØÛÝ™\žHH”ÓÓ‹œ\œÙJ]ØZ]™XYš[J™]ÈT“
+	Ë‹‹Ü™YÚ\ÝžKÙ\ØÛÝ™\žKZ[™^šœÛÛ‰Ë[\Ü›Y]K\›
+K	Ý]Ž	ÊJBˆÛÛœÝØ[™Y]\ÈH”ÓÓ‹œ\œÙJ]ØZ]™XYš[J™]ÈT“
+	Ë‹‹Ü™YÚ\ÝžKØØ[™Y]\ËšœÛÛ‰Ë[\Ü›Y]K\›
+K	Ý]Ž	ÊJBˆÛÛœÝ^XÝY\™XÝÜžHHÜ™X]RÛ›ÝÛ”YÚ[‘\™XÝÜžJØ][ÙÒ[™^™[šY\ËØ[™Y]\Ë™[šY\ËÈ\ØÛÝ™\žR[™^ˆ\ØÛÝ™\žHJBˆÛÛœÝØ][ÙÒ[™^žRYH™]ÈX\
+Ø][ÙÒ[™^™[šY\Ë›X\
+[žHOˆÙ[žKšY[žWJJBˆÛÛœÝ^XÝY\™XÝÜžTÝ]\ÐÛÝ[HÝ]\ÈOˆ^XÝY\™XÝÜžK™š[\Š[žHOˆ[žK˜ÛÛXÝYžBˆ	‰ˆØ][ÙÒ[™^žRY™Ù]
+[žK˜ÛÛXÝYžJOËœÝ]\ÈOOHÝ]\ÊK›[™ÝˆÛÛœÝ^XÝY\›Ý™YHØ][ÙË™[šY\Ë™š[\Š[žHOˆ[žKœÝ]\ÈOOH	Ø\›Ý™Y	ÊK›[™ÝˆÛÛœÝ^XÝY›ØÚÙYHØ][ÙË™[šY\Ë™š[\Š[žHOˆ[žKœÝ]\ÈOOH	Ø›ØÚÙY	ÊK›[™ÝˆÛÛœÝ\›™\ÜÈHÜ™X]Q\ÚÝÜ\›™\ÜÊÈØ][ÙË\™XÝÜžQØÝ[Y[ÎˆÈØ][ÙÒ[™^Ø][ÙÒ[™^˜]Ë\ØÛÝ™\žKØ[™Y]\ÈHJBˆ]ØZ]\›™\ÜËœ™XYBˆ]ØZ]\›™\ÜËœ™[™\Š
+Bˆ]ØZ]\›™\ÜËœ[‘Y™™XÝÊ\›™\ÜË™Ù]ÛÛ\Û™[
+	Ñ\ÚÝÜÝÜ™T[™[	ÊJBˆ]™YHH]ØZ]ØZ]›Ü‘\ÚÝÜ™YJ\›™\ÜË˜[YHOˆ\ÚÝÜ^
+˜[YJKš[˜ÛY\Ê9aj:`ê9mì¹çéy£ä¹.íˆ0­È	Ù^XÝY\™XÝÜžK›[™ÝX
+JBˆÛÛœÝ^H\ÚÝÜ^
+™YJBˆ\ÜÙ\›X]Ú
+^™]È™YÑ^
+9aj:`ê9mì¹çéy£ä¹.íˆ0­È	Ù^XÝY\™XÝÜžK›[™ÝX
+JBˆ\ÜÙ\›X]Ú
+^™]È™YÑ^
+Ø][ÙÈ9§"z+¬9oeH0­È	Ù^XÝY\™XÝÜžK™š[\Š[žHOˆ[žK˜ÛÛXÝY
+K›[™ÝX
+JBˆ\ÜÙ\›X]Ú
+^™]È™YÑ^
+Ø][ÙÈ9§*¹¥-¹oeH0­È	Ù^XÝY\™XÝÜžK™š[\Š[žHOˆY[žK˜ÛÛXÝY
+K›[™ÝX
+JBˆ\ÜÙ\›X]Ú
+^™]È™YÑ^
+Ø][ÙÈ9k¨y¨.:+¬9oeH0­È	ØØ][ÙË™[šY\Ë™š[\Š[žHOˆ[žKœÝ]\ÈOOH	Ý[›\ÝY	ÊK›[™ÝX
+JBˆ\ÜÙ\›X]Ú
+^™]È™YÑ^
+Ø][ÙÈ9mì¹k¨y¨.0­È	Ù^XÝY\™XÝÜžTÝ]\ÐÛÝ[
+	Ø\›Ý™Y	Ê_X
+JBˆ\ÜÙ\›X]Ú
+^™]È™YÑ^
+Ø][ÙÈ9mì¹¢é¹¢*ˆ0­È	Ù^XÝY\™XÝÜžTÝ]\ÐÛÝ[
+	Ø›ØÚÙY	Ê_X
+JBˆÛÛœÝØ]YÛÜžSÜ[ÛœÈH\ÚÝÜ›Ù\Ê™YJK™š[™
+›ÙHOˆ›ÙK\HOOH	ÜÙ[XÝ	È	‰ˆ›ÙKœ›ÜÏË–ÉØ\šXK[X™[	×HOOH	ù£"yb!¹ìnùëfú`"IÊBˆ˜Ú[™[‹™›]
+[™š[š]JK™š[\Š›ÙHOˆ›ÙOË\HOOH	ÛÜ[Û‰ÊBˆÛÛœÝ^XÝYØ]YÛÜžPÛÝ[H™]ÈÙ]
+^XÝY\™XÝÜžK™›]X\
+[žHOˆ[žK˜Ø]YÛÜšY\È×JJKœÚ^™Bˆ\ÜÙ\™\]X[
+Ø]YÛÜžSÜ[ÛœË›[™Ý^XÝYØ]YÛÜžPÛÝ[
+ÈJBˆÛÛœÝš\œÝYÙPØ\™ÛÝ[H\ÚÝÜ›Ù\Ê™YJK™š[\Š›ÙHOˆ›ÙK\HOOH	Ø\XÛIÊK›[™ÝˆÛÛœÝ^XÝYYÙPÛÝ[HX]˜ÙZ[
+^XÝY\™XÝÜžK›[™ÝÈš\œÝYÙPØ\™ÛÝ[
+Bˆ\ÜÙ\›X]Ú
+^™]È™YÑ^
+	Ù^XÝYYÙPÛÝ[H:hmX
+JBˆÛÛœÝšY]ÜÜH\ÚÝÜ›Ù\Ê™YJK™š[™
+›ÙHOˆ›ÙKœ›ÜÏË–ÉØ\šXK[X™[	×HOOH	ùaj:`ê9mì¹çéy£ä¹.í¹îäù§§	ÊBˆ\ÜÙ\™\]X[
+šY]ÜÜœ›ÜËœÝ[K›Ý™\™›ÝË	Ýš\ÚX›IÊBˆÛÛœÝ›ÛÝH\ÚÝÜ›Ù\Ê™YJK™š[™
+›ÙHOˆ›ÙK\HOOH	ÜÙXÝ[Û‰È	‰ˆ›ÙKœ›ÜÏË–ÉØ\šXK[X™[	×KœÝ\ÕÚ]
+	ù£ä¹.í¹ea¹gã»ï"ÒTÝÜ™{ï"IÊJBˆ\ÜÙ\™\]X[
+›ÛÝœ›ÜËœÝ[K›Ý™\™›ÝÖK	Ø]]ÉÊBˆ\ÜÙ\™\]X[
+^XÝY\›Ý™YÌÊBˆ\ÜÙ\™\]X[
+^XÝY›ØÚÙYÍŠBˆÛÛœÝ™^YÙHH\ÚÝÜ›Ù\Ê™YJK™š[™
+›ÙHOˆ›ÙK\HOOH	Ø]Û‰È	‰ˆ›ÙKœ›ÜÏË–ÉØ\šXK[X™[	×HOOH	ù."ù. :hmIÊBˆ\ÜÙ\›ÚÊ™^YÙJBˆ\ÜÙ\™\]X[
+™^YÙKœ›ÜË™\ØX›Y˜[ÙJBˆ™^YÙKœ›ÜË›ÛÛXÚÊ
+Bˆ™YHH]ØZ]\›™\ÜËœ™[™\Š
+Bˆ\ÜÙ\›X]Ú
+\ÚÝÜ^
+™YJK™]È™YÑ^
+ˆÈ	Ù^XÝYYÙPÛÝ[H:hmX
+JBˆÛÛœÝ^XÝY\ÚÝÜHØ][ÙË™[šY\Ë™š[\Š[žHOˆ[žKœÝ]\ÈOOH	Ý[›\ÝY	È	‰ˆ[žK˜ÛÛ\]Xš[]OËœ›Ùš[\ÏËš[˜ÛY\Ê	Ù\ÚÝÜ	ÊJK›[™Ýˆ\ÜÙ\›ÚÊ^XÝY\ÚÝÜˆ
+BˆÛÛœÝÙX\˜ÚH\ÚÝÜ›Ù\Ê™YJK™š[™
+›ÙHOˆ›ÙK\HOOH	Ú[œ]	È	‰ˆ›ÙKœ›ÜÖÉØ\šXK[X™[	×HOOH	ù¤'9í(¹aj:`ê9mì¹çéy£ä¹.í‰ÊBˆ\ÜÙ\›ÚÊÙX\˜Ú
+BˆÛÛœÝ˜\”›ÝÈH\ØÛÝ™\žK™[šY\Ë˜]
+LJBˆÙX\˜Úœ›ÜË›ÛÚ[™ÙJÈ\™Ù]ˆÈ˜[YNˆ˜\”›ÝËœÛÝ\˜ÙRYHJBˆÛÛœÝÙX\˜ÚYX›XÈH]ØZ]\›™\ÜËœ™[™\Š
+BˆÛÛœÝX›XÓX]Ú\ÈH\ÚÝÜ›Ù\ÊÙX\˜ÚYX›XÊK™š[\Š›ÙHOˆ›ÙK\HOOH	Ø\XÛIÊBˆ\ÜÙ\™\]X[
+X›XÓX]Ú\Ë›[™ÝJBˆ\ÜÙ\›ÚÊ\ÚÝÜ^
+X›XÓX]Ú\ÖÌJKš[˜ÛY\Ê˜\”›ÝËœÛÝ\˜ÙRY
+JBˆÛÛœÝ^XÝY˜\”›ÝÈH^XÝY\™XÝÜžK™š[™
+[žHOˆ[žKœÛÝ\˜ÙRYOOH˜\”›ÝËœÛÝ\˜ÙRY
+BˆÛÛœÝØ]YÛÜžHH\ÚÝÜ›Ù\ÊÙX\˜ÚYX›XÊK™š[™
+›ÙHOˆ›ÙK\HOOH	ÜÙ[XÝ	È	‰ˆ›ÙKœ›ÜÏË–ÉØ\šXK[X™[	×HOOH	ù£"yb!¹ìnùëfú`"IÊBˆ\ÜÙ\›ÚÊØ]YÛÜžJBˆØ]YÛÜžKœ›ÜË›ÛÚ[™ÙJÈ\™Ù]ˆÈ˜[YNˆ^XÝY˜\”›ÝË˜Ø]YÛÜšY\ÖÌHHJBˆÛÛœÝØ]YÛÜžQš[\™YH]ØZ]\›™\ÜËœ™[™\Š
+Bˆ\ÜÙ\›X]Ú
+\ÚÝÜ^
+Ø]YÛÜžQš[\™Y
+KÌH9§hyîäù§§ÊBˆÛÛœÝÛÜH\ÚÝÜ›Ù\ÊØ]YÛÜžQš[\™Y
+K™š[™
+›ÙHOˆ›ÙK\HOOH	ÜÙ[XÝ	È	‰ˆ›ÙKœ›ÜÏË–ÉØ\šXK[X™[	×HOOH	ù£¤¹n£ù¥®yo#ÉÊBˆÛÜœ›ÜË›ÛÚ[™ÙJÈ\™Ù]ˆÈ˜[YNˆ	ÜÝ\œÉÈHJBˆ\ÜÙ\›X]Ú
+\ÚÝÜ^
+]ØZ]\›™\ÜËœ™[™\Š
+JKÌH9§hyîäù§§ÊBˆÛÛœÝ\ÝYš[\ˆH\ÚÝÜ›Ù\ÊÙX\˜ÚYX›XÊK™š[™
+›ÙHOˆ›ÙK\HOOH	Ø]Û‰Âˆ	‰ˆÝš[™Ê›ÙK˜Ú[™[Ë–ÌH›ÙK˜Ú[™[ŠKœÝ\ÕÚ]
+	ÐØ][ÙÈ9§*¹¥-¹oeH0­È	ÊJBˆ\ÜÙ\›ÚÊ\ÝYš[\ŠBˆ\ÝYš[\‹œ›ÜË›ÛÛXÚÊ
+BˆÛÛœÝ\Ý[™Ñš[\™YH]ØZ]\›™\ÜËœ™[™\Š
+Bˆ\ÜÙ\›X]Ú
+\ÚÝÜ^
+\Ý[™Ñš[\™Y
+K^XÝY˜\”›ÝË˜ÛÛXÝYÈÌ9§hyîäù§§ÈˆÌH9§hyîäù§§ÊBˆÛÛœÝÛX\‘\™XÝÜžQš[\œÈH\ÚÝÜ›Ù\Ê\Ý[™Ñš[\™Y
+K™š[™
+›ÙHOˆ›ÙK\HOOH	Ø]Û‰Âˆ	‰ˆ›ÙK˜Ú[™[Ëš[˜ÛY\Ê	ù®!zfi9ëfú`"IÊJBˆ\ÜÙ\›ÚÊÛX\‘\™XÝÜžQš[\œÊBˆÛX\‘\™XÝÜžQš[\œËœ›ÜË›ÛÛXÚÊ
+BˆÛÛœÝÛX\™Y\™XÝÜžQš[\œÈH]ØZ]\›™\ÜËœ™[™\Š
+BˆÛÛœÝÛX\™YÙX\˜ÚH\ÚÝÜ›Ù\ÊÛX\™Y\™XÝÜžQš[\œÊK™š[™
+›ÙHOˆ›ÙK\HOOH	Ú[œ]	Âˆ	‰ˆ›ÙKœ›ÜÖÉØ\šXK[X™[	×HOOH	ù¤'9í(¹aj:`ê9mì¹çéy£ä¹.í‰ÊBˆÛX\™YÙX\˜Úœ›ÜË›ÛÚ[™ÙJÈ\™Ù]ˆÈ˜[YNˆ	ØZ[YÚ\YÚ[‰ÈHJBˆÛÛœÝÙX\˜ÚYH]ØZ]\›™\ÜËœ™[™\Š
+BˆÛÛœÝX]Ú\ÈH\ÚÝÜ›Ù\ÊÙX\˜ÚY
+K™š[\Š›ÙHOˆ›ÙK\HOOH	Ø\XÛIÊBˆ\ÜÙ\›ÚÊX]Ú\Ë›[™ÝHJBˆÛÛœÝ›ØÚÙYYÚ[ˆHX]Ú\Ë™š[™
+›ÙHOˆ\ÚÝÜ^
+›ÙJKš[˜ÛY\Ê	ÙÚXZ[\YÚ[‰ÊBˆ	‰ˆ\ÚÝÜ^
+›ÙJKš[˜ÛY\Ê	ÐØ][ÙÈ9mì¹¢é¹¢*ˆ0­ÈÒ9cëù¨à9§éIÊJBˆ\ÜÙ\›ÚÊ›ØÚÙYYÚ[ŠBˆÛÛœÝ™]šY]Ñš[\ˆH\ÚÝÜ›Ù\ÊÙX\˜ÚY
+K™š[™
+›ÙHOˆ›ÙK\HOOH	ÜÙ[XÝ	Âˆ	‰ˆ›ÙKœ›ÜÏË–ÉØ\šXK[X™[	×HOOH	ù£"HÒÕÔ‘H9k¨y¨.9â­¹  yëfú`"IÊBˆ™]šY]Ñš[\‹œ›ÜË›ÛÚ[™ÙJÈ\™Ù]ˆÈ˜[YNˆ	Ø›ØÚÙY	ÈHJBˆÛÛœÝ™]šY]Ñš[\™YH]ØZ]\›™\ÜËœ™[™\Š
+Bˆ\ÜÙ\™\]X[
+\ÚÝÜ›Ù\Ê™]šY]Ñš[\™Y
+K™š[\Š›ÙHOˆ›ÙK\HOOH	Ø\XÛIÊK›[™ÝJBˆ\ÜÙ\›X]Ú
+\ÚÝÜ^
+›ØÚÙYYÚ[ŠKØZ[YÚ\YÚ[‹ÊBˆÛÛœÝ[™Ù™ˆH\ÚÝÜ›Ù\Ê›ØÚÙYYÚ[ŠK™š[™
+›ÙHOˆ›ÙK\HOOH	Ø]Û‰È	‰ˆ›ÙK˜Ú[™[Ëš[˜ÛY\Ê	ù.©9å,HÒ9¨à9§éyk¢z(áIÊJBˆ\ÜÙ\›ÚÊ[™Ù™ŠBˆ\ÜÙ\™\]X[
+[™Ù™‹œ›ÜË™\ØX›Y˜[ÙJBˆ\ÜÙ\™\]X[
+\›™\ÜËœ™\]Y\ÝÖÌK\›\ÚÝÜØ][ÙÕ\›
+Bˆ\ÜÙ\›ÚÊ\›™\ÜË™\™XÝÜžT™\]Y\ÝËœÛÛYJ™\]Y\ÝOˆ™\]Y\Ý\›OOH\ÚÝÜØ][ÙÒ[™^\›
+JBˆ\ÜÙ\›ÚÊ\›™\ÜË™\™XÝÜžT™\]Y\ÝËœÛÛYJ™\]Y\ÝOˆ™\]Y\Ý\›OOH\ÚÝÜ\ØÛÝ™\žU\›
+JBˆ\ÜÙ\›ÚÊ\›™\ÜË™\™XÝÜžT™\]Y\ÝËœÛÛYJ™\]Y\ÝOˆ™\]Y\Ý\›OOH\ÚÝÜØ[™Y]\Õ\›
+JBŸJB‚\Ý
+	ÝÙXœÚ]HÑSÈ[™HÝZY[˜ÙHÙ\\˜]\È\ÚÝÜY\][ÛˆX™[Èœ›ÛH[œÝ[][Û‰Ë\Þ[˜È
+
+HOˆÂˆÛÛœÝÛYHH]ØZ]™XYš[J™]ÈT“
+	Ë‹‹ÛX\šÙ]XÙKÚ[™^š[	Ë[\Ü›Y]K\›
+K	Ý]Ž	ÊBˆÛÛœÝ\™XÝÜžHH]ØZ]™XYš[J™]ÈT“
+	Ë‹‹ÛX\šÙ]XÙKÜYÚ[œËÚ[™^š[	Ë[\Ü›Y]K\›
+K	Ý]Ž	ÊBˆÛÛœÝZ[YÙHH]ØZ]™XYš[J™]ÈT“
+	Ë‹‹ÛX\šÙ]XÙKØZ[Ú[™^š[	Ë[\Ü›Y]K\›
+K	Ý]Ž	ÊBˆÛÛœÝZ[ØÜš\H]ØZ]™XYš[J™]ÈT“
+	Ë‹‹ÛX\šÙ]XÙKØZ[ØZ[šœÉË[\Ü›Y]K\›
+K	Ý]Ž	ÊBˆÛÛœÝ\ÈH]ØZ]™XYš[J™]ÈT“
+	Ë‹‹ÛX\šÙ]XÙKÛ\Ë	Ë[\Ü›Y]K\›
+K	Ý]Ž	ÊBˆ\ÜÙ\›X]Ú
+ÛYKÑÒÕÔ‘H9mìº` ºacHÒ9k¦9¥®y¨c:gh¹êëËÊBˆ\ÜÙ\›X]Ú
+ÛYKÑÒ\ÚÝÜ9k¦9¥®y£ä¹.í¹ë¨yä!¹fjÊBˆ\ÜÙ\›X]Ú
+ÛYKÑÒ\ÚÝÜ9a¡z`&º/áÈÒÕÔ‘H9§éyç"ùd£9ë¨yä!¹mì¹k¨y¨.9§hyæë‹ÊBˆ\ÜÙ\›X]Ú
+ÛYKÈ›˜[YHŽˆ‘ÒÕÔ‘H8 %Ò\ÚÝÜYÚ[ˆX\šÙ]XÙH‹ÊBˆ\ÜÙ\›X]Ú
+\™XÝÜžKØÛY[XY\][ÛˆX™[ÈÈ›ÝØ]H[œÝ[][Û‹ÊBˆ\ÜÙ\›X]Ú
+\™XÝÜžKÑÒ\ÚÝÜ9a¡yæ¡ÒÕÔ‘H9cëù§éyç"ùd£9ë¨yä!¹mì¹k¨y¨.9£ä¹.í‹ÊBˆ\ÜÙ\›X]Ú
+Z[YÙKÝ\Ù\‹XÛÛ™š\›YYš^YÛÝ\˜Ù\ÈÚ]ÝÜ™H™]šY]ÈYšXÙKÊBˆ\ÜÙ\›X]Ú
+Z[YÙKùå*Z[YÚ\YÚ[ˆ9..ˆÒÙXˆ9¢%¹k¦9¥®HÒ\ÚÝÜ:+¯º+¨yd£:j£:+ày£ä¹.í‹ÊBˆ\ÜÙ\›X]Ú
+Z[ØÜš\ùk¨¹¢-ùêëú` ºacy¨!ú+á¹.#y/g9k¢z(ázeê9©æËÊBˆ\ÜÙ\›X]Ú
+Z[ØÜš\ÐÛY[XY\][ÛˆX™[ÈÈ›ÝXÚYH[œÝ[][Ûˆ[YÚXš[]KÊBˆ\ÜÙ\›X]Ú
+\ËÚ[™›Ü›X][Û˜[[™Ù\È›ÝXÚYH[œÝ[][Ûˆ[YÚXš[]KÊBˆ\ÜÙ\›X]Ú
+\ËÝ\Ù\‹XÛÛ™š\›YYš^YÛÝ\˜Ù\ÈÚ]ÝÜ™H™]šY]ÈYšXÙKÊBŸJB

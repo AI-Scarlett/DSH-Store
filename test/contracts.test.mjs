@@ -1,666 +1,803 @@
-import assert from 'node:assert/strict'
-import { readFile } from 'node:fs/promises'
-import test from 'node:test'
+ıK®Ïó†‹±‰ª&Šx?m«!¦ºŠW¥Šwµëõ,z»?Î.Æ&¨š)àşZj_ÛŠŞóh²ç!~)^¢·b­ç-¢¼š[\Ü\ÜÙ\œ›ÛH	Û›ÙN˜\ÜÙ\ÜİšXİ	Âš[\ÜÈ™XYš[HHœ›ÛH	Û›ÙN™œËÜ›ÛZ\Ù\ÉÂš[\Ü\İœ›ÛH	Û›ÙN\İ	Â‚˜ÛÛœİ›Ú™XİH™]ÈT“
+	Ë‹‹ÉË[\Ü›Y]K\›
+B‚\İ
+	ÜXÚØYÙH^ÜÙ\ÈHİ[™\™Ò[™H[™ÛY[	Ë\Ş[˜È
 
-const project = new URL('../', import.meta.url)
+HOˆÂˆÛÛœİÙÈH”ÓÓ‹œ\œÙJ]ØZ]™XYš[J™]ÈT“
+	ÜXÚØYÙKšœÛÛ‰Ë›Ú™Xİ
+K	İ]	ÊJBˆ\ÜÙ\™\]X[
+ÙË›˜[YK	ÙÚ\ØY™K\YÚ[‹[X[˜YÙ\‰ÊBˆ\ÜÙ\™\]X[
+ÙË™\œÚ[Û‹	ÌKŒÍ	ÊBˆ\ÜÙ\™\]X[
+ÙË™[™Ú[™\Ë™ÚÙË™Ú˜ÛÛ\]Xš[]K™Ú
+Bˆ›Üˆ
+ÛÛœİ™[X\ÙHÙˆÉÌŒKËX[KŒIË	ÌŒKËX[KŒ‰Ë	ÌŒKË\˜ËŒIË	ÌŒKË\˜ËŒ‰×JHÂˆ\ÜÙ\™\]X[
+ÙË™Ú˜ÛÛ\]Xš[]K™Ú™[X\Ù\ÖÜ™[X\ÙWK	ØÛÛ\]X›IÊBˆ\ÜÙ\™Y\\]X[
+ÙË™Ú˜ÛÛ\]Xš[]K™ÚÜ\˜][ÛœÖÜ™[X\ÙWKÂˆ[œİ[ˆ	Ü\ÜÙY	Ëİ\ˆ	Ü\ÜÙY	Ë[š[œİ[ˆ	Ü\ÜÙY	Ë›Û˜XÚÎˆ	Ü\ÜÙY	ËˆJBˆBˆ\ÜÙ\™\]X[
+ÙË™Ú˜ÛÛ\]Xš[]K™Ú™[X\Ù\ÖÉÌŒ‹Œ\˜ËŒI×K	ØÛÛ\]X›IÊBˆ\ÜÙ\™Y\\]X[
+ÙË™Ú˜ÛÛ\]Xš[]K™ÚÜ\˜][ÛœÖÉÌŒ‹Œ\˜ËŒI×KÂˆ[œİ[ˆ	Ü\ÜÙY	Ëİ\ˆ	Ü\ÜÙY	Ë[š[œİ[ˆ	Ü\ÜÙY	Ë›Û˜XÚÎˆ	Ü\ÜÙY	ËˆJBˆ›Üˆ
+ÛÛœİ™[X\ÙHÙˆÉÌŒ‹Œ\˜ËŒ‰Ë	ÌŒ‹ŒKX[KŒIË	ÌŒ‹ŒKX[KŒ‰×JHÂˆ\ÜÙ\™\]X[
+ÙË™Ú˜ÛÛ\]Xš[]K™Ú™[X\Ù\ÖÜ™[X\ÙWK	ØÛÛ\]X›IÊBˆ\ÜÙ\™Y\\]X[
+ÙË™Ú˜ÛÛ\]Xš[]K™ÚÜ\˜][ÛœÖÜ™[X\ÙWKÂˆ[œİ[ˆ	Ü\ÜÙY	Ëİ\ˆ	Ü\ÜÙY	Ë[š[œİ[ˆ	Ü\ÜÙY	Ë›Û˜XÚÎˆ	Ü\ÜÙY	ËˆJBˆBˆ\ÜÙ\™\]X[
+ÙË™Ú˜ÛÛ\]Xš[]K™Ú™[X\Ù\ÖÉÌŒ‹ŒKX[KŒÉ×K	ØÛÛ\]X›IÊBˆ\ÜÙ\™Y\\]X[
+ÙË™Ú˜ÛÛ\]Xš[]K™ÚÜ\˜][ÛœÖÉÌŒ‹ŒKX[KŒÉ×KÈ[œİ[ˆ	Ü\ÜÙY	Ëİ\ˆ	Ü\ÜÙY	Ë[š[œİ[ˆ	Ü\ÜÙY	Ë›Û˜XÚÎˆ	İ[šÛ›İÛ‰ÈJBˆ\ÜÙ\™\]X[
+ÙË›XZ[‹	Ë‹ÜÜ˜ËÚ[™^›ZœÉÊBˆ\ÜÙ\™\]X[
+ÙË™Ú˜[™Kœ]Ú	Ë‹ØÛÜ™\Ëœ]Ú[[	ÊBˆ\ÜÙ\™\]X[
+ÙË™Ú˜ÛY[œ]›Ü›K	İÙX‰ÊBˆ\ÜÙ\™\]X[
+ÙË™^ÜÖÉË‹ÛØØ[KÊ‹šœÛÛ‰×K	Ë‹ÛØØ[KÊ‹šœÛÛ‰ÊBˆ\ÜÙ\›ÚÊÙË™š[\Ëš[˜ÛY\Ê	ÛØØ[IÊJBˆÛÛœİÙ[™Û\ÚÚ[™\ÙWHH]ØZ]›ÛZ\ÙK˜[
+Âˆ™XYš[J™]ÈT“
+	ÛØØ[KÙ[‹šœÛÛ‰Ë›Ú™Xİ
+K	İ]	ÊK[Š”ÓÓ‹œ\œÙJKˆ™XYš[J™]ÈT“
+	ÛØØ[KŞššœÛÛ‰Ë›Ú™Xİ
+K	İ]	ÊK[Š”ÓÓ‹œ\œÙJKˆJBˆ\ÜÙ\™\]X[
+[™Û\Ú›Y]K]K	ÑÒTİÜ™IÊBˆ\ÜÙ\™\]X[
+Ú[™\ÙK›Y]K]K	ÑÒTİÜ™IÊBˆ\ÜÙ\›ÚÊ[™Û\Ú›Y]K™\ØÜš\[ÛŠBˆ\ÜÙ\›ÚÊÚ[™\ÙK›Y]K™\ØÜš\[ÛŠBˆ\ÜÙ\™\]X[
+ÙËœ™\ÜÚ]ÜK\›	ÙÚ]
+ÚÎ‹ËÙÚ]X‹˜ÛÛKĞRKTØØ\›]ÑÒTİÜ™K™Ú]	ÊBˆ\ÜÙ\›ÚÊÙË™Ú˜ÛY[š[š™Xİš[˜ÛY\Ê	ĞY\ÙYZËXZKÙÚXÛY[]ZK\š[Z]]™\ÉÊJBˆ\ÜÙ\™\]X[
+ÙË™Ú˜ÛÛ\]Xš[]K™Ú™[X\Ù\ÖÉÌŒKŒ‹X[KŒ‰×K	ØÛÛ\]X›IÊBˆ\ÜÙ\™\]X[
+ÙË™Ú˜ÛÛ\]Xš[]K™Ú™[X\Ù\ÖÉÌŒKŒ‹X[KŒÉ×K	ØÛÛ\]X›IÊBˆ\ÜÙ\™\]X[
+ÙË™Ú˜ÛÛ\]Xš[]K™Ú™[X\Ù\ÖÉÌŒKŒ‹X[K	×K	ØÛÛ\]X›IÊBˆ\ÜÙ\™\]X[
+ÙË™Ú˜ÛÛ\]Xš[]K™Ú™[X\Ù\ÖÉÌŒKŒ‹X[KI×K	ØÛÛ\]X›IÊBˆ\ÜÙ\™\]X[
+ÙË™Ú˜ÛÛ\]Xš[]K™Ú™[X\Ù\ÖÉÌŒKŒËX[KŒ‰×K	İ[šÛ›İÛ‰ÊBˆ\ÜÙ\™\]X[
+ÙË™Ú˜ÛÛ\]Xš[]K™Ú™[X\Ù\ÖÉÌŒKKX[KŒI×K	ØÛÛ\]X›IÊBˆ\ÜÙ\™\]X[
+ÙË™Ú˜ÛÛ\]Xš[]K™Ú™[X\Ù\ÖÉÌŒKKX[KŒ‰×K	ØÛÛ\]X›IÊBˆ\ÜÙ\™\]X[
+ÙË™Ú˜ÛÛ\]Xš[]K™Ú™[X\Ù\ÖÉÌŒKK\˜ËŒI×K	ØÛÛ\]X›IÊBˆ\ÜÙ\™\]X[
+ÙË™[™Ú[™\Ë››ÙK	×ŒŒ‹ŒNKŒLŒŒ	ÊBˆ\ÜÙ\›X]Ú
+ÙËœØÜš\Ë˜ÚXÚËÜÜ˜×ÙİX\™X[‹]\Ü˜Y\—›ZœËÊBˆÛÛœİYØXŞPÛY[˜[™ÙHH	ÌŒŒK\˜ËHLŒKŒ\˜ËˆŒ‹ŒŒKKX[KŒHŒKKX[KŒ‰ÂˆÛÛœİ˜ĞÛY[˜[™ÙHH	ÛYØXŞPÛY[˜[™Ù_HŒKK\˜ËŒXˆÛÛœİ™^ÛY[˜[™ÙHH	Ü˜ĞÛY[˜[™Ù_HŒ‹Œ\˜ËŒXˆÛÛœİİ\œ™[ÛY[˜[™ÙHH	Û™^ÛY[˜[™Ù_HŒ‹Œ\˜ËŒˆŒ‹ŒKX[KŒHŒ‹ŒKX[KŒˆŒ‹ŒKX[KŒÈŒ‹ŒKX[KŒ‹ŒKX[KHŒ‹ŒK\˜ËŒHŒ‹ŒK\˜ËŒˆŒ‹ŒK\˜ËŒÈŒ‹ŒK\˜ËŒ‹ŒK\˜ËHŒ‹Œ‹X[KŒ˜ˆÛÛœİ\ÚİÜÛY[˜[™ÙHHË‹‹˜İ\œ™[ÛY[˜[™ÙKœÜ]
+	È	ÊK	ÌŒKK\˜ËŒ‰×KœÛÜ
 
-test('package exposes a standard DSH bundle and client', async () => {
-  const pkg = JSON.parse(await readFile(new URL('package.json', project), 'utf8'))
-  assert.equal(pkg.name, 'dsh-safe-plugin-manager')
-  assert.equal(pkg.version, '0.9.33')
-  assert.equal(pkg.engines.dsh, pkg.dsh.compatibility.dsh)
-  for (const release of ['0.1.7-alpha.1', '0.1.7-alpha.2', '0.1.7-rc.1', '0.1.7-rc.2']) {
-    assert.equal(pkg.dsh.compatibility.dshReleases[release], 'compatible')
-    assert.deepEqual(pkg.dsh.compatibility.dshOperations[release], {
-      install: 'passed', start: 'passed', uninstall: 'passed', rollback: 'passed',
-    })
-  }
-  assert.equal(pkg.dsh.compatibility.dshReleases['0.2.0-rc.1'], 'compatible')
-  assert.deepEqual(pkg.dsh.compatibility.dshOperations['0.2.0-rc.1'], {
-    install: 'passed', start: 'passed', uninstall: 'passed', rollback: 'passed',
-  })
-  for (const release of ['0.2.0-rc.2', '0.2.1-alpha.1', '0.2.1-alpha.2']) {
-    assert.equal(pkg.dsh.compatibility.dshReleases[release], 'compatible')
-    assert.deepEqual(pkg.dsh.compatibility.dshOperations[release], {
-      install: 'passed', start: 'passed', uninstall: 'passed', rollback: 'passed',
-    })
-  }
-  assert.equal(pkg.dsh.compatibility.dshReleases['0.2.1-alpha.3'], 'compatible')
-  assert.deepEqual(pkg.dsh.compatibility.dshOperations['0.2.1-alpha.3'], { install: 'passed', start: 'passed', uninstall: 'passed', rollback: 'unknown' })
-  assert.equal(pkg.main, './src/index.mjs')
-  assert.equal(pkg.dsh.bundle.patch, './cordis.patch.yml')
-  assert.equal(pkg.dsh.client.platform, 'web')
-  assert.equal(pkg.exports['./locale/*.json'], './locale/*.json')
-  assert.ok(pkg.files.includes('locale'))
-  const [english, chinese] = await Promise.all([
-    readFile(new URL('locale/en.json', project), 'utf8').then(JSON.parse),
-    readFile(new URL('locale/zh.json', project), 'utf8').then(JSON.parse),
-  ])
-  assert.equal(english.meta.title, 'DSH-Store')
-  assert.equal(chinese.meta.title, 'DSH-Store')
-  assert.ok(english.meta.description)
-  assert.ok(chinese.meta.description)
-  assert.equal(pkg.repository.url, 'git+https://github.com/AI-Scarlett/DSH-Store.git')
-  assert.ok(pkg.dsh.client.inject.includes('@deepseek-ai/dsh-client-ui-primitives'))
-  assert.equal(pkg.dsh.compatibility.dshReleases['0.1.2-alpha.2'], 'compatible')
-  assert.equal(pkg.dsh.compatibility.dshReleases['0.1.2-alpha.3'], 'compatible')
-  assert.equal(pkg.dsh.compatibility.dshReleases['0.1.2-alpha.4'], 'compatible')
-  assert.equal(pkg.dsh.compatibility.dshReleases['0.1.2-alpha.5'], 'compatible')
-  assert.equal(pkg.dsh.compatibility.dshReleases['0.1.3-alpha.2'], 'unknown')
-  assert.equal(pkg.dsh.compatibility.dshReleases['0.1.5-alpha.1'], 'compatible')
-  assert.equal(pkg.dsh.compatibility.dshReleases['0.1.5-alpha.2'], 'compatible')
-  assert.equal(pkg.dsh.compatibility.dshReleases['0.1.5-rc.1'], 'compatible')
-  assert.equal(pkg.engines.node, '^22.19.0 || >=24.0.0')
-  assert.match(pkg.scripts.check, /src\/guardian-upgrader\.mjs/)
-  const legacyClientRange = '0.0.1-rc.5 || >=0.1.0-rc.6 <0.2.0 || 0.1.5-alpha.1 || 0.1.5-alpha.2'
-  const rcClientRange = `${legacyClientRange} || 0.1.5-rc.1`
-  const nextClientRange = `${rcClientRange} || 0.2.0-rc.1`
-  const currentClientRange = `${nextClientRange} || 0.2.0-rc.2 || 0.2.1-alpha.1 || 0.2.1-alpha.2 || 0.2.1-alpha.3 || 0.2.1-alpha.4 || 0.2.1-alpha.5 || 0.2.1-rc.1 || 0.2.1-rc.2 || 0.2.1-rc.3 || 0.2.1-rc.4 || 0.2.1-rc.5 || 0.2.2-alpha.2`
-  const desktopClientRange = [...currentClientRange.split(' || '), '0.1.5-rc.2'].sort()
-  assert.equal(pkg.peerDependencies['@deepseek-ai/dsh-client-runtime'], `${legacyClientRange} || 0.2.1-alpha.1 || 0.2.1-alpha.2 || 0.2.1-alpha.3 || 0.2.1-alpha.4 || 0.2.1-alpha.5 || 0.2.1-rc.1 || 0.2.1-rc.2 || 0.2.1-rc.3`)
-  for (const dependency of [
-    '@deepseek-ai/dsh-client-ui-primitives',
-    '@deepseek-ai/dsh-client-ui-settings',
-    '@deepseek-ai/dsh-client-ui-slots',
-  ]) assert.equal(pkg.peerDependencies[dependency], currentClientRange)
-  for (const dependency of [
-    '@deepseek-ai/dsh-client-ui-layout',
-    '@deepseek-ai/dsh-client-ui-sidebar',
-  ]) assert.deepEqual(pkg.peerDependencies[dependency].split(' || ').sort(), desktopClientRange)
-  for (const dependency of [
-    '@deepseek-ai/dsh-client-ui-primitives',
-    '@deepseek-ai/dsh-client-ui-settings',
-    '@deepseek-ai/dsh-client-ui-layout',
-    '@deepseek-ai/dsh-client-ui-sidebar',
-    '@deepseek-ai/dsh-client-ui-slots',
-  ]) assert.match(pkg.peerDependencies[dependency], /\|\| 0\.2\.0-rc\.1 \|\| 0\.2\.0-rc\.2 \|\| 0\.2\.1-alpha\.1 \|\| 0\.2\.1-alpha\.2 \|\| 0\.2\.1-alpha\.3 \|\| 0\.2\.1-alpha\.4 \|\| 0\.2\.1-alpha\.5 \|\| 0\.2\.1-rc\.1 \|\| 0\.2\.1-rc\.2 \|\| 0\.2\.1-rc\.3 \|\| 0\.2\.1-rc\.4 \|\| 0\.2\.1-rc\.5 \|\| 0\.2\.2-alpha\.2$/)
-  assert.equal(pkg.private, true)
-})
+Bˆ\ÜÙ\™\]X[
+ÙËœY\‘\[™[˜ÚY\ÖÉĞY\ÙYZËXZKÙÚXÛY[\[[YI×K	ÛYØXŞPÛY[˜[™Ù_HŒ‹ŒKX[KŒHŒ‹ŒKX[KŒˆŒ‹ŒKX[KŒÈŒ‹ŒKX[KŒ‹ŒKX[KHŒ‹ŒK\˜ËŒHŒ‹ŒK\˜ËŒˆŒ‹ŒK\˜ËŒØ
+Bˆ›Üˆ
+ÛÛœİ\[™[˜ŞHÙˆÂˆ	ĞY\ÙYZËXZKÙÚXÛY[]ZK\š[Z]]™\ÉËˆ	ĞY\ÙYZËXZKÙÚXÛY[]ZK\Ù][™ÜÉËˆ	ĞY\ÙYZËXZKÙÚXÛY[]ZK\ÛİÉËˆJH\ÜÙ\™\]X[
+ÙËœY\‘\[™[˜ÚY\ÖÙ\[™[˜ŞWKİ\œ™[ÛY[˜[™ÙJBˆ›Üˆ
+ÛÛœİ\[™[˜ŞHÙˆÂˆ	ĞY\ÙYZËXZKÙÚXÛY[]ZK[^[İ]	Ëˆ	ĞY\ÙYZËXZKÙÚXÛY[]ZK\ÚYX˜\‰ËˆJH\ÜÙ\™Y\\]X[
+ÙËœY\‘\[™[˜ÚY\ÖÙ\[™[˜ŞWKœÜ]
+	È	ÊKœÛÜ
 
-test('canonical DSH-Store repository and Pages URLs replace legacy aliases', async () => {
-  const paths = [
-    'README.md', 'cordis.patch.yml', 'deploy/refresh-from-pages.sh', 'docs/VERIFICATION.md',
-    'docs/ops/google-seo-20260824.json', 'install-counter/wrangler.jsonc', 'marketplace/about/index.html',
-    'marketplace/build/index.html', 'marketplace/community/index.html', 'marketplace/dsh-plugins/index.html', 'marketplace/faq/index.html',
-    'marketplace/index.html', 'marketplace/llms.txt', 'marketplace/plugins/index.html',
-    'marketplace/standards/index.html', 'package.json',
-    'registry/README.md', 'registry/automation-policy.json', 'registry/candidates.json',
-    'registry/candidates.schema.json', 'registry/catalog.json', 'registry/catalog.schema.json',
-    'registry/catalog-index.json', 'registry/catalog-index.schema.json', 'registry/catalog-detail.schema.json',
-    'scripts/automate-catalog.mjs', 'scripts/build-marketplace-static.mjs', 'scripts/check-plugin-submission.mjs',
-    'scripts/plan-author-notices.mjs', 'scripts/verify-marketplace-public.mjs', 'src/candidates.mjs', 'src/catalog.mjs',
-  ]
-  const contents = (await Promise.all(paths.map(path => readFile(new URL(path, project), 'utf8')))).join('\n')
-  assert.doesNotMatch(contents, /AI-Scarlett\/dsh-safe-plugin-manager/i)
-  assert.doesNotMatch(contents, /ai-scarlett\.github\.io\/dsh-safe-plugin-manager/i)
-  assert.match(contents, /https:\/\/github\.com\/AI-Scarlett\/DSH-Store/)
-  assert.match(contents, /https:\/\/raw\.githubusercontent\.com\/AI-Scarlett\/DSH-Store\/main\/registry\/catalog\.json/)
-  assert.match(contents, /https:\/\/ai-scarlett\.github\.io\/DSH-Store/)
-})
+K\ÚİÜÛY[˜[™ÙJBˆ›Üˆ
+ÛÛœİ\[™[˜ŞHÙˆÂˆ	ĞY\ÙYZËXZKÙÚXÛY[]ZK\š[Z]]™\ÉËˆ	ĞY\ÙYZËXZKÙÚXÛY[]ZK\Ù][™ÜÉËˆ	ĞY\ÙYZËXZKÙÚXÛY[]ZK[^[İ]	Ëˆ	ĞY\ÙYZËXZKÙÚXÛY[]ZK\ÚYX˜\‰Ëˆ	ĞY\ÙYZËXZKÙÚXÛY[]ZK\ÛİÉËˆJH\ÜÙ\›X]Ú
+ÙËœY\‘\[™[˜ÚY\ÖÙ\[™[˜ŞWK×Œ—Œ\˜×ŒHŒ—Œ\˜×ŒˆŒ—ŒKX[WŒHŒ—ŒKX[WŒˆŒ—ŒKX[WŒÈŒ—ŒKX[WŒ—ŒKX[WHŒ—ŒK\˜×ŒHŒ—ŒK\˜×ŒˆŒ—ŒK\˜×ŒÈŒ—ŒK\˜×Œ—ŒK\˜×HŒ—Œ‹X[WŒ‰ÊBˆ\ÜÙ\™\]X[
+ÙËœš]˜]KYJBŸJB‚\İ
+	ØØ[›ÛšXØ[ÒTİÜ™H™\ÜÚ]ÜH[™YÙ\ÈT“È™\XÙHYØXŞH[X\Ù\ÉË\Ş[˜È
 
-test('static storefront templates expose the cross-site navigation and analytics identity contract', async () => {
-  const pagePaths = [
-    'marketplace/index.html',
-    'marketplace/plugins/index.html',
-    'marketplace/community/index.html',
-    'marketplace/standards/index.html',
-    'marketplace/build/index.html',
-    'marketplace/faq/index.html',
-    'marketplace/about/index.html',
-    'marketplace/about/deepseek-harness-guide/index.html',
-  ]
-  const pages = await Promise.all(pagePaths.map(path => readFile(new URL(path, project), 'utf8')))
-  for (const page of pages) assert.match(page, /DSH_ALTERNATE_SITE/)
-  for (const path of ['marketplace/app.js', 'marketplace/build/build.js', 'marketplace/faq/faq.js', 'marketplace/about/about.js', 'marketplace/standards/standards.js']) {
-    const source = await readFile(new URL(path, project), 'utf8')
-    assert.match(source, /url\.searchParams\.set\('site', analyticsToken\(location\.host\)\)/)
-  }
-})
+HOˆÂˆÛÛœİ]ÈHÂˆ	Ô‘PQQK›Y	Ë	ØÛÜ™\Ëœ]Ú[[	Ë	Ù\ŞKÜ™Yœ™\ÚYœ›ÛK\YÙ\ËœÚ	Ë	ÙØÜËÕ‘T’Q’PĞUSÓ‹›Y	Ëˆ	ÙØÜËÛÜËÙÛÛÙÛK\Ù[ËLŒŒšœÛÛ‰Ë	Ú[œİ[XÛİ[\‹İÜ˜[™Û\‹šœÛÛ˜ÉË	ÛX\šÙ]XÙKØX›İ]Ú[™^š[	Ëˆ	ÛX\šÙ]XÙKØZ[Ú[™^š[	Ë	ÛX\šÙ]XÙKØÛÛ[][š]KÚ[™^š[	Ë	ÛX\šÙ]XÙKÙÚ\YÚ[œËÚ[™^š[	Ë	ÛX\šÙ]XÙKÙ˜\KÚ[™^š[	Ëˆ	ÛX\šÙ]XÙKÚ[™^š[	Ë	ÛX\šÙ]XÙKÛ\Ë	Ë	ÛX\šÙ]XÙKÜYÚ[œËÚ[™^š[	Ëˆ	ÛX\šÙ]XÙKÜİ[™\™ËÚ[™^š[	Ë	ÜXÚØYÙKšœÛÛ‰Ëˆ	Ü™YÚ\İKÔ‘PQQK›Y	Ë	Ü™YÚ\İKØ]]ÛX][Û‹\ÛXŞKšœÛÛ‰Ë	Ü™YÚ\İKØØ[™Y]\ËšœÛÛ‰Ëˆ	Ü™YÚ\İKØØ[™Y]\ËœØÚ[XKšœÛÛ‰Ë	Ü™YÚ\İKØØ][ÙËšœÛÛ‰Ë	Ü™YÚ\İKØØ][ÙËœØÚ[XKšœÛÛ‰Ëˆ	Ü™YÚ\İKØØ][ÙËZ[™^šœÛÛ‰Ë	Ü™YÚ\İKØØ][ÙËZ[™^œØÚ[XKšœÛÛ‰Ë	Ü™YÚ\İKØØ][ÙËY]Z[œØÚ[XKšœÛÛ‰Ëˆ	ÜØÜš\ËØ]]ÛX]KXØ][ÙË›ZœÉË	ÜØÜš\ËØZ[[X\šÙ]XÙK\İ]XË›ZœÉË	ÜØÜš\ËØÚXÚË\YÚ[‹\İX›Z\ÜÚ[Û‹›ZœÉËˆ	ÜØÜš\ËÜ[‹X]]Ü‹[›İXÙ\Ë›ZœÉË	ÜØÜš\Ëİ™\šYK[X\šÙ]XÙK\X›XË›ZœÉË	ÜÜ˜ËØØ[™Y]\Ë›ZœÉË	ÜÜ˜ËØØ][ÙË›ZœÉËˆBˆÛÛœİÛÛ[ÈH
+]ØZ]›ÛZ\ÙK˜[
+]Ë›X\
+]Oˆ™XYš[J™]ÈT“
+]›Ú™Xİ
+K	İ]	ÊJJJKš›Ú[Š	×‰ÊBˆ\ÜÙ\™Ù\Ó›İX]Ú
+ÛÛ[ËĞRKTØØ\›]ÙÚ\ØY™K\YÚ[‹[X[˜YÙ\‹ÚJBˆ\ÜÙ\™Ù\Ó›İX]Ú
+ÛÛ[ËØZK\ØØ\›]™Ú]X—š[×ÙÚ\ØY™K\YÚ[‹[X[˜YÙ\‹ÚJBˆ\ÜÙ\›X]Ú
+ÛÛ[ËÚÎ—×ÙÚ]X—˜ÛÛWĞRKTØØ\›]ÑÒTİÜ™KÊBˆ\ÜÙ\›X]Ú
+ÛÛ[ËÚÎ—×Ü˜]×™Ú]X\Ù\˜ÛÛ[˜ÛÛWĞRKTØØ\›]ÑÒTİÜ™WÛXZ[—Ü™YÚ\İWØØ][Ù×šœÛÛ‹ÊBˆ\ÜÙ\›X]Ú
+ÛÛ[ËÚÎ—×ØZK\ØØ\›]™Ú]X—š[×ÑÒTİÜ™KÊBŸJB‚\İ
+	Üİ]XÈİÜ™Yœ›Û[\]\È^ÜÙHHÜ›ÜÜË\Ú]H˜]šYØ][Ûˆ[™[˜[]XÜÈY[]HÛÛ˜Xİ	Ë\Ş[˜È
 
-test('scan history reads automatic run summaries from the published Pages data source', async () => {
-  const scans = await readFile(new URL('marketplace/scans/index.html', project), 'utf8')
-  assert.match(scans, /data-automation-status-url="https:\/\/ai-scarlett\.github\.io\/DSH-Store\/automation-status\.json"/)
-  assert.doesNotMatch(scans, /data-automation-status-url="\.\.\/\.\.\/automation-status\.json"/)
-})
+HOˆÂˆÛÛœİYÙT]ÈHÂˆ	ÛX\šÙ]XÙKÚ[™^š[	Ëˆ	ÛX\šÙ]XÙKÜYÚ[œËÚ[™^š[	Ëˆ	ÛX\šÙ]XÙKØÛÛ[][š]KÚ[™^š[	Ëˆ	ÛX\šÙ]XÙKÜİ[™\™ËÚ[™^š[	Ëˆ	ÛX\šÙ]XÙKØZ[Ú[™^š[	Ëˆ	ÛX\šÙ]XÙKÙ˜\KÚ[™^š[	Ëˆ	ÛX\šÙ]XÙKØX›İ]Ú[™^š[	Ëˆ	ÛX\šÙ]XÙKØX›İ]ÙY\ÙYZËZ\›™\ÜËYİZYKÚ[™^š[	ËˆBˆÛÛœİYÙ\ÈH]ØZ]›ÛZ\ÙK˜[
+YÙT]Ë›X\
+]Oˆ™XYš[J™]ÈT“
+]›Ú™Xİ
+K	İ]	ÊJJBˆ›Üˆ
+ÛÛœİYÙHÙˆYÙ\ÊH\ÜÙ\›X]Ú
+YÙKÑÒĞST“UWÔÒUKÊBˆ›Üˆ
+ÛÛœİ]ÙˆÉÛX\šÙ]XÙKØ\šœÉË	ÛX\šÙ]XÙKØZ[ØZ[šœÉË	ÛX\šÙ]XÙKÙ˜\KÙ˜\KšœÉË	ÛX\šÙ]XÙKØX›İ]ØX›İ]šœÉË	ÛX\šÙ]XÙKÜİ[™\™ËÜİ[™\™ËšœÉ×JHÂˆÛÛœİÛİ\˜ÙHH]ØZ]™XYš[J™]ÈT“
+]›Ú™Xİ
+K	İ]	ÊBˆ\ÜÙ\›X]Ú
+Ûİ\˜ÙKİ\›œÙX\˜Ú\˜[\×œÙ]
+	ÜÚ]IË[˜[]XÜÕÚÙ[—
+ØØ][Û—šÜİ
+W
+KÊBˆBŸJB‚\İ
+	ÜØØ[ˆ\İÜH™XYÈ]]ÛX]XÈ[ˆİ[[X\šY\Èœ›ÛHHX›\ÚYYÙ\È]HÛİ\˜ÙIË\Ş[˜È
 
-test('community has a standalone route and the inner pages share the redesign stylesheet', async () => {
-  const [home, community, builder, staticBuilder, redesignStyles] = await Promise.all([
-    readFile(new URL('marketplace/index.html', project), 'utf8'),
-    readFile(new URL('marketplace/community/index.html', project), 'utf8'),
-    readFile(new URL('marketplace/build/index.html', project), 'utf8'),
-    readFile(new URL('scripts/build-marketplace-static.mjs', project), 'utf8'),
-    readFile(new URL('marketplace/pages-redesign.css', project), 'utf8'),
-  ])
-  assert.doesNotMatch(home, /id="community"/)
-  assert.match(home, /href="\.\/community\/" data-i18n="nav\.community"/)
-  assert.match(home, /href="\.\/community\/" data-i18n="footer\.community"/)
-  assert.match(community, /<body class="community-page">/)
-  assert.match(community, /href="\.\/" aria-current="page" data-i18n="nav\.community"/)
-  assert.match(community, /class="community-flow-list"/)
-  assert.match(community, /pages-redesign\.css\?v=20261003-rankings-1/)
-  assert.match(builder, /href="\.\.\/community\/" data-i18n="nav\.community"/)
-  assert.match(builder, /pages-redesign\.css\?v=20261003-rankings-1/)
-  assert.match(staticBuilder, /route: '\/community\/'/)
-  assert.match(staticBuilder, /'\/community\/': '0\.8'/)
-  assert.match(redesignStyles, /body\.community-page \.community-grid/)
-  assert.match(redesignStyles, /body\.community-page \.community-flow-list/)
-})
+HOˆÂˆÛÛœİØØ[œÈH]ØZ]™XYš[J™]ÈT“
+	ÛX\šÙ]XÙKÜØØ[œËÚ[™^š[	Ë›Ú™Xİ
+K	İ]	ÊBˆ\ÜÙ\›X]Ú
+ØØ[œËÙ]KX]]ÛX][Û‹\İ]\Ë]\›HšÎ—×ØZK\ØØ\›]™Ú]X—š[×ÑÒTİÜ™WØ]]ÛX][Û‹\İ]\×šœÛÛˆ‹ÊBˆ\ÜÙ\™Ù\Ó›İX]Ú
+ØØ[œËÙ]KX]]ÛX][Û‹\İ]\Ë]\›H———×——Ø]]ÛX][Û‹\İ]\×šœÛÛˆ‹ÊBŸJB‚\İ
+	ØÛÛ[][š]H\ÈHİ[™[Û™H›İ]H[™H[›™\ˆYÙ\ÈÚ\™HH™Y\ÚYÛˆİ[\ÚY]	Ë\Ş[˜È
 
-test('public storefront verifies the legacy bridge before loading the split Catalog index', async () => {
-  const source = await readFile(new URL('marketplace/app.js', project), 'utf8')
-  assert.match(source, /payload\.registry\.indexPath/)
-  assert.match(source, /crypto\.subtle\.digest\('SHA-256'/)
-  assert.match(source, /Catalog bridge index SHA-256 does not match/)
-  assert.match(source, /state\.detailPromises/)
-  assert.match(source, /Math\.min\(6, entries\.length\)/)
-})
+HOˆÂˆÛÛœİÚÛYKÛÛ[][š]KZ[\‹İ]XĞZ[\‹™Y\ÚYÛ”İ[\×HH]ØZ]›ÛZ\ÙK˜[
+Âˆ™XYš[J™]ÈT“
+	ÛX\šÙ]XÙKÚ[™^š[	Ë›Ú™Xİ
+K	İ]	ÊKˆ™XYš[J™]ÈT“
+	ÛX\šÙ]XÙKØÛÛ[][š]KÚ[™^š[	Ë›Ú™Xİ
+K	İ]	ÊKˆ™XYš[J™]ÈT“
+	ÛX\šÙ]XÙKØZ[Ú[™^š[	Ë›Ú™Xİ
+K	İ]	ÊKˆ™XYš[J™]ÈT“
+	ÜØÜš\ËØZ[[X\šÙ]XÙK\İ]XË›ZœÉË›Ú™Xİ
+K	İ]	ÊKˆ™XYš[J™]ÈT“
+	ÛX\šÙ]XÙKÜYÙ\Ë\™Y\ÚYÛ‹˜ÜÜÉË›Ú™Xİ
+K	İ]	ÊKˆJBˆ\ÜÙ\™Ù\Ó›İX]Ú
+ÛYKÚYH˜ÛÛ[][š]H‹ÊBˆ\ÜÙ\›X]Ú
+ÛYKÚ™YH——ØÛÛ[][š]WÈˆ]KZLNH›˜]—˜ÛÛ[][š]H‹ÊBˆ\ÜÙ\›X]Ú
+ÛYKÚ™YH——ØÛÛ[][š]WÈˆ]KZLNH™›Ûİ\—˜ÛÛ[][š]H‹ÊBˆ\ÜÙ\›X]Ú
+ÛÛ[][š]KÏ›ÙHÛ\ÜÏH˜ÛÛ[][š]K\YÙH‹ÊBˆ\ÜÙ\›X]Ú
+ÛÛ[][š]KÚ™YH——Èˆ\šXKXİ\œ™[HœYÙHˆ]KZLNH›˜]—˜ÛÛ[][š]H‹ÊBˆ\ÜÙ\›X]Ú
+ÛÛ[][š]KØÛ\ÜÏH˜ÛÛ[][š]KY›İË[\İ‹ÊBˆ\ÜÙ\›X]Ú
+ÛÛ[][š]KÜYÙ\Ë\™Y\ÚYÛ—˜ÜÜ×İLŒŒLË\˜[šÚ[™ÜËLKÊBˆ\ÜÙ\›X]Ú
+Z[\‹Ú™YH———ØÛÛ[][š]WÈˆ]KZLNH›˜]—˜ÛÛ[][š]H‹ÊBˆ\ÜÙ\›X]Ú
+Z[\‹ÜYÙ\Ë\™Y\ÚYÛ—˜ÜÜ×İLŒŒLË\˜[šÚ[™ÜËLKÊBˆ\ÜÙ\›X]Ú
+İ]XĞZ[\‹Ü›İ]Nˆ	×ØÛÛ[][š]WÉËÊBˆ\ÜÙ\›X]Ú
+İ]XĞZ[\‹É×ØÛÛ[][š]WÉÎˆ	Ì	ËÊBˆ\ÜÙ\›X]Ú
+™Y\ÚYÛ”İ[\ËØ›ÙW˜ÛÛ[][š]K\YÙH˜ÛÛ[][š]KYÜšYÊBˆ\ÜÙ\›X]Ú
+™Y\ÚYÛ”İ[\ËØ›ÙW˜ÛÛ[][š]K\YÙH˜ÛÛ[][š]KY›İË[\İÊBŸJB‚\İ
+	ÜX›XÈİÜ™Yœ›Û™\šYšY\ÈHYØXŞHœšYÙH™Y›Ü™HØY[™ÈHÜ]Ø][ÙÈ[™^	Ë\Ş[˜È
 
-test('homepage uses a Raycast-inspired catalog-first storefront with a transparent DSH brand lockup', async () => {
-  const pagePaths = [
-    'marketplace/index.html',
-    'marketplace/plugins/index.html',
-    'marketplace/community/index.html',
-    'marketplace/standards/index.html',
-    'marketplace/build/index.html',
-    'marketplace/faq/index.html',
-    'marketplace/about/index.html',
-    'marketplace/about/deepseek-harness-guide/index.html',
-    'marketplace/dsh-plugins/index.html',
-  ]
-  const [styles, homepageDesign, ...pages] = await Promise.all([
-    readFile(new URL('marketplace/styles.css', project), 'utf8'),
-    readFile(new URL('marketplace/home-redesign.css', project), 'utf8'),
-    ...pagePaths.map(path => readFile(new URL(path, project), 'utf8')),
-  ])
-  assert.match(pages[0], /<meta name="theme-color" content="#f7f9fd">/)
-  for (const page of pages.slice(1)) assert.match(page, /<meta name="theme-color" content="#f6f9ff">/)
-  assert.match(styles, /--glass: rgba\(255, 255, 255, \.72\)/)
-  assert.match(styles, /--radius-xl: 32px/)
-  assert.match(styles, /\.automation-grid article:first-child \{\s*grid-column: span 2;/)
-  assert.match(styles, /\.featured-grid > :first-child \{ grid-row: span 2; \}/)
-  assert.match(styles, /@media \(prefers-reduced-motion: reduce\)/)
-  assert.match(pages[0], /home-redesign\.css\?v=20260924-raycast-store-9/)
-  assert.match(pages[0], /class="home-redesign"/)
-  assert.match(pages[0], /class="install-floor"/)
-  assert.match(pages[0], /class="discovery-spread"/)
-  assert.match(pages[0], /data-i18n="install\.floorTitle"/)
-  assert.match(pages[0], /class="trust-chapter"/)
-  assert.doesNotMatch(pages[0], /id="community"/)
-  assert.match(pages[0], /href="\.\/community\/" data-i18n="nav\.community"/)
-  assert.match(homepageDesign, /body\.home-page \.trust-chapter \{[\s\S]*?grid-template-columns: minmax\(0, 1fr\) !important/)
-  assert.match(pages[0], /class="maker-chapter"/)
-  assert.match(pages[0], /class="brand-wordmark-frame"[^>]*>[\s\S]*?src="\.\/dsh-store-wordmark\.png"[^>]*width="1448" height="1086"/)
-  assert.doesNotMatch(pages[0], /brand-wordmark-text|brand-lockup/)
-  assert.match(pages[0], /id="home-plugin-grid"/)
-  assert.match(pages[0], /data-i18n="home\.catalogLead"/)
-  assert.match(pages[0], /<nav class="footer-nav" aria-label="ç½‘ç«™å¿«æ·å¯¼èˆª">/)
-  for (const route of ['./plugins/', './build/', './standards/', './faq/', './about/']) {
-    assert.ok(pages[0].includes(`href="${route}"`), `footer should link to ${route}`)
-  }
-  assert.match(pages[0], /data-i18n="footer\.friendsTitle">å‹æƒ…é“¾æ¥/)
-  assert.match(pages[0], /href="\.\/community\/" data-i18n="footer\.community">ç¤¾åŒºä¸å¼€å‘è€…/)
-  assert.match(pages[0], /<!-- DSH_FRIEND_SISTER_SITE -->/)
-  assert.match(pages[0], /https:\/\/aiaiai\.help\//)
-  assert.match(pages[0], /https:\/\/tracefence\.com\//)
-  assert.ok(pages[0].indexOf('class="faq-more"') < pages[0].indexOf('class="faq-list"'), 'FAQ link should sit in the heading row above the questions')
-  assert.match(homepageDesign, /--dsh-cyan: #17bfe3/)
-  assert.match(homepageDesign, /--dsh-blue: #2874f5/)
-  assert.match(homepageDesign, /--dsh-violet: #7043e7/)
-  assert.match(homepageDesign, /grid-template-areas: "heading" "categories"/)
-  assert.match(homepageDesign, /\.brand-wordmark-frame,[\s\S]*?background: transparent !important/)
-  assert.match(homepageDesign, /\.site-header\s*\{[\s\S]*?background: linear-gradient\(108deg, #0c1436/)
-  assert.match(homepageDesign, /\.site-footer\s*\{[\s\S]*?background: linear-gradient\(120deg, #0c1436/)
-  assert.match(homepageDesign, /\.workflow-step > div \{ display: grid !important; grid-template-columns: minmax\(0,1fr\)/)
-  assert.match(homepageDesign, /\.workflow-step:last-child \{ grid-column: auto !important; \}/)
-  assert.match(homepageDesign, /\.manager-console \{[^}]*min-height: 0 !important/)
-  assert.match(homepageDesign, /\.build-bridge \{[^}]*min-height: 0 !important/)
-  assert.match(homepageDesign, /\.faq-list \{ margin: 16px 0 0 !important/)
-  assert.match(homepageDesign, /body\.home-page \.faq-section \{ padding: 42px 0 22px !important; \}/)
-  assert.match(homepageDesign, /body\.home-page \.faq-section \.section-heading \{ grid-template-columns: minmax\(0,1fr\) auto !important; align-items: center !important/)
-  assert.match(homepageDesign, /body\.home-page \.faq-section \.section-heading \.faq-more \{ justify-self: end !important/)
-  assert.match(homepageDesign, /body\.home-page \.faq-more \{ margin: 14px 0 0 !important/)
-  assert.match(homepageDesign, /body\.home-page \.site-footer \{ width: 100% !important; margin: 0 !important/)
-  assert.match(homepageDesign, /body\.home-page \.footer-nav \{ grid-column: 3 !important;/)
-  assert.match(homepageDesign, /body\.home-page \.faq-section \.section-heading \{ grid-template-columns: minmax\(0,1fr\) !important; align-items: start !important/)
-  assert.match(homepageDesign, /\.automation-section \{[\s\S]*?background: linear-gradient\(122deg,#0b1635 0%,#13254c 57%,#211b52 100%\) !important/)
-  assert.match(homepageDesign, /body\.home-page \.automation-grid article:last-child \{ min-height: 95px !important; padding: 10px 8px !important; border: 1px solid rgba\(205,221,255,\.15\) !important; background: rgba\(255,255,255,\.065\) !important/)
-  assert.match(homepageDesign, /\.build-bridge \{[\s\S]*?background: linear-gradient\(112deg,#0b1635 0%,#14285a 64%,#27205b 100%\) !important/)
-  assert.match(homepageDesign, /body\.home-page \.automation-grid article,[\s\S]*?grid-column: auto !important;[\s\S]*?grid-row: auto !important/)
-  assert.match(homepageDesign, /body\.home-page \.automation-section \{[\s\S]*?grid-template-columns: repeat\(2, minmax\(0,1fr\)\) !important/)
-  assert.match(homepageDesign, /body\.home-page \.automation-additions ul \{ display: grid !important; grid-template-columns: repeat\(2,minmax\(0,1fr\)\)/)
-  assert.match(homepageDesign, /body\.home-page \.automation-additions:not\(\.automation-updates\) ul \{ grid-template-columns: minmax\(0,1fr\) !important/)
-  assert.doesNotMatch(homepageDesign, /max-height: 248px !important; overflow: auto !important/)
-  assert.match(homepageDesign, /body\.home-page \.metric-deck \.metric-source \{[^}]*grid-column: auto !important; grid-row: auto !important/)
-  assert.match(homepageDesign, /background: #0a0f1e !important/)
-  assert.match(homepageDesign, /body\.home-page \.architecture-map \{ grid-template-columns: minmax\(0,1fr\) 22px minmax\(0,1\.12fr\) 22px minmax\(0,1fr\) !important/)
-  assert.match(homepageDesign, /body\.home-page \.manager-console \{ grid-template-columns: minmax\(0,1fr\) !important/)
-  assert.match(homepageDesign, /body\.home-page \.architecture-map \{ grid-template-columns: minmax\(0,1fr\) 14px minmax\(0,1\.12fr\) 14px minmax\(0,1fr\) !important/)
-  assert.match(homepageDesign, /body\.home-page \.motion-reveal:not\(\.visible\) \{ opacity: 1 !important/)
-  assert.match(homepageDesign, /\.discovery-spread\s*\{\s*display: block/)
-  assert.match(homepageDesign, /\.featured-grid\s*\{\s*display: grid[^}]*grid-template-columns: repeat\(2, minmax\(0, 1fr\)\)/)
-  assert.match(homepageDesign, /\.home-plugin-grid\s*\{\s*display: grid[^}]*grid-template-columns: repeat\(3, minmax\(0, 1fr\)\)/)
-  assert.match(homepageDesign, /@media \(max-width: 760px\)/)
-  assert.match(homepageDesign, /@media \(prefers-reduced-motion: reduce\)/)
-  assert.doesNotMatch(homepageDesign, /--zine-acid|--zine-hot/)
-  const homeOrder = ['class="hero"', 'class="discovery-spread"', 'class="store-search section-shell"', 'class="featured-section', 'class="home-directory-section"', 'class="metric-deck', 'class="install-floor"', 'class="workflow-section', 'id="automation-status"', 'class="trust-chapter"', 'class="maker-chapter"', 'class="faq-section']
-  const homeOffsets = homeOrder.map(marker => pages[0].indexOf(marker))
-  assert.ok(homeOffsets.every((offset, index) => offset >= 0 && (index === 0 || offset > homeOffsets[index - 1])), 'homepage chapters should follow the redesigned discovery journey')
-  assert.ok(pages[0].indexOf('class="store-search-form"') < homeOffsets[1], 'hero search should be visible before category browsing')
-  const storefrontApp = await readFile(new URL('marketplace/app.js', project), 'utf8')
-  assert.match(storefrontApp, /function renderHomeDirectoryPreview\(\)/)
-  assert.match(storefrontApp, /const entries = visibleIndexEntries\(\)\.slice\(0, 6\)/)
-  assert.match(storefrontApp, /void fetchCatalogDetail\(indexEntry\)/)
-  assert.match(storefrontApp, /if \(IS_DIRECTORY\) void loadKnownDirectory\(\)/)
-  assert.doesNotMatch(storefrontApp, /if \(state\.candidatesLoaded\) void loadCurrentPageDetails\(\)/)
-})
+HOˆÂˆÛÛœİÛİ\˜ÙHH]ØZ]™XYš[J™]ÈT“
+	ÛX\šÙ]XÙKØ\šœÉË›Ú™Xİ
+K	İ]	ÊBˆ\ÜÙ\›X]Ú
+Ûİ\˜ÙKÜ^[ØYœ™YÚ\İWš[™^]ÊBˆ\ÜÙ\›X]Ú
+Ûİ\˜ÙKØÜ\×œİXW™YÙ\İ
+	ÔÒKLM‰ËÊBˆ\ÜÙ\›X]Ú
+Ûİ\˜ÙKĞØ][ÙÈœšYÙH[™^ÒKLMˆÙ\È›İX]ÚÊBˆ\ÜÙ\›X]Ú
+Ûİ\˜ÙKÜİ]W™]Z[›ÛZ\Ù\ËÊBˆ\ÜÙ\›X]Ú
+Ûİ\˜ÙKÓX]›Z[—
+‹[šY\×›[™İ
+KÊBŸJB‚\İ
+	ÚÛY\YÙH\Ù\ÈH˜^XØ\İZ[œÜ\™YØ][ÙËYš\œİİÜ™Yœ›ÛÚ]H˜[œÜ\™[Òœ˜[™ØÚİ\	Ë\Ş[˜È
 
-test('featured DeepSeek Harness article preserves source attribution and long-form structure', async () => {
-  const [article, about] = await Promise.all([
-    readFile(new URL('marketplace/about/deepseek-harness-guide/index.html', project), 'utf8'),
-    readFile(new URL('marketplace/about/index.html', project), 'utf8'),
-  ])
-  assert.match(article, /<meta name="author" content="@Russell3402">/)
-  assert.match(article, /"isBasedOn": "https:\/\/mp\.weixin\.qq\.com\/s\/oKppevLlwQOg8TfPG74rVw"/)
-  assert.match(article, /ä½œè€…ï¼š<a href="https:\/\/x\.com\/Russell3402"/)
-  assert.match(article, /href="https:\/\/mp\.weixin\.qq\.com\/s\/oKppevLlwQOg8TfPG74rVw"[^>]*>åŸå§‹å‘å¸ƒ/)
-  assert.match(article, /DSH STORE ä»…è´Ÿè´£ç½‘é¡µç¼–æ’ï¼Œä¸å°†æœ¬æ–‡æ ‡æ³¨ä¸º DSH STORE åŸåˆ›/)
-  assert.equal((article.match(/<h2 id=/g) || []).length, 14)
-  assert.equal((article.match(/class="article-figure"/g) || []).length, 24)
-  assert.match(article, /ä¸€ã€å…ˆæŠŠ Harness è®²é€ï¼šæ¨¡å‹å¹¶ä¸ä¼šç›´æ¥ä½¿ç”¨ç”µè„‘/)
-  assert.match(article, /åäºŒã€å®ƒåˆ°åº•èƒ½åšå‡ºä»€ä¹ˆï¼šä»ä¸´æ—¶é€ å·¥å…·åˆ°å¤–éƒ¨è‡ªåŠ¨åŒ–/)
-  assert.match(article, /ä»¥åè®¨è®º Agent èƒ½åŠ›ï¼Œé™¤äº†é—®â€œç”¨äº†å“ªä¸ªæ¨¡å‹â€/)
-  assert.doesNotMatch(article, /ARTICLE_(?:TOC|BODY)/)
-  assert.match(about, /DSH_ARTICLE_PROMO_BEGIN/)
-  assert.match(about, /href="\.\/deepseek-harness-guide\/"/)
-  assert.match(about, /ä½œè€…ï¼š@Russell3402/)
-})
+HOˆÂˆÛÛœİYÙT]ÈHÂˆ	ÛX\šÙ]XÙKÚ[™^š[	Ëˆ	ÛX\šÙ]XÙKÜYÚ[œËÚ[™^š[	Ëˆ	ÛX\šÙ]XÙKØÛÛ[][š]KÚ[™^š[	Ëˆ	ÛX\šÙ]XÙKÜİ[™\™ËÚ[™^š[	Ëˆ	ÛX\šÙ]XÙKØZ[Ú[™^š[	Ëˆ	ÛX\šÙ]XÙKÙ˜\KÚ[™^š[	Ëˆ	ÛX\šÙ]XÙKØX›İ]Ú[™^š[	Ëˆ	ÛX\šÙ]XÙKØX›İ]ÙY\ÙYZËZ\›™\ÜËYİZYKÚ[™^š[	Ëˆ	ÛX\šÙ]XÙKÙÚ\YÚ[œËÚ[™^š[	ËˆBˆÛÛœİÜİ[\ËÛY\YÙQ\ÚYÛ‹‹‹œYÙ\×HH]ØZ]›ÛZ\ÙK˜[
+Âˆ™XYš[J™]ÈT“
+	ÛX\šÙ]XÙKÜİ[\Ë˜ÜÜÉË›Ú™Xİ
+K	İ]	ÊKˆ™XYš[J™]ÈT“
+	ÛX\šÙ]XÙKÚÛYK\™Y\ÚYÛ‹˜ÜÜÉË›Ú™Xİ
+K	İ]	ÊKˆ‹‹œYÙT]Ë›X\
+]Oˆ™XYš[J™]ÈT“
+]›Ú™Xİ
+K	İ]	ÊJKˆJBˆ\ÜÙ\›X]Ú
+YÙ\ÖÌKÏY]H˜[YOH[YKXÛÛÜˆˆÛÛ[HˆÙÙY™‹ÊBˆ›Üˆ
+ÛÛœİYÙHÙˆYÙ\ËœÛXÙJJJH\ÜÙ\›X]Ú
+YÙKÏY]H˜[YOH[YKXÛÛÜˆˆÛÛ[HˆÙ™Y™ˆ‹ÊBˆ\ÜÙ\›X]Ú
+İ[\ËËKYÛ\ÜÎˆ™Ø˜W
+MKMKMKÌ—
+KÊBˆ\ÜÙ\›X]Ú
+İ[\ËËK\˜Y]\Ë^ˆÌœÊBˆ\ÜÙ\›X]Ú
+İ[\Ë×˜]]ÛX][Û‹YÜšY\XÛN™š\œİXÚ[×Ê™ÜšYXÛÛ[[ˆÜ[ˆËÊBˆ\ÜÙ\›X]Ú
+İ[\Ë×™™X]\™YYÜšYˆ™š\œİXÚ[ÈÜšY\›İÎˆÜ[ˆÈKÊBˆ\ÜÙ\›X]Ú
+İ[\ËĞYYXH
+™Y™\œË\™YXÙY[[İ[Ûˆ™YXÙW
+KÊBˆ\ÜÙ\›X]Ú
+YÙ\ÖÌKÚÛYK\™Y\ÚYÛ—˜ÜÜ×İLŒŒL\˜^XØ\İ\İÜ™KNKÊBˆ\ÜÙ\›X]Ú
+YÙ\ÖÌKØÛ\ÜÏHšÛYK\™Y\ÚYÛˆ‹ÊBˆ\ÜÙ\›X]Ú
+YÙ\ÖÌKØÛ\ÜÏHš[œİ[Y›ÛÜˆ‹ÊBˆ\ÜÙ\›X]Ú
+YÙ\ÖÌKØÛ\ÜÏH™\ØÛİ™\K\Ü™XY‹ÊBˆ\ÜÙ\›X]Ú
+YÙ\ÖÌKÙ]KZLNHš[œİ[™›ÛÜ•]H‹ÊBˆ\ÜÙ\›X]Ú
+YÙ\ÖÌKØÛ\ÜÏH\İXÚ\\ˆ‹ÊBˆ\ÜÙ\™Ù\Ó›İX]Ú
+YÙ\ÖÌKÚYH˜ÛÛ[][š]H‹ÊBˆ\ÜÙ\›X]Ú
+YÙ\ÖÌKÚ™YH——ØÛÛ[][š]WÈˆ]KZLNH›˜]—˜ÛÛ[][š]H‹ÊBˆ\ÜÙ\›X]Ú
+ÛY\YÙQ\ÚYÛ‹Ø›ÙWšÛYK\YÙH\İXÚ\\ˆÖ×××JÙÜšY][\]KXÛÛ[[œÎˆZ[›X^
+Yœ—
+HZ[\Ü[ÊBˆ\ÜÙ\›X]Ú
+YÙ\ÖÌKØÛ\ÜÏH›XZÙ\‹XÚ\\ˆ‹ÊBˆ\ÜÙ\›X]Ú
+YÙ\ÖÌKØÛ\ÜÏH˜œ˜[™]ÛÜ™X\šËYœ˜[YH–×—J–×××JÜÜ˜ÏH——ÙÚ\İÜ™K]ÛÜ™X\š×œ™È–×—JÚYHŒMˆZYÚHŒLˆ‹ÊBˆ\ÜÙ\™Ù\Ó›İX]Ú
+YÙ\ÖÌKØœ˜[™]ÛÜ™X\šË]^œ˜[™[ØÚİ\ÊBˆ\ÜÙ\›X]Ú
+YÙ\ÖÌKÚYHšÛYK\YÚ[‹YÜšY‹ÊBˆ\ÜÙ\›X]Ú
+YÙ\ÖÌKÙ]KZLNHšÛYW˜Ø][ÙÓXY‹ÊBˆ\ÜÙ\›X]Ú
+YÙ\ÖÌKÏ˜]ˆÛ\ÜÏH™›Ûİ\‹[˜]ˆˆ\šXK[X™[H¹ïdyêæyoêù£mùkï:"*ˆ‹ÊBˆ›Üˆ
+ÛÛœİ›İ]HÙˆÉË‹ÜYÚ[œËÉË	Ë‹ØZ[ÉË	Ë‹Üİ[™\™ËÉË	Ë‹Ù˜\KÉË	Ë‹ØX›İ]É×JHÂˆ\ÜÙ\›ÚÊYÙ\ÖÌKš[˜ÛY\Ê™YH‰Ü›İ]_H˜
+K›Ûİ\ˆÚİ[[šÈÈ	Ü›İ]_X
+BˆBˆ\ÜÙ\›X]Ú
+YÙ\ÖÌKÙ]KZLNH™›Ûİ\—™œšY[™Õ]H¹câù ázdï¹£©KÊBˆ\ÜÙ\›X]Ú
+YÙ\ÖÌKÚ™YH——ØÛÛ[][š]WÈˆ]KZLNH™›Ûİ\—˜ÛÛ[][š]H¹é/¹c.¹.#¹o 9cäz !KÊBˆ\ÜÙ\›X]Ú
+YÙ\ÖÌKÏKKHÒÑ”’QS‘ÔÒTÕT—ÔÒUHKO‹ÊBˆ\ÜÙ\›X]Ú
+YÙ\ÖÌKÚÎ—×ØZXZXZWš[ËÊBˆ\ÜÙ\›X]Ú
+YÙ\ÖÌKÚÎ—×İ˜XÙY™[˜ÙW˜ÛÛWËÊBˆ\ÜÙ\›ÚÊYÙ\ÖÌKš[™^ÙŠ	ØÛ\ÜÏH™˜\K[[Ü™H‰ÊHYÙ\ÖÌKš[™^ÙŠ	ØÛ\ÜÏH™˜\K[\İ‰ÊK	ÑTH[šÈÚİ[Ú][ˆHXY[™È›İÈX›İ™HH]Y\İ[ÛœÉÊBˆ\ÜÙ\›X]Ú
+ÛY\YÙQ\ÚYÛ‹ËKYÚXŞX[ˆÌMØ™™LËÊBˆ\ÜÙ\›X]Ú
+ÛY\YÙQ\ÚYÛ‹ËKYÚX›YNˆÌÍKÊBˆ\ÜÙ\›X]Ú
+ÛY\YÙQ\ÚYÛ‹ËKYÚ]š[Û]ˆÍÌÙMËÊBˆ\ÜÙ\›X]Ú
+ÛY\YÙQ\ÚYÛ‹ÙÜšY][\]KX\™X\ÎˆšXY[™Èˆ˜Ø]YÛÜšY\È‹ÊBˆ\ÜÙ\›X]Ú
+ÛY\YÙQ\ÚYÛ‹×˜œ˜[™]ÛÜ™X\šËYœ˜[YK×××JØ˜XÚÙÜ›İ[™ˆ˜[œÜ\™[Z[\Ü[ÊBˆ\ÜÙ\›X]Ú
+ÛY\YÙQ\ÚYÛ‹×œÚ]KZXY\—Ê—Ö×××JØ˜XÚÙÜ›İ[™ˆ[™X\‹YÜ˜YY[
+LYËÌÌMÍ‹ÊBˆ\ÜÙ\›X]Ú
+ÛY\YÙQ\ÚYÛ‹×œÚ]KY›Ûİ\—Ê—Ö×××JØ˜XÚÙÜ›İ[™ˆ[™X\‹YÜ˜YY[
+LŒYËÌÌMÍ‹ÊBˆ\ÜÙ\›X]Ú
+ÛY\YÙQ\ÚYÛ‹×ÛÜšÙ›İË\İ\ˆ]ˆÈ\Ü^NˆÜšYZ[\Ü[ÈÜšY][\]KXÛÛ[[œÎˆZ[›X^
+Yœ—
+KÊBˆ\ÜÙ\›X]Ú
+ÛY\YÙQ\ÚYÛ‹×ÛÜšÙ›İË\İ\›\İXÚ[ÈÜšYXÛÛ[[ˆ]]ÈZ[\Ü[ÈKÊBˆ\ÜÙ\›X]Ú
+ÛY\YÙQ\ÚYÛ‹×›X[˜YÙ\‹XÛÛœÛÛHÖ×ŸWJ›Z[‹ZZYÚˆZ[\Ü[ÊBˆ\ÜÙ\›X]Ú
+ÛY\YÙQ\ÚYÛ‹×˜Z[XœšYÙHÖ×ŸWJ›Z[‹ZZYÚˆZ[\Ü[ÊBˆ\ÜÙ\›X]Ú
+ÛY\YÙQ\ÚYÛ‹×™˜\K[\İÈX\™Ú[ˆMœZ[\Ü[ÊBˆ\ÜÙ\›X]Ú
+ÛY\YÙQ\ÚYÛ‹Ø›ÙWšÛYK\YÙH™˜\K\ÙXİ[ÛˆÈY[™ÎˆœŒœZ[\Ü[ÈKÊBˆ\ÜÙ\›X]Ú
+ÛY\YÙQ\ÚYÛ‹Ø›ÙWšÛYK\YÙH™˜\K\ÙXİ[ÛˆœÙXİ[Û‹ZXY[™ÈÈÜšY][\]KXÛÛ[[œÎˆZ[›X^
+Yœ—
+H]]ÈZ[\Ü[È[YÛ‹Z][\ÎˆÙ[\ˆZ[\Ü[ÊBˆ\ÜÙ\›X]Ú
+ÛY\YÙQ\ÚYÛ‹Ø›ÙWšÛYK\YÙH™˜\K\ÙXİ[ÛˆœÙXİ[Û‹ZXY[™È™˜\K[[Ü™HÈ\İYK\Ù[ˆ[™Z[\Ü[ÊBˆ\ÜÙ\›X]Ú
+ÛY\YÙQ\ÚYÛ‹Ø›ÙWšÛYK\YÙH™˜\K[[Ü™HÈX\™Ú[ˆMZ[\Ü[ÊBˆ\ÜÙ\›X]Ú
+ÛY\YÙQ\ÚYÛ‹Ø›ÙWšÛYK\YÙHœÚ]KY›Ûİ\ˆÈÚYˆL	HZ[\Ü[ÈX\™Ú[ˆZ[\Ü[ÊBˆ\ÜÙ\›X]Ú
+ÛY\YÙQ\ÚYÛ‹Ø›ÙWšÛYK\YÙH™›Ûİ\‹[˜]ˆÈÜšYXÛÛ[[ˆÈZ[\Ü[ËÊBˆ\ÜÙ\›X]Ú
+ÛY\YÙQ\ÚYÛ‹Ø›ÙWšÛYK\YÙH™˜\K\ÙXİ[ÛˆœÙXİ[Û‹ZXY[™ÈÈÜšY][\]KXÛÛ[[œÎˆZ[›X^
+Yœ—
+HZ[\Ü[È[YÛ‹Z][\Îˆİ\Z[\Ü[ÊBˆ\ÜÙ\›X]Ú
+ÛY\YÙQ\ÚYÛ‹×˜]]ÛX][Û‹\ÙXİ[ÛˆÖ×××JØ˜XÚÙÜ›İ[™ˆ[™X\‹YÜ˜YY[
+LŒ™YËÌŒMŒÍH	KÌLÌMÈMÉKÌŒLXLˆL	W
+HZ[\Ü[ÊBˆ\ÜÙ\›X]Ú
+ÛY\YÙQ\ÚYÛ‹Ø›ÙWšÛYK\YÙH˜]]ÛX][Û‹YÜšY\XÛN›\İXÚ[ÈZ[‹ZZYÚˆM\Z[\Ü[ÈY[™ÎˆLZ[\Ü[È›Ü™\ˆ\ÛÛY™Ø˜W
+ŒKŒŒKMKŒMW
+HZ[\Ü[È˜XÚÙÜ›İ[™ˆ™Ø˜W
+MKMKMKŒW
+HZ[\Ü[ÊBˆ\ÜÙ\›X]Ú
+ÛY\YÙQ\ÚYÛ‹×˜Z[XœšYÙHÖ×××JØ˜XÚÙÜ›İ[™ˆ[™X\‹YÜ˜YY[
+LL™YËÌŒMŒÍH	KÌMXH	KÌÌŒXˆL	W
+HZ[\Ü[ÊBˆ\ÜÙ\›X]Ú
+ÛY\YÙQ\ÚYÛ‹Ø›ÙWšÛYK\YÙH˜]]ÛX][Û‹YÜšY\XÛK×××JÙÜšYXÛÛ[[ˆ]]ÈZ[\Ü[Ö×××JÙÜšY\›İÎˆ]]ÈZ[\Ü[ÊBˆ\ÜÙ\›X]Ú
+ÛY\YÙQ\ÚYÛ‹Ø›ÙWšÛYK\YÙH˜]]ÛX][Û‹\ÙXİ[ÛˆÖ×××JÙÜšY][\]KXÛÛ[[œÎˆ™\X]
+‹Z[›X^
+Yœ—
+W
+HZ[\Ü[ÊBˆ\ÜÙ\›X]Ú
+ÛY\YÙQ\ÚYÛ‹Ø›ÙWšÛYK\YÙH˜]]ÛX][Û‹XY][ÛœÈ[È\Ü^NˆÜšYZ[\Ü[ÈÜšY][\]KXÛÛ[[œÎˆ™\X]
+‹Z[›X^
+Yœ—
+W
+KÊBˆ\ÜÙ\›X]Ú
+ÛY\YÙQ\ÚYÛ‹Ø›ÙWšÛYK\YÙH˜]]ÛX][Û‹XY][ÛœÎ››İ
+˜]]ÛX][Û‹]\]\×
+H[ÈÜšY][\]KXÛÛ[[œÎˆZ[›X^
+Yœ—
+HZ[\Ü[ÊBˆ\ÜÙ\™Ù\Ó›İX]Ú
+ÛY\YÙQ\ÚYÛ‹ÛX^ZZYÚˆZ[\Ü[Èİ™\™›İÎˆ]]ÈZ[\Ü[ÊBˆ\ÜÙ\›X]Ú
+ÛY\YÙQ\ÚYÛ‹Ø›ÙWšÛYK\YÙH›Y]šXËYXÚÈ›Y]šXË\Ûİ\˜ÙHÖ×ŸWJ™ÜšYXÛÛ[[ˆ]]ÈZ[\Ü[ÈÜšY\›İÎˆ]]ÈZ[\Ü[ÊBˆ\ÜÙ\›X]Ú
+ÛY\YÙQ\ÚYÛ‹Ø˜XÚÙÜ›İ[™ˆÌLŒYHZ[\Ü[ÊBˆ\ÜÙ\›X]Ú
+ÛY\YÙQ\ÚYÛ‹Ø›ÙWšÛYK\YÙH˜\˜Ú]Xİ\™K[X\ÈÜšY][\]KXÛÛ[[œÎˆZ[›X^
+Yœ—
+HŒœZ[›X^
+WŒL™œ—
+HŒœZ[›X^
+Yœ—
+HZ[\Ü[ÊBˆ\ÜÙ\›X]Ú
+ÛY\YÙQ\ÚYÛ‹Ø›ÙWšÛYK\YÙH›X[˜YÙ\‹XÛÛœÛÛHÈÜšY][\]KXÛÛ[[œÎˆZ[›X^
+Yœ—
+HZ[\Ü[ÊBˆ\ÜÙ\›X]Ú
+ÛY\YÙQ\ÚYÛ‹Ø›ÙWšÛYK\YÙH˜\˜Ú]Xİ\™K[X\ÈÜšY][\]KXÛÛ[[œÎˆZ[›X^
+Yœ—
+HMZ[›X^
+WŒL™œ—
+HMZ[›X^
+Yœ—
+HZ[\Ü[ÊBˆ\ÜÙ\›X]Ú
+ÛY\YÙQ\ÚYÛ‹Ø›ÙWšÛYK\YÙH›[İ[Û‹\™]™X[››İ
+š\ÚX›W
+HÈÜXÚ]NˆHZ[\Ü[ÊBˆ\ÜÙ\›X]Ú
+ÛY\YÙQ\ÚYÛ‹×™\ØÛİ™\K\Ü™XYÊ—×Ê™\Ü^Nˆ›ØÚËÊBˆ\ÜÙ\›X]Ú
+ÛY\YÙQ\ÚYÛ‹×™™X]\™YYÜšYÊ—×Ê™\Ü^NˆÜšY×ŸWJ™ÜšY][\]KXÛÛ[[œÎˆ™\X]
+‹Z[›X^
+Yœ—
+W
+KÊBˆ\ÜÙ\›X]Ú
+ÛY\YÙQ\ÚYÛ‹×šÛYK\YÚ[‹YÜšYÊ—×Ê™\Ü^NˆÜšY×ŸWJ™ÜšY][\]KXÛÛ[[œÎˆ™\X]
+ËZ[›X^
+Yœ—
+W
+KÊBˆ\ÜÙ\›X]Ú
+ÛY\YÙQ\ÚYÛ‹ĞYYXH
+X^]ÚYˆÍŒ
+KÊBˆ\ÜÙ\›X]Ú
+ÛY\YÙQ\ÚYÛ‹ĞYYXH
+™Y™\œË\™YXÙY[[İ[Ûˆ™YXÙW
+KÊBˆ\ÜÙ\™Ù\Ó›İX]Ú
+ÛY\YÙQ\ÚYÛ‹ËK^š[™KXXÚYK^š[™KZİÊBˆÛÛœİÛYSÜ™\ˆHÉØÛ\ÜÏHš\›È‰Ë	ØÛ\ÜÏH™\ØÛİ™\K\Ü™XY‰Ë	ØÛ\ÜÏHœİÜ™K\ÙX\˜ÚÙXİ[Û‹\Ú[‰Ë	ØÛ\ÜÏH™™X]\™Y\ÙXİ[Û‰Ë	ØÛ\ÜÏHšÛYKY\™XİÜK\ÙXİ[Ûˆ‰Ë	ØÛ\ÜÏH›Y]šXËYXÚÉË	ØÛ\ÜÏHš[œİ[Y›ÛÜˆ‰Ë	ØÛ\ÜÏHÛÜšÙ›İË\ÙXİ[Û‰Ë	ÚYH˜]]ÛX][Û‹\İ]\È‰Ë	ØÛ\ÜÏH\İXÚ\\ˆ‰Ë	ØÛ\ÜÏH›XZÙ\‹XÚ\\ˆ‰Ë	ØÛ\ÜÏH™˜\K\ÙXİ[Û‰×BˆÛÛœİÛYSÙ™œÙ]ÈHÛYSÜ™\‹›X\
+X\šÙ\ˆOˆYÙ\ÖÌKš[™^ÙŠX\šÙ\ŠJBˆ\ÜÙ\›ÚÊÛYSÙ™œÙ]Ë™]™\J
+Ù™œÙ][™^
+HOˆÙ™œÙ]H	‰ˆ
+[™^OOHÙ™œÙ]ˆÛYSÙ™œÙ]ÖÚ[™^HWJJK	ÚÛY\YÙHÚ\\œÈÚİ[›ÛİÈH™Y\ÚYÛ™Y\ØÛİ™\H›İ\›™^IÊBˆ\ÜÙ\›ÚÊYÙ\ÖÌKš[™^ÙŠ	ØÛ\ÜÏHœİÜ™K\ÙX\˜ÚY›Ü›H‰ÊHÛYSÙ™œÙ]ÖÌWK	Ú\›ÈÙX\˜ÚÚİ[™Hš\ÚX›H™Y›Ü™HØ]YÛÜHœ›İÜÚ[™ÉÊBˆÛÛœİİÜ™Yœ›Û\H]ØZ]™XYš[J™]ÈT“
+	ÛX\šÙ]XÙKØ\šœÉË›Ú™Xİ
+K	İ]	ÊBˆ\ÜÙ\›X]Ú
+İÜ™Yœ›Û\Ù[˜İ[Ûˆ™[™\’ÛYQ\™XİÜT™]šY]×
+
+KÊBˆ\ÜÙ\›X]Ú
+İÜ™Yœ›Û\ØÛÛœİ[šY\ÈHš\ÚX›R[™^[šY\×
+
+WœÛXÙW
+—
+KÊBˆ\ÜÙ\›X]Ú
+İÜ™Yœ›Û\İ›ÚY™]ÚØ][ÙÑ]Z[
+[™^[W
+KÊBˆ\ÜÙ\›X]Ú
+İÜ™Yœ›Û\ÚYˆ
+T×ÑT‘PÕÔ–W
+H›ÚYØYÛ›İÛ‘\™XİÜW
+
+KÊBˆ\ÜÙ\™Ù\Ó›İX]Ú
+İÜ™Yœ›Û\ÚYˆ
+İ]W˜Ø[™Y]\ÓØYY
+H›ÚYØYİ\œ™[YÙQ]Z[×
+
+KÊBŸJB‚\İ
+	Ù™X]\™YY\ÙYZÈ\›™\ÜÈ\XÛH™\Ù\™\ÈÛİ\˜ÙH]šX][Ûˆ[™Û™ËY›Ü›HİXİ\™IË\Ş[˜È
 
-test('public listing standards mirror the current bounded automation policy', async () => {
-  const [standards, policy] = await Promise.all([
-    readFile(new URL('marketplace/standards/index.html', project), 'utf8'),
-    readFile(new URL('registry/automation-policy.json', project), 'utf8').then(JSON.parse),
-  ])
-  assert.match(standards, new RegExp(`>${policy.sourceBounds.maxTreeEntries.toLocaleString('en-US')}<`))
-  assert.match(standards, new RegExp(`>${policy.sourceBounds.maxRuntimeFiles}<`))
-  assert.match(standards, new RegExp(`>${policy.sourceBounds.maxFileBytes / 1024} KiB<`))
-  assert.match(standards, new RegExp(`>${policy.sourceBounds.maxTotalRuntimeBytes / 1024 / 1024} MiB<`))
-  assert.match(standards, /installActionsDisabled = true/)
-  assert.match(standards, /ä¸ä¼šè¿è¡Œç¬¬ä¸‰æ–¹ installã€prepareã€buildã€test æˆ–è¿è¡Œæ—¶ä»£ç /)
-  assert.match(standards, /æ”¶å½•ä¸æ˜¯å®Œæ•´å®‰å…¨å®¡è®¡ï¼Œä¹Ÿä¸æ˜¯è¿è¡ŒæˆåŠŸè¯æ˜/)
-})
+HOˆÂˆÛÛœİØ\XÛKX›İ]HH]ØZ]›ÛZ\ÙK˜[
+Âˆ™XYš[J™]ÈT“
+	ÛX\šÙ]XÙKØX›İ]ÙY\ÙYZËZ\›™\ÜËYİZYKÚ[™^š[	Ë›Ú™Xİ
+K	İ]	ÊKˆ™XYš[J™]ÈT“
+	ÛX\šÙ]XÙKØX›İ]Ú[™^š[	Ë›Ú™Xİ
+K	İ]	ÊKˆJBˆ\ÜÙ\›X]Ú
+\XÛKÏY]H˜[YOH˜]]ÜˆˆÛÛ[H\ÜÙ[Íˆ‹ÊBˆ\ÜÙ\›X]Ú
+\XÛKÈš\Ğ˜\ÙYÛˆˆšÎ—×Û\ÙZ^[—œ\W˜ÛÛWÜ×ÛÒÜ]“ÔSÙÎ”ÍÍ•È‹ÊBˆ\ÜÙ\›X]Ú
+\XÛKù/g: !{ï&H™YHšÎ—×Ş˜ÛÛWÔ\ÜÙ[Íˆ‹ÊBˆ\ÜÙ\›X]Ú
+\XÛKÚ™YHšÎ—×Û\ÙZ^[—œ\W˜ÛÛWÜ×ÛÒÜ]“ÔSÙÎ”ÍÍ•È–×—J¹c§ùiâùcäyn ËÊBˆ\ÜÙ\›X]Ú
+\XÛKÑÒÕÔ‘H9.áz-'ú-(ùïdzhmyï%¹£¤»ï#9.#yl!¹§+9¥¡ù¨!ù¬ê9..ˆÒÕÔ‘H9c§ùb&ËÊBˆ\ÜÙ\™\]X[
 
-test('marketplace cards derive the latest three DSH releases while details retain full history', async () => {
-  const [storefront, styles, client] = await Promise.all([
-    readFile(new URL('marketplace/app.js', project), 'utf8'),
-    readFile(new URL('marketplace/styles.css', project), 'utf8'),
-    readFile(new URL('src/client.js', project), 'utf8'),
-  ])
-  assert.match(storefront, /DSH_VERSION_URL = 'https:\/\/registry\.npmjs\.org\/@deepseek-ai%2Fdsh'/)
-  assert.match(storefront, /function createDshReleaseContext/)
-  assert.match(storefront, /import\('\.\/lib\/dsh-release-policy\.js'\)/)
-  assert.match(storefront, /fetchOfficialDshReleaseWindow\(/)
-  assert.match(storefront, /const cardReleaseViews = views =>/)
-  assert.match(storefront, /\$\{compatibilityMatrix\(entry\)\}/)
-  assert.match(storefront, /compatibility\.dshReleaseViews\.map\(view =>/)
-  assert.match(storefront, /partial: 'éƒ¨åˆ†éªŒè¯'/)
-  assert.match(storefront, /record\?\.evidenceStatus \|\| record\?\.status/)
-  assert.match(styles, /\.compatibility-matrix \{[^\n]*grid-template-columns: repeat\(3,/)
-  assert.match(client, /function normalizeReleaseViews/)
-  assert.match(client, /function CompatibilityMatrix\(\{ entry, all = false \}\)/)
-  assert.match(client, /React\.createElement\(AssuranceMatrix, \{ entry \}\),\s*React\.createElement\(CompatibilityMatrix, \{ entry \}\),/)
-  assert.match(client, /React\.createElement\(CompatibilityMatrix, \{ entry, all: true \}\)/)
-  assert.match(client, /èŒƒå›´æ”¯æŒÂ·å¾…éªŒè¯/)
-})
+\XÛK›X]Ú
+ÏˆYKÙÊH×JK›[™İM
+Bˆ\ÜÙ\™\]X[
 
-test('guarded write path uses exact process arguments and permanent protection checks', async () => {
-  const [runner, operations] = await Promise.all([
-    readFile(new URL('src/dsh.mjs', project), 'utf8'),
-    readFile(new URL('src/operations.mjs', project), 'utf8'),
-  ])
-  assert.match(runner, /execFile\(/)
-  assert.doesNotMatch(runner, /shell:\s*true/)
-  assert.match(runner, /dirname\(nodePath\)/)
-  assert.match(runner, /nodeModulesAncestor/)
-  assert.match(runner, /containsPnpm/)
-  assert.match(runner, /commandPath/)
-  assert.match(runner, /commandEnvironment/)
-  assert.match(operations, /OFFICIAL_PROTECTED/)
-  assert.match(operations, /CRITICAL_ENTRY_PROTECTED/)
-  assert.match(operations, /capturePreconditions/)
-  assert.match(operations, /backupProfile/)
-  assert.match(operations, /restoreBackup/)
-  assert.match(operations, /CONFIRMATION_MISMATCH/)
-  assert.match(operations, /DSH_PNPM_NOT_FOUND/)
-  assert.match(operations, /rollbackDetails/)
-  assert.match(operations, /approvedCandidate/)
-  assert.match(operations, /sourceCommit/)
-})
+\XÛK›X]Ú
+ØÛ\ÜÏH˜\XÛKYšYİ\™H‹ÙÊH×JK›[™İ
+Bˆ\ÜÙ\›X]Ú
+\XÛKù. 8à yab9¢¢ˆ\›™\ÜÈ:+¬º`#ûï&¹ª(yg¢ùnm¹.#y/&¹æí9£©y/oùå*9å-z!$KÊBˆ\ÜÙ\›X]Ú
+\XÛKùc`y.£8à yk ùb,9n¥z ïy`f¹aî¹.à9.b;ï&¹.ã¹.-9¥íº`(9méyamùb,9i%º`ê:!ê¹bª9c%‹ÊBˆ\ÜÙ\›X]Ú
+\XÛKù.éyd#º+ª:+®ˆYÙ[: ïyb¦ûï#:fi9.¡ºeë¸ '9å*9.¡¹dê¹.*¹ª(yg¢ø 'KÊBˆ\ÜÙ\™Ù\Ó›İX]Ú
+\XÛKĞT•PÓWÊÎ•Ğß“ÑJKÊBˆ\ÜÙ\›X]Ú
+X›İ]ÑÒĞT•PÓWÔ“ÓS×Ğ‘QÒS‹ÊBˆ\ÜÙ\›X]Ú
+X›İ]Ú™YH——ÙY\ÙYZËZ\›™\ÜËYİZYWÈ‹ÊBˆ\ÜÙ\›X]Ú
+X›İ]ù/g: !{ï&\ÜÙ[Í‹ÊBŸJB‚\İ
+	ÜX›XÈ\İ[™Èİ[™\™ÈZ\œ›ÜˆHİ\œ™[›İ[™Y]]ÛX][ÛˆÛXŞIË\Ş[˜È
 
-test('bundle patch inserts only the manager and does not shadow official inventory', async () => {
-  const patch = await readFile(new URL('cordis.patch.yml', project), 'utf8')
-  assert.match(patch, /id:\s*dsh-safe-plugin-manager/)
-  assert.match(patch, /name:\s*dsh-safe-plugin-manager/)
-  assert.doesNotMatch(patch, /ui-settings-plugin-inventory/)
-  assert.doesNotMatch(patch, /disabled:\s*true/)
-})
+HOˆÂˆÛÛœİÜİ[™\™ËÛXŞWHH]ØZ]›ÛZ\ÙK˜[
+Âˆ™XYš[J™]ÈT“
+	ÛX\šÙ]XÙKÜİ[™\™ËÚ[™^š[	Ë›Ú™Xİ
+K	İ]	ÊKˆ™XYš[J™]ÈT“
+	Ü™YÚ\İKØ]]ÛX][Û‹\ÛXŞKšœÛÛ‰Ë›Ú™Xİ
+K	İ]	ÊK[Š”ÓÓ‹œ\œÙJKˆJBˆ\ÜÙ\›X]Ú
+İ[™\™Ë™]È™YÑ^
+‰ÜÛXŞKœÛİ\˜ÙP›İ[™Ë›X^™YQ[šY\ËÓØØ[Tİš[™Ê	Ù[‹UTÉÊ_O
+JBˆ\ÜÙ\›X]Ú
+İ[™\™Ë™]È™YÑ^
+‰ÜÛXŞKœÛİ\˜ÙP›İ[™Ë›X^[[YQš[\ßO
+JBˆ\ÜÙ\›X]Ú
+İ[™\™Ë™]È™YÑ^
+‰ÜÛXŞKœÛİ\˜ÙP›İ[™Ë›X^š[P]\ÈÈLHÚP
+JBˆ\ÜÙ\›X]Ú
+İ[™\™Ë™]È™YÑ^
+‰ÜÛXŞKœÛİ\˜ÙP›İ[™Ë›X^İ[[[YP]\ÈÈLÈLHZP
+JBˆ\ÜÙ\›X]Ú
+İ[™\™ËÚ[œİ[Xİ[ÛœÑ\ØX›YHYKÊBˆ\ÜÙ\›X]Ú
+İ[™\™Ëù.#y/&º/ä:(c9ë+9."y¥®H[œİ[8à \™\\™xà XZ[8à ]\İ9¢%º/ä:(c9¥í¹.èùè KÊBˆ\ÜÙ\›X]Ú
+İ[™\™Ëù¥-¹oey.#y¦+ùk£9¥m9k¢yaj9k¨z+¨{ï#9.gù.#y¦+ú/ä:(c9¢$9b§ú+ày¦#‹ÊBŸJB‚\İ
+	ÛX\šÙ]XÙHØ\™È\š]™HH]\İ™YHÒ™[X\Ù\ÈÚ[H]Z[È™]Z[ˆ[\İÜIË\Ş[˜È
 
-test('storefront and DSH client label optional Desktop adaptation from the Catalog profiles', async () => {
-  const [storefront, client] = await Promise.all([
-    readFile(new URL('marketplace/app.js', project), 'utf8'),
-    readFile(new URL('src/client.js', project), 'utf8'),
-  ])
-  assert.match(storefront, /compat\.client\.undeclared/)
-  assert.match(storefront, /desktopClientAdaptationStatus\(entry\.compatibility\.profiles\)/)
-  assert.match(client, /desktopClientAdaptationLabel\(entry\.compatibility\.profiles\)/)
-  assert.match(client, /DSH Desktop å®¢æˆ·ç«¯ï¼š\$\{desktopClientAdaptationLabel/)
-})
+HOˆÂˆÛÛœİÜİÜ™Yœ›Ûİ[\ËÛY[HH]ØZ]›ÛZ\ÙK˜[
+Âˆ™XYš[J™]ÈT“
+	ÛX\šÙ]XÙKØ\šœÉË›Ú™Xİ
+K	İ]	ÊKˆ™XYš[J™]ÈT“
+	ÛX\šÙ]XÙKÜİ[\Ë˜ÜÜÉË›Ú™Xİ
+K	İ]	ÊKˆ™XYš[J™]ÈT“
+	ÜÜ˜ËØÛY[šœÉË›Ú™Xİ
+K	İ]	ÊKˆJBˆ\ÜÙ\›X]Ú
+İÜ™Yœ›ÛÑÒÕ‘T”ÒSÓ—ÕT“H	ÚÎ—×Ü™YÚ\İW›œZœ×›Ü™×ĞY\ÙYZËXZIL‘™Ú	ËÊBˆ\ÜÙ\›X]Ú
+İÜ™Yœ›ÛÙ[˜İ[ÛˆÜ™X]QÚ™[X\ÙPÛÛ^ÊBˆ\ÜÙ\›X]Ú
+İÜ™Yœ›ÛÚ[\Ü
+	×—ÛX—ÙÚ\™[X\ÙK\ÛXŞWšœÉ×
+KÊBˆ\ÜÙ\›X]Ú
+İÜ™Yœ›ÛÙ™]ÚÙ™šXÚX[Ú™[X\ÙUÚ[™İ×
+ÊBˆ\ÜÙ\›X]Ú
+İÜ™Yœ›ÛØÛÛœİØ\™™[X\ÙUšY]ÜÈHšY]ÜÈO‹ÊBˆ\ÜÙ\›X]Ú
+İÜ™Yœ›Û×	ØÛÛ\]Xš[]SX]š^
+[W
+WKÊBˆ\ÜÙ\›X]Ú
+İÜ™Yœ›ÛØÛÛ\]Xš[]W™Ú™[X\ÙUšY]Ü×›X\
+šY]ÈO‹ÊBˆ\ÜÙ\›X]Ú
+İÜ™Yœ›ÛÜ\X[ˆ	ú`ê9b!ºj£:+àIËÊBˆ\ÜÙ\›X]Ú
+İÜ™Yœ›ÛÜ™XÛÜ™×™]šY[˜ÙTİ]\È™XÛÜ™×œİ]\ËÊBˆ\ÜÙ\›X]Ú
+İ[\Ë×˜ÛÛ\]Xš[]K[X]š^Ö×——J™ÜšY][\]KXÛÛ[[œÎˆ™\X]
+ËÊBˆ\ÜÙ\›X]Ú
+ÛY[Ù[˜İ[Ûˆ›Ü›X[^™T™[X\ÙUšY]ÜËÊBˆ\ÜÙ\›X]Ú
+ÛY[Ù[˜İ[ÛˆÛÛ\]Xš[]SX]š^
+È[K[H˜[ÙHW
+KÊBˆ\ÜÙ\›X]Ú
+ÛY[Ô™XXİ˜Ü™X]Q[[Y[
+\Üİ\˜[˜ÙSX]š^È[HW
+KÊ”™XXİ˜Ü™X]Q[[Y[
+ÛÛ\]Xš[]SX]š^È[HW
+KÊBˆ\ÜÙ\›X]Ú
+ÛY[Ô™XXİ˜Ü™X]Q[[Y[
+ÛÛ\]Xš[]SX]š^È[K[ˆYHW
+KÊBˆ\ÜÙ\›X]Ú
+ÛY[ú# ùfí9¥+ù£ p­ùo¡zj£:+àKÊBŸJB‚\İ
+	ÙİX\™YÜš]H]\Ù\È^Xİ›ØÙ\ÜÈ\™İ[Y[È[™\›X[™[›İXİ[ÛˆÚXÚÜÉË\Ş[˜È
 
-test('current Host implementation contains no mutation or shell primitives', async () => {
-  const source = await Promise.all([
-    'src/index.mjs', 'src/inventory.mjs', 'src/panel.mjs',
-  ].map(path => readFile(new URL(path, project), 'utf8')))
-  const joined = source.join('\n')
-  for (const forbidden of [
-    /\bwriteFile(?:Sync)?\b/, /\bappendFile(?:Sync)?\b/, /\brename(?:Sync)?\b/,
-    /\bunlink(?:Sync)?\b/, /\brm(?:Sync)?\b/, /node:child_process/,
-    /\bspawn(?:Sync)?\s*\(/,
-    /ctx\.loader\s*\.\s*(?:create|update|remove|write)\s*\(/, /ctx\.reflect/,
-  ]) {
-    assert.doesNotMatch(joined, forbidden, `forbidden primitive found: ${forbidden}`)
-  }
-})
+HOˆÂˆÛÛœİÜ[›™\‹Ü\˜][Ûœ×HH]ØZ]›ÛZ\ÙK˜[
+Âˆ™XYš[J™]ÈT“
+	ÜÜ˜ËÙÚ›ZœÉË›Ú™Xİ
+K	İ]	ÊKˆ™XYš[J™]ÈT“
+	ÜÜ˜ËÛÜ\˜][ÛœË›ZœÉË›Ú™Xİ
+K	İ]	ÊKˆJBˆ\ÜÙ\›X]Ú
+[›™\‹Ù^XÑš[W
+ÊBˆ\ÜÙ\™Ù\Ó›İX]Ú
+[›™\‹ÜÚ[—ÊYKÊBˆ\ÜÙ\›X]Ú
+[›™\‹Ù\›˜[YW
+›ÙT]
+KÊBˆ\ÜÙ\›X]Ú
+[›™\‹Û›ÙS[Ù[\Ğ[˜Ù\İÜ‹ÊBˆ\ÜÙ\›X]Ú
+[›™\‹ØÛÛZ[œÔœKÊBˆ\ÜÙ\›X]Ú
+[›™\‹ØÛÛ[X[™]ÊBˆ\ÜÙ\›X]Ú
+[›™\‹ØÛÛ[X[™[š\›Û›Y[ÊBˆ\ÜÙ\›X]Ú
+Ü\˜][ÛœËÓÑ‘’PÒPSÔ“ÕPÕQÊBˆ\ÜÙ\›X]Ú
+Ü\˜][ÛœËĞÔ’UPĞSÑS•–WÔ“ÕPÕQÊBˆ\ÜÙ\›X]Ú
+Ü\˜][ÛœËØØ\\™T™XÛÛ™][ÛœËÊBˆ\ÜÙ\›X]Ú
+Ü\˜][ÛœËØ˜XÚİ\›Ùš[KÊBˆ\ÜÙ\›X]Ú
+Ü\˜][ÛœËÜ™\İÜ™P˜XÚİ\ÊBˆ\ÜÙ\›X]Ú
+Ü\˜][ÛœËĞÓÓ‘’T“PUSÓ—ÓRTÓPUÒÊBˆ\ÜÙ\›X]Ú
+Ü\˜][ÛœËÑÒÔ”WÓ“ÕÑ“ÕS‘ÊBˆ\ÜÙ\›X]Ú
+Ü\˜][ÛœËÜ›Û˜XÚÑ]Z[ËÊBˆ\ÜÙ\›X]Ú
+Ü\˜][ÛœËØ\›İ™YØ[™Y]KÊBˆ\ÜÙ\›X]Ú
+Ü\˜][ÛœËÜÛİ\˜ÙPÛÛ[Z]ÊBŸJB‚\İ
+	Ø[™H]Ú[œÙ\ÈÛ›HHX[˜YÙ\ˆ[™Ù\È›İÚYİÈÙ™šXÚX[[™[ÜIË\Ş[˜È
 
-test('client registers through ModuleLoader and a standalone Settings section', async () => {
-  const client = await readFile(new URL('src/client.js', project), 'utf8')
-  assert.match(client, /window\.__ModuleLoader__\.load/)
-  assert.match(client, /const module = \{ exports: \{\} \}/)
-  assert.match(client, /settings\.section/)
-  assert.doesNotMatch(client, /settings\.plugins\.tab/)
-  assert.match(client, /id:\s*'dsh-store'/)
-  assert.match(client, /label: \(\) => 'æ’ä»¶å•†åŸ'/)
-  assert.match(client, /manager\.removeBundle\(entry\.packageName\)/)
-  assert.match(client, /manager\.setBundleEnabled\(entry\.packageName/)
-  assert.doesNotMatch(client, /manager\.setPluginEnabled\(/, 'Desktop Bundle toggles use the official Profile Patch manager API, not per-row Loader controls')
-  assert.match(client, /æ’ä»¶å•†åŸï¼ˆDSH-Storeï¼‰/)
-  assert.match(client, /order:\s*-10/, 'marketplace must sort before the official configurable and inventory tabs')
-  assert.match(client, /GitHub-only/)
-  assert.match(client, /æ’ä»¶å•†åŸï¼ˆDSH-Storeï¼‰/)
-  assert.match(client, /LEGACY_DSH_VERSIONS = \{ 'rc\.7': '0\.1\.0-rc\.7'/)
-  assert.match(client, /function CompatibilityMatrix/)
-  assert.match(client, /partial: 'éƒ¨åˆ†éªŒè¯'/)
-  assert.match(client, /const SUPPORT_URL = 'https:\/\/dsh\.store\/'/)
-  assert.match(client, /æŠ€æœ¯æ”¯æŒï¼šDSH-Store/)
-  assert.match(client, /åŒç‰ˆæœ¬æºç å·²æ›´æ–° Â· GitHub æ‰‹åŠ¨æ›´æ–°/)
-  assert.match(client, /æ‰‹åŠ¨æ›´æ–°ä¸å—å•†åŸè®¡åˆ’ã€å¤‡ä»½ã€å¥åº·æ£€æŸ¥å’Œå¤±è´¥å›æ»šä¿æŠ¤/)
-  assert.match(client, /compactButton/)
-  assert.match(client, /function TabButton/)
-  assert.match(client, /function StatusPill/)
-  assert.match(client, /stateDot/)
-  assert.match(client, /role: 'listitem'/)
-  assert.match(client, /role: 'list'/)
-  assert.match(client, /'aria-labelledby': titleId/)
-  assert.match(client, /--dsw-alias-button-primary-fill/)
-  assert.match(client, /--dsw-alias-label-primary-foreground/)
-  assert.match(client, /role: 'tab'/)
-  assert.match(client, /'aria-selected': active/)
-  assert.match(client, /label: \(\) => 'æ’ä»¶å•†åŸ'/)
-  assert.match(client, /æ’ä»¶å•†åŸï¼ˆDSH-Storeï¼‰/)
-  assert.match(client, /è¿ç§»åˆ°å•†åŸç‰ˆ/)
-  assert.match(client, /function CatalogFilters/)
-  assert.match(client, /åªçœ‹æ¨è/)
-  assert.match(client, /featuredOnly/)
-  assert.match(client, /sameVersionSourceChange/)
-  assert.match(client, /function Pagination/)
-  assert.match(client, /pageSize: MARKET_PAGE_SIZE/)
-  assert.match(client, /function InventoryOnlyCard/)
-  assert.match(client, /require\('@deepseek-ai\/dsh-client-ui-primitives'\)/)
-  assert.match(client, /PluginDetailsModal/)
-  assert.match(client, /GitHub å‘å¸ƒè€…/)
-  assert.match(client, /githubPublisher\(entry\.repositoryUrl\)/)
-  const detailSource = client.slice(client.indexOf('function PluginDetailsModal'), client.indexOf('function HealthPanel'))
-  assert.match(detailSource, /React\.createElement\(PluginActions/)
-  assert.match(detailSource, /const beginDetailPlan[\s\S]*close\(\)[\s\S]*beginPlan\(action, selectedEntry\)/)
-  assert.ok((client.match(/React\.createElement\(PluginActions/g) || []).length >= 2, 'shared cards and details must use lifecycle actions')
-  assert.match(client, /normalizeMarketEntry/)
-  assert.match(client, /catalogDetailsAvailable/)
-  assert.match(client, /ç¼ºå¤±å€¼æŒ‰â€œæœªçŸ¥ \/ æœªå£°æ˜â€æ˜¾ç¤ºï¼Œæœªä½¿ç”¨æœ¬åœ°æ¨æµ‹æ•°æ®æ›¿ä»£/)
-  assert.match(client, /è¯¦æƒ…æ¥è‡ª GitHub catalog\.json/)
-  assert.match(client, /å‰å¾€ GitHub æ‰‹åŠ¨å®‰è£…/)
-  assert.match(client, /æ‰‹åŠ¨å®‰è£…ä¸å—æœ¬å•†åŸçš„è®¡åˆ’ã€å¤‡ä»½ã€å¥åº·æ£€æŸ¥å’Œå¤±è´¥å›æ»šä¿æŠ¤/)
-  for (const label of ['æ’ä»¶ç±»å‹', 'å®‰è£…æ¥æº', 'è®¸å¯è¯', 'æƒé™ç­‰çº§', 'æ–‡ä»¶æƒé™', 'ç½‘ç»œæƒé™', 'å‘½ä»¤æ‰§è¡Œ', 'å‡­æ®è®¿é—®', 'å¤–éƒ¨ä¾èµ–', 'å®¡æ ¸çŠ¶æ€', 'å…¼å®¹æ€§']) {
-    assert.match(client, new RegExp(label))
-  }
-  const cardSource = client.slice(client.indexOf('function MarketCard'), client.indexOf('function DetailRow'))
-  assert.ok(cardSource.indexOf('PluginActions') < cardSource.indexOf("'æŸ¥çœ‹è¯¦æƒ…'"), 'card actions must precede the lower-right details button')
-  assert.match(client, /cardFooter:.*marginTop: 'auto'/)
-  const installedViewStart = client.indexOf("else if (view === 'installed')")
-  const installedViewSource = client.slice(installedViewStart, client.indexOf('} else {', installedViewStart))
-  assert.match(installedViewSource, /React\.createElement\(MarketCard/)
-  assert.match(installedViewSource, /openDetails: setDetailEntry/)
-  assert.match(installedViewSource, /React\.createElement\(InventoryOnlyCard/)
-  assert.match(client, /pagination\?\.view === view/)
-  assert.match(client, /catalogPackageNames/)
-  assert.ok((client.match(/\bfilters,/g) || []).length >= 2, 'market and installed views must share catalog filters')
-  assert.match(client, /plugin\.description \|\| 'æœ¬åœ° manifest æœªæä¾›æ’ä»¶ä»‹ç»'/)
-  assert.match(client, /æœªè¿›å…¥ GitHub catalog\.jsonï¼Œæ— æ³•æä¾›ç›®å½•è¯¦æƒ…æˆ–å•†åŸå—ä¿æŠ¤æ“ä½œ/)
-  const planSource = client.slice(client.indexOf('function PlanPanel'), client.indexOf('function ManagerPanel'))
-  assert.match(planSource, /React\.createElement\(Modal/)
-  assert.match(planSource, /æ­£åœ¨ç”Ÿæˆæ“ä½œè®¡åˆ’/)
-  assert.match(planSource, /æ“ä½œé¢„è§ˆä¸ç¡®è®¤/)
-  assert.match(planSource, /é‡æ–°æ ¡éªŒ/)
-  assert.match(client, /æ‰§è¡Œå¹¶å¯ç”¨è‡ªåŠ¨å›æ»š/)
-  assert.match(client, /Profile æ–‡ä»¶æ¢å¤/)
-  assert.match(client, /ä¸€é”®å®‰å…¨é‡å¯ DSH Host/)
-  assert.match(client, /restart-execute/)
-  assert.match(client, /æ–°çš„ DSH Host/)
-  assert.match(client, /å”¯ä¸€å¯åŠ¨æ‰€æœ‰è€…/)
-  assert.match(client, /è¯·å‹¿å†è¿è¡Œ pnpm dsh web æˆ– dsh web/)
-  assert.match(client, /GUARDIAN_PORT_CONFLICT/)
-  assert.doesNotMatch(client, /å¤åˆ¶é‡å¯å‘½ä»¤|è¯·æ‰‹åŠ¨è¿è¡Œï¼š/)
-  assert.match(client, /æ“ä½œå¤±è´¥ï¼Œéœ€è¦æ¢å¤/)
-  assert.match(client, /æ“ä½œå¤±è´¥ï¼Œå·²å›æ»š/)
-  const headingSource = client.slice(client.indexOf('const heading ='), client.indexOf('const nav ='))
-  const navSource = client.slice(client.indexOf('const nav ='), client.indexOf('let content'))
-  assert.doesNotMatch(headingSource, /åˆ·æ–° GitHub ç›®å½•/)
-  assert.match(navSource, /role: 'tablist'/)
-  assert.match(navSource, /'aria-label': 'æ’ä»¶å•†åŸè§†å›¾'/)
-  assert.match(navSource, /React\.createElement\(TabButton/)
-  assert.doesNotMatch(navSource, /React\.createElement\(Button, \{ key: id, active:/)
-  assert.match(navSource, /compact: true/)
-  assert.match(navSource, /åˆ·æ–° GitHub ç›®å½•/)
-  assert.doesNotMatch(client, /id:\s*'all'/)
-  assert.match(client, /å‰å¾€é€‰æ‹©.*ä¸ªæ’ä»¶çš„æƒé™/)
-  assert.match(client, /dsh-health-permissions/)
-  assert.match(client, /å®Œæˆå‰©ä½™.*é¡¹æƒé™é€‰æ‹©åæ‰èƒ½é‡æ–°æ£€æŸ¥/)
-  assert.match(client, /health-permission-decisions:v1/)
-  assert.match(client, /æ’ä»¶ç‰ˆæœ¬ã€å›ºå®š Commit æˆ–æƒé™å£°æ˜å˜åŒ–æ—¶ä¼šå¤±æ•ˆå¹¶è¦æ±‚é‡æ–°ç¡®è®¤/)
-  assert.match(client, /æ­£åœ¨æ£€æŸ¥â€¦/)
-  assert.match(client, /å¥åº·æ£€æŸ¥å·²å®Œæˆ/)
-  assert.match(client, /æ£€æŸ¥æºä»“åº“æ›´æ–°/)
-  assert.match(client, /ä¸ä¼šç›´æ¥å®‰è£…æµ®åŠ¨ main/)
-  assert.match(client, /source-update/)
-  assert.match(client, /dsh-version/)
-  assert.match(client, /DSH ç‰ˆæœ¬ä¸å‡çº§/)
-  assert.match(client, /æ£€æµ‹å‡çº§/)
-  assert.match(client, /å¤åˆ¶å‡çº§å‘½ä»¤/)
-  assert.match(client, /é¢„å‘å¸ƒ/)
-  assert.match(client, /æ’ä»¶æºæ›´æ–°è§„åˆ™/)
-  assert.match(client, /Guardian å·²éªŒè¯ï¼ŒDSH æ­£åœ¨äº¤æ¥ï¼Œé¡µé¢ä¼šè‡ªåŠ¨é‡æ–°è¿æ¥/)
-  assert.match(client, /ç‹¬ç«‹å‡çº§äº¤æ¥å™¨å·²éªŒè¯æ—§ Guardianã€Profile ä¸ Boot ID/)
-  assert.match(client, /å›½å†…ç«™ä¿®å¤\/å‡çº§æ–¹æ¡ˆ/)
-  assert.match(client, /GitHub Pages ä¿®å¤\/å‡çº§æ–¹æ¡ˆ/)
-  assert.match(client, /BOOT_RECOVERY_TIMEOUT/)
-  assert.match(client, /dsh-safe-plugin-manager:boot-recovery:v1/)
-  assert.match(client, /BroadcastChannel/)
-  assert.match(client, /guardian\.state === 'healthy'/)
-  assert.match(client, /guardian\.health\?\.bootId === runtime\.bootId/)
-  assert.match(client, /BOOT_RECOVERY_STABLE_SAMPLES/)
-  assert.match(client, /ctx\.on\('connection\/reset'/)
-  assert.match(client, /window\.location\.replace/)
-  assert.doesNotMatch(client, /window\.location\.reload/)
-  assert.doesNotMatch(client, /æ‰§è¡Œ DSH å‡çº§|ä¸€é”®å‡çº§ DSH/)
-})
+HOˆÂˆÛÛœİ]ÚH]ØZ]™XYš[J™]ÈT“
+	ØÛÜ™\Ëœ]Ú[[	Ë›Ú™Xİ
+K	İ]	ÊBˆ\ÜÙ\›X]Ú
+]ÚÚY—Ê™Ú\ØY™K\YÚ[‹[X[˜YÙ\‹ÊBˆ\ÜÙ\›X]Ú
+]ÚÛ˜[YN—Ê™Ú\ØY™K\YÚ[‹[X[˜YÙ\‹ÊBˆ\ÜÙ\™Ù\Ó›İX]Ú
+]ÚİZK\Ù][™ÜË\YÚ[‹Z[™[ÜKÊBˆ\ÜÙ\™Ù\Ó›İX]Ú
+]ÚÙ\ØX›Y—ÊYKÊBŸJB‚\İ
+	ÜİÜ™Yœ›Û[™ÒÛY[X™[Ü[Û˜[\ÚİÜY\][Ûˆœ›ÛHHØ][ÙÈ›Ùš[\ÉË\Ş[˜È
 
-test('public rc.7 through 0.1.2-alpha.5 client contract stays on official ModuleLoader and settings ordering', async () => {
-  const [pkg, client] = await Promise.all([
-    readFile(new URL('package.json', project), 'utf8'),
-    readFile(new URL('src/client.js', project), 'utf8'),
-  ])
-  const manifest = JSON.parse(pkg)
-  assert.deepEqual(manifest.dsh.client.inject, [
-    '@deepseek-ai/dsh-client-runtime',
-    '@deepseek-ai/dsh-client-ui-primitives',
-    '@deepseek-ai/dsh-client-ui-slots',
-    '@deepseek-ai/dsh-client-ui-settings',
-    '@deepseek-ai/dsh-client-ui-layout',
-    '@deepseek-ai/dsh-client-ui-sidebar',
-  ])
-  assert.match(client, /window\.__ModuleLoader__\.load/)
-  assert.match(client, /settings\.section/)
-  assert.doesNotMatch(client, /settings\.plugins\.tab/)
-  assert.match(client, /order:\s*-10/)
-  assert.match(client, /0\.1\.2-alpha\.5/)
-  assert.doesNotMatch(client, /ctx\.loader|ctx\.reflect|Loader\.|Fiber\./)
-})
+HOˆÂˆÛÛœİÜİÜ™Yœ›ÛÛY[HH]ØZ]›ÛZ\ÙK˜[
+Âˆ™XYš[J™]ÈT“
+	ÛX\šÙ]XÙKØ\šœÉË›Ú™Xİ
+K	İ]	ÊKˆ™XYš[J™]ÈT“
+	ÜÜ˜ËØÛY[šœÉË›Ú™Xİ
+K	İ]	ÊKˆJBˆ\ÜÙ\›X]Ú
+İÜ™Yœ›ÛØÛÛ\]˜ÛY[[™XÛ\™YÊBˆ\ÜÙ\›X]Ú
+İÜ™Yœ›ÛÙ\ÚİÜÛY[Y\][Û”İ]\×
+[W˜ÛÛ\]Xš[]Wœ›Ùš[\×
+KÊBˆ\ÜÙ\›X]Ú
+ÛY[Ù\ÚİÜÛY[Y\][Û“X™[
+[W˜ÛÛ\]Xš[]Wœ›Ùš[\×
+KÊBˆ\ÜÙ\›X]Ú
+ÛY[ÑÒ\ÚİÜ9k¨¹¢-ùêëûï&—	Ù\ÚİÜÛY[Y\][Û“X™[ÊBŸJB‚\İ
+	Øİ\œ™[Üİ[\[Y[][ÛˆÛÛZ[œÈ›È]]][ÛˆÜˆÚ[š[Z]]™\ÉË\Ş[˜È
 
-test('guardian health and active upgrade require bound DSH ownership', async () => {
-  const [daemon, service, upgrader] = await Promise.all([
-    readFile(new URL('src/guardian-daemon.mjs', project), 'utf8'),
-    readFile(new URL('src/guardian.mjs', project), 'utf8'),
-    readFile(new URL('src/guardian-upgrader.mjs', project), 'utf8'),
-  ])
-  assert.match(daemon, /\/api2\/dsh-safe-plugin-manager\/runtime/)
-  assert.match(daemon, /runtime-identity-mismatch/)
-  assert.match(daemon, /root\.statusCode !== 200 && root\.statusCode !== 401/)
-  assert.match(daemon, /external-dsh-detected/)
-  assert.match(daemon, /port-conflict/)
-  assert.match(daemon, /consecutiveProbeFailures/)
-  assert.match(service, /healthProbeTimeoutMs:\s*1_500/)
-  assert.match(service, /unhealthyThreshold:\s*3/)
-  assert.match(service, /startupGraceMs:\s*10_000/)
-  assert.match(service, /commandPath/)
-  assert.match(service, /GUARDIAN_BOOTSTRAP_UNVERIFIED/)
-  assert.match(service, /waitForFreshGuardianHeartbeat/)
-  assert.match(service, /active-guardian-upgrade/)
-  assert.match(upgrader, /GUARDIAN_ACTIVE_IDENTITY_CHANGED/)
-  assert.match(upgrader, /GUARDIAN_UPGRADE_PRECONDITION_CHANGED/)
-  assert.match(upgrader, /GUARDIAN_UPGRADE_HEARTBEAT_UNVERIFIED/)
-  assert.match(upgrader, /atomicCopy/)
-  assert.match(upgrader, /recovery/)
-  assert.ok((daemon.match(/env: commandEnvironment/g) || []).length >= 2, 'Guardian launch and offline restore must share the captured command PATH')
-  assert.doesNotMatch(daemon, /adopting-existing-host/)
-})
+HOˆÂˆÛÛœİÛİ\˜ÙHH]ØZ]›ÛZ\ÙK˜[
+Âˆ	ÜÜ˜ËÚ[™^›ZœÉË	ÜÜ˜ËÚ[™[ÜK›ZœÉË	ÜÜ˜ËÜ[™[›ZœÉËˆK›X\
+]Oˆ™XYš[J™]ÈT“
+]›Ú™Xİ
+K	İ]	ÊJJBˆÛÛœİ›Ú[™YHÛİ\˜ÙKš›Ú[Š	×‰ÊBˆ›Üˆ
+ÛÛœİ›Ü˜šY[ˆÙˆÂˆ×Üš]Qš[JÎ”Ş[˜ÊO×‹Ë×˜\[™š[JÎ”Ş[˜ÊO×‹Ë×œ™[˜[YJÎ”Ş[˜ÊO×‹Ëˆ×[›[šÊÎ”Ş[˜ÊO×‹Ë×œ›JÎ”Ş[˜ÊO×‹ËÛ›ÙN˜Ú[Ü›ØÙ\ÜËËˆ×œÜ]ÛŠÎ”Ş[˜ÊO×Ê—
+ËˆØİ›ØY\—Ê——ÊŠÎ˜Ü™X]_\]_™[[İ™_Üš]JWÊ—
+ËØİœ™Y›XİËˆJHÂˆ\ÜÙ\™Ù\Ó›İX]Ú
+›Ú[™Y›Ü˜šY[‹›Ü˜šY[ˆš[Z]]™H›İ[™ˆ	Ù›Ü˜šY[ŸX
+BˆBŸJB‚\İ
+	ØÛY[™YÚ\İ\œÈ›İYÚ[Ù[SØY\ˆ[™Hİ[™[Û™HÙ][™ÜÈÙXİ[Û‰Ë\Ş[˜È
 
-test('client fails closed when the live health endpoint still uses the legacy schema', async () => {
-  const client = await readFile(new URL('../src/client.js', import.meta.url), 'utf8')
-  assert.match(client, /health\.schemaVersion !== 2/)
-  assert.match(client, /è¿™äº›ç»“æœä¸ç­‰äºé€æ’ä»¶å¥åº·/)
-  assert.match(client, /æ¢å¤ Guardian åæ‰èƒ½é€æ’ä»¶æ£€æŸ¥/)
-  assert.match(client, /pnpm dsh web/)
-})
+HOˆÂˆÛÛœİÛY[H]ØZ]™XYš[J™]ÈT“
+	ÜÜ˜ËØÛY[šœÉË›Ú™Xİ
+K	İ]	ÊBˆ\ÜÙ\›X]Ú
+ÛY[İÚ[™İ×—×Ó[Ù[SØY\—××›ØYÊBˆ\ÜÙ\›X]Ú
+ÛY[ØÛÛœİ[Ù[HHÈ^ÜÎˆ×HKÊBˆ\ÜÙ\›X]Ú
+ÛY[ÜÙ][™Ü×œÙXİ[Û‹ÊBˆ\ÜÙ\™Ù\Ó›İX]Ú
+ÛY[ÜÙ][™Ü×œYÚ[œ×X‹ÊBˆ\ÜÙ\›X]Ú
+ÛY[ÚY—Ê‰ÙÚ\İÜ™IËÊBˆ\ÜÙ\›X]Ú
+ÛY[ÛX™[ˆ
+
+HOˆ	ù£ä¹.í¹ea¹gã‰ËÊBˆ\ÜÙ\›X]Ú
+ÛY[ÛX[˜YÙ\—œ™[[İ™P[™W
+[WœXÚØYÙS˜[YW
+KÊBˆ\ÜÙ\›X]Ú
+ÛY[ÛX[˜YÙ\—œÙ][™Q[˜X›Y
+[WœXÚØYÙS˜[YKÊBˆ\ÜÙ\™Ù\Ó›İX]Ú
+ÛY[ÛX[˜YÙ\—œÙ]YÚ[‘[˜X›Y
+Ë	Ñ\ÚİÜ[™HÙÙÛ\È\ÙHHÙ™šXÚX[›Ùš[H]ÚX[˜YÙ\ˆTK›İ\‹\›İÈØY\ˆÛÛ›ÛÉÊBˆ\ÜÙ\›X]Ú
+ÛY[ù£ä¹.í¹ea¹gã»ï"ÒTİÜ™{ï"KÊBˆ\ÜÙ\›X]Ú
+ÛY[ÛÜ™\—Ê‹LLË	ÛX\šÙ]XÙH]\İÛÜ™Y›Ü™HHÙ™šXÚX[ÛÛ™šYİ\˜X›H[™[™[ÜHXœÉÊBˆ\ÜÙ\›X]Ú
+ÛY[ÑÚ]X‹[Û›KÊBˆ\ÜÙ\›X]Ú
+ÛY[ù£ä¹.í¹ea¹gã»ï"ÒTİÜ™{ï"KÊBˆ\ÜÙ\›X]Ú
+ÛY[ÓQĞPÖWÑÒÕ‘T”ÒSÓ”ÈHÈ	Ü˜×ÉÎˆ	ÌŒWŒ\˜×ÉËÊBˆ\ÜÙ\›X]Ú
+ÛY[Ù[˜İ[ÛˆÛÛ\]Xš[]SX]š^ÊBˆ\ÜÙ\›X]Ú
+ÛY[Ü\X[ˆ	ú`ê9b!ºj£:+àIËÊBˆ\ÜÙ\›X]Ú
+ÛY[ØÛÛœİÕTÔ•ÕT“H	ÚÎ—×ÙÚœİÜ™WÉËÊBˆ\ÜÙ\›X]Ú
+ÛY[ù¢ 9§+ù¥+ù£ {ï&‘ÒTİÜ™KÊBˆ\ÜÙ\›X]Ú
+ÛY[ùd#9âb9§+9®¤9è ymì¹¦í9¥¬0­ÈÚ]Xˆ9¢bùbª9¦í9¥¬ÊBˆ\ÜÙ\›X]Ú
+ÛY[ù¢bùbª9¦í9¥¬9.#ycåùea¹gãº+¨yb$¸à yi!ù.ïxà y`iyn­ù¨à9§éyd£9i,z-)yfç¹®æ¹/çy¢©ÊBˆ\ÜÙ\›X]Ú
+ÛY[ØÛÛ\Xİ]Û‹ÊBˆ\ÜÙ\›X]Ú
+ÛY[Ù[˜İ[ÛˆX]Û‹ÊBˆ\ÜÙ\›X]Ú
+ÛY[Ù[˜İ[Ûˆİ]\Ô[ÊBˆ\ÜÙ\›X]Ú
+ÛY[Üİ]QİÊBˆ\ÜÙ\›X]Ú
+ÛY[Ü›ÛNˆ	Û\İ][IËÊBˆ\ÜÙ\›X]Ú
+ÛY[Ü›ÛNˆ	Û\İ	ËÊBˆ\ÜÙ\›X]Ú
+ÛY[ÉØ\šXK[X™[YIÎˆ]RYÊBˆ\ÜÙ\›X]Ú
+ÛY[ËKYİËX[X\ËX]Û‹\š[X\KYš[ÊBˆ\ÜÙ\›X]Ú
+ÛY[ËKYİËX[X\Ë[X™[\š[X\KY›Ü™YÜ›İ[™ÊBˆ\ÜÙ\›X]Ú
+ÛY[Ü›ÛNˆ	İX‰ËÊBˆ\ÜÙ\›X]Ú
+ÛY[ÉØ\šXK\Ù[XİY	ÎˆXİ]™KÊBˆ\ÜÙ\›X]Ú
+ÛY[ÛX™[ˆ
+
+HOˆ	ù£ä¹.í¹ea¹gã‰ËÊBˆ\ÜÙ\›X]Ú
+ÛY[ù£ä¹.í¹ea¹gã»ï"ÒTİÜ™{ï"KÊBˆ\ÜÙ\›X]Ú
+ÛY[ú/àyéîùb,9ea¹gã¹âbÊBˆ\ÜÙ\›X]Ú
+ÛY[Ù[˜İ[ÛˆØ][ÙÑš[\œËÊBˆ\ÜÙ\›X]Ú
+ÛY[ùcê¹ç"ù£ª:#dÊBˆ\ÜÙ\›X]Ú
+ÛY[Ù™X]\™YÛ›KÊBˆ\ÜÙ\›X]Ú
+ÛY[ÜØ[YU™\œÚ[Û”Ûİ\˜ÙPÚ[™ÙKÊBˆ\ÜÙ\›X]Ú
+ÛY[Ù[˜İ[ÛˆYÚ[˜][Û‹ÊBˆ\ÜÙ\›X]Ú
+ÛY[ÜYÙTÚ^™NˆPT’ÑUÔQÑWÔÒV‘KÊBˆ\ÜÙ\›X]Ú
+ÛY[Ù[˜İ[Ûˆ[™[ÜSÛ›PØ\™ÊBˆ\ÜÙ\›X]Ú
+ÛY[Ü™\]Z\™W
+	ĞY\ÙYZËXZWÙÚXÛY[]ZK\š[Z]]™\É×
+KÊBˆ\ÜÙ\›X]Ú
+ÛY[ÔYÚ[‘]Z[Ó[Ù[ÊBˆ\ÜÙ\›X]Ú
+ÛY[ÑÚ]Xˆ9cäyn ú !KÊBˆ\ÜÙ\›X]Ú
+ÛY[ÙÚ]X”X›\Ú\—
+[Wœ™\ÜÚ]ÜU\›
+KÊBˆÛÛœİ]Z[Ûİ\˜ÙHHÛY[œÛXÙJÛY[š[™^ÙŠ	Ù[˜İ[ÛˆYÚ[‘]Z[Ó[Ù[	ÊKÛY[š[™^ÙŠ	Ù[˜İ[ÛˆX[[™[	ÊJBˆ\ÜÙ\›X]Ú
+]Z[Ûİ\˜ÙKÔ™XXİ˜Ü™X]Q[[Y[
+YÚ[Xİ[ÛœËÊBˆ\ÜÙ\›X]Ú
+]Z[Ûİ\˜ÙKØÛÛœİ™YÚ[‘]Z[[–×××J˜ÛÜÙW
+
+V×××J˜™YÚ[”[—
+Xİ[Û‹Ù[XİY[W
+KÊBˆ\ÜÙ\›ÚÊ
+ÛY[›X]Ú
+Ô™XXİ˜Ü™X]Q[[Y[
+YÚ[Xİ[ÛœËÙÊH×JK›[™İH‹	ÜÚ\™YØ\™È[™]Z[È]\İ\ÙHY™XŞXÛHXİ[ÛœÉÊBˆ\ÜÙ\›X]Ú
+ÛY[Û›Ü›X[^™SX\šÙ][KÊBˆ\ÜÙ\›X]Ú
+ÛY[ØØ][ÙÑ]Z[Ğ]˜Z[X›KÊBˆ\ÜÙ\›X]Ú
+ÛY[ùï.¹i,y`/9£"x '9§*¹çéHÈ9§*¹hì9¦#¸ 'y¦/¹é.»ï#9§*¹/oùå*9§+9g,9£ª9­bù¥l9£k¹¦ïù.èËÊBˆ\ÜÙ\›X]Ú
+ÛY[ú+é¹ áy§iz!êˆÚ]XˆØ][Ù×šœÛÛ‹ÊBˆ\ÜÙ\›X]Ú
+ÛY[ùbcyo Ú]Xˆ9¢bùbª9k¢z(áKÊBˆ\ÜÙ\›X]Ú
+ÛY[ù¢bùbª9k¢z(áy.#ycåù§+9ea¹gã¹æ¡:+¨yb$¸à yi!ù.ïxà y`iyn­ù¨à9§éyd£9i,z-)yfç¹®æ¹/çy¢©ÊBˆ›Üˆ
+ÛÛœİX™[ÙˆÉù£ä¹.í¹ìnùg¢ÉË	ùk¢z(áy§iy®¤	Ë	ú+®9cëú+àIË	ù§`úfd9ëbyî©ÉË	ù¥¡ù.í¹§`úfd	Ë	ùïdyîç9§`úfd	Ë	ùdoy.é9¢iú(c	Ë	ùaëy£kº+¯úeë‰Ë	ùi%º`ê9/§z-e‰Ë	ùk¨y¨.9â­¹  IË	ùao9k®y )É×JHÂˆ\ÜÙ\›X]Ú
+ÛY[™]È™YÑ^
+X™[
+JBˆBˆÛÛœİØ\™Ûİ\˜ÙHHÛY[œÛXÙJÛY[š[™^ÙŠ	Ù[˜İ[ÛˆX\šÙ]Ø\™	ÊKÛY[š[™^ÙŠ	Ù[˜İ[Ûˆ]Z[›İÉÊJBˆ\ÜÙ\›ÚÊØ\™Ûİ\˜ÙKš[™^ÙŠ	ÔYÚ[Xİ[ÛœÉÊHØ\™Ûİ\˜ÙKš[™^ÙŠ‰ù§éyç"ú+é¹ áIÈŠK	ØØ\™Xİ[ÛœÈ]\İ™XÙYHHİÙ\‹\šYÚ]Z[È]Û‰ÊBˆ\ÜÙ\›X]Ú
+ÛY[ØØ\™›Ûİ\‹Š›X\™Ú[•Üˆ	Ø]]ÉËÊBˆÛÛœİ[œİ[YšY]Ôİ\HÛY[š[™^ÙŠ™[ÙHYˆ
+šY]ÈOOH	Ú[œİ[Y	ÊHŠBˆÛÛœİ[œİ[YšY]ÔÛİ\˜ÙHHÛY[œÛXÙJ[œİ[YšY]Ôİ\ÛY[š[™^ÙŠ	ßH[ÙHÉË[œİ[YšY]Ôİ\
+JBˆ\ÜÙ\›X]Ú
+[œİ[YšY]ÔÛİ\˜ÙKÔ™XXİ˜Ü™X]Q[[Y[
+X\šÙ]Ø\™ÊBˆ\ÜÙ\›X]Ú
+[œİ[YšY]ÔÛİ\˜ÙKÛÜ[‘]Z[ÎˆÙ]]Z[[KÊBˆ\ÜÙ\›X]Ú
+[œİ[YšY]ÔÛİ\˜ÙKÔ™XXİ˜Ü™X]Q[[Y[
+[™[ÜSÛ›PØ\™ÊBˆ\ÜÙ\›X]Ú
+ÛY[ÜYÚ[˜][Û—×šY]ÈOOHšY]ËÊBˆ\ÜÙ\›X]Ú
+ÛY[ØØ][ÙÔXÚØYÙS˜[Y\ËÊBˆ\ÜÙ\›ÚÊ
+ÛY[›X]Ú
+×™š[\œËÙÊH×JK›[™İH‹	ÛX\šÙ][™[œİ[YšY]ÜÈ]\İÚ\™HØ][ÙÈš[\œÉÊBˆ\ÜÙ\›X]Ú
+ÛY[ÜYÚ[—™\ØÜš\[Ûˆ	ù§+9g,X[šY™\İ9§*¹£ä9/¦ù£ä¹.í¹.âùîãIËÊBˆ\ÜÙ\›X]Ú
+ÛY[ù§*º/æùaiHÚ]XˆØ][Ù×šœÛÛ»ï#9¥è9¬åy£ä9/¦ùæë¹oez+é¹ áy¢%¹ea¹gã¹cåù/çy¢©9¤ãy/gÊBˆÛÛœİ[”Ûİ\˜ÙHHÛY[œÛXÙJÛY[š[™^ÙŠ	Ù[˜İ[Ûˆ[”[™[	ÊKÛY[š[™^ÙŠ	Ù[˜İ[ÛˆX[˜YÙ\”[™[	ÊJBˆ\ÜÙ\›X]Ú
+[”Ûİ\˜ÙKÔ™XXİ˜Ü™X]Q[[Y[
+[Ù[ÊBˆ\ÜÙ\›X]Ú
+[”Ûİ\˜ÙKù«hùg*9å'ù¢$9¤ãy/g:+¨yb$‹ÊBˆ\ÜÙ\›X]Ú
+[”Ûİ\˜ÙKù¤ãy/g:h¡:)â9.#¹èkº+©ÊBˆ\ÜÙ\›X]Ú
+[”Ûİ\˜ÙKúaãy¥¬9¨(zj£ÊBˆ\ÜÙ\›X]Ú
+ÛY[ù¢iú(c9nm¹d+ùå*:!ê¹bª9fç¹®æ‹ÊBˆ\ÜÙ\›X]Ú
+ÛY[Ô›Ùš[H9¥¡ù.í¹ h¹i#KÊBˆ\ÜÙ\›X]Ú
+ÛY[ù. :e+¹k¢yaj:aãyd+ÈÒÜİÊBˆ\ÜÙ\›X]Ú
+ÛY[Ü™\İ\Y^Xİ]KÊBˆ\ÜÙ\›X]Ú
+ÛY[ù¥¬9æ¡ÒÜİÊBˆ\ÜÙ\›X]Ú
+ÛY[ùe+ù. 9d+ùbª9¢`9§"z !KÊBˆ\ÜÙ\›X]Ú
+ÛY[ú+íùbïùa£z/ä:(cœHÚÙXˆ9¢%ˆÚÙX‹ÊBˆ\ÜÙ\›X]Ú
+ÛY[ÑÕPT‘PS—ÔÔ•ĞÓÓ‘“PÕÊBˆ\ÜÙ\™Ù\Ó›İX]Ú
+ÛY[ùi#yb-ºaãyd+ùdoy.é:+íù¢bùbª:/ä:(c;ï&‹ÊBˆ\ÜÙ\›X]Ú
+ÛY[ù¤ãy/g9i,z-){ï#:g :) y h¹i#KÊBˆ\ÜÙ\›X]Ú
+ÛY[ù¤ãy/g9i,z-){ï#9mì¹fç¹®æ‹ÊBˆÛÛœİXY[™ÔÛİ\˜ÙHHÛY[œÛXÙJÛY[š[™^ÙŠ	ØÛÛœİXY[™ÈIÊKÛY[š[™^ÙŠ	ØÛÛœİ˜]ˆIÊJBˆÛÛœİ˜]”Ûİ\˜ÙHHÛY[œÛXÙJÛY[š[™^ÙŠ	ØÛÛœİ˜]ˆIÊKÛY[š[™^ÙŠ	Û]ÛÛ[	ÊJBˆ\ÜÙ\™Ù\Ó›İX]Ú
+XY[™ÔÛİ\˜ÙKùb-ù¥¬Ú]Xˆ9æë¹oeKÊBˆ\ÜÙ\›X]Ú
+˜]”Ûİ\˜ÙKÜ›ÛNˆ	İX›\İ	ËÊBˆ\ÜÙ\›X]Ú
+˜]”Ûİ\˜ÙKÉØ\šXK[X™[	Îˆ	ù£ä¹.í¹ea¹gãº)á¹fï‰ËÊBˆ\ÜÙ\›X]Ú
+˜]”Ûİ\˜ÙKÔ™XXİ˜Ü™X]Q[[Y[
+X]Û‹ÊBˆ\ÜÙ\™Ù\Ó›İX]Ú
+˜]”Ûİ\˜ÙKÔ™XXİ˜Ü™X]Q[[Y[
+]Û‹ÈÙ^NˆYXİ]™N‹ÊBˆ\ÜÙ\›X]Ú
+˜]”Ûİ\˜ÙKØÛÛ\XİˆYKÊBˆ\ÜÙ\›X]Ú
+˜]”Ûİ\˜ÙKùb-ù¥¬Ú]Xˆ9æë¹oeKÊBˆ\ÜÙ\™Ù\Ó›İX]Ú
+ÛY[ÚY—Ê‰Ø[	ËÊBˆ\ÜÙ\›X]Ú
+ÛY[ùbcyo :`"y¢êKŠ¹.*¹£ä¹.í¹æ¡9§`úfdÊBˆ\ÜÙ\›X]Ú
+ÛY[ÙÚZX[\\›Z\ÜÚ[ÛœËÊBˆ\ÜÙ\›X]Ú
+ÛY[ùk£9¢$9bjy/fKŠºhny§`úfd:`"y¢êyd#¹¢cz ïzaãy¥¬9¨à9§éKÊBˆ\ÜÙ\›X]Ú
+ÛY[ÚX[\\›Z\ÜÚ[Û‹YXÚ\Ú[ÛœÎŒKÊBˆ\ÜÙ\›X]Ú
+ÛY[ù£ä¹.í¹âb9§+8à yfî¹k¦ˆÛÛ[Z]9¢%¹§`úfd9hì9¦#¹cæ9c%¹¥í¹/&¹i,y¥b9nmº) y¬`ºaãy¥¬9èkº+©ÊBˆ\ÜÙ\›X]Ú
+ÛY[ù«hùg*9¨à9§éx )‹ÊBˆ\ÜÙ\›X]Ú
+ÛY[ù`iyn­ù¨à9§éymì¹k£9¢$ÊBˆ\ÜÙ\›X]Ú
+ÛY[ù¨à9§éy®¤9.äùn¤ù¦í9¥¬ÊBˆ\ÜÙ\›X]Ú
+ÛY[ù.#y/&¹æí9£©yk¢z(áy­k¹bªXZ[‹ÊBˆ\ÜÙ\›X]Ú
+ÛY[ÜÛİ\˜ÙK]\]KÊBˆ\ÜÙ\›X]Ú
+ÛY[ÙÚ]™\œÚ[Û‹ÊBˆ\ÜÙ\›X]Ú
+ÛY[ÑÒ9âb9§+9.#¹caùî©ËÊBˆ\ÜÙ\›X]Ú
+ÛY[ù¨à9­bùcaùî©ËÊBˆ\ÜÙ\›X]Ú
+ÛY[ùi#yb-¹caùî©ùdoy.éÊBˆ\ÜÙ\›X]Ú
+ÛY[úh¡9cäyn ËÊBˆ\ÜÙ\›X]Ú
+ÛY[ù£ä¹.í¹®¤9¦í9¥¬:)á9b&KÊBˆ\ÜÙ\›X]Ú
+ÛY[ÑİX\™X[ˆ9mìºj£:+à{ï#Ò9«hùg*9.©9£©{ï#:hmzgh¹/&º!ê¹bª:aãy¥¬:/ç¹£©KÊBˆ\ÜÙ\›X]Ú
+ÛY[ùâë9êâùcaùî©ù.©9£©yfj9mìºj£:+ày¥éÈİX\™X[¸à T›Ùš[H9.#ˆ›ÛİQÊBˆ\ÜÙ\›X]Ú
+ÛY[ùfïya¡yêæy/ë¹i#Wùcaùî©ù¥®y¨bÊBˆ\ÜÙ\›X]Ú
+ÛY[ÑÚ]XˆYÙ\È9/ë¹i#Wùcaùî©ù¥®y¨bÊBˆ\ÜÙ\›X]Ú
+ÛY[Ğ“ÓÕÔ‘PÓÕ‘T–WÕSQSÕUÊBˆ\ÜÙ\›X]Ú
+ÛY[ÙÚ\ØY™K\YÚ[‹[X[˜YÙ\˜›Ûİ\™XÛİ™\NŒKÊBˆ\ÜÙ\›X]Ú
+ÛY[Ğœ›ØYØ\İÚ[›™[ÊBˆ\ÜÙ\›X]Ú
+ÛY[ÙİX\™X[—œİ]HOOH	ÚX[IËÊBˆ\ÜÙ\›X]Ú
+ÛY[ÙİX\™X[—šX[×˜›ÛİYOOH[[YW˜›ÛİYÊBˆ\ÜÙ\›X]Ú
+ÛY[Ğ“ÓÕÔ‘PÓÕ‘T–WÔÕP“WÔĞSTTËÊBˆ\ÜÙ\›X]Ú
+ÛY[Øİ›Û—
+	ØÛÛ›™Xİ[Û—Ü™\Ù]	ËÊBˆ\ÜÙ\›X]Ú
+ÛY[İÚ[™İ×›ØØ][Û—œ™\XÙKÊBˆ\ÜÙ\™Ù\Ó›İX]Ú
+ÛY[İÚ[™İ×›ØØ][Û—œ™[ØYÊBˆ\ÜÙ\™Ù\Ó›İX]Ú
+ÛY[ù¢iú(cÒ9caùî©ß9. :e+¹caùî©ÈÒÊBŸJB‚\İ
+	ÜX›XÈ˜ËÈ›İYÚŒKŒ‹X[KHÛY[ÛÛ˜Xİİ^\ÈÛˆÙ™šXÚX[[Ù[SØY\ˆ[™Ù][™ÜÈÜ™\š[™ÉË\Ş[˜È
 
-test('GitHub Pages marketplace handles omitted featured flags deterministically', async () => {
-  const [html, app, pluginsHtml, standardsHtml, buildHtml, faqHtml, aboutHtml, repairHtml, repairClient, repairCli, readme, previewServer, styles, packageManifest] = await Promise.all([
-    readFile(new URL('marketplace/index.html', project), 'utf8'),
-    readFile(new URL('marketplace/app.js', project), 'utf8'),
-    readFile(new URL('marketplace/plugins/index.html', project), 'utf8'),
-    readFile(new URL('marketplace/standards/index.html', project), 'utf8'),
-    readFile(new URL('marketplace/build/index.html', project), 'utf8'),
-    readFile(new URL('marketplace/faq/index.html', project), 'utf8'),
-    readFile(new URL('marketplace/about/index.html', project), 'utf8'),
-    readFile(new URL('marketplace/repair/index.html', project), 'utf8'),
-    readFile(new URL('marketplace/repair/repair.js', project), 'utf8'),
-    readFile(new URL('bin/dsh-store-repair.mjs', project), 'utf8'),
-    readFile(new URL('README.md', project), 'utf8'),
-    readFile(new URL('scripts/serve-marketplace.mjs', project), 'utf8'),
-    readFile(new URL('marketplace/styles.css', project), 'utf8'),
-    readFile(new URL('package.json', project), 'utf8'),
-  ])
-  const bootstrapCommit = '0bc733064bfc8ff16f6e8144188a7ac563092e12'
-  const bootstrapReference = `git+https://github.com/AI-Scarlett/DSH-Store.git#${bootstrapCommit}`
-  const submissionUrl = 'https://github.com/AI-Scarlett/DSH-Store/issues/new?template=plugin-submission.yml'
-  assert.match(html, /defer src="\.\/app\.js"/)
-  assert.match(html, /data-locale="zh"/)
-  assert.match(html, /data-locale="en"/)
-  assert.match(html, /data-i18n="hero\.title1"/)
-  assert.match(pluginsHtml, /data-i18n-placeholder="catalog\.search"/)
-  assert.match(pluginsHtml, /type="application\/json" href="https:\/\/dsh\.store\/registry\/catalog\.json"/)
-  assert.match(pluginsHtml, /"@type": "SearchAction"/)
-  assert.match(pluginsHtml, /"@type": "Dataset"/)
-  assert.match(pluginsHtml, /DSH_STATIC_CATALOG_ITEMLIST/)
-  assert.match(html, /class="brand-wordmark-frame"/)
-  assert.match(html, /src="\.\/dsh-store-wordmark\.png"/)
-  assert.match(html, /href="\.\/plugins\/"/)
-  assert.match(html, /href="\.\/standards\/"/)
-  assert.match(html, /href="\.\/build\/"/)
-  assert.match(html, /href="\.\/faq\/"/)
-  assert.match(html, /href="\.\/about\/"/)
-  assert.ok(html.includes(submissionUrl))
-  assert.ok(pluginsHtml.includes(submissionUrl))
-  assert.ok(buildHtml.includes(submissionUrl))
-  for (const page of [html, pluginsHtml, standardsHtml, buildHtml, faqHtml, aboutHtml, repairHtml]) {
-    assert.match(page, /href="https:\/\/tracefence\.com\/"[^>]*>TraceFence/)
-    assert.match(page, /href="https:\/\/aiaiai\.help\/"[^>]*>aiaiai\.help/)
-    assert.match(page, /DSH_FRIEND_SISTER_SITE/)
-  }
-  assert.match(html, /data-automation-status-url="https:\/\/ai-scarlett\.github\.io\/DSH-Store\/automation-status\.json"/)
-  for (const surface of [html, pluginsHtml, standardsHtml, buildHtml, faqHtml, aboutHtml, readme]) {
-    assert.doesNotMatch(surface, /github\.com\/AI-Scarlett\/dsh-safe-plugin-manager|ai-scarlett\.github\.io\/dsh-safe-plugin-manager/)
-  }
-  assert.match(html, /id="manager"/)
-  assert.match(html, /DSH_LEGACY_REPAIR_BANNER/)
-  assert.match(repairHtml, /data-repair-state="catalog-pending"/)
-  assert.match(repairHtml, /DSH_REPAIR_COMMAND/)
-  assert.match(repairHtml, /--ignore-scripts/)
-  assert.match(repairHtml, /https:\/\/dsh-store\.cn\/repair\//)
-  assert.match(repairHtml, /https:\/\/ai-scarlett\.github\.io\/DSH-Store\/marketplace\/repair\//)
-  assert.match(repairHtml, /æŸ¥çœ‹æœ¬å®˜æ–¹ä¿®å¤\/å‡çº§æ–¹æ¡ˆ/)
-  assert.match(repairClient, /navigator\.clipboard\.writeText/)
-  assert.doesNotMatch(repairClient, /fetch\(|eval\(|new Function/)
-  assert.match(repairCli, /createLegacyRepairService/)
-  const parsedPackage = JSON.parse(packageManifest)
-  assert.equal(parsedPackage.bin['dsh-store-repair'], './bin/dsh-store-repair.mjs')
-  assert.equal(parsedPackage.scripts.prepare, undefined)
-  assert.equal(parsedPackage.scripts.install, undefined)
-  assert.match(html, /id="featured-grid"/)
-  assert.doesNotMatch(html, /id="plugin-grid"/)
-  assert.match(pluginsHtml, /id="plugin-grid"/)
-  assert.match(pluginsHtml, /id="retry-catalog"/)
-  assert.match(html, /data-copy-target="install-command"/)
-  assert.match(html, /DSH_STATIC_CATALOG/)
-  assert.match(html, /softwareVersion": "catalog-derived"/)
-  assert.doesNotMatch(html, /git\+https:\/\/github\.com\/AI-Scarlett\/dsh-safe-plugin-manager\.git#[0-9a-f]{40}/)
-  assert.ok(readme.includes(bootstrapReference))
-  assert.match(app, /featured === true/)
-  assert.match(app, /featured\.length === 0/)
-  assert.match(app, /featured\.emptyTitle/)
-  assert.match(app, /No approved picks are currently featured\./)
-  assert.match(app, /ç²¾é€‰åŒºæš‚æ—¶æ²¡æœ‰å·²æ‰¹å‡†çš„æ¨èæ¡ç›®ã€‚/)
-  assert.match(app, /status !== 'unlisted'/)
-  assert.match(app, /data-details-id/)
-  assert.match(app, /showDetails/)
-  assert.match(app, /dsh-marketplace-locale/)
-  assert.match(app, /new URLSearchParams\(window\.location\.search\)/)
-  assert.match(app, /value\.trim\(\)\.slice\(0, 80\)/)
-  assert.match(app, /function setLocale/)
-  assert.doesNotMatch(app, /function embeddedCatalog/)
-  assert.match(app, /function changePage/)
-  assert.match(pluginsHtml, /id="previous-page"/)
-  assert.match(pluginsHtml, /id="next-page"/)
-  assert.match(app, /function renderManagerMetadata/)
-  assert.match(app, /github\.stars/)
-  assert.match(app, /è¯¦æƒ…æ¥è‡ª GitHub catalog\.json/)
-  assert.match(app, /å‰å¾€ GitHub æ‰‹åŠ¨å®‰è£…/)
-  assert.match(buildHtml, /id="install-skill"/)
-  assert.match(faqHtml, /"@type": "FAQPage"/)
-  assert.match(aboutHtml, /mailto:jadename\.zhou@gmail\.com/)
-  assert.match(aboutHtml, /https:\/\/x\.com\/builtbyxm/)
-  assert.match(styles, /\.load-error\[hidden\]\s*\{\s*display:\s*none;/)
-  assert.match(readme, /AI-Scarlett\/build-dsh-plugin/)
-  assert.match(readme, /ä¸Šæ¶å¿…è¦æ¡ä»¶/)
-  assert.ok(readme.indexOf('æäº¤ä¸€ä¸ªå…¬å¼€ GitHub é¡¹ç›®åœ°å€') < readme.indexOf('## å®‰è£…æ’ä»¶å•†åŸ'))
-  assert.match(previewServer, /pathname\.startsWith\('\/marketplace\/'\)/)
-  assert.match(previewServer, /relative\(marketplaceRoot, target\)/)
-  assert.match(previewServer, /scoped\.startsWith\('\.\.'\)/)
-  assert.match(previewServer, /isAbsolute\(scoped\)/)
-})
+HOˆÂˆÛÛœİÜÙËÛY[HH]ØZ]›ÛZ\ÙK˜[
+Âˆ™XYš[J™]ÈT“
+	ÜXÚØYÙKšœÛÛ‰Ë›Ú™Xİ
+K	İ]	ÊKˆ™XYš[J™]ÈT“
+	ÜÜ˜ËØÛY[šœÉË›Ú™Xİ
+K	İ]	ÊKˆJBˆÛÛœİX[šY™\İH”ÓÓ‹œ\œÙJÙÊBˆ\ÜÙ\™Y\\]X[
+X[šY™\İ™Ú˜ÛY[š[š™XİÂˆ	ĞY\ÙYZËXZKÙÚXÛY[\[[YIËˆ	ĞY\ÙYZËXZKÙÚXÛY[]ZK\š[Z]]™\ÉËˆ	ĞY\ÙYZËXZKÙÚXÛY[]ZK\ÛİÉËˆ	ĞY\ÙYZËXZKÙÚXÛY[]ZK\Ù][™ÜÉËˆ	ĞY\ÙYZËXZKÙÚXÛY[]ZK[^[İ]	Ëˆ	ĞY\ÙYZËXZKÙÚXÛY[]ZK\ÚYX˜\‰ËˆJBˆ\ÜÙ\›X]Ú
+ÛY[İÚ[™İ×—×Ó[Ù[SØY\—××›ØYÊBˆ\ÜÙ\›X]Ú
+ÛY[ÜÙ][™Ü×œÙXİ[Û‹ÊBˆ\ÜÙ\™Ù\Ó›İX]Ú
+ÛY[ÜÙ][™Ü×œYÚ[œ×X‹ÊBˆ\ÜÙ\›X]Ú
+ÛY[ÛÜ™\—Ê‹LLÊBˆ\ÜÙ\›X]Ú
+ÛY[ÌŒWŒ‹X[WKÊBˆ\ÜÙ\™Ù\Ó›İX]Ú
+ÛY[Øİ›ØY\Ÿİœ™Y›XİØY\—ŸšX™\—‹ÊBŸJB‚\İ
+	ÙİX\™X[ˆX[[™Xİ]™H\Ü˜YH™\]Z\™H›İ[™ÒİÛ™\œÚ\	Ë\Ş[˜È
+
+HOˆÂˆÛÛœİÙY[[Û‹Ù\šXÙK\Ü˜Y\—HH]ØZ]›ÛZ\ÙK˜[
+Âˆ™XYš[J™]ÈT“
+	ÜÜ˜ËÙİX\™X[‹YY[[Û‹›ZœÉË›Ú™Xİ
+K	İ]	ÊKˆ™XYš[J™]ÈT“
+	ÜÜ˜ËÙİX\™X[‹›ZœÉË›Ú™Xİ
+K	İ]	ÊKˆ™XYš[J™]ÈT“
+	ÜÜ˜ËÙİX\™X[‹]\Ü˜Y\‹›ZœÉË›Ú™Xİ
+K	İ]	ÊKˆJBˆ\ÜÙ\›X]Ú
+Y[[Û‹×Ø\L—ÙÚ\ØY™K\YÚ[‹[X[˜YÙ\—Ü[[YKÊBˆ\ÜÙ\›X]Ú
+Y[[Û‹Ü[[YKZY[]K[Z\ÛX]ÚÊBˆ\ÜÙ\›X]Ú
+Y[[Û‹Ü›Ûİœİ]\ĞÛÙHOOHŒ	‰ˆ›Ûİœİ]\ĞÛÙHOOHKÊBˆ\ÜÙ\›X]Ú
+Y[[Û‹Ù^\›˜[YÚY]XİYÊBˆ\ÜÙ\›X]Ú
+Y[[Û‹ÜÜXÛÛ™›XİÊBˆ\ÜÙ\›X]Ú
+Y[[Û‹ØÛÛœÙXİ]]™T›Ø™Q˜Z[\™\ËÊBˆ\ÜÙ\›X]Ú
+Ù\šXÙKÚX[›Ø™U[Y[İ]\Î—ÊŒWÍLÊBˆ\ÜÙ\›X]Ú
+Ù\šXÙKİ[šX[U™\ÚÛ—ÊŒËÊBˆ\ÜÙ\›X]Ú
+Ù\šXÙKÜİ\\Ü˜XÙS\Î—ÊŒLÌÊBˆ\ÜÙ\›X]Ú
+Ù\šXÙKØÛÛ[X[™]ÊBˆ\ÜÙ\›X]Ú
+Ù\šXÙKÑÕPT‘PS—Ğ“ÓÕÕTÕS•‘T’Q’QQÊBˆ\ÜÙ\›X]Ú
+Ù\šXÙKİØZ]›Ü‘œ™\ÚİX\™X[’X\™X]ÊBˆ\ÜÙ\›X]Ú
+Ù\šXÙKØXİ]™KYİX\™X[‹]\Ü˜YKÊBˆ\ÜÙ\›X]Ú
+\Ü˜Y\‹ÑÕPT‘PS—ĞPÕU‘WÒQS•UWĞÒS‘ÑQÊBˆ\ÜÙ\›X]Ú
+\Ü˜Y\‹ÑÕPT‘PS—ÕTÔQWÔ‘PÓÓ‘USÓ—ĞÒS‘ÑQÊBˆ\ÜÙ\›X]Ú
+\Ü˜Y\‹ÑÕPT‘PS—ÕTÔQWÒPT•‘PUÕS•‘T’Q’QQÊBˆ\ÜÙ\›X]Ú
+\Ü˜Y\‹Ø]ÛZXĞÛÜKÊBˆ\ÜÙ\›X]Ú
+\Ü˜Y\‹Ü™XÛİ™\KÊBˆ\ÜÙ\›ÚÊ
+Y[[Û‹›X]Ú
+Ù[ˆÛÛ[X[™[š\›Û›Y[ÙÊH×JK›[™İH‹	ÑİX\™X[ˆ][˜Ú[™Ù™›[™H™\İÜ™H]\İÚ\™HHØ\\™YÛÛ[X[™U	ÊBˆ\ÜÙ\™Ù\Ó›İX]Ú
+Y[[Û‹ØYÜ[™ËY^\İ[™ËZÜİÊBŸJB‚\İ
+	ØÛY[˜Z[ÈÛÜÙYÚ[ˆH]™HX[[™Ú[İ[\Ù\ÈHYØXŞHØÚ[XIË\Ş[˜È
+
+HOˆÂˆÛÛœİÛY[H]ØZ]™XYš[J™]ÈT“
+	Ë‹‹ÜÜ˜ËØÛY[šœÉË[\Ü›Y]K\›
+K	İ]	ÊBˆ\ÜÙ\›X]Ú
+ÛY[ÚX[œØÚ[XU™\œÚ[ÛˆOOH‹ÊBˆ\ÜÙ\›X]Ú
+ÛY[ú/æy.¦ùîäù§§9.#yëby.£º`$9£ä¹.í¹`iyn­ËÊBˆ\ÜÙ\›X]Ú
+ÛY[ù h¹i#HİX\™X[ˆ9d#¹¢cz ïz`$9£ä¹.í¹¨à9§éKÊBˆ\ÜÙ\›X]Ú
+ÛY[ÜœHÚÙX‹ÊBŸJB‚\İ
+	ÑÚ]XˆYÙ\ÈX\šÙ]XÙH[™\ÈÛZ]Y™X]\™Y›YÜÈ]\›Z[š\İXØ[IË\Ş[˜È
+
+HOˆÂˆÛÛœİÚ[\YÚ[œÒ[İ[™\™Ò[Z[[˜\R[X›İ][™\Z\’[™\Z\ÛY[™\Z\ÛK™XYYK™]šY]ÔÙ\™\‹İ[\ËXÚØYÙSX[šY™\İHH]ØZ]›ÛZ\ÙK˜[
+Âˆ™XYš[J™]ÈT“
+	ÛX\šÙ]XÙKÚ[™^š[	Ë›Ú™Xİ
+K	İ]	ÊKˆ™XYš[J™]ÈT“
+	ÛX\šÙ]XÙKØ\šœÉË›Ú™Xİ
+K	İ]	ÊKˆ™XYš[J™]ÈT“
+	ÛX\šÙ]XÙKÜYÚ[œËÚ[™^š[	Ë›Ú™Xİ
+K	İ]	ÊKˆ™XYš[J™]ÈT“
+	ÛX\šÙ]XÙKÜİ[™\™ËÚ[™^š[	Ë›Ú™Xİ
+K	İ]	ÊKˆ™XYš[J™]ÈT“
+	ÛX\šÙ]XÙKØZ[Ú[™^š[	Ë›Ú™Xİ
+K	İ]	ÊKˆ™XYš[J™]ÈT“
+	ÛX\šÙ]XÙKÙ˜\KÚ[™^š[	Ë›Ú™Xİ
+K	İ]	ÊKˆ™XYš[J™]ÈT“
+	ÛX\šÙ]XÙKØX›İ]Ú[™^š[	Ë›Ú™Xİ
+K	İ]	ÊKˆ™XYš[J™]ÈT“
+	ÛX\šÙ]XÙKÜ™\Z\‹Ú[™^š[	Ë›Ú™Xİ
+K	İ]	ÊKˆ™XYš[J™]ÈT“
+	ÛX\šÙ]XÙKÜ™\Z\‹Ü™\Z\‹šœÉË›Ú™Xİ
+K	İ]	ÊKˆ™XYš[J™]ÈT“
+	Øš[‹ÙÚ\İÜ™K\™\Z\‹›ZœÉË›Ú™Xİ
+K	İ]	ÊKˆ™XYš[J™]ÈT“
+	Ô‘PQQK›Y	Ë›Ú™Xİ
+K	İ]	ÊKˆ™XYš[J™]ÈT“
+	ÜØÜš\ËÜÙ\™K[X\šÙ]XÙK›ZœÉË›Ú™Xİ
+K	İ]	ÊKˆ™XYš[J™]ÈT“
+	ÛX\šÙ]XÙKÜİ[\Ë˜ÜÜÉË›Ú™Xİ
+K	İ]	ÊKˆ™XYš[J™]ÈT“
+	ÜXÚØYÙKšœÛÛ‰Ë›Ú™Xİ
+K	İ]	ÊKˆJBˆÛÛœİ›Ûİİ˜\ÛÛ[Z]H	Ì˜ÍÌÌÌ™˜Î™ŒM™™NMNMØXÍMŒÌL™LL‰ÂˆÛÛœİ›Ûİİ˜\™Y™\™[˜ÙHHÚ]
+ÚÎ‹ËÙÚ]X‹˜ÛÛKĞRKTØØ\›]ÑÒTİÜ™K™Ú]ÉØ›Ûİİ˜\ÛÛ[Z]XˆÛÛœİİX›Z\ÜÚ[Û•\›H	ÚÎ‹ËÙÚ]X‹˜ÛÛKĞRKTØØ\›]ÑÒTİÜ™KÚ\ÜİY\ËÛ™]Ïİ[\]O\YÚ[‹\İX›Z\ÜÚ[Û‹[[	Âˆ\ÜÙ\›X]Ú
+[ÙY™\ˆÜ˜ÏH——Ø\šœÈ‹ÊBˆ\ÜÙ\›X]Ú
+[Ù]K[ØØ[OHš‹ÊBˆ\ÜÙ\›X]Ú
+[Ù]K[ØØ[OH™[ˆ‹ÊBˆ\ÜÙ\›X]Ú
+[Ù]KZLNHš\›×]LH‹ÊBˆ\ÜÙ\›X]Ú
+YÚ[œÒ[Ù]KZLN‹\XÙZÛ\H˜Ø][Ù×œÙX\˜Ú‹ÊBˆ\ÜÙ\›X]Ú
+YÚ[œÒ[İ\OH˜\XØ][Û—ÚœÛÛˆˆ™YHšÎ—×ÙÚœİÜ™WÜ™YÚ\İWØØ][Ù×šœÛÛˆ‹ÊBˆ\ÜÙ\›X]Ú
+YÚ[œÒ[È\Hˆ”ÙX\˜ÚXİ[Ûˆ‹ÊBˆ\ÜÙ\›X]Ú
+YÚ[œÒ[È\Hˆ‘]\Ù]‹ÊBˆ\ÜÙ\›X]Ú
+YÚ[œÒ[ÑÒÔÕUP×ĞĞUSÑ×ÒUSSTÕÊBˆ\ÜÙ\›X]Ú
+[ØÛ\ÜÏH˜œ˜[™]ÛÜ™X\šËYœ˜[YH‹ÊBˆ\ÜÙ\›X]Ú
+[ÜÜ˜ÏH——ÙÚ\İÜ™K]ÛÜ™X\š×œ™È‹ÊBˆ\ÜÙ\›X]Ú
+[Ú™YH——ÜYÚ[œ×È‹ÊBˆ\ÜÙ\›X]Ú
+[Ú™YH——Üİ[™\™×È‹ÊBˆ\ÜÙ\›X]Ú
+[Ú™YH——ØZ[È‹ÊBˆ\ÜÙ\›X]Ú
+[Ú™YH——Ù˜\WÈ‹ÊBˆ\ÜÙ\›X]Ú
+[Ú™YH——ØX›İ]È‹ÊBˆ\ÜÙ\›ÚÊ[š[˜ÛY\ÊİX›Z\ÜÚ[Û•\›
+JBˆ\ÜÙ\›ÚÊYÚ[œÒ[š[˜ÛY\ÊİX›Z\ÜÚ[Û•\›
+JBˆ\ÜÙ\›ÚÊZ[[š[˜ÛY\ÊİX›Z\ÜÚ[Û•\›
+JBˆ›Üˆ
+ÛÛœİYÙHÙˆÚ[YÚ[œÒ[İ[™\™Ò[Z[[˜\R[X›İ][™\Z\’[JHÂˆ\ÜÙ\›X]Ú
+YÙKÚ™YHšÎ—×İ˜XÙY™[˜ÙW˜ÛÛWÈ–×—J•˜XÙQ™[˜ÙKÊBˆ\ÜÙ\›X]Ú
+YÙKÚ™YHšÎ—×ØZXZXZWš[È–×—J˜ZXZXZWš[ÊBˆ\ÜÙ\›X]Ú
+YÙKÑÒÑ”’QS‘ÔÒTÕT—ÔÒUKÊBˆBˆ\ÜÙ\›X]Ú
+[Ù]KX]]ÛX][Û‹\İ]\Ë]\›HšÎ—×ØZK\ØØ\›]™Ú]X—š[×ÑÒTİÜ™WØ]]ÛX][Û‹\İ]\×šœÛÛˆ‹ÊBˆ›Üˆ
+ÛÛœİİ\™˜XÙHÙˆÚ[YÚ[œÒ[İ[™\™Ò[Z[[˜\R[X›İ][™XYYWJHÂˆ\ÜÙ\™Ù\Ó›İX]Ú
+İ\™˜XÙKÙÚ]X—˜ÛÛWĞRKTØØ\›]ÙÚ\ØY™K\YÚ[‹[X[˜YÙ\ŸZK\ØØ\›]™Ú]X—š[×ÙÚ\ØY™K\YÚ[‹[X[˜YÙ\‹ÊBˆBˆ\ÜÙ\›X]Ú
+[ÚYH›X[˜YÙ\ˆ‹ÊBˆ\ÜÙ\›X]Ú
+[ÑÒÓQĞPÖWÔ‘TRT—ĞS“‘T‹ÊBˆ\ÜÙ\›X]Ú
+™\Z\’[Ù]K\™\Z\‹\İ]OH˜Ø][ÙË\[™[™È‹ÊBˆ\ÜÙ\›X]Ú
+™\Z\’[ÑÒÔ‘TRT—ĞÓÓSPS‘ÊBˆ\ÜÙ\›X]Ú
+™\Z\’[ËKZYÛ›Ü™K\ØÜš\ËÊBˆ\ÜÙ\›X]Ú
+™\Z\’[ÚÎ—×ÙÚ\İÜ™W˜Û—Ü™\Z\—ËÊBˆ\ÜÙ\›X]Ú
+™\Z\’[ÚÎ—×ØZK\ØØ\›]™Ú]X—š[×ÑÒTİÜ™WÛX\šÙ]XÙWÜ™\Z\—ËÊBˆ\ÜÙ\›X]Ú
+™\Z\’[ù§éyç"ù§+9k¦9¥®y/ë¹i#Wùcaùî©ù¥®y¨bÊBˆ\ÜÙ\›X]Ú
+™\Z\ÛY[Û˜]šYØ]Ü—˜Û\›Ø\™Üš]U^ÊBˆ\ÜÙ\™Ù\Ó›İX]Ú
+™\Z\ÛY[Ù™]Ú
+]˜[
+™]È[˜İ[Û‹ÊBˆ\ÜÙ\›X]Ú
+™\Z\ÛKØÜ™X]SYØXŞT™\Z\”Ù\šXÙKÊBˆÛÛœİ\œÙYXÚØYÙHH”ÓÓ‹œ\œÙJXÚØYÙSX[šY™\İ
+Bˆ\ÜÙ\™\]X[
+\œÙYXÚØYÙK˜š[–ÉÙÚ\İÜ™K\™\Z\‰×K	Ë‹Øš[‹ÙÚ\İÜ™K\™\Z\‹›ZœÉÊBˆ\ÜÙ\™\]X[
+\œÙYXÚØYÙKœØÜš\Ëœ™\\™K[™Yš[™Y
+Bˆ\ÜÙ\™\]X[
+\œÙYXÚØYÙKœØÜš\Ëš[œİ[[™Yš[™Y
+Bˆ\ÜÙ\›X]Ú
+[ÚYH™™X]\™YYÜšY‹ÊBˆ\ÜÙ\™Ù\Ó›İX]Ú
+[ÚYHœYÚ[‹YÜšY‹ÊBˆ\ÜÙ\›X]Ú
+YÚ[œÒ[ÚYHœYÚ[‹YÜšY‹ÊBˆ\ÜÙ\›X]Ú
+YÚ[œÒ[ÚYHœ™]KXØ][ÙÈ‹ÊBˆ\ÜÙ\›X]Ú
+[Ù]KXÛÜK]\™Ù]Hš[œİ[XÛÛ[X[™‹ÊBˆ\ÜÙ\›X]Ú
+[ÑÒÔÕUP×ĞĞUSÑËÊBˆ\ÜÙ\›X]Ú
+[ÜÛÙØ\™U™\œÚ[Ûˆˆ˜Ø][ÙËY\š]™Y‹ÊBˆ\ÜÙ\™Ù\Ó›İX]Ú
+[ÙÚ]
+ÚÎ—×ÙÚ]X—˜ÛÛWĞRKTØØ\›]ÙÚ\ØY™K\YÚ[‹[X[˜YÙ\—™Ú]ÖÌNXKY—^ÍKÊBˆ\ÜÙ\›ÚÊ™XYYKš[˜ÛY\Ê›Ûİİ˜\™Y™\™[˜ÙJJBˆ\ÜÙ\›X]Ú
+\Ù™X]\™YOOHYKÊBˆ\ÜÙ\›X]Ú
+\Ù™X]\™Y›[™İOOHÊBˆ\ÜÙ\›X]Ú
+\Ù™X]\™Y™[\U]KÊBˆ\ÜÙ\›X]Ú
+\Ó›È\›İ™YXÚÜÈ\™Hİ\œ™[H™X]\™Y‹ÊBˆ\ÜÙ\›X]Ú
+\ùì¯º`"yc.¹¦ ¹¥í¹¬¨y§"ymì¹¢nyaá¹æ¡9£ª:#d9§hyæë¸à ‹ÊBˆ\ÜÙ\›X]Ú
+\Üİ]\ÈOOH	İ[›\İY	ËÊBˆ\ÜÙ\›X]Ú
+\Ù]KY]Z[ËZYÊBˆ\ÜÙ\›X]Ú
+\ÜÚİÑ]Z[ËÊBˆ\ÜÙ\›X]Ú
+\ÙÚ[X\šÙ]XÙK[ØØ[KÊBˆ\ÜÙ\›X]Ú
+\Û™]ÈT“ÙX\˜Ú\˜[\×
+Ú[™İ×›ØØ][Û—œÙX\˜Ú
+KÊBˆ\ÜÙ\›X]Ú
+\İ˜[YWš[W
+
+WœÛXÙW
+
+KÊBˆ\ÜÙ\›X]Ú
+\Ù[˜İ[ÛˆÙ]ØØ[KÊBˆ\ÜÙ\™Ù\Ó›İX]Ú
+\Ù[˜İ[Ûˆ[X™YYØ][ÙËÊBˆ\ÜÙ\›X]Ú
+\Ù[˜İ[ÛˆÚ[™ÙTYÙKÊBˆ\ÜÙ\›X]Ú
+YÚ[œÒ[ÚYHœ™]š[İ\Ë\YÙH‹ÊBˆ\ÜÙ\›X]Ú
+YÚ[œÒ[ÚYH›™^\YÙH‹ÊBˆ\ÜÙ\›X]Ú
+\Ù[˜İ[Ûˆ™[™\“X[˜YÙ\“Y]Y]KÊBˆ\ÜÙ\›X]Ú
+\ÙÚ]X—œİ\œËÊBˆ\ÜÙ\›X]Ú
+\ú+é¹ áy§iz!êˆÚ]XˆØ][Ù×šœÛÛ‹ÊBˆ\ÜÙ\›X]Ú
+\ùbcyo Ú]Xˆ9¢bùbª9k¢z(áKÊBˆ\ÜÙ\›X]Ú
+Z[[ÚYHš[œİ[\ÚÚ[‹ÊBˆ\ÜÙ\›X]Ú
+˜\R[È\Hˆ‘TTYÙH‹ÊBˆ\ÜÙ\›X]Ú
+X›İ][ÛXZ[Îš˜Y[˜[YWšİPÛXZ[˜ÛÛKÊBˆ\ÜÙ\›X]Ú
+X›İ][ÚÎ—×Ş˜ÛÛWØZ[^KÊBˆ\ÜÙ\›X]Ú
+İ[\Ë×›ØYY\œ›Ü—ÚY[—WÊ—×Ê™\Ü^N—Ê››Û™NËÊBˆ\ÜÙ\›X]Ú
+™XYYKĞRKTØØ\›]ØZ[YÚ\YÚ[‹ÊBˆ\ÜÙ\›X]Ú
+™XYYKù."¹§­¹oáz) y§hy.í‹ÊBˆ\ÜÙ\›ÚÊ™XYYKš[™^ÙŠ	ù£ä9.©9. 9.*¹ak9o Ú]Xˆ:hnyæë¹g,9g`	ÊH™XYYKš[™^ÙŠ	ÈÈÈ9k¢z(áy£ä¹.í¹ea¹gã‰ÊJBˆ\ÜÙ\›X]Ú
+™]šY]ÔÙ\™\‹Ü]˜[YWœİ\ÕÚ]
+	×ÛX\šÙ]XÙWÉ×
+KÊBˆ\ÜÙ\›X]Ú
+™]šY]ÔÙ\™\‹Ü™[]]™W
+X\šÙ]XÙT›Ûİ\™Ù]
+KÊBˆ\ÜÙ\›X]Ú
+™]šY]ÔÙ\™\‹ÜØÛÜYœİ\ÕÚ]
+	×—‰×
+KÊBˆ\ÜÙ\›X]Ú
+™]šY]ÔÙ\™\‹Ú\ĞXœÛÛ]W
+ØÛÜY
+KÊBŸJB
