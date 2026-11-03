@@ -502,8 +502,9 @@ window.__ModuleLoader__.load({
         padding: '9px 11px', background: 'var(--dsw-alias-bg-layer-2)', color: 'var(--dsw-alias-label-primary)',
       },
       select: {
-        boxSizing: 'border-box', border: '1px solid var(--dsw-alias-border-l2)', borderRadius: '9px',
-        padding: '9px 11px', background: 'var(--dsw-alias-bg-layer-2)', color: 'var(--dsw-alias-label-primary)', minWidth: '180px',
+        boxSizing: 'border-box', border: '1px solid var(--dsw-alias-border-l2)', borderRadius: '8px',
+        padding: '0 26px 0 10px', background: 'var(--dsw-alias-bg-layer-2)', color: 'var(--dsw-alias-label-primary)',
+        fontSize: '12px', lineHeight: 'normal', height: '34px', minWidth: '160px',
       },
       button: {
         border: '1px solid var(--dsw-alias-border-l2)', borderRadius: '8px', padding: '7px 11px',
@@ -3664,19 +3665,19 @@ window.__ModuleLoader__.load({
             React.createElement('div', { style: styles.marketFacetGroup },
               React.createElement('select', {
                 value: category, onChange: event => { setCategory(event.target.value); setPage(1) },
-                style: { ...styles.select, height: '32px', borderRadius: '7px' }, 'aria-label': '按分类筛选',
+                style: { ...styles.select, height: '34px', borderRadius: '8px' }, 'aria-label': '按分类筛选',
               }, React.createElement('option', { value: '' }, `全部分类 · ${activeDirectoryRows.length}`),
               categoryIds.map(id => React.createElement('option', { key: id, value: id }, `${directoryCategoryLabel(id)} · ${directoryCategoryCounts.get(id) || 0}`))),
               React.createElement('select', {
                 value: directoryClientFilter, onChange: event => { setDirectoryClientFilter(event.target.value); setPage(1) },
-                style: { ...styles.select, minWidth: '180px', height: '32px', borderRadius: '7px' }, 'aria-label': '按 DSH Desktop 适配声明筛选',
+                style: { ...styles.select, minWidth: '190px', height: '34px', borderRadius: '8px' }, 'aria-label': '按 DSH Desktop 适配声明筛选',
                 title: '只按 Catalog 是否声明 Desktop Profile 筛选；未声明不等于不兼容。',
               }, React.createElement('option', { value: 'all' }, `全部适配状态 · ${directoryClientCounts.all}`),
               React.createElement('option', { value: 'declared' }, `已声明适配 DSH Desktop · ${directoryClientCounts.declared}`),
               React.createElement('option', { value: 'undeclared' }, `未声明适配 DSH Desktop · ${directoryClientCounts.undeclared}`)),
               React.createElement('select', {
                 value: directoryReviewFilter, onChange: event => { setDirectoryReviewFilter(event.target.value); setPage(1) },
-                style: { ...styles.select, height: '32px', borderRadius: '7px' }, 'aria-label': '按 DSH STORE 审核状态筛选',
+                style: { ...styles.select, height: '34px', borderRadius: '8px' }, 'aria-label': '按 DSH STORE 审核状态筛选',
               }, directoryReviewOptions.map(([id, label, count]) => React.createElement('option', { key: id, value: id }, `${label} · ${count}`)))))),
         React.createElement('div', { style: styles.marketResults },
           React.createElement('span', { style: styles.muted, role: 'status' },
@@ -3812,12 +3813,12 @@ window.__ModuleLoader__.load({
           React.createElement('div', { style: styles.marketFacetGroup },
             React.createElement('select', {
               value: category, onChange: event => { setCategory(event.target.value); setPage(1) },
-              style: { ...styles.select, height: '32px', borderRadius: '7px' }, 'aria-label': '按分类筛选',
+              style: { ...styles.select, height: '34px', borderRadius: '8px' }, 'aria-label': '按分类筛选',
             }, React.createElement('option', { value: '' }, '全部分类'),
             categoryIds.map(id => React.createElement('option', { key: id, value: id }, categoryLabels[id] || id))),
             React.createElement('select', {
               value: clientFilter, onChange: event => { setClientFilter(event.target.value); setPage(1) },
-              style: { ...styles.select, height: '32px', borderRadius: '7px' }, 'aria-label': '按 Desktop 适配标识筛选',
+              style: { ...styles.select, minWidth: '180px', height: '34px', borderRadius: '8px' }, 'aria-label': '按 Desktop 适配标识筛选',
             }, React.createElement('option', { value: 'all' }, '全部客户端适配状态'),
             React.createElement('option', { value: 'declared' }, '已声明适配 Desktop'),
             React.createElement('option', { value: 'undeclared' }, '未声明适配 Desktop'))))
