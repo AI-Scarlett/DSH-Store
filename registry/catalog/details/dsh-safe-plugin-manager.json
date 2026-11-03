@@ -2,7 +2,7 @@
   "id": "dsh-safe-plugin-manager",
   "name": "安全插件商城（DSH-Store）",
   "packageName": "dsh-safe-plugin-manager",
-  "description": "DSH Store 0.9.35 修复宽屏导航布局，并恢复完整目录、推荐榜和必装榜中的 DSH Desktop 适配声明筛选；未声明不代表不兼容，安装结果由 DSH Desktop 官方管理器决定。",
+  "description": "DSH Store 0.9.36 使用统一品牌图标，并补齐官方 DSH 0.2.2-alpha.3 安装兼容声明；安装结果由 DSH Desktop 官方管理器决定。",
   "searchTerms": [
     "安全插件商城",
     "DSH-Store",
@@ -22,15 +22,18 @@
     "首页侧栏",
     "DSH Desktop 适配筛选",
     "适配声明",
-    "是否适配 DSH Desktop"
+    "是否适配 DSH Desktop",
+    "DSH Store 图标",
+    "桌面端插件列表图标",
+    "统一商城图标"
   ],
   "repositoryUrl": "https://github.com/AI-Scarlett/DSH-Store",
   "defaultBranch": "main",
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": null,
-  "commit": "c7ecac249e66de529b537757cee5b8e114d70ef8",
-  "version": "0.9.35",
+  "commit": "c392f27b4a6826858a491323b0a4c578b317e611",
+  "version": "0.9.36",
   "categories": [
     "marketplace",
     "management"
@@ -38,16 +41,16 @@
   "featured": true,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-11-03T05:27:37.000Z",
-    "observedAt": "2026-11-03T05:36:44.000Z",
+    "updatedAt": "2026-11-03T09:27:58.000Z",
+    "observedAt": "2026-11-03T09:38:45.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "first-party-fixed-source-release-review",
-      "checkedAt": "2026-11-03T05:36:44.000Z",
-      "evidenceUrl": "https://github.com/AI-Scarlett/DSH-Store/commit/c7ecac249e66de529b537757cee5b8e114d70ef8",
+      "checkedAt": "2026-11-03T09:38:45.000Z",
+      "evidenceUrl": "https://github.com/AI-Scarlett/DSH-Store/commit/c392f27b4a6826858a491323b0a4c578b317e611",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -56,9 +59,9 @@
     "installability": {
       "status": "verified",
       "method": "official-cli-disposable-profile-ci",
-      "checkedAt": "2026-11-03T05:36:44.000Z",
-      "evidenceUrl": "https://github.com/AI-Scarlett/DSH-Store/actions/runs/41583741617",
-      "dshRelease": "0.2.2-alpha.2",
+      "checkedAt": "2026-11-03T09:38:45.000Z",
+      "evidenceUrl": "https://github.com/AI-Scarlett/DSH-Store/actions/runs/41610734985",
+      "dshRelease": "0.2.2-alpha.3",
       "systems": [],
       "profiles": [],
       "summary": null
@@ -66,9 +69,9 @@
     "runtime": {
       "status": "verified",
       "method": "official-cli-disposable-profile-runtime-matrix",
-      "checkedAt": "2026-11-03T05:36:44.000Z",
-      "evidenceUrl": "https://github.com/AI-Scarlett/DSH-Store/actions/runs/41583741617",
-      "dshRelease": "0.2.2-alpha.2",
+      "checkedAt": "2026-11-03T09:38:45.000Z",
+      "evidenceUrl": "https://github.com/AI-Scarlett/DSH-Store/actions/runs/41610734985",
+      "dshRelease": "0.2.2-alpha.3",
       "systems": [],
       "profiles": [],
       "summary": null
@@ -76,8 +79,8 @@
     "securityReview": {
       "status": "unknown",
       "method": "owner-reviewed-bounded-static-fixed-source-analysis",
-      "checkedAt": "2026-11-03T05:36:44.000Z",
-      "evidenceUrl": "https://github.com/AI-Scarlett/DSH-Store/commit/c7ecac249e66de529b537757cee5b8e114d70ef8",
+      "checkedAt": "2026-11-03T09:38:45.000Z",
+      "evidenceUrl": "https://github.com/AI-Scarlett/DSH-Store/commit/c392f27b4a6826858a491323b0a4c578b317e611",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -90,7 +93,7 @@
   "status": "approved",
   "statusReason": null,
   "compatibility": {
-    "dsh": "0.0.1-rc.5 || >=0.1.0-rc.6 <0.2.0 || 0.1.5-alpha.1 || 0.1.5-alpha.2 || 0.1.5-rc.1 || 0.1.5-rc.2 || 0.2.0-rc.1 || 0.2.0-rc.2 || 0.2.1-alpha.1 || 0.2.1-alpha.2 || 0.2.1-alpha.3 || 0.2.1-alpha.4 || 0.2.1-alpha.5 || 0.2.1-rc.1 || 0.2.1-rc.2 || 0.2.1-rc.3 || 0.2.1-rc.4 || 0.2.1-rc.5 || 0.2.2-alpha.2",
+    "dsh": "0.0.1-rc.5 || >=0.1.0-rc.6 <0.2.0 || 0.1.5-alpha.1 || 0.1.5-alpha.2 || 0.1.5-rc.1 || 0.1.5-rc.2 || 0.2.0-rc.1 || 0.2.0-rc.2 || 0.2.1-alpha.1 || 0.2.1-alpha.2 || 0.2.1-alpha.3 || 0.2.1-alpha.4 || 0.2.1-alpha.5 || 0.2.1-rc.1 || 0.2.1-rc.2 || 0.2.1-rc.3 || 0.2.1-rc.4 || 0.2.1-rc.5 || 0.2.2-alpha.2 || 0.2.2-alpha.3",
     "dshReleases": {
       "rc.7": "compatible",
       "rc.8": "compatible",
@@ -123,7 +126,8 @@
       "0.2.1-rc.3": "compatible",
       "0.2.1-rc.4": "compatible",
       "0.2.1-rc.5": "compatible",
-      "0.2.2-alpha.2": "compatible"
+      "0.2.2-alpha.2": "compatible",
+      "0.2.2-alpha.3": "compatible"
     },
     "dshOperations": {
       "rc.7": {
@@ -275,14 +279,20 @@
         "start": "passed",
         "uninstall": "passed",
         "rollback": "unknown"
+      },
+      "0.2.2-alpha.3": {
+        "install": "passed",
+        "start": "passed",
+        "uninstall": "passed",
+        "rollback": "unknown"
       }
     },
     "latestWindow": {
       "state": "current",
       "releases": [
-        "0.2.1-rc.4",
         "0.2.1-rc.5",
-        "0.2.2-alpha.2"
+        "0.2.2-alpha.2",
+        "0.2.2-alpha.3"
       ]
     },
     "node": "^22.19.0 || >=24.0.0",
