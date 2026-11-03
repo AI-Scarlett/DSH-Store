@@ -1,0 +1,418 @@
+{
+  "schemaVersion": 1,
+  "type": "fixed-source-admission-review",
+  "engine": "bounded-source-v3",
+  "repositoryUrl": "https://github.com/AI-Scarlett/build-dsh-plugin",
+  "commit": "81ff7c73cefe53091e8710ad8851fe5a1167cdb0",
+  "sourceTree": "d03332135bd19754cb94b91ad4008035a4e226a7",
+  "packageName": "dsh-build-plugin",
+  "version": "0.6.2",
+  "manifestPath": "package.json",
+  "installPath": null,
+  "entryIds": [
+    "dsh-build-plugin-skill-provider"
+  ],
+  "configOverrides": [],
+  "binding": "943f79dfb3046a88c18e029c5b4255b5bc4064f3e5d8ff3cf7319f2d3cb4a224",
+  "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
+  "reviewRegistryDigest": "f40e4a10a2ae7f8d8dadbbde3a7a03e9f7d967caf114a14d6a7bbfe46a93efbf",
+  "reviewedAt": "2026-11-03T12:45:13.132Z",
+  "reviewer": "Codex on behalf of AI-Scarlett",
+  "verdict": "reviewed",
+  "permissions": {
+    "level": "high",
+    "files": "read-only",
+    "network": "specified-services",
+    "commands": "none",
+    "credentials": [
+      "api-key"
+    ]
+  },
+  "sourceEvidence": {
+    "treeEntries": 109,
+    "packageEntries": 38,
+    "runtimeFiles": 17,
+    "filesScanned": 17,
+    "runtimeBytes": 116261,
+    "sourceDigest": "b31556d5b1bba074b1fd3b347fbc99c4998033d8d6b32c248ccebcb093c90a46"
+  },
+  "analysis": {
+    "reasons": [
+      "fixed-source security warnings require review",
+      "runtime source contains the files permission signal",
+      "runtime source contains the credentials permission signal"
+    ],
+    "signals": {
+      "files": true,
+      "network": false,
+      "commands": false,
+      "credentials": true,
+      "protectedDsh": false,
+      "nativeOrExecutableArtifacts": false
+    },
+    "securityScan": {
+      "engine": "dsh-store-submission-static-v1",
+      "policy": "high-risk-block-cli-capability-warn-v1",
+      "verdict": "warn",
+      "complete": true,
+      "scopeReasons": [],
+      "filesScanned": 17,
+      "eligibleFiles": 17,
+      "skippedOversize": 0,
+      "skippedUnsupported": 0,
+      "capped": false,
+      "counts": {
+        "critical": 0,
+        "warning": 1,
+        "info": 0
+      },
+      "findings": [
+        {
+          "rule": "child-process",
+          "category": "shell",
+          "severity": "warning",
+          "message": "发现子进程或命令执行能力；CLI 插件可能合理使用，但需要复核参数边界。",
+          "file": "build-dsh-plugin/scripts/audit-plugin.mjs",
+          "line": 157
+        }
+      ],
+      "findingsTruncated": false
+    },
+    "engine": "bounded-source-v3",
+    "sourceDigest": "b31556d5b1bba074b1fd3b347fbc99c4998033d8d6b32c248ccebcb093c90a46",
+    "sourceEvidence": [
+      {
+        "file": "build-dsh-plugin/agents/openai.yaml",
+        "bytes": 447,
+        "blob": "8a29f4feee03102924bf60b8cf77023d847658bb",
+        "sha256": "412bda1c82986b967403dfc1648ec55a627a56e95c3c59879105b87e2427ed9c"
+      },
+      {
+        "file": "build-dsh-plugin/assets/candidate-entry.template.json",
+        "bytes": 495,
+        "blob": "c4803b64acfd48cf0d3bfb25ea1fb86c87971b8f",
+        "sha256": "d60357a59e4c0e76f7e49ed93ab6c23cf21adf1bdfb06a8a9ebfdb4953117f81"
+      },
+      {
+        "file": "build-dsh-plugin/assets/catalog-entry.template.json",
+        "bytes": 2258,
+        "blob": "ca68d1502000659b635602d710de3a4f0202ad09",
+        "sha256": "3cb0fb5a5ec8a0d7cfcd50f6bd48718409edcd72473c57e68f53a83d90df03ff"
+      },
+      {
+        "file": "build-dsh-plugin/assets/lifecycle-evidence.template.json",
+        "bytes": 431,
+        "blob": "b702977d7f90d0bba1fd3c6452c9d98c0f8b5d4f",
+        "sha256": "692c38c6376705002a80c528e5bd52f5e27035c1a0f4bfc95032392cf47a1b42"
+      },
+      {
+        "file": "build-dsh-plugin/assets/plugin-brief.r3-example.json",
+        "bytes": 3356,
+        "blob": "f2e676ab697e33ed0ffd8f914a4ca27226dbd9dd",
+        "sha256": "9e7303d3024c108570827dbf105eb4f70a254afe96e681410ef501864c34a74e"
+      },
+      {
+        "file": "build-dsh-plugin/assets/plugin-brief.readonly-example.json",
+        "bytes": 2712,
+        "blob": "cbb2a60ab8c93a007799dc48f00af2b550988399",
+        "sha256": "5d32d5d93a8576b95454cd1c242249a9e934c30bb0d2638413dca97395511c3d"
+      },
+      {
+        "file": "build-dsh-plugin/assets/plugin-brief.template.json",
+        "bytes": 1968,
+        "blob": "38bb3d75c890085041846ced9e731e65bc75f0c1",
+        "sha256": "b990de6d49e6fa6174797b1938b4dc8fdc792a7f5987d3ce0093829c42888009"
+      },
+      {
+        "file": "build-dsh-plugin/scripts/audit-candidate-entry.mjs",
+        "bytes": 8232,
+        "blob": "394a5df6218f9772efdc1352485691b8be048960",
+        "sha256": "2bf06da97bb752a9464b5b3222d21753bfa14ed58922998d93db73414a5d1dd5"
+      },
+      {
+        "file": "build-dsh-plugin/scripts/audit-lifecycle.mjs",
+        "bytes": 1658,
+        "blob": "7cb5fe3fe0d2cade14f942e1253eedc4693a19a4",
+        "sha256": "2f8afddfe2302cc6d00bf15373a0079718eb792dd6d80c74ee9b612c00c97c29"
+      },
+      {
+        "file": "build-dsh-plugin/scripts/audit-marketplace-entry.mjs",
+        "bytes": 30412,
+        "blob": "b415014a8353eb30c1d7bfce68e373205f38151b",
+        "sha256": "fdaa38ccaf7c350b5c5afe1ad13ad6dc6f9ba2e9a9faf30979329d33547f6ca2"
+      },
+      {
+        "file": "build-dsh-plugin/scripts/audit-paths.mjs",
+        "bytes": 315,
+        "blob": "2bed486dd70753a4f207a3d46c2a3dfc49ec44b2",
+        "sha256": "889f3407beb0a78ee6e175de78df603e34ba0443c6738d59fb645e154c60ab78"
+      },
+      {
+        "file": "build-dsh-plugin/scripts/audit-plugin.mjs",
+        "bytes": 21459,
+        "blob": "946588d8ad2f8cac339fc976a25f7baef964ad56",
+        "sha256": "c6b569be0918a5bf2e7e04cd9e3d9437f34e34667f8ffd7d0fe1822ab58a95f2"
+      },
+      {
+        "file": "build-dsh-plugin/scripts/normalize-brief.mjs",
+        "bytes": 23263,
+        "blob": "3fd914dd910bd21fc91f167b0c1ee490948873f2",
+        "sha256": "daa2227913b5be2a75958df17412080401e31b5a9925ec639df1494bf5fdf5c9"
+      },
+      {
+        "file": "build-dsh-plugin/scripts/official-dsh-releases.mjs",
+        "bytes": 13117,
+        "blob": "ecdcb4e4e28cd26cbffcb7cbce8cc2f3e2f377e1",
+        "sha256": "ebfaaf0d661520504e426175e0187816744604560378d0023af1fc2323341a06"
+      },
+      {
+        "file": "cordis.patch.yml",
+        "bytes": 81,
+        "blob": "2f024dc108486eb72c292d49585cea806a1b7fe4",
+        "sha256": "658cb9573ee510c1735e9f60e2b805eec5843fd6d2a3dbb3a8b1ab5c185f6da6"
+      },
+      {
+        "file": "package.json",
+        "bytes": 4830,
+        "blob": "2c22513e971cb06b52882124a533be8056e8da00",
+        "sha256": "1fadfa23cd3b4626b26295ce3c4e665822bf7fc0696be7ccb6d7262810778bf8"
+      },
+      {
+        "file": "src/index.mjs",
+        "bytes": 1227,
+        "blob": "917af70146ee2324587173f1447c479fe5f1c8c9",
+        "sha256": "de90ac5eb329bd69cba35d00731e74c178a509785ed09f19370a5eb7329986c7"
+      }
+    ],
+    "capabilityEvidence": [
+      {
+        "rule": "capability-files",
+        "file": "build-dsh-plugin/scripts/audit-candidate-entry.mjs",
+        "signal": "files",
+        "responsibility": "reviewer",
+        "line": 3,
+        "location": "line"
+      },
+      {
+        "rule": "capability-files",
+        "file": "build-dsh-plugin/scripts/audit-lifecycle.mjs",
+        "signal": "files",
+        "responsibility": "reviewer",
+        "line": 2,
+        "location": "line"
+      },
+      {
+        "rule": "capability-files",
+        "file": "build-dsh-plugin/scripts/audit-marketplace-entry.mjs",
+        "signal": "files",
+        "responsibility": "reviewer",
+        "line": 3,
+        "location": "line"
+      },
+      {
+        "rule": "capability-credentials",
+        "file": "build-dsh-plugin/scripts/audit-marketplace-entry.mjs",
+        "signal": "credentials",
+        "responsibility": "reviewer",
+        "line": 267,
+        "location": "line"
+      },
+      {
+        "rule": "capability-files",
+        "file": "build-dsh-plugin/scripts/audit-plugin.mjs",
+        "signal": "files",
+        "responsibility": "reviewer",
+        "line": 4,
+        "location": "line"
+      },
+      {
+        "rule": "capability-files",
+        "file": "build-dsh-plugin/scripts/normalize-brief.mjs",
+        "signal": "files",
+        "responsibility": "reviewer",
+        "line": 3,
+        "location": "line"
+      },
+      {
+        "rule": "capability-credentials",
+        "file": "build-dsh-plugin/scripts/official-dsh-releases.mjs",
+        "signal": "credentials",
+        "responsibility": "reviewer",
+        "line": 263,
+        "location": "line"
+      },
+      {
+        "rule": "capability-files",
+        "file": "src/index.mjs",
+        "signal": "files",
+        "responsibility": "reviewer",
+        "line": 1,
+        "location": "line"
+      }
+    ],
+    "toolViewEvidence": [],
+    "budgetFindings": [],
+    "licenseEvidence": [
+      {
+        "file": "LICENSE",
+        "bytes": 1068,
+        "blob": "12ce0c22e43bcf3dd516f563a371c4f890d5af27",
+        "sha256": "d5cf30d03dd5d174331b88459bd1ccada5f1e2acb062fdb5bb0504165daf4a26"
+      },
+      {
+        "file": "build-dsh-plugin/LICENSE",
+        "bytes": 1068,
+        "blob": "12ce0c22e43bcf3dd516f563a371c4f890d5af27",
+        "sha256": "d5cf30d03dd5d174331b88459bd1ccada5f1e2acb062fdb5bb0504165daf4a26"
+      }
+    ],
+    "reviewSignals": {
+      "toolViewExtension": false,
+      "dynamicModuleLoading": false,
+      "dynamicBinLoading": false
+    },
+    "scanComplete": true,
+    "filesScanned": 17,
+    "unsupportedFiles": 0,
+    "scope": {
+      "kind": "explicit-files-conservative-superset",
+      "repositoryEntries": 109,
+      "packageEntries": 38,
+      "files": 34
+    },
+    "runtimeFiles": 17,
+    "runtimeBytes": 116261,
+    "runtimeContext": "package",
+    "runtimeEntryFiles": [
+      "src/index.mjs"
+    ],
+    "binEntryFiles": [],
+    "contractVerified": true,
+    "contractReasons": [],
+    "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
+    "approved": false,
+    "repositoryLicense": "MIT",
+    "manifestLicense": "MIT",
+    "sourceUpdatedAt": "2026-11-03T12:19:13Z",
+    "dependencies": [],
+    "runtimeDependencies": {}
+  },
+  "record": {
+    "commit": "81ff7c73cefe53091e8710ad8851fe5a1167cdb0",
+    "binding": "943f79dfb3046a88c18e029c5b4255b5bc4064f3e5d8ff3cf7319f2d3cb4a224",
+    "repositoryUrl": "https://github.com/AI-Scarlett/build-dsh-plugin",
+    "verdict": "approved",
+    "reviewer": "Codex on behalf of AI-Scarlett",
+    "reviewedAt": "2026-11-03T12:45:13.132Z",
+    "rationale": "Complete fixed-source review of this exact MIT commit found no protected DSH mutation, runtime dependencies, lifecycle hooks, dynamic loading, native artifacts, or actual command execution. The sole child-process warning is the literal text in a static audit regex. File access is read-only. The bundled release resolver contacts only the fixed DSH GitHub Releases API and npm registry; it reads optional GITHUB_TOKEN for GitHub API authentication. Approve with these elevated signals disclosed under user-reviewed updates. Disposable DSH CLI latest-three install/start/uninstall/rollback evidence passed; Desktop-specific UI and real Profile acceptance remain unverified.",
+    "permissions": {
+      "level": "high",
+      "files": "read-only",
+      "network": "specified-services",
+      "commands": "none",
+      "credentials": [
+        "api-key"
+      ]
+    },
+    "dispositions": [
+      {
+        "kind": "false-positive",
+        "file": "build-dsh-plugin/scripts/audit-plugin.mjs",
+        "rule": "child-process",
+        "line": 157,
+        "sha256": "c6b569be0918a5bf2e7e04cd9e3d9437f34e34667f8ffd7d0fe1822ab58a95f2",
+        "rationale": "This line defines a regular expression used to detect forbidden imports; it does not call child_process or launch a process."
+      }
+    ],
+    "capabilityDispositions": [
+      {
+        "kind": "false-positive",
+        "signal": "credentials",
+        "file": "build-dsh-plugin/scripts/audit-marketplace-entry.mjs",
+        "line": 267,
+        "sha256": "fdaa38ccaf7c350b5c5afe1ad13ad6dc6f9ba2e9a9faf30979329d33547f6ca2",
+        "rationale": "This line validates Catalog permission field values; it does not read, store, or send a credential. The separate optional GitHub token read remains declared."
+      }
+    ],
+    "evidenceUrls": [
+      "https://github.com/AI-Scarlett/build-dsh-plugin/commit/81ff7c73cefe53091e8710ad8851fe5a1167cdb0",
+      "https://github.com/AI-Scarlett/build-dsh-plugin/blob/81ff7c73cefe53091e8710ad8851fe5a1167cdb0/package.json",
+      "https://github.com/AI-Scarlett/build-dsh-plugin/blob/81ff7c73cefe53091e8710ad8851fe5a1167cdb0/cordis.patch.yml",
+      "https://github.com/AI-Scarlett/build-dsh-plugin/blob/81ff7c73cefe53091e8710ad8851fe5a1167cdb0/src/index.mjs",
+      "https://github.com/AI-Scarlett/build-dsh-plugin/blob/81ff7c73cefe53091e8710ad8851fe5a1167cdb0/build-dsh-plugin/scripts/audit-plugin.mjs#L157",
+      "https://github.com/AI-Scarlett/build-dsh-plugin/blob/81ff7c73cefe53091e8710ad8851fe5a1167cdb0/build-dsh-plugin/scripts/audit-marketplace-entry.mjs#L267",
+      "https://github.com/AI-Scarlett/build-dsh-plugin/blob/81ff7c73cefe53091e8710ad8851fe5a1167cdb0/build-dsh-plugin/scripts/official-dsh-releases.mjs#L263",
+      "https://github.com/AI-Scarlett/build-dsh-plugin/actions/runs/41634793467"
+    ]
+  },
+  "sourceChecks": {
+    "pullRequest": 22,
+    "headCommit": "81ff7c73cefe53091e8710ad8851fe5a1167cdb0",
+    "state": "open",
+    "runId": 41634793467,
+    "runUrl": "https://github.com/AI-Scarlett/build-dsh-plugin/actions/runs/41634793467",
+    "requiredJobs": [
+      "verify",
+      "resolve-dsh-window",
+      "dsh-compatibility matrix for 0.2.1-rc.5",
+      "dsh-compatibility matrix for 0.2.2-alpha.2",
+      "dsh-compatibility matrix for 0.2.2-alpha.3"
+    ],
+    "allRequiredJobs": "success",
+    "compatibilityMatrix": [
+      {
+        "os": "ubuntu-latest",
+        "release": "0.2.1-rc.5",
+        "state": "success"
+      },
+      {
+        "os": "ubuntu-latest",
+        "release": "0.2.2-alpha.2",
+        "state": "success"
+      },
+      {
+        "os": "ubuntu-latest",
+        "release": "0.2.2-alpha.3",
+        "state": "success"
+      },
+      {
+        "os": "macos-latest",
+        "release": "0.2.1-rc.5",
+        "state": "success"
+      },
+      {
+        "os": "macos-latest",
+        "release": "0.2.2-alpha.2",
+        "state": "success"
+      },
+      {
+        "os": "macos-latest",
+        "release": "0.2.2-alpha.3",
+        "state": "success"
+      },
+      {
+        "os": "windows-latest",
+        "release": "0.2.1-rc.5",
+        "state": "success"
+      },
+      {
+        "os": "windows-latest",
+        "release": "0.2.2-alpha.2",
+        "state": "success"
+      },
+      {
+        "os": "windows-latest",
+        "release": "0.2.2-alpha.3",
+        "state": "success"
+      }
+    ]
+  },
+  "boundaries": {
+    "desktopSpecificCompatibility": "not-claimed",
+    "desktopInstallDecision": "official DSH Desktop plugin manager",
+    "desktopUiAcceptance": "unverified",
+    "realProfile": "unchanged",
+    "independentSecurityAudit": "not-performed",
+    "thirdPartyCodeExecutedByReview": false
+  }
+}
