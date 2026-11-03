@@ -551,8 +551,83 @@ window.__ModuleLoader__.load({
         gap: '8px 10px', paddingBottom: '12px', borderBottom: '1px solid var(--dsw-alias-border-l2)',
       },
       marketViewTab: {
-        boxSizing: 'border-box', width: 'auto', minWidth: 'min(168px, 100%)', maxWidth: '100%', flex: '0 0 auto',
-        minHeight: '46px', justifyContent: 'center', textAlign: 'center', whiteSpace: 'normal', overflowWrap: 'normal', lineHeight: '1.35',
+        boxSizing: 'border-box', width: 'auto', maxWidth: '100%', flex: '0 0 auto',
+        minHeight: '46px', padding: '8px 14px', borderRadius: '9px',
+        justifyContent: 'center', textAlign: 'center', whiteSpace: 'normal',
+        overflowWrap: 'normal', lineHeight: '1.35', fontSize: '13px',
+        border: '1px solid var(--dsw-alias-border-l2)', background: 'var(--dsw-alias-bg-layer-2)',
+        color: 'var(--dsw-alias-label-secondary)', cursor: 'pointer',
+      },
+      marketHeroLink: {
+        display: 'inline-flex', alignItems: 'center', height: '28px', padding: '0 10px',
+        borderRadius: '7px', fontSize: '11px', textDecoration: 'none',
+        border: '1px solid var(--dsw-alias-border-l2)', background: 'var(--dsw-alias-bg-layer-2)',
+        color: 'var(--dsw-alias-label-secondary)', lineHeight: '26px', boxSizing: 'border-box',
+      },
+      marketFilterRow: {
+        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+        flexWrap: 'wrap', gap: '8px',
+      },
+      marketFacetGroup: {
+        display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: '8px',
+      },
+      marketNotice: {
+        border: '1px solid var(--dsw-alias-border-l2)', borderRadius: '10px',
+        padding: '10px 14px', background: 'var(--dsw-alias-bg-layer-2)',
+        color: 'var(--dsw-alias-label-secondary)', fontSize: '11.5px', lineHeight: '17px',
+      },
+      actionHeaderCard: {
+        display: 'flex', flexDirection: 'column', gap: '8px',
+        padding: '12px 14px', borderRadius: '10px',
+        background: 'var(--dsw-alias-bg-layer-2)',
+        border: '1px solid var(--dsw-alias-border-l2)',
+      },
+      specBox: {
+        fontFamily: 'ui-monospace, SFMono-Regular, Menlo, monospace',
+        fontSize: '11.5px', lineHeight: '1.45', wordBreak: 'break-all',
+        color: 'var(--dsw-alias-label-primary)',
+        padding: '8px 10px', borderRadius: '7px',
+        background: 'var(--dsw-alias-bg-layer-1)',
+        border: '1px solid var(--dsw-alias-border-l2)',
+        marginTop: '2px',
+      },
+      actionNoticeCard: {
+        border: '1px solid var(--dsw-alias-border-l2)',
+        borderRadius: '10px',
+        padding: '10px 13px',
+        fontSize: '12px',
+        lineHeight: '18px',
+        background: 'var(--dsw-alias-bg-layer-2)',
+        color: 'var(--dsw-alias-label-secondary)',
+      },
+      actionConfirmCard: {
+        display: 'flex', flexDirection: 'column', gap: '8px',
+        padding: '12px 14px', borderRadius: '10px',
+        background: 'var(--dsw-alias-bg-layer-2)',
+        border: '1px solid var(--dsw-alias-border-l2)',
+        marginTop: '4px',
+      },
+      actionConfirmLabel: { display: 'flex', flexDirection: 'column', gap: '8px' },
+      actionConfirmCode: {
+        fontFamily: 'ui-monospace, SFMono-Regular, Menlo, monospace',
+        fontSize: '11.5px', fontWeight: 650,
+        padding: '2px 6px', borderRadius: '5px',
+        background: 'var(--dsw-alias-bg-layer-1)',
+        border: '1px solid var(--dsw-alias-border-l2)',
+        color: 'var(--dsw-alias-label-primary)',
+        wordBreak: 'break-all',
+      },
+      actionConfirmInput: {
+        fontFamily: 'ui-monospace, SFMono-Regular, Menlo, monospace',
+        fontSize: '12px',
+        height: '36px',
+        padding: '0 10px',
+        borderRadius: '7px',
+        border: '1px solid var(--dsw-alias-border-l2)',
+        background: 'var(--dsw-alias-bg-layer-1)',
+        color: 'var(--dsw-alias-label-primary)',
+        boxSizing: 'border-box',
+        width: '100%',
       },
       marketPluginTabs: {
         display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'flex-start', alignSelf: 'flex-start',
@@ -3567,43 +3642,45 @@ window.__ModuleLoader__.load({
       }
       const directoryViewContent = React.createElement(React.Fragment, null,
         React.createElement('div', { style: styles.marketDirectoryControls, 'aria-label': '目录搜索和筛选' },
-        React.createElement('div', { style: styles.marketToolbar },
-          React.createElement('input', {
-            type: 'search', value: query, onChange: event => { setQuery(event.target.value); setPage(1) },
-            style: { ...styles.input, flex: '1 1 280px', minWidth: '180px' },
-            placeholder: '搜索插件名称、用途或 GitHub 仓库', 'aria-label': '搜索全部已知插件', autoComplete: 'off', spellCheck: false,
-          }),
-          React.createElement('select', {
-            value: category, onChange: event => { setCategory(event.target.value); setPage(1) },
-            style: styles.select, 'aria-label': '按分类筛选',
-          }, React.createElement('option', { value: '' }, `全部分类 · ${activeDirectoryRows.length}`),
-          categoryIds.map(id => React.createElement('option', { key: id, value: id }, `${directoryCategoryLabel(id)} · ${directoryCategoryCounts.get(id) || 0}`))),
-          React.createElement('select', {
-            value: directoryClientFilter, onChange: event => { setDirectoryClientFilter(event.target.value); setPage(1) },
-            style: { ...styles.select, minWidth: '220px' }, 'aria-label': '按 DSH Desktop 适配声明筛选',
-            title: '只按 Catalog 是否声明 Desktop Profile 筛选；未声明不等于不兼容。',
-          }, React.createElement('option', { value: 'all' }, `全部适配状态 · ${directoryClientCounts.all}`),
-          React.createElement('option', { value: 'declared' }, `已声明适配 DSH Desktop · ${directoryClientCounts.declared}`),
-          React.createElement('option', { value: 'undeclared' }, `未声明适配 DSH Desktop · ${directoryClientCounts.undeclared}`)),
-          React.createElement('select', {
-            value: directoryReviewFilter, onChange: event => { setDirectoryReviewFilter(event.target.value); setPage(1) },
-            style: styles.select, 'aria-label': '按 DSH STORE 审核状态筛选',
-          }, directoryReviewOptions.map(([id, label, count]) => React.createElement('option', { key: id, value: id }, `${label} · ${count}`))),
-          view === 'directory' ? React.createElement('select', {
-            value: sortBy === 'recent' ? 'recommended' : sortBy, onChange: event => { setSortBy(event.target.value); setPage(1) },
-            style: styles.select, 'aria-label': '排序方式',
-          }, React.createElement('option', { value: 'recommended' }, '分类、收录与 Stars'),
-          React.createElement('option', { value: 'name' }, '名称 A-Z'), React.createElement('option', { value: 'stars' }, 'Stars 从高到低')) : null),
-        React.createElement('div', { style: styles.marketFilterTabs, role: 'group', 'aria-label': '按官网目录收录状态筛选' },
-          [['all', '全部已知', directoryCounts.all], ['listed', 'Catalog 有记录', directoryCounts.listed], ['unlisted', 'Catalog 未收录', directoryCounts.unlisted]]
-            .map(([id, label, count]) => React.createElement(Button, {
-              key: id, compact: true, primary: directoryListingFilter === id, ariaPressed: directoryListingFilter === id,
-              onClick: () => { setDirectoryListingFilter(id); setPage(1) },
-            }, `${label} · ${count}`)))),
+          React.createElement('div', { style: styles.marketToolbar },
+            React.createElement('input', {
+              type: 'search', value: query, onChange: event => { setQuery(event.target.value); setPage(1) },
+              style: { ...styles.input, flex: '1 1 280px', minWidth: '180px', height: '36px', borderRadius: '8px' },
+              placeholder: '搜索插件名称、用途或 GitHub 仓库', 'aria-label': '搜索全部已知插件', autoComplete: 'off', spellCheck: false,
+            }),
+            view === 'directory' ? React.createElement('select', {
+              value: sortBy === 'recent' ? 'recommended' : sortBy, onChange: event => { setSortBy(event.target.value); setPage(1) },
+              style: { ...styles.select, height: '36px', borderRadius: '8px' }, 'aria-label': '排序方式',
+            }, React.createElement('option', { value: 'recommended' }, '分类、收录与 Stars'),
+            React.createElement('option', { value: 'name' }, '名称 A-Z'), React.createElement('option', { value: 'stars' }, 'Stars 从高到低')) : null,
+            directoryHasFilters ? React.createElement(Button, { compact: true, onClick: clearDirectoryFilters }, '清除筛选') : null),
+          React.createElement('div', { style: styles.marketFilterRow },
+            React.createElement('div', { style: styles.marketFilterTabs, role: 'group', 'aria-label': '按官网目录收录状态筛选' },
+              [['all', '全部已知', directoryCounts.all], ['listed', 'Catalog 有记录', directoryCounts.listed], ['unlisted', 'Catalog 未收录', directoryCounts.unlisted]]
+                .map(([id, label, count]) => React.createElement(Button, {
+                  key: id, compact: true, primary: directoryListingFilter === id, ariaPressed: directoryListingFilter === id,
+                  onClick: () => { setDirectoryListingFilter(id); setPage(1) },
+                }, `${label} · ${count}`))),
+            React.createElement('div', { style: styles.marketFacetGroup },
+              React.createElement('select', {
+                value: category, onChange: event => { setCategory(event.target.value); setPage(1) },
+                style: { ...styles.select, height: '32px', borderRadius: '7px' }, 'aria-label': '按分类筛选',
+              }, React.createElement('option', { value: '' }, `全部分类 · ${activeDirectoryRows.length}`),
+              categoryIds.map(id => React.createElement('option', { key: id, value: id }, `${directoryCategoryLabel(id)} · ${directoryCategoryCounts.get(id) || 0}`))),
+              React.createElement('select', {
+                value: directoryClientFilter, onChange: event => { setDirectoryClientFilter(event.target.value); setPage(1) },
+                style: { ...styles.select, minWidth: '180px', height: '32px', borderRadius: '7px' }, 'aria-label': '按 DSH Desktop 适配声明筛选',
+                title: '只按 Catalog 是否声明 Desktop Profile 筛选；未声明不等于不兼容。',
+              }, React.createElement('option', { value: 'all' }, `全部适配状态 · ${directoryClientCounts.all}`),
+              React.createElement('option', { value: 'declared' }, `已声明适配 DSH Desktop · ${directoryClientCounts.declared}`),
+              React.createElement('option', { value: 'undeclared' }, `未声明适配 DSH Desktop · ${directoryClientCounts.undeclared}`)),
+              React.createElement('select', {
+                value: directoryReviewFilter, onChange: event => { setDirectoryReviewFilter(event.target.value); setPage(1) },
+                style: { ...styles.select, height: '32px', borderRadius: '7px' }, 'aria-label': '按 DSH STORE 审核状态筛选',
+              }, directoryReviewOptions.map(([id, label, count]) => React.createElement('option', { key: id, value: id }, `${label} · ${count}`)))))),
         React.createElement('div', { style: styles.marketResults },
           React.createElement('span', { style: styles.muted, role: 'status' },
-            `${directoryFiltered.length} 条结果 · 第 ${directoryCurrentPage} / ${directoryPageCount} 页 · ${view === 'recommended' ? '官网推荐榜' : view === 'essential' ? '官网必装榜' : `${directoryCounts.approved} 已审核 · ${directoryCounts.blocked} 已拦截 · ${directoryCounts.unlisted} 未收录`}`),
-          directoryHasFilters ? React.createElement(Button, { compact: true, onClick: clearDirectoryFilters }, '清除筛选') : null),
+            `${directoryFiltered.length} 条结果 · 第 ${directoryCurrentPage} / ${directoryPageCount} 页 · ${view === 'recommended' ? '官网推荐榜' : view === 'essential' ? '官网必装榜' : `${directoryCounts.approved} 已审核 · ${directoryCounts.blocked} 已拦截 · ${directoryCounts.unlisted} 未收录`}`)),
         ['recommended', 'essential'].includes(view) && rankingState.status === 'loading'
           ? React.createElement('div', { style: styles.marketEmpty, role: 'status' }, '正在读取官网榜单并核验发布摘要…') : null,
         ['recommended', 'essential'].includes(view) && rankingState.status === 'error'
@@ -3716,31 +3793,34 @@ window.__ModuleLoader__.load({
         React.createElement('div', { style: styles.marketToolbar },
           React.createElement('input', {
             type: 'search', value: query, onChange: event => { setQuery(event.target.value); setPage(1) },
-            style: { ...styles.input, flex: '1 1 280px', minWidth: '180px' },
+            style: { ...styles.input, flex: '1 1 280px', minWidth: '180px', height: '36px', borderRadius: '8px' },
             placeholder: view === 'official' ? '搜索官方插件包名、版本或来源' : '搜索名称、用途、别名、权限或 GitHub 仓库',
             'aria-label': view === 'official' ? '搜索官方插件' : '搜索插件',
           }),
-          view !== 'official' ? React.createElement('select', {
-            value: category, onChange: event => { setCategory(event.target.value); setPage(1) },
-            style: styles.select, 'aria-label': '按分类筛选',
-          }, React.createElement('option', { value: '' }, '全部分类'),
-          categoryIds.map(id => React.createElement('option', { key: id, value: id }, categoryLabels[id] || id))) : null,
-          view !== 'official' ? React.createElement('select', {
-            value: clientFilter, onChange: event => { setClientFilter(event.target.value); setPage(1) },
-            style: styles.select, 'aria-label': '按 Desktop 适配标识筛选',
-          }, React.createElement('option', { value: 'all' }, '全部客户端适配状态'),
-          React.createElement('option', { value: 'declared' }, '已声明适配 Desktop'),
-          React.createElement('option', { value: 'undeclared' }, '未声明适配 Desktop')) : null,
           React.createElement('select', {
             value: sortBy, onChange: event => { setSortBy(event.target.value); setPage(1) },
-            style: styles.select, 'aria-label': '排序方式',
-          }, React.createElement('option', { value: 'recommended' }, '默认排序'),
-          React.createElement('option', { value: 'recent' }, '最近更新'),
-          React.createElement('option', { value: 'name' }, '名称 A-Z'))),
-        view === 'catalog' ? React.createElement('div', { style: styles.marketFilterTabs, role: 'group', 'aria-label': '按状态筛选' },
-          [['all', '全部'], ['approved', 'Catalog 已审核'], ['blocked', 'Catalog 已拦截'], ['installed', '已安装']].map(([id, label]) =>
-            React.createElement(Button, { key: id, compact: true, primary: listFilter === id, ariaPressed: listFilter === id,
-              onClick: () => { setListFilter(id); setPage(1) } }, `${label} · ${statusCounts[id]}`)))
+            style: { ...styles.select, height: '36px', borderRadius: '8px' }, 'aria-label': '排序方式',
+            }, React.createElement('option', { value: 'recommended' }, '默认排序'),
+            React.createElement('option', { value: 'recent' }, '最近更新'),
+            React.createElement('option', { value: 'name' }, '名称 A-Z')),
+          hasFilters ? React.createElement(Button, { compact: true, onClick: resetInventoryFilters }, '清除筛选') : null),
+        view === 'catalog' ? React.createElement('div', { style: styles.marketFilterRow },
+          React.createElement('div', { style: styles.marketFilterTabs, role: 'group', 'aria-label': '按状态筛选' },
+            [['all', '全部'], ['approved', 'Catalog 已审核'], ['blocked', 'Catalog 已拦截'], ['installed', '已安装']].map(([id, label]) =>
+              React.createElement(Button, { key: id, compact: true, primary: listFilter === id, ariaPressed: listFilter === id,
+                onClick: () => { setListFilter(id); setPage(1) } }, `${label} · ${statusCounts[id]}`))),
+          React.createElement('div', { style: styles.marketFacetGroup },
+            React.createElement('select', {
+              value: category, onChange: event => { setCategory(event.target.value); setPage(1) },
+              style: { ...styles.select, height: '32px', borderRadius: '7px' }, 'aria-label': '按分类筛选',
+            }, React.createElement('option', { value: '' }, '全部分类'),
+            categoryIds.map(id => React.createElement('option', { key: id, value: id }, categoryLabels[id] || id))),
+            React.createElement('select', {
+              value: clientFilter, onChange: event => { setClientFilter(event.target.value); setPage(1) },
+              style: { ...styles.select, height: '32px', borderRadius: '7px' }, 'aria-label': '按 Desktop 适配标识筛选',
+            }, React.createElement('option', { value: 'all' }, '全部客户端适配状态'),
+            React.createElement('option', { value: 'declared' }, '已声明适配 Desktop'),
+            React.createElement('option', { value: 'undeclared' }, '未声明适配 Desktop'))))
           : React.createElement('div', { style: styles.marketStats, 'aria-label': '已安装插件状态' },
             (view === 'official'
               ? [[officialPluginCount, '已安装官方组件'],
@@ -3757,10 +3837,7 @@ window.__ModuleLoader__.load({
               : `${filtered.length} 条结果 · 第 ${currentPage} / ${pageCount} 页 · ${view === 'official'
                 ? 'DSH 官方组件只读展示'
                 : view === 'installed' ? `其中 ${installedCatalogEntries.length} 个与 Catalog 匹配`
-                  : `Desktop Profile ${installedCount} 个已安装 bundle`}`),
-          hasFilters ? React.createElement(Button, { compact: true, onClick: () => {
-            setQuery(''); setCategory(''); setListFilter('all'); setClientFilter('all'); setSortBy('recommended'); setPage(1)
-          } }, '清除筛选') : null),
+                  : `Desktop Profile ${installedCount} 个已安装 bundle`}`)),
         filtered.length === 0 ? React.createElement('div', { style: styles.marketEmpty },
           React.createElement('strong', { style: styles.name }, installedInventoryUnavailable ? '无法读取已安装列表'
             : view === 'official' ? '当前没有匹配的官方插件'
@@ -3849,22 +3926,22 @@ window.__ModuleLoader__.load({
             React.createElement('div', { style: styles.actions },
               loadState.status === 'ready' && loadState.runtimeVersion
                 ? React.createElement('span', { style: styles.versionPill }, 'DSH ' + loadState.runtimeVersion) : null,
-              React.createElement('a', { href: 'https://dsh.store/rankings/', target: '_blank', rel: 'noreferrer', style: styles.link }, '官网榜单 ↗'),
-              React.createElement('a', { href: 'https://dsh.store/plugins/', target: '_blank', rel: 'noreferrer', style: styles.link }, '官网完整目录 ↗'),
+              React.createElement('a', { href: 'https://dsh.store/rankings/', target: '_blank', rel: 'noreferrer', style: styles.marketHeroLink }, '官网榜单 ↗'),
+              React.createElement('a', { href: 'https://dsh.store/plugins/', target: '_blank', rel: 'noreferrer', style: styles.marketHeroLink }, '官网完整目录 ↗'),
               React.createElement(Button, { compact: true, disabled: refreshing, onClick: () => {
                 void refresh()
                 if (['recommended', 'essential'].includes(view)) void loadRankings()
               } },
                 refreshing ? '正在刷新…' : '刷新目录'))),
           loadState.status === 'ready' ? React.createElement('div', { style: styles.marketStats, 'aria-label': '目录概况' },
-            [[directoryState.status === 'ready' ? directoryRows.length : directoryState.status === 'loading' ? '读取中' : '暂不可用', '已知目录条目'],
+            [[directoryState.status === 'ready' ? directoryRows.length : directoryState.status === 'loading' ? '—' : '暂不可用', '已知目录条目'],
               [directoryCounts.listed, '有 Catalog 记录'], [directoryCounts.approved, 'Catalog 已审核'],
               [directoryCounts.blocked, 'Catalog 已拦截'], [directoryCounts.withdrawn, 'Catalog 未上架'],
-              [inventoryState.status === 'ready' ? installedCount : inventoryState.status === 'loading' ? '读取中' : '暂不可用', 'Desktop 已安装']].map(([value, label]) =>
+              [inventoryState.status === 'ready' ? installedCount : inventoryState.status === 'loading' ? '—' : '暂不可用', 'Desktop 已安装']].map(([value, label]) =>
               React.createElement('div', { key: label, style: styles.marketStat },
                 React.createElement('span', { style: styles.marketStatValue }, String(value)),
                 React.createElement('span', { style: styles.marketStatLabel }, label)))) : null),
-        React.createElement('div', { style: styles.notice, role: 'status' },
+        React.createElement('div', { style: styles.marketNotice, role: 'status' },
           '商城分开提供完整目录、Catalog 审核记录、官网推荐榜和必装榜。收录、审核、推荐和榜单位置是不同信息；完整目录中的 DSH 插件来源可在确认后交给 DSH Desktop 检查，候选与未上架状态仅作建议，最终安装结果只按 DSH 官方管理器返回判断。生态应用、官方受保护组件和格式无效的仓库不提供插件安装动作。',
           loadState.status === 'ready' && !loadState.runtimeVersion
             ? React.createElement('div', { style: styles.muted }, '商城无法读取用于显示的 DSH 版本；安装仍会交由 Desktop 官方插件管理器按当前运行环境校验。') : null,
@@ -3893,7 +3970,12 @@ window.__ModuleLoader__.load({
               style: styles.marketViewTab,
               onClick: () => { setView('installed'); resetInventoryFilters() } }, '本机插件'),
             React.createElement('a', { href: 'https://dsh.store/plugins/', target: '_blank', rel: 'noreferrer',
-              style: { ...styles.link, ...styles.marketViewTab, display: 'flex', alignItems: 'center' } }, '官网目录 ↗')),
+              style: {
+                ...styles.link, ...styles.marketViewTab,
+                display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+                border: '1px dashed var(--dsw-alias-border-l2)',
+                background: 'transparent', textDecoration: 'none',
+              } }, '官网目录 ↗')),
           ['official', 'installed'].includes(view) ? React.createElement('div', {
             style: styles.marketPluginTabs, role: 'tablist', 'aria-label': '本机插件视图',
           },
@@ -3945,19 +4027,27 @@ window.__ModuleLoader__.load({
           closeLabel: '关闭 Desktop 插件操作', footer: operationFooter,
           className: 'dsh-safe-plugin-detail-modal', contentClassName: 'dsh-safe-plugin-detail-content',
         }, React.createElement('div', { style: styles.detailSection },
-          React.createElement('div', { style: styles.code }, actionPlan.entry.packageName + ' · ' + actionPlan.entry.version),
-          React.createElement('div', { style: styles.muted }, 'GitHub：' + actionPlan.entry.repositoryUrl),
-          React.createElement('div', { style: styles.code }, actionPlan.entry.installMode === 'github-default-branch'
-            ? '来源：GitHub 默认分支，由 DSH Desktop 解析并检查'
-            : '固定 Commit：' + actionPlan.entry.commit),
-          React.createElement('div', { style: styles.muted }, actionInstalledSummary),
-          ['install', 'update'].includes(actionPlan.action)
-            ? React.createElement('div', { style: styles.code }, (actionPlan.action === 'update' ? '更新' : '安装')
-              + ' spec：' + desktopInstallSpecifier(actionPlan.entry)) : null,
+          React.createElement('div', { style: styles.actionHeaderCard },
+            React.createElement('div', { style: { display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '8px' } },
+              React.createElement('div', { style: { display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' } },
+                React.createElement('span', { style: { fontSize: '15px', fontWeight: 700, color: 'var(--dsw-alias-label-primary)' } }, actionPlan.entry.packageName),
+                React.createElement('span', { style: styles.versionPill }, 'v' + actionPlan.entry.version)),
+              actionInstalledSummary ? React.createElement('span', { style: styles.statusPill }, actionInstalledSummary) : null),
+            React.createElement('div', { style: { display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: '8px', fontSize: '12px' } },
+              React.createElement('a', { href: actionPlan.entry.repositoryUrl, target: '_blank', rel: 'noreferrer', style: styles.link }, 'GitHub：' + actionPlan.entry.repositoryUrl),
+              actionPlan.entry.installMode === 'github-default-branch'
+                ? React.createElement('span', { style: styles.badge }, '来源：GitHub 默认分支，由 DSH Desktop 解析并检查')
+                : React.createElement('span', { style: styles.badge }, '固定 Commit：' + actionPlan.entry.commit)),
+            ['install', 'update'].includes(actionPlan.action)
+              ? React.createElement('div', { style: styles.specBox },
+                (actionPlan.action === 'update' ? '更新' : '安装') + ' spec：' + desktopInstallSpecifier(actionPlan.entry)) : null),
+          React.createElement('div', { style: { display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: '6px' } },
+            React.createElement('span', { style: styles.badge }, 'DSH 版本：' + (loadState.runtimeVersion || '未知') + ' · ' + licenseLabel(actionPlan.entry.details?.license)),
+            React.createElement('span', { style: styles.badge }, permissionsOf(actionPlan.entry))),
           ['install', 'update'].includes(actionPlan.action) && actionPlan.entry.status === 'blocked'
             ? React.createElement(ReviewAdvice, { reason: actionPlan.entry.statusReason, compact: true }) : null,
           actionPlan.entry.installMode === 'github-default-branch' && actionPlan.entry.status !== 'approved'
-            ? React.createElement('div', { style: styles.notice, role: 'status' },
+            ? React.createElement('div', { style: styles.actionNoticeCard, role: 'status' },
               (actionPlan.entry.directorySource === 'candidate' ? 'Store 候选审核状态：' : 'Store Catalog 状态：')
               + (actionPlan.entry.directorySource === 'candidate' ? actionPlan.entry.candidateStatus : actionPlan.entry.status)
               + '。这是商城建议，不是 DSH 的安装结论；你确认后仍可提交给 DSH Desktop，由 DSH 判断是否接受。') : null,
@@ -3965,13 +4055,10 @@ window.__ModuleLoader__.load({
             && actionPlan.entry.status !== 'blocked' && actionPlan.entry.statusReason
             ? React.createElement(ReviewAdvice, { reason: actionPlan.entry.statusReason, compact: true }) : null,
           ['install', 'update'].includes(actionPlan.action) && actionPlan.entry.updatePolicy === 'external-only'
-            ? React.createElement('div', { style: styles.notice }, '更新策略：external-only。此次仅把当前 Catalog 固定 Commit 交由 DSH 检查；Store 不会自动跟随后续源码更新。') : null,
-          React.createElement('div', { style: styles.muted },
-            'DSH 版本：' + (loadState.runtimeVersion || '未知') + ' · ' + licenseLabel(actionPlan.entry.details.license)),
-          React.createElement('div', { style: styles.muted }, permissionsOf(actionPlan.entry)),
+            ? React.createElement('div', { style: styles.actionNoticeCard }, '更新策略：external-only。此次仅把当前 Catalog 固定 Commit 交由 DSH 检查；Store 不会自动跟随后续源码更新。') : null,
           actionPlan.entry.risk?.installScripts?.length ? React.createElement('div', { style: styles.error },
             '本包声明安装脚本：' + actionPlan.entry.risk.installScripts.join('、') + '。商城不会代为批准构建脚本。') : null,
-          React.createElement('div', { style: styles.notice },
+          React.createElement('div', { style: styles.actionNoticeCard },
             actionPlan.entry.installMode === 'github-default-branch'
               ? '此来源不是 Catalog 固定 Commit；用户确认后，商城会把精确 GitHub 仓库默认分支交给 DSH Desktop 官方安装器。收录和审核状态仅作建议，预检提示不会拦截请求；最终状态以 DSH 返回及 Desktop 安装清单为准。商城不会自动授权安装脚本。'
               : 'DSH 官方安装器会检查固定来源并处理 Profile。预检提示不会阻止本次已确认的安装请求；最终状态以 DSH 官方安装器和 Desktop 已安装清单为准。商城不会自动授权安装脚本。'),
@@ -4002,14 +4089,16 @@ window.__ModuleLoader__.load({
             + '刷新目录核对状态；商城不会自动重试。') : null,
           actionState.status === 'unknown' ? React.createElement('div', { style: styles.error, role: 'alert' },
             '操作结果暂时无法确认。商城已刷新 Desktop Profile；请核对当前状态后再决定下一步，不会自动重试。') : null,
-          !['success', 'error', 'unknown'].includes(actionState.status) ? React.createElement('label', { style: styles.muted },
-            '输入 ' + actionPlan.confirmation + '，确认在当前 Desktop Profile 执行'
-              + (['install', 'update'].includes(actionPlan.action) && actionPlan.entry.status === 'blocked'
-                ? 'DSH 检查与' + actionLabel(actionPlan.action) : actionLabel(actionPlan.action)) + '：',
-            React.createElement('input', {
-              value: confirmation, onChange: event => { setConfirmation(event.target.value) },
-              style: styles.input, placeholder: actionPlan.confirmation, disabled: actionState.status === 'running',
-            })) : null)) : null) : null)
+          !['success', 'error', 'unknown'].includes(actionState.status) ? React.createElement('div', { style: styles.actionConfirmCard },
+            React.createElement('label', { style: styles.actionConfirmLabel },
+              '输入 ' + actionPlan.confirmation + '，确认在当前 Desktop Profile 执行'
+                + (['install', 'update'].includes(actionPlan.action) && actionPlan.entry.status === 'blocked'
+                  ? 'DSH 检查与' + actionLabel(actionPlan.action) : actionLabel(actionPlan.action)) + '：',
+              React.createElement('input', {
+                value: confirmation, onChange: event => { setConfirmation(event.target.value) },
+                style: styles.actionConfirmInput, placeholder: actionPlan.confirmation, disabled: actionState.status === 'running',
+                autoComplete: 'off', spellCheck: false, 'aria-label': '操作确认短语',
+              }))) : null)) : null) : null)
     }
 
     const STORE_PANEL_ICON = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAYAAADimHc4AAAAAXNSR0IArs4c6QAAAERlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAA6ABAAMAAAABAAEAAKACAAQAAAABAAAAYKADAAQAAAABAAAAYAAAAACpM19OAAAxgUlEQVR4Ae2dC5RlR1nvq/brnNOn3z2dnmcyeYEkSAhRNIZH0IiA4eJS49V7UUQl8lBYCFwvCEwPiNwrIAiieL24wpW1WGbkabiAD4gBFJJMEhISk8xk8phhJjM909Pv89y77u//7XN6hiwl3Ul0edfqmqmza9euXbvq/z3qq69q73buP37w//GbuNHCDQQ2ENhAYAOBDQQ2ENhAYAOBDQQ2ENhAYO0I/HtPck49L4TvbuXu3VzbRd5uDruCs/NeEZ2vNex2nmoCv2sMKtiv3m7qn6zx/sdXbM3NfIyP8W56mmcI2OujS7YM+fnWSNQdSny7fSLKaynXplarLqon/Phi7GeHckCYdFGz4HiU61Mu78xF/YK+dz1vz0dRa5QyJ7g04dxxHU8PE65oRL0+ztqFaCUPfikP0cBEiBeKkLVbhS50lxOf1LthIjuR7713MbjJy4Pb4+yaK6nJc5748G9DgBA8jEzddyVbtzSSdjIYV4fqadrN0m49irPQjvMwEIcB70PH+SgORRJ8XGRRnHYy3yna1tmomuWkgms6Byni0Gl7nyI6hVi2InRig0T53azwEVmdlndteLpD3V3naUpU7aRFp3C5awFll3tbTecTiiyGvJZQX7NGNQ3XWg5F5rqdTmh3qs1mt9me6Yy4kfzOmWOFu/4feNx0jyBPHCGeYAIA/LV7ovMevjiZj9tpOjZWrYzU6r4SV0I3quVRNJhGaVYUeZpHSRYVbigkzhcF+EYuSgKoEnLphMKJ43vwQ4DCpdZtQeD5JyAVCtK5C151dF1UkI5DnLsOtfBfMaaM78RF3oL7uyrNP/KjjutwVyvpJkXU7dIsztuunRTtdrsbL0Yryysh6rTzxUa7mx5pTR3Iunv3XsedTxwhnjgCTAPhlr3x5FgNECcHs3p1OKkkE3kRb859vCkf9FtDze1Mh/xInLlaGrvBzLkRClcSH+LY+TwXsN4F4QXnx21w6nrXgXuDJIDr3W7uIhSUB/AcoriQIxnibm4q4HxxOIQoOHInBGhxBYaXVJhktCnbJLZ98A1ymqHtu/oXOnGzmI86/lil42ZqwR2t5sWDBbqvm+fzWbNxsuEWG9FS0dw/eGvX7fk5kfdxhyeCAHD9tdH2Q9uzMHHmQD5cH/L1bFMoKud0B8MPF5PxJcmmcN7AkJvIgs8qqIYaqqDSda4OqsNEOusyMOpyXKJbDbolzbwM0k3vDb8W5ZrkNSjTLbwruJZTlmxXUBeEcADPRY4CW+DriPqS6kHV2dHUkM6JpUqC5rqXeiAVEgN1C9dOu2Gh2vF3DBXh60Mu3I6YPuC7K7PtaGW+emKmkZ74Rnvv3qt5mtedjzk8TgKUKmfryXMqeW100I9OTUZJuq1VS3+we6Z/cbY1fH+liAY6D4DHPUVoHipC5yS6okEUW+fqMe3vd8FA0HkvDzBKhFVMacob4pzrXt1u57qmPN132j0qI6oWZBa0tV8eMbJnkoXy4rqO0ngpcpZ5V695ZNNHI6mLo9AebId9Y859bijuXN9tdw51Gq15Hx1f2LJwpHH99ZdT2WMnwuMjwFXXxtsv3Z61N28e9sOjkz7Uv29lKrkqeZL7iYEkGml8swiLxPZh2G1pBTDE27Cl2BWFa2DRdkZKkqXlqKPlc1C+0jpIMZUEIC3Qy0zSOtc15akcP0acXl6uCiwfAvSv6Vz3nX7sEaJIyBwgDiKWo85PjPp4c91XfVgZL4ovj6Xu41Eo7u40Tj5cCfmiO/zXnb17f12ypxrXHR47AaTz3fXZtqedXw/p8GTHV3+ocVb0a/F50Y+k+0O0cF1RtO9bQgXMwf6LgI8uyGknwKNVDLASdNotcA3QXvuVtsi58COWRCrP+5zer6ckjq7x34jRq8+kQ2ld46Gq06QBfWfX+s9Rg+gOPFGWw7jCTDJCBHi/stnFWzZF9fGKGynCNybS4iNxN78FImAjH12+feSe5mMdE/SUxxDUmz3J6Fk/WG2nQ+ORq1y0tDN5RXyOvyy/oQjzX2gX7sRxFPaM8x04X0oa8AOxz9UCzQt4Q00HgAYUxuASKJ2Tbefk64p0iDDkRCqFI/cXhdFmtV6pGi6pbtWn4HW/brT7dP8qMXpp3cF8wZoDIUwdiQiSWJinedLlD24rlhfPdJVt9R+eb0TxWM19MEvrtzWbm2d2zszmD7hp6phWDesKIv36w7XXxpsWnzaQTUyOwv0XLmyJ31Cc56/I/xau/xKALxwG/BMl+F1GP6kbYsgx+g0I2mng9dSQWmD5KHHhhPFuqJJtDeyhXqJPprhYeYDdk6Ly3G4rVVlJIFVW1o1kqAzEQedZERFBUdel/wU8BzvqqeJNiBA01cBei1BJbovLxs51Z2wdieohXD882PmQb7W+nbdnjg51H1p+LOPBY5AAWn3XXXF8zmitGw9vbwxGV3XOdJeHrxVF5wvLzs0fAny4v9PAKkHfd1uAXqoe5jh06DTwzY40tiOf3sPNYluDhVNjZTsYMmUZkiWB4HAgKYc/bjFuj0oC64ou2rN0VDkRS1JnSeqOyH4k6AJcTxdBmKBotiYCWPvpQ9R1bSbUJ/yTimxT/fLWSnJwpBIdXcmHFx/oyqba3esMt68xrJ8ATLSmmk9Oi4HaCFPPp7e2uRd0H3JJ8flGDvjerQB+axHTDvDheNP9BUepnz4BpJJMV0vp9gmithOMS0WNHoglknZqRAI60xUUkZSUAVIJZLu/92PE1XXL7d3fU2FwtgmB3S4iCHCi9H6fAAa+5n6CSESgfSJydMg1ZituLjnfZfXkha0oujHLKiemou3LE5dcme/du0stsZq58VHDOglA6+7aEydnT1Q7IZ1sjPoXditua/gbLHLp/GWBvwD3y3cAQ5gEkNbRBmCpI40HkgSppR74xqlqs86tzUKUlNAgGNA6tTNl9ABXRynD9VPg98pYncpVEWkdwdKTKYFNtFmfPUJqhogvwwA3tWM2MBWISXS931bVecjNnRgtRpJtm9pxeGF9MP2Wz4dma0OH6Ohu3bDaUtLfM6yPANPOb91yThJqA/Vukm1vnxGeEfbRqbtl7Rxj5ilTE+AFvoigtEWle4TQjEjEsJmT2kkUIazNpC3LfuipHbkG0H2WNWKQo4u6bEcZ8v1Apv7btUdIiQFvd/CDCjLABboA7nG6tzR1o/eZkRnwvvSClM+jH8U885gjbm5pk6tH2Q/klficzFUPzWbj6OALTmsLtz9KWB8BLtjjGycvSTOXjbSG/TOKip9yt8Apy7NeaqdUN21UjQjQQnXiAxDwHdplYwJWhaRBUtDndiG1KgEGHRRdlQTBqA4Zl59CVgTRJWPfkhB9k0ezKhuZuRYJ5JLPSxUjro80HJTVGtji/B74JgXMyX3OA8TIiqcxhzVPWZT3J5janCzy6ubJvBk/w2XJLVF3+OQll5zDDHn1Jgp/77A+AvzdOVHtklqaJ/EkboZLw2KUuPtxELRPMr8Sh/c5XiqnTwiBv8zUf9GlSe4GN9fFezL66KiGQviPdELkaKa9zu0aPxEFdR6prOXbNTvRWEAJu4dyvVRw7VbLz88vumPHF9zc7CLPpl0JtcA6kgnnVaM4XRWm1MFgay2B0+WX8BllxARQiiJGbB0VVU6+jrDkOt1Z1+hs9vVWeEY0UBkZSqsPH6kdU4F+Yd3wPcN6CODdU49FnbEzkzxKJ4vBaIc7DPPNoXbgbnG27w22puMt3cQHA2FaS84PRq7+3t90Q085zxzJVdBMiUz6XR0Ih0kPkh6kuTofiX2oobSVlrO4FkVhAAau0r0K5Srk4zRwWlHIVJfyOGZcl3cudDqAv+D27/+Ou+Frt/nPf/Gf3N5b7oYYuPeqFRCioAjhUYkeP6xUkMBHgnoiRVpAKkgKekFqS2q0oM+oohWIG9JseycvxqMoSSYXRqP9/bJrOK6dAIj8zt3X+/ZkJ237YqyoRGPuKA1slQSQY990uwZYgd+XBllDbcqcdZabe9JF0dw8Ch9Gi+lHQiyBc6EKgAAM+NCKho+QHkKZKD3As0UoaIjO9Va2Bjjc42swMsQMFWCrRMFXKDNA5QNJxdW3TLnLdkxFP/q8Z7i3vvmXihu++i33wT/+K/fZz36ZtgJqJjeg3KKQkoWGkvsxdairH3msqbGS86ncJEcqlFgsuxYMxioCE2Q3GIcoabd36pY1h7UTgCrbW4aiPKunPmNNxcPICyAjoAW4TbbUKOLpFo+uwZnhjv3O33Bj4X7gmZFbwvcO8h3Agx9dm361SLOU4lukkRmlHWRzyxzrQDCA/C8B+gDnVZ0DOhIiIkCAACF8yDgXQVjqgRhIRJPzxBV1ejmMaPzo8y4xYnzuuq8Xv/2WP3Z333EnBQdgeIgR4ezWhKuc2UEAHk4dUIN/MlupGB+3cb8NykgLLtWu74Qi8hW6XMuzOOlM0Nl1BB6xnrDV5Z51kxRMJOkrNJwnm31vnN8jgNn5aqxEWmJMbDAxe9u7nbvtpsLV4X1dJluRpG9xXKa6RUXSC6j3BXpvR8ZV5S/pGq4kuawXO6wscuMS9FVcaHOOsCkuwBPzFoM7CTVPEI+t4OBv5EWjG4r/dOWzohv+/sPuqp+/EuOhCXdQONCCgmj6XTN2Kg0dzju0UTqfKGYy603gq9UaqlmKiMBCYhR8MrSspdPdaybC2gmwGwGtzWjIkoqtyQ3gtHLYb5Cc870Y5HaQRJg1A2pipwS9swQPv2nauVuRhBEpIYrAXNQke8N3yTEJ4LxJWtCwpBs4mlTA0PZISI67n8dTNV5ti/Iwt4ktcGkSW0oTm7ijl8FxERwhSjgBxoudotg0ORp94uPvdL/5updyY4fxvAeygMdjG7SgwLqmAS2w+/20lqpPNIaBWstwECBiCBlICwYmC7vKwxp+104AVYbvz8MlPFqqi8bxrz/jFNgCnoZqjVGzVBW0FqldMvlS1r9WIMIbaaAkYbgkgiScpUmz7kQEqaac2GHQlYaWilJ+jnTT2dJ9T5UyMUu76VRPBY0mrLYUAAG6IhBWZROJWYZykpY5EaGN5mAM/uAH3uCufvXPg3mb/qxy/mngU4lAXwW+B74IoD5DhBwVSIm4E4Uwl46Hq67aY90+1ap/PUV31hp2lxsY0oyJu7pIEO8KZYs0gQYJ/JJbNJbJX8N1WQ4iQETMqugaiPDatzt3C0QYZTVSZOJX4Ar4HGJ0dd7PE+hqKcUkLfZwjpj5ZSQtWoicMjClhVW8vAU9QTvVYpOSnoSgwiBC6U/64Pt/yz3/Rc+DCBp51A9xvFZyNBvWeS+aNSQClMCTKB+GcIekyCMsg9HOrN9jF9b2ozauORSLiW+JSSK8UqgGQ8RQIcl/I4QSxv3lsV/KymrCowEshQhLTNxeAxFuhgjjUAb/p4gg2RLwOYOqeQSURytFv1jWk46USTjKitIxBfWMiYQdlba88hrVrFr9ZbtKqUBdhRVwbqDDKlkafeSPfttNbdsB7uywMEngosYyqSQRYBV86yjnBMglykt6Q8IojgTgjHHuwqtUaE1hHQTY5aKhrnYfmNrRsy2cBraJpEmAVFDJXWqlBMRaC4peSCqijsLifAhXv835L99Q+EmIwLgQ6nHkFQejOBqMo5RY6R2Vrg7F0QDHfqxhc9Y5Hx2K/dhQ5MaHnBtnQjGMuTSAdcmKvxGkTzDxDfO7IN6WemqCbQuj7Oyzt0S73v5rJdMDOOYdbVZkJ4W4SASQylE0YnAABJNIuoPoZ03GgCSl5mnO1xig3dpD3MDkqoacMUctpFX87+l7JQ3pVYL0zuEQ5qg0FFpLYwl8JtDqhM+YmS4vhOIVb/P+Rc8t/BU/5OKJMSZYLPEQbXrE/VIfaAzHnNoegQrHUgJYztkdFGJs2iIecdngGa6aDkbDmSu2jOdu+ybnzhjFiIQITQwG5mZiBxNe+SNkR3SoXIM5242KX3nZT7r//efXuVtuvBVVqTbm4m8eCpWMCGSVHeUoQhAggqlOuidujrOJkgDTuvjoYR0E2O2isV/FAvUx/Sj9ubTNuEAsbvOAkvP7XELre+2ULU3z+oQQMSCEiOFTNqXknRA+9QUXPvUlX0CcOUrPqYwqVx0KJkbiwPKsJLZAUAYXNZkamGBHzDMKd95VLpp4SjSeFMVTthbu+Zd496JLvTt7W3ArjLVSo/IKqWpVWw7UTAkqafT61/7n4hdfelt5QeLOeIBvqJRozlfbo85JmiIqAEXOGNUzREaraGsP6uXaAvszi5NHDQ6wjpBhNkTxcLGn+q9oNZXHMq1fruuKZajTSpQEQBJkOqP7Ue4DOMFqmkFRaYZJmNKRFJ5P8LRaZMxIloJLFUlnuL0zrmVL3iVM12L8UY17nHvg48599eWuuPeDxXFUyFfvTdzbrnHuR98U3Js+7NwsSnozU+wKoGnQ1oCtFmrtnn4UL7nyMnfOk8/XDiQglsErokvcVaoXrC+kJR+KdIPdYNJXaFYBsvawdgJQZ7Q8FboFVGYUkESKIUwS7ZG9VilddqYkjgHey9IlnYt7TGB7hDCfjCSCbJUQNa1iOE96mAmRdg2hMLhTUeCgcPFaWjnZOGqQ0NQo3ZkL7tYPOX/jm50fhZCjkZvHFP3ol3y4/L8795HPBTeCwNTRYWY18RQ9kaHADQ0PRC958bOpFi27qvO5SNUaC0wlqZnWhzI/IAUF0yMMh6jTohHTu1ViTWFdBFCNIWeqhASYdSY3vDXErnCRBila4NrpXKMerEYB3zsHRiXLM90rjhPnIQn4kbSsqWmXDYg2dMKrmIihtUKUQ0yMh+qDG6ThjAglIULY91nmG7+PY4kiVaoZDn6WSe8b/sy5X3ovW0QbOACZmiAJRntjDoq+6AWXohpxAcrF3bOATBKsP2qjGtxrMQdZbaghUs1/WwngMbQJrdctJHCntYlGmfXD0YigkgpqbO9g+aU4W36PUOoG93AmbhbHM+BReWgt+8EtYzjURvECgJrcAFzTwn6MwfTiN73Cv+h33+iqY6Br0t8XfZ7Z13SotnD7Hucf/iKePWYNaDobuQd9+OQ/+fDidwc3c7InCZhH1hYa8/SnnYtJupnHqU1SPmq3xJ1QFiKh53Cic7zZSGMRp7jlqtLLaw/rlgD2UKJ+2FYLThb1OAOXRA9Ue7ydIrAQRvCeCv1ydhP30GBxGcdgPiS4nh3Ol7z5le5nb/6se/bN17mzf+fVGqgp0gV87678wFv91ne/Jer8xmuiqZe9HOGQs0L4SRJ6mszAETrU/c2POl/Bk1Sju3C8EWE4uBv3+fBT72NX+wJDeKz7ZWGHsGnTsHvS+Wdy6+ngk6bJanVpllKPqT3uYjxhWg2FqiyLoNSmd53q7qOk1kmAg0ZtqTwbBYSrOKPPfHqY5ZUJdb+MAKMLtL4UG51r5cqAJ1uzOzm7tH7Qdk/b9Tp3/rveEH1jaCLcgWVTffsbo+1ve72XD/ayP3yndy/9L9Hf7SvyOxhzT840y4eavhZX0B7ZmHq2fhgTwtG7nTv8VfzZKCnmgK4Cw2rFEV/33v3B/cpHMFFhdo0HvRCdf+4OS5ZZJfjWXkmhqGAd5aoonqAAYzzrUoHrDOskAM8To+aMguqrHieni0K/Tf3EaiN7lw1sSUMJuul5qRpUi2aeIQdIDPUL3vF6v/Ntr4n+caHID53sutnZbjg0k+fRa18TLvybT7vGT/9CuOm+Ij8+E8ULn/pCsXDtnwIym/xlymrlTca+qQu1C4L3LYX9X3Eev3Zv8oC5Ag9AUM/O28/f4tzv/zV9i/CylLRz27ZNcT8Aq71Wz2oH7Zyf8igCSOh84fO4FXVGNQCtPayfAOyoxy3eEXZmhgpoSYCO/ajn99O9bEoT4HzAQZ9wXdaNeSA5Rcdj9j0J8M9686uivYB/FEOmqQ0WWJqNE4GXX7BknnJxdBC/9ImjvBhz3XXFyvtfw0iKqcpgPTQ16Z7z8l9w408+G8yo1x5oDwVYuvnwPgiFCcuSmpcakiRICjSbG3Thf34huDsORgULbwbg2BhTarPU1AG1V8TsYyvCcFlF+S9bhK0tzGG0Xre+sPYbeEiysEVeWu2zis0w0XjTFwBrUO/h0vskpXDKX7EVZ0YUbqBDpu/lb5cbmDdcdr7jt9yOt7w6uv1Ekc/M8KLLPJcAn1U/V6CjWxBh5iCSUImigeN3hOb7Xsd9soI6Yejsc90Vf3WN2/Tu98U73vtRn05MMpZr0O41Tky5OAOhjiMFoKg1TgjgtebJik7M+VLXh9+7jnybWXG5IsoAD7eWuKtHCuqTDuUR7teavry5HVY3Qzp3uj4ui36v37UTgFq680d4lYIW6O2VFpj2zHBDm+v9QUoPLMFWigDwsqlPUz9sU0MCcryPWDhnvuuNbtt/e2X07SMCH8FiTuXmec48nQR8ImvP+GyYRM0dLIrkqeeFwZdeRWbX1c8+z118zZ/5h4afGn/tJpfPHN8Ohw/zLEmYUVyY4dqB0B6KamlN3G8RFcSqZEQ6HQruun927lsPlb3pmjEjkPuRpMBWFPg9AijX6CQ0YlYstljOmn8Yv9cRduyA4bABY1hcfmMzweEyEX1VDak+NZpgnC6O14Bbcj55UEM6H49Op+On3vl6N/b6V0R3HyryhVnA1zpkgwrknmcKgGrtMzLGF9aplsWWq67+m+8KcX3M73z+C8PDyVOimdvxUR330fJn/5Dt8Pfi6cABhLkCWIhfrz0p94r7hR9tx6OlI++oUY5J+PJycJ+6zbuLzoTQc8y2zczr8egqx6/2juukzakhoslEZolfLwXeufb1gPURQA/UQkbGJhCNTQZ6r3O6RiyZThxPmxSNoXQ0AnCBnsumx3Qc2vUbbuB1vx7tP1DkDcDXInAQ+C3sO5YYJWHl3IvbCWAgCXRt3nIMC5Eb+cXfjh7GcFq8M+TprGdceG9Y+dr7AJ8FdmuNWiQAOSbMlEZw2EMAYSkCqA/aFMGCojlpNTR85QDvdHL3kSMSQwW1nWj/ywkGneCcKPA50iTN/2Sl8Z7ZUd205rA+Ahw8yAbhC2UGs0uVIUiMrUfpRwMSwdzQGmjthF81VJJALI/0vNnwyct+ykWvflX0nbvY1DvHzYyl9v5Rh9oFCjqZQR4ikIZ2JQDWZ413rsvC8eJ8ntfG8JyudH3j2t8PzVs+WIIPMAJHSFuz5PasM2HD00qOZKr0NsOxWp7gZT2LWme4H8Z/iA24Bw8d46GSVkEkkkn9lEk5FkvvrjquMxGGsbhdLamhcmsM6yOA2wEDg3+bzQgsyZxSPTytRwRrkkA3xDia7hf3K89UkZRo8Ff8uF+8l+zvkM9Yqr3FBrzcPgIcmtmxB77SkMQCqKCOILVgwVoaHmTQjvZxTQ8xfqSwOL/H/TKVdzA2TI65wEq/iGKcz7DE0fZl4ReUNYun1Lu7jzaL+/bdJ8mgoGAXn5+ygTg32GVaqE3SYAnjYpQ0QrUxXtiCzBqXxdZJANqCnNKkSGpcRoz1Rj0iaf1XFlHmd9+ZJTkBTX5USBdy3733iPPDnD5MnsDvc7odqU9cS9HvisJCnRZw3MYClNWMH9md9RPvdvv2fcu3F4+zYCefw2lSwJAVXfbMcsNQi50D9FoEYF3PLBiNBXpHVssUnoWIm+85Gg4dPCxkqUeBZ/alSr3v91e8DxfII017CjFSuymP8fbytjX8rosAxfJR3h+dFOMVBtoqQIZ22TA10ILAJjAYQAiT/JIQNJWFL3fNX/gw/ky2NZ4TuQVAARC9GiBgSX038HqO8uFGnCDE4FNAS/Fw8jajXg4OaWWLz+pnubbMzZ76Me6V5pjgrfvnP18sUHiZnwJNWxhQc73BmEUOhhcYqoKV9/Ubbw8LcydxyKkvImRPqqxvOi8lQNcEPtzPolCcsyQarbS29wHg3kcP6yKA27oVboVdNcghusa1AqYPkJ6nc2uoxLN/Ysd+PiLP3suDB4J7z2u9f9kf8lrNubFbZMlc9aj5FBdzkxTNyvoBXMSRxwXsnJziWjaoYC3V8Dc0V+4pmif2gz3cbwQQaNzO3pTkpS9w0dlnRWGWOTwEgIAuZkcYnO+1tkc60CUviUDlF9/46je5F44wahn4NEXqrCQEd1pbRMiYNHTSanesvTPrXQ9YHwGcxJLFCkk+KkhtLMGncb1ZvJG/BNCwpAShx/vcUiJKVoYuO3xvKP701T776T8u2ivnQlAN1rrZbtFtZRpgxPmyIi3CqRnAiwADcvZ0DhUH7349L+DMsTmwZ+boSSx1xWfvdNVXvZyNtPjLGCOlGg14es4yOuCjv1E/4mL2V/nO8cNh/s6bYeuSgH3QIZXIXxJCatAIwloQuWpTkueZtOd6g8i65hDNT+GDh706uJ4AxXiUh5e6XUcljQSGnWVYpqwioap4KoC1f9YFZ7gv/0bdPW0H1/StjXn4nImXW6QeNjb7RUBi/qRFsBTLJ2VmnM2xDfFkcPWlOI7mHyzu//bL3fLibbCh9IuAwwEHl/tq3Y++5y0umpwyuzlhESaG7iqm3TEZTrmU909Fs4Q3U5Mxvg/yT3/rw9zDpr0MfNVnddpoTD8EvVQP0yFIxjcuAB+JQn4zLSGLSdcR1ikBvZqDXpYCTYFvUPNcOmyEMA5WmovCW+dK2LluMIr50Gq7y573bPfJv3yfO4Ndap/ZnBcveatzd4CjbX8WdXs++gRRT5C4BKJncCxqxw8USRTl9xcHDv+qazT/GYzqDCBia/wCUi+Vutv6gbe64rmXRflcXrAznVaYBMhiKSUKbDWeyP1DbT5fmSuWP/fZktHF4TYqa0InIggq8WtpdPYJkUAEJEBGAQ4aOrtOMViXBGgQ7pmHhUmA7V2iNwJfoY+1pQU6Xe7FUwQgr9l0z/6xZ7nPXPsHBv4KWwXPGPfuY7/j3QXncDPuCL+ASsAflCygIjAd4X6fIQWVBV4HX2YNa3F/cd+hX3aN1t3gVEdDlAAVvKpW3bLdn/+x9/iBn7kycit5XmHXplw7Fhki2IzhqjpHGhSrqCbeyY4W9+xx3Yf2gbcA1wjc0+4CHyKIwJCKfqH5AR7XHdyPh5sJI9+XyJO8ChiMk9MCYG1hXQSI6lOB9mp8khkKMWgjDekx9eoTe4Mv5z3vp7GFWIORk026z/3xZ7lPX/seN7FpJFpqF8Uiuvw4jsqxseDe/3bnnnw2NRyHixdQGQCeoIZSVFI2z65o1E5Yuqe4//gvs+/zPnAZhP6pvRWl9PaX/ox/+pf+zA1c8WwDn93Rroo9XwV40r4G8DXSOhcRamy1HmCLZHFgfzF3zSfQQxQ2judiRLSd0AJeTrAyMlaQhgQhDSlEqEoq0Qd17GLgX1egeWsNu32xfHU5G1G7oLUBr6P0vnG/6Im217lS36V+cB/w5spzrrjMfeov/wdgD0eLraJYYr/OCoN5k6jNtJObnPu5l3v/4d9lzvSA9DV6mjpTBt5qM2ED7u3F/Z1X8mgu6pMC6YAb3bbVbfuxH/FbfvFK53/w6X4F9Rg1mSXTO9SzyL9q3Sohu19MriE1TiL2ZbSKA7v+wBVzvNus/UDifrOmoJJxv47WChRQSkzQNhlkStnDFEMAeUwipvStqNGd8dN45KZp3VrCOgiwi6bvBesn6bNIfDwJlMXUAh6ASqe4UiX4hr2lVQAlib9/8/at7i8+usuNA/484C/ij1uG+xsQoY2e107nf7yddxBxir3gld7/wwcYj/cJJFQQu3M3nc8bKTv2uAtrF7uRqZ90Y2dvdaMXXeAGnna+a50xHi0wRqw0UDlwgF5ZUvNMSK2NnHCUASmfP5qdelEdfDTqrt/6o7DwtX88Bb4WDGzJTO+LlVIAC5BXSoKIIPB5UYK5SBRQP3zdxacs6LnK/GSYdrt52NrCOghQVghWBeOpnCFKlQTojwGAqLG2JENp95gUiBpsxnzxlc9yZ545FS0A/gKeW+3lh1ttOVCfp/n6t53b9zCqoc5Oksngfuod3t3+fyDSfd5NfV9wF79uwA2fu5uNu4y/YNSi9Wz755M/zPSW80Jv0eg/TI0ryYZ/E1SKlKxAgmyfpqg1tMgg7z3d+XvXFA995BMMMMhDX/VI7awSQWkIAdeL8437TQISfiECKggCyOiKeRgT7MM8Tcw6zfHRwzoIsJu+XY0XEfaK4X2Y2vbkmQriQdZLitBEGxdMLYkIkgkJvnfnnXuWASLwxf0Cvw3XNmDTb9zj3P34+wdHGBB5CaxCv0e2B/ei3VTHMzBy4Gbe6wDxkOHcgb351Bn6XRwt0FFXPF5qBWtTvjzUCIle09Q+GYnKqvH6zCAq6KZ3/Hlx+7s+YtNquUOhQrk4YOCnFBc8pcqRBChGzNRKQkDBInVVJtQ1+kD1+QpsWc2mhMSaw9oJME2dh6Fu63wMXpuGGaiyCE4BThnT/7SEZoIAGTYu0G3JAm+60FgDX2ILm0oF3Xgv7l9s/rExWSU4KGmVNssZqDwlkne5p7c15kugcO8AuHG62SsoCpZ4teJIHmXAxZqlFhF5gxIoyR+pMeCeWCq++MYPuVs+9imBz7imgZdJgfaXa4mMGbAXEaKKgV5yv8AvY8xapkUIUEMChmBHppCtBqvl9YpMw7WH9RHganqCzxsOa6NgeaZGqj4BhAyxBNzANyLILdCTgBwVtYie1KDbBvwF0rccYGcDg+bYaGmVZICtSahpA1qHLrfXCuxcjwJI0+sc+2nT9TylS1ldwzIshySOUjlSSfVKbI6FfV+8ufj07/yJO3TLbSHSq5baGmkv6WmaXMXnpskcUeBDBBQMdVTtGJO2iC2YkublbPZ88fZnHvCO5yuVggAi6wlrJwB67XD7gWIzu0KZdOO9T5rIOiyD2NKcVUIYATREgFafOOUUHkXtXQMJ6IKS3m699SHUDwhtwk2fArw4n2/JYaGACzN/dizaYhY0tAUT1uJM6xmdYVpVCwOW7xPoSOwLpK6x7V/ONQlQuP/mfeHTH/qr8M1P/i3L0IshxhaFQXiI7H0BXnI+hqrSBj7zbY4ZPRLHA36oopRqRI6s7PCZMDeFGA4VfKSBJaIqi1Ur/3YEoJ3LdyJq9SbfQDyG3l3IB2OUBqagthcIbJlstoChVoA05+hVE2OhOXMCunGpEeLoAO6GQbh+iv7K8mPBykxDqR2bB3GU8HxX5BHiessjLVrbNISjwDeak62Qs+l/9oFj7o6vfbu44TM3uNu/8k0+UzkPY2PNpwJf7eUETjeON/kgDbiQDpkV8JIAuB+O17FPABQP6m6Qb91V3U5GfpaVj0Pjxbia58szenNx7YFurzmwLeFY0Roebo+44iiC+53OiD/LMfkpOwCyYj8RAZTRxOogEQNesl4ddB//2P9l20C9aGTsA5Fgc4tWobTbDeGgLJgqTRTrRyCta0Jc17W9pHRYGxksL2eEVo/1zcnGStOdPD7njh486h6690H3nf0PhRV9RAS/SYQ0xFW1jZpscoVc9NUNQJd9KNWODbYGPn5WEYCYhAF6RYTz9ZJoVoy4cZjrHCw23FP7khAvNufa3bGqPitYTjt42KOG9RDAucsvL+LDB3KU0EnegfhWsxpdGoYgQIvlPscaKgu68DJRHMZqty28SrzR0kkRZk8uuQ/97p8ApYhDMY2mUgM607mFfgKWputlvvKItlqgtG7UNcCUAWiBgy17Qg7ZWrhPJRFyvpnYqTyWu03rAK7U+z3gJcEwi3E+bee1X1pVAq+jVE7K5qEs1CEA4Ich3A9sXxzyflNaFEe67qY4LRb8RK1zcvJAwXRpzWF9BGCCUTtyZaczObhcG6jetJy5n+3uqE2642fQWzhNn/jSonvJk8AE8DIHCeI7RkO4TmNG7/VPyoEg/7T8ZcUoqfIlpsLb3NOqz9zBXCoL6oLw74GvJyioLtVTugxKfSVdJROTrhrwvBplgBsRuIa0Kp886XqcHoBfqh+pHKkb43jjfoE/jOk55oa7mbtis3oVDi1Exa1DPm9U3XL3jD13hTWuRvJMtWw94fqvuMWL5vxQhrXAy1lsBDm3PeTPc3w/kL3e9B8dL9AFoClqgSHOE/pST3Ju0VnTuwYA55bXOyqt8QNQzBNJ2iZFKouVbyAqT2CWR1uAobzONd6U9cuSYWyK+PCBPjVGDBEvjkXsdtOGUPYoeuV73pL3TIUBNwJoW9phEOaVX/S91A0c74bsPCvqbCkF/DAeap0xf+lE7F5ybuT3r4TPHI6aX+LtlZOHGzPN9x35BbhlN31YW1inBMBxM18pukNx03XrDw/4+qcbqbu4e8HAlPvmWTxYm3o48N+4r8eN5ldhIMPhQI7mqNihJilIi6kNEUxMrW0Karg4WZXYSe9gaX6kcqCFipkIUJ3EROrI+EmEFtF1VPfEY720GQjKEwHLoyZVZueL84E75iiLJ7GIBCAFWcGgiwqqoPdr3TF/LhbDrz4ripaPFw8+4MJnRrvR3OLKQvvkBVI/P/AIqeRx3yOoFesLfKj0+ORdrc1h+WQ0Ur253ok/s7DdvSLM4k++51xUDBLQ1yImBXoEUwbpfaKNDTYGKE8gG7V6gAp4KRH6AKY95cU52JaUIZvJBIFZU5ll3e2P4lhdwGi04BhkIvVfUkUCtbOrnKvISBDwWmpnZqvZLRJUgp8x4OLjgWHsWFQgRR21MxJq+ajfkafuVS9xfkse2p9fch/HB31Pw59YPtHKOheuU/2oH+sngFjVXcvU4zkrzaXFY4PV4Ws7Xb995fvjn3StKecOgAFfKnEFi+N8TYQJIlGDro0HpLV60QO+hJJmiBgCWcieAl4ICyJhvEoErpdBpFLQfT01ZxWovFVcXjMq6jpdVTmIoNWskutZ1RIBiDFESPgQUwKvC/gEAmTECuqoVgzB+TW/A+m4GofrJWPef/1bxV8+GBfXVcLcbKNztPnw/gPdD/27fbZSvHnVnnQ8+7FqWosnQrV20YKLX9dK48vDt3EA38NKSvcInT0Kttrip30nkgAgM2x644ROjBhcstAD18oAlrjewBWACqdf55qI0QO/vKY8ldO9vXv6BGCiULoU5MNhLgDgGnANeKkeVllFADz8RL4JhtqpYnLWOA7lmbuAIeNlz3TR+UM+3PKg++RNWf7hSmdh/+zSw3OHq43W/9p7ibis10C1YW3hMUiAKuZBF053Z++8sDkUjyxkUffukdro+xfzsNR4un9BmBpP3B21wh1nnhYwTz1EkIkqs1ROHakdA09VWeyxc6l0SiIpXwQgagpsl0p1ZTcp3wh4GtDKUl65a0g3AoiNAfgoKCfQOS/XdOF6gS7Ot4h3h2OKL6EiJxtEGOT6NmbUz9ka/AvOIdEqFv/+RPjEvrTzybTbeGDW8UUoJhlb7ZP269P9aqmCNblMPobf6enIPfDcbDg+b6CW8RHXzJ3fLJIXNzP/050o2hKOUed9uD2PEVkJK98HEAF6RBDDGJBiHE60kqMWGSPpmtL8mD1q6fK6Fbf8HtgUKsvpnIIEHTUxhMc5igBWIX8pAE5nEQZaantLRetanFfJr6KeZAuhYdwODKmn4ui5aCJyw3wHYrbpb91XhGvm4+Y30rh9fKY1O3eg2WxceOee7rS5n63R9uj1/PRau55bHlFWRDjxX9PhlWq9lg2Nsvi6hUHgyQ0XXdqqRs+F8Xby1Zc0SBOhmdjWjgoQ1pybP4ejWZFkiJmxJO1o18gThrJOOZarKGRh1svJgUcBdxRWPb2oYqXqGxESaVXBKcMOviKETsOQnE4ez6umKhGvlEUsgSbyjJCfkTeIC3WMsXyComdQyTgTOdxzJ/mSzW0n8vCVuai4MSpWDkS8NjI/d3Ll/uT21oV33vW4wOdRj1MCVINYbZp67rwrGc+yalQfrYesMpJWqnxZItrCStdFnSRcwCYGZmthG6UHzY8spLSnA3cMShcWRGmztCuWFOCWBmDQNIckTktdFzFw4zCtYvyMSbPJzuOu4DUtV+Bt4JsZ3AJ3J4BdxdsaL/PuxCJTLQBP+c5ehS0uCYojmccrssA9y3jXebOp2vRtPMmNtB3mU1ZVoiJ+kL0C96Eu72In94kID95yZ2HR1460Riq8a8+fNJl+DIMuPfiuQE+fqACYV+2J3OaLk7EWf/0lqlc6aZpFaToQ5+y4qaTMhvwmVMUI+6H0JzPMYhSouHgErFw/WmQCHUDXm8hKl0aLPh8hg0WWpdZl9GEUrZhoUJDG0gjbRK10eFuUfVZRFGsjFstsif4yBl9XhSB6f4I/aMPaIbOYZAXV03J5tkKa86zjmmxN5K/NuEbUCctJh29FhUaz2mkvLzUbrbqfay+kHfT9Jfk0XGdP1cMfZ3gCCaCWQAR9ruvy50Y7d7qkkY/HnWIg7ozW0kqHj8KkSdaFJCGVQilVBWvbuF60sMcMCwPFJy0WHCrs+OjElNIXNeS4lMKyl+ywYtnIzBXpIK3KEbByPZ8e4KtJDCK9PLYusmqBBBTM11e4hiSwcsWMnecuo83w4VVIp/rDPfwxFPt7KdSVL+DS533YPGp1RpMlPkU70N3pHuiWHL/rCQNe7VZ4gglQVlr+Qoxp6r/++kheK3fwWLT9+74/arUWAH+SIjN8EpFl1AY7Wmu8CDAwbmDq3rAy64sB3vNybNQfH0fXsAQ5Q3m+zFcQVQZVFzyLwWFp1ktvzw6Oh3HSs408bKlPhHxZblTmIoSqGys6SzPe/iIW52mNBecjh9kd1w6VmS1s1jjit7P1fsZWsx5wkzNnFDOTx4rLr78cNfPEcbva8sjwaATQ9VVgHnnz+s8lIY8IIpJe6fkXP3K0m8K7HnGDTpWv8C9cm7Z7aDOSOE0RRbNSdOwHrlkQRz8y2KV/If+R5TbONxDYQGADgQ0ENhDYQGADgQ0ENhDYQGADgQ0ENhDYQGADgQ0ENhBYHwI9p9T6bvr/sPQj+/kfxtn2/wDw8LEWLT9qOAAAAABJRU5ErkJggg=='

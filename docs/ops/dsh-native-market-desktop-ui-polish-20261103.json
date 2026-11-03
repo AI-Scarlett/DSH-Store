@@ -1,0 +1,61 @@
+{
+  "schemaVersion": 1,
+  "type": "dsh-native-market-upgrade",
+  "planId": "dsh-native-market-desktop-ui-polish-20261103",
+  "planFile": "docs/ops/dsh-native-market-desktop-ui-polish-20261103.json",
+  "createdAt": "2026-11-03T13:57:42.934Z",
+  "baseCommit": "9d03d52d2ba4c30646ae855f98bb51d50b9d7a4f",
+  "scope": [
+    ".github/workflows/registry.yml",
+    "README.md",
+    "docs/ops/dsh-native-market-desktop-ui-polish-20261103.json",
+    "docs/reviews/dsh-native-market-desktop-ui-polish-20261103.md",
+    "package.json",
+    "src/client.js",
+    "test/catalog.test.mjs",
+    "test/contracts.test.mjs",
+    "test/upgrade-matrix.test.mjs"
+  ],
+  "preconditions": {
+    ".github/workflows/registry.yml": "780857064b96e6acbdce7fb7a8ff01a3a8747a3399f0495d18c5ab2356dc4404",
+    "README.md": "c616f389cd7e98f26e12acc928a897329531695725246601b57b590f330b7f4c",
+    "docs/ops/dsh-native-market-desktop-ui-polish-20261103.json": null,
+    "docs/reviews/dsh-native-market-desktop-ui-polish-20261103.md": null,
+    "package.json": "7c10193221daac2e217ea1fd580feae9f5b9291caee3af25c7b87d4865e1b7f3",
+    "src/client.js": "4f372400122b0747b66eae45e02eebd7343efb8cbe26150d67950a9c3b3e81ac",
+    "test/catalog.test.mjs": "4f4082773b4985ad98fe06afd6df2730ab5edc201592d74271b5371b683a348f",
+    "test/contracts.test.mjs": "82d11a4d33ac551bde519110ccb389e15e6bad2e4940fc8eec5c6a7797d70d9a",
+    "test/upgrade-matrix.test.mjs": "42d1b1933e5a1441744607e0d993e289c049a9cb85d86f8871812a4bcace2f55"
+  },
+  "postconditions": {
+    ".github/workflows/registry.yml": "8e72cfa959024686ec716ef1bb5af1972ebfeb77fea62fd571728d16c5dd7847",
+    "README.md": "6583540ba01d18bd25108cd0a9520676df716ecc715553cab36cae7adab9c6bd",
+    "docs/reviews/dsh-native-market-desktop-ui-polish-20261103.md": "ec9bd32ed8689515d8f365072bc7ec923f94956f84ae3c43ce993e877e90d902",
+    "package.json": "fc25830f4cbce1c75f97df6e51e3bced45af0b79d3ab75c7f48cb66fa936b6a8",
+    "src/client.js": "b812c54780138ff5181a9bf3795acd94634395c394f07deb3a2028f97b71f98e",
+    "test/catalog.test.mjs": "91d5261b242babf29dc35aa2aae2bbaade4efcb804ee1189d8b590d123259f7e",
+    "test/contracts.test.mjs": "1b8cc31624ce3ecc4032c5f18fce1deddef6d01850809b6f593e32ce54666d16",
+    "test/upgrade-matrix.test.mjs": "5fc6e34c9c3bab2e0769491e7d31df2c3fdf02e146ab8a8d7593304bcaabafa6"
+  },
+  "authorization": {
+    "source": "direct-user-request",
+    "request": "用户反馈 Desktop 插件商城及安装确认对话框多处视觉不协调，要求认真调整优化。",
+    "githubWriteCredential": "short-lived-token-required",
+    "publication": "auditable-source-pull-request-then-separate-first-party-Catalog-policy-release"
+  },
+  "objective": "优化 Desktop 插件商城和安装确认对话框界面布局与视觉协调度，提升用户操作体验。",
+  "change": {
+    "packageVersion": "0.9.37",
+    "navigationTabs": "Remove inflexible min-width, adapt to natural content width with clean borders and active contrast",
+    "controlsLayout": "Reorganize toolbar into search/sort primary row, segmented status tabs & facets secondary row",
+    "confirmationModal": "Refactor modal with card container, dedicated code spec box, subtle advisory cards, and focused confirm input"
+  },
+  "gates": [
+    "Bind plan to exact base Commit and preconditions; verify with scripts/verify-dsh-upgrade-plan.mjs",
+    "Pass all 47 Desktop compatibility test cases",
+    "Pass npm run check",
+    "Pass git diff --check"
+  ],
+  "rollback": "Revert to 0.9.36 via CI pull request without mutating real Profiles.",
+  "healthCheck": "node --test test/desktop-compat.test.mjs && npm run check pass"
+}
