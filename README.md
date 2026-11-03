@@ -117,6 +117,8 @@ Bundle 启停通过 DSH 官方 `inspect`、`installBundle`、`removeBundle`、`s
 
 `0.9.15` 延续官方 DSH 最新三版 `0.2.1-rc.4`、`0.2.1-rc.5`、`0.2.2-alpha.2` 的精确兼容记录。`0.2.1-rc.5` 于 2026-10-29 发布到 npm 的 `next` 和 `latest` 标签，官方 `dsh-v0.2.1-rc.5` GitHub Release 于 2026-10-30 发布。三个注入 UI 客户端包均发布了 `0.2.1-rc.5`，而独立 `@deepseek-ai/dsh-client-runtime` 仍停在 `0.1.1-rc.2`，因此只更新确有发布的三个 UI peer。`0.2.2-alpha.2` 仍是语义版本最高项并要求 Node `>=24.9.0`。隔离 CLI/CI 对已覆盖版本完成安装、启动、卸载和 Profile 还原；降级回滚保持 `unknown`。
 
+`0.9.36` 将 DSH Store 图标加入插件包，并补齐官方 DSH `0.2.2-alpha.3` 的精确安装兼容声明。此次首轮发布矩阵发现新官方版本被 `engines.dsh` 范围拒绝；确认五个注入 UI peer 均已发布 alpha.3 后，更新精确 peer 范围。alpha.3 在一次性 Profile 中已通过安装、启动、认证 API、卸载和 Profile 精确还原；跨平台/pnpm 矩阵由本次源码 PR CI 验收，降级回滚仍为 `unknown`。独立 `@deepseek-ai/dsh-client-runtime` 没有 alpha.3 发行版，因此不增加不存在的 Peer 版本。
+
 官方 DSH `0.2.2-alpha.2` 提供供 Client 使用的 `settings.section`、`pluginManager.listBundles`、`inspect`、`installBundle` 和 `waitForInstall` Remote 契约。Store `0.9.13` 使用独立设置分区、精确版本门控和 DSH 官方安装器；商城仍不接管 Desktop 生命周期，也不把 Web Profile 操作送入桌面环境。真实 DSH `0.2.1-rc.5` 只读验收已确认左侧 `DSH-Store` 独立入口可见；`0.9.14` 未声明 `remote.pluginManager` 模块依赖，导致目录显示 `DESKTOP_PLUGIN_MANAGER_UNAVAILABLE`。`0.9.15` 已补上该依赖声明并通过隔离 Desktop 契约测试，但真实桌面端更新与重启验收仍待完成。Catalog 当前仅声明 `web` Profile。
 
 `0.9.3` 将官方 Desktop 绑定到其实际 Profile，并在服务端拒绝不受支持的商城写入、Guardian 与重启操作；商城界面明确展示只读模式。版本面板从 Desktop 内置的官方 DSH 包读取当前版本，不提供修改桌面应用运行时的 npm 命令。`0.2.0-rc.2`、`0.2.1-alpha.1`、`0.2.1-alpha.2` 已在 PR 的一次性 Web Profile 中完成安装、启动、卸载和精确回滚验证。`@deepseek-ai/dsh-client-runtime` 的 0.2.x 尚无独立 npm 包，但其精确 Peer 版本声明是官方 Host 安装前检查的契约；移除后一次性 Profile 安装在最新三版均失败。源码、Catalog、生产站点和真实 Desktop 界面各自需要独立验收。

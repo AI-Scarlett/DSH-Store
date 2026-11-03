@@ -122,7 +122,7 @@ function desktopEntry({ id, packageName, commit, compatibility = 'compatible', p
     source: source ?? { provenance: 'github-commit', updatedAt: '2026-10-30T00:00:00Z' },
     installPath, manifestPath, entryIds, categories: ['tools'],
     searchTerms: [id], status, ...(statusReason ? { statusReason } : {}),
-    compatibility: { dshReleases: { '0.2.2-alpha.2': compatibility }, profiles },
+    compatibility: { dshReleases: { '0.2.2-alpha.3': compatibility }, profiles },
     details: {
       license: 'MIT', externalDependencies: [],
       permissions: { level: 'low', files: 'none', network: 'none', commands: 'none', credentials: ['none'] },
@@ -254,7 +254,7 @@ function desktopCatalogIndex(entries) {
   }
 }
 
-function createDesktopHarness({ catalog, installed = [], responseFactory, desktopRuntimeVersion = '0.2.2-alpha.2',
+function createDesktopHarness({ catalog, installed = [], responseFactory, desktopRuntimeVersion = '0.2.2-alpha.3',
   inspectResult, installResult, installedAfterInstallResult = null, removeResult = null,
   retainInstalledAfterRemove = false, inspectAvailable = true, removeBundleAvailable = true,
   protocol = 'dsh-app:', directoryDocuments = undefined, rankingSnapshot = null, rankingIndexDigest = null,
@@ -1179,7 +1179,7 @@ test('official Desktop uses compact wrapping tabs and restores the full-director
     catalog: desktopCatalog([catalogInstalled, webOnlyCatalog]),
     installed: [
       { name: '@deepseek-ai/dsh-official-plugin', official: true, installed: true, removable: false, enabled: true,
-        version: '0.2.2-alpha.2', source: 'npm:@deepseek-ai/dsh-official-plugin@0.2.2-alpha.2' },
+        version: '0.2.2-alpha.3', source: 'npm:@deepseek-ai/dsh-official-plugin@0.2.2-alpha.3' },
       { name: '@acme/dsh-installed-view', official: false, installed: true, removable: true, enabled: false,
         version: '1.0.0', source: `git+https://github.com/acme/dsh-installed-view.git#${'b'.repeat(40)}` },
       { name: 'local-unlisted-plugin', official: false, installed: true, removable: true, enabled: true,
@@ -1337,7 +1337,7 @@ test('official Desktop requires the full package and Commit confirmation before 
 test('official Desktop receives unadapted unknown entries and displays DSH compatibility refusal', async () => {
   const entry = desktopEntry({ id: 'dsh-unknown', packageName: '@acme/dsh-unknown', commit: desktopCommit,
     compatibility: 'unknown', profiles: ['web'] })
-  const incompatible = [{ name: entry.packageName, version: entry.version, runtimeVersion: '0.2.2-alpha.2',
+  const incompatible = [{ name: entry.packageName, version: entry.version, runtimeVersion: '0.2.2-alpha.3',
     requirements: { 'engines.dsh': '^0.1.0' } }]
   const harness = createDesktopHarness({
     catalog: desktopCatalog([entry]), desktopRuntimeVersion: null,

@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
   "type": "dsh-native-market-upgrade",
-  "planId": "dsh-native-market-desktop-store-icon-20261103",
+  "planId": "dsh-native-market-desktop-store-icon-alpha3-20261103",
   "planFile": "docs/ops/dsh-native-market-desktop-store-icon-20261103.json",
-  "createdAt": "2026-11-03T16:56:51+08:00",
+  "createdAt": "2026-11-03T09:20:32.228Z",
   "baseCommit": "bfed2434c5c1b4915833d6384be38fda7cd17046",
   "scope": [
     ".github/workflows/registry.yml",
@@ -33,15 +33,15 @@
   },
   "postconditions": {
     ".github/workflows/registry.yml": "be79fc94e3ac2e9740bd0be1793b0263328adca6bc176c533ee18401d67da7c9",
-    "README.md": "d521b6fd5e40ac5ad3bac1c6199f3b380e53a6e7bcc273970a613d8ad6849e26",
-    "docs/reviews/dsh-native-market-desktop-store-icon-20261103.md": "65ab30637e993b8a304615e158efac2be605083e958ac8c965f107235987b08b",
+    "README.md": "02ba585db29f9fcbb082d5d9191b6aa6c5722cb163d05f6a5981bccbb27bd016",
+    "docs/reviews/dsh-native-market-desktop-store-icon-20261103.md": "7505aef5506e0d98734812ff76f5e7f6a493980b79fbad4eb5d1591ea057c94d",
     "marketplace/dsh-store-icon-desktop.png": "43bf78b4ad72332d950bf6849fe2739938da1f09aa1aa577505b5b5735c9ce1b",
-    "package.json": "61874c5b159b03f3d53e205892a2a5ec570c365f85818b647af865b64483c212",
+    "package.json": "7c10193221daac2e217ea1fd580feae9f5b9291caee3af25c7b87d4865e1b7f3",
     "src/client.js": "4f372400122b0747b66eae45e02eebd7343efb8cbe26150d67950a9c3b3e81ac",
     "test/catalog.test.mjs": "4f4082773b4985ad98fe06afd6df2730ab5edc201592d74271b5371b683a348f",
-    "test/contracts.test.mjs": "c544ffcc2778610cac8c8a5774c0f5e5cc4a189c08b36037be05ab91f019b1d6",
-    "test/desktop-compat.test.mjs": "a400eb1d9d72ff0c33de81d57a3c3090c1511f4bb5cfc6a9219ca60b2baf4599",
-    "test/upgrade-matrix.test.mjs": "72d875c71831b9016662f65ec86a9fe9d28a0df64dca32fb93f1a3c1c35b7e1c"
+    "test/contracts.test.mjs": "82d11a4d33ac551bde519110ccb389e15e6bad2e4940fc8eec5c6a7797d70d9a",
+    "test/desktop-compat.test.mjs": "7a757048a12b4f56ccf24053a659ecc5673852df22249a9586618badfbea9175",
+    "test/upgrade-matrix.test.mjs": "42d1b1933e5a1441744607e0d993e289c049a9cb85d86f8871812a4bcace2f55"
   },
   "authorization": {
     "source": "direct-user-request",
@@ -49,12 +49,13 @@
     "githubWriteCredential": "short-lived-token-required",
     "publication": "auditable-source-pull-request-then-separate-first-party-Catalog-policy-release"
   },
-  "objective": "发布 DSH Store 0.9.36 品牌图标：左侧商城 Tab 和 Desktop 插件清单均显示用户提供的图标。",
+  "objective": "发布 DSH Store 0.9.36 品牌图标，并修复官方 DSH 0.2.2-alpha.3 被过时兼容声明拒绝安装的问题。",
   "change": {
     "packageVersion": "0.9.36",
     "manifestIcon": "./marketplace/dsh-store-icon-desktop.png",
     "sidebar": "sidebar.panellist uses an inline 96px PNG derived from the same supplied 1254px image.",
-    "catalog": "No Catalog mutation in the source PR. After merge, pin the exact merged source Commit in a fresh first-party Store release plan."
+    "catalog": "No Catalog mutation in the source PR. After merge, pin the exact merged source Commit in a fresh first-party Store release plan.",
+    "installCompatibility": "Declare exact official DSH 0.2.2-alpha.3 host compatibility and only the published alpha.3 versions of the five injected UI peers; no standalone runtime peer alpha.3 exists."
   },
   "officialContract": {
     "packageIconField": "top-level package.json icon, relative to the manifest directory",
@@ -64,14 +65,16 @@
   "gates": [
     "Bind this fresh plan to the exact current main Commit, exact file scope, and base SHA-256 values; verify with scripts/verify-dsh-upgrade-plan.mjs and CI.",
     "The image is a 96px derivative of the user supplied asset; manifest and sidebar refer to this same packaged artwork.",
+    "Declare alpha.3 only after confirming its five injected UI peers are published; keep the absent standalone runtime peer version out of peerDependencies.",
+    "Pass the disposable official-CLI lifecycle on the fixed PR source across the current latest-three release window, Linux/macOS/Windows, and pnpm 10/11/12.",
     "Keep the existing DSH Desktop sidebar registration, labels, and plugin behavior unchanged apart from the icon.",
     "Do not modify DSH source, any @deepseek-ai package, real Profile/package state, or Catalog data in the source PR.",
     "Run the focused disposable Desktop suite, npm run check, npm pack --dry-run --json, plan verification, and git diff --check before submitting.",
     "Require exact-head PR CI before merging; then use a separate fresh Store Catalog release plan for 0.9.36 and independently verify GitHub Raw, Pages, dsh.store, and dsh-store.cn.",
     "Keep real Desktop visual acceptance distinct from source tests and public artifact readback."
   ],
-  "rollback": "Revert only this icon source release through a CI-checked PR; the prior Catalog pin and existing user Profiles remain unchanged.",
-  "healthCheck": "All local gates and exact-head PR checks pass; after Catalog release, GitHub Raw, Pages, dsh.store, and dsh-store.cn expose the same Catalog pin. Real Desktop UI remains separately unverified until loaded.",
+  "rollback": "Keep the previous Catalog pin on any public health failure. Any source correction must preserve the verified alpha.3 compatibility and use a CI-checked PR; do not mutate real Profiles.",
+  "healthCheck": "Local checks and disposable DSH 0.2.2-alpha.3 lifecycle pass; exact-head official latest-three OS/pnpm matrix passes; after Catalog release, GitHub Raw, Pages, dsh.store, and dsh-store.cn expose the same pin. Real Desktop UI remains separately unverified until loaded.",
   "commands": [
     {
       "argv": [
@@ -116,11 +119,11 @@
     }
   ],
   "execution": {
-    "status": "local-checks-passed-awaiting-pr",
+    "status": "local-gates-passed-awaiting-exact-head-ci",
     "sourceCommit": null,
-    "pullRequest": null,
-    "sourceChecks": "DSH_UPGRADE_PLAN_OK; Desktop 47/47; REGISTRY_OK 875; npm run check 594/594; npm pack 1076 files including icon; git diff --check passed",
-    "catalogPublication": "pending source merge and separate fresh first-party Store policy plan",
+    "pullRequest": 1736,
+    "sourceChecks": "Local: DSH 0.2.2-alpha.3 disposable install/start/authenticated API/uninstall/exact Profile restoration passed; Desktop 47/47; npm run check 594/594; npm pack 1076 files including icon; DSH_UPGRADE_PLAN_OK; git diff --check passed. First exact-head GitHub matrix (run 41607997665) failed because the latest alpha.3 was absent from engines.dsh; the corrected revision must pass its full nine-cell latest-three OS/pnpm matrix before merge.",
+    "catalogPublication": "pending source merge, a separate fresh first-party Store release plan, and public readback",
     "realDesktop": "unverified"
   },
   "inputAsset": {

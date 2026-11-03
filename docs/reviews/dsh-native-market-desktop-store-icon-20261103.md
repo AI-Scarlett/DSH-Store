@@ -9,7 +9,9 @@
 - `package.json` 升级到 0.9.36，并通过顶层 `icon` 指向 `marketplace/dsh-store-icon-desktop.png`。该文件随现有 `files: ["marketplace"]` 一起打包，供 DSH Desktop 读取插件包图标。
 - `sidebar.panellist` 以相同的 96×96 PNG 显示左侧入口图标；原 1254×1254 仓库品牌图保持不变。
 - 图片来源 SHA-256：`8af3852ebf1cd2fe5b7d650a671d12200dd9c6f705e62a01f85a5255edb2d6c2`；96px 打包图 SHA-256：`43bf78b4ad72332d950bf6849fe2739938da1f09aa1aa577505b5b5735c9ce1b`。
-- 仅更换图标和版本/发布记录，不改商城功能、DSH 核心、真实 Profile 或 Catalog。
+- 同时修正发现的安装阻断：当前 DSH 0.2.2-alpha.3 已发布，但插件 `engines.dsh` 和 UI Peer 范围尚未包含该版本。确认五个注入 UI peer 均有 alpha.3 后补入精确版本；独立 `dsh-client-runtime` 未发布 alpha.3，继续保留已验证范围，不猜测兼容。
+- `engines.dsh` 与 `dsh.compatibility.dsh` 增加 alpha.3；运行兼容状态记录为 `compatible`，安装、启动、卸载通过，回滚仍标为 `unknown`。
+- 不改商城功能、DSH 核心、真实 Profile 或 Catalog。
 
 ## 验收状态
 
@@ -19,6 +21,7 @@
 - `npm run check`：`REGISTRY_OK`，Catalog 875 条、发现索引 24,171 条，测试 594/594 通过。
 - `npm pack --dry-run --json`：`dsh-safe-plugin-manager@0.9.36`，1,076 个文件，图标资源已包含。
 - `git diff --check`：通过。
-- Source PR exact-head CI：待创建。
+- 官方 DSH 0.2.2-alpha.3 本地一次性 Profile 全流程：安装、dump-config、启动、认证 API、未认证拒绝、跨源拒绝、卸载与精确 Profile 还原全部通过；真实 Profile 未触及。
+- Source PR exact-head CI：兼容范围修复后待重新通过。
 - Catalog 0.9.36 独立 pin 与 GitHub Raw、Pages、dsh.store、dsh-store.cn 回读：源码合并后执行。
 - 真实 DSH Desktop 安装/视觉验收：未验证，不能由源码测试推断。

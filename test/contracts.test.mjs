@@ -50,12 +50,16 @@ test('package exposes a standard DSH bundle and client', async () => {
   assert.equal(pkg.dsh.compatibility.dshReleases['0.1.5-alpha.1'], 'compatible')
   assert.equal(pkg.dsh.compatibility.dshReleases['0.1.5-alpha.2'], 'compatible')
   assert.equal(pkg.dsh.compatibility.dshReleases['0.1.5-rc.1'], 'compatible')
+  assert.equal(pkg.dsh.compatibility.dshReleases['0.2.2-alpha.3'], 'compatible')
+  assert.deepEqual(pkg.dsh.compatibility.dshOperations['0.2.2-alpha.3'], {
+    install: 'passed', start: 'passed', uninstall: 'passed', rollback: 'unknown',
+  })
   assert.equal(pkg.engines.node, '^22.19.0 || >=24.0.0')
   assert.match(pkg.scripts.check, /src\/guardian-upgrader\.mjs/)
   const legacyClientRange = '0.0.1-rc.5 || >=0.1.0-rc.6 <0.2.0 || 0.1.5-alpha.1 || 0.1.5-alpha.2'
   const rcClientRange = `${legacyClientRange} || 0.1.5-rc.1`
   const nextClientRange = `${rcClientRange} || 0.2.0-rc.1`
-  const currentClientRange = `${nextClientRange} || 0.2.0-rc.2 || 0.2.1-alpha.1 || 0.2.1-alpha.2 || 0.2.1-alpha.3 || 0.2.1-alpha.4 || 0.2.1-alpha.5 || 0.2.1-rc.1 || 0.2.1-rc.2 || 0.2.1-rc.3 || 0.2.1-rc.4 || 0.2.1-rc.5 || 0.2.2-alpha.2`
+  const currentClientRange = `${nextClientRange} || 0.2.0-rc.2 || 0.2.1-alpha.1 || 0.2.1-alpha.2 || 0.2.1-alpha.3 || 0.2.1-alpha.4 || 0.2.1-alpha.5 || 0.2.1-rc.1 || 0.2.1-rc.2 || 0.2.1-rc.3 || 0.2.1-rc.4 || 0.2.1-rc.5 || 0.2.2-alpha.2 || 0.2.2-alpha.3`
   const desktopClientRange = [...currentClientRange.split(' || '), '0.1.5-rc.2'].sort()
   assert.equal(pkg.peerDependencies['@deepseek-ai/dsh-client-runtime'], `${legacyClientRange} || 0.2.1-alpha.1 || 0.2.1-alpha.2 || 0.2.1-alpha.3 || 0.2.1-alpha.4 || 0.2.1-alpha.5 || 0.2.1-rc.1 || 0.2.1-rc.2 || 0.2.1-rc.3`)
   for (const dependency of [
@@ -73,7 +77,7 @@ test('package exposes a standard DSH bundle and client', async () => {
     '@deepseek-ai/dsh-client-ui-layout',
     '@deepseek-ai/dsh-client-ui-sidebar',
     '@deepseek-ai/dsh-client-ui-slots',
-  ]) assert.match(pkg.peerDependencies[dependency], /\|\| 0\.2\.0-rc\.1 \|\| 0\.2\.0-rc\.2 \|\| 0\.2\.1-alpha\.1 \|\| 0\.2\.1-alpha\.2 \|\| 0\.2\.1-alpha\.3 \|\| 0\.2\.1-alpha\.4 \|\| 0\.2\.1-alpha\.5 \|\| 0\.2\.1-rc\.1 \|\| 0\.2\.1-rc\.2 \|\| 0\.2\.1-rc\.3 \|\| 0\.2\.1-rc\.4 \|\| 0\.2\.1-rc\.5 \|\| 0\.2\.2-alpha\.2$/)
+  ]) assert.match(pkg.peerDependencies[dependency], /\|\| 0\.2\.0-rc\.1 \|\| 0\.2\.0-rc\.2 \|\| 0\.2\.1-alpha\.1 \|\| 0\.2\.1-alpha\.2 \|\| 0\.2\.1-alpha\.3 \|\| 0\.2\.1-alpha\.4 \|\| 0\.2\.1-alpha\.5 \|\| 0\.2\.1-rc\.1 \|\| 0\.2\.1-rc\.2 \|\| 0\.2\.1-rc\.3 \|\| 0\.2\.1-rc\.4 \|\| 0\.2\.1-rc\.5 \|\| 0\.2\.2-alpha\.2 \|\| 0\.2\.2-alpha\.3$/)
   assert.equal(pkg.private, true)
 })
 
