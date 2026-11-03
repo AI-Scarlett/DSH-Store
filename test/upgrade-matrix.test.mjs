@@ -1,108 +1,156 @@
-ýK®Ïó†‹±‰ª&Šx?m«!¦ºŠW¥Šwµëõ,z»?Î.Æ&¨š)àþZj_ÛŠÞžóh²ç!~)^¢·b­ç-¢¼š[\Ü\ÜÙ\œ›ÛH	Û›ÙN˜\ÜÙ\ÜÝšXÝ	Âš[\ÜÈ™XYš[HHœ›ÛH	Û›ÙN™œËÜ›ÛZ\Ù\ÉÂš[\Ü\Ýœ›ÛH	Û›ÙN\Ý	Âš[\ÜÈ™\ÛÛ™QÚ\Ü˜YSX]š^Hœ›ÛH	Ë‹‹ÜØÜš\ËÜ™\ÛÛ™KYÚ]\Ü˜YK[X]š^›ZœÉÂ‚\Ý
-	ØÛY[Y\ˆXÛ\˜][ÛœÈX]ÚHÙ™šXÚX[ÜÝ™KZ[œÝ[ÛÛ˜XÝ	Ë\Þ[˜È
+import assert from 'node:assert/strict'
+import { readFile } from 'node:fs/promises'
+import test from 'node:test'
+import { resolveDshUpgradeMatrix } from '../scripts/resolve-dsh-upgrade-matrix.mjs'
 
-HOˆÂˆÛÛœÝX[šY™\ÝH”ÓÓ‹œ\œÙJ]ØZ]™XYš[J™]ÈT“
-	Ë‹‹ÜXÚØYÙKšœÛÛ‰Ë[\Ü›Y]K\›
-K	Ý]Ž	ÊJBˆÛÛœÝÛY[ÈHX[šY™\Ý™Ú˜ÛY[š[š™XÝˆ\ÜÙ\™\]X[
-ÛY[Ë›[™ÝŠBˆÛÛœÝ[[YHH	ÐY\ÙYZËXZKÙÚXÛY[\[[YIÂˆ\ÜÙ\›ÚÊÛY[Ëš[˜ÛY\Ê[[YJJBˆÛÛœÝ[[YP[\›˜]]™\ÈHX[šY™\ÝœY\‘\[™[˜ÚY\ÖÜ[[YWKœÜ]
-	È	ÊBˆ\ÜÙ\›ÚÊ[[YP[\›˜]]™\Ëš[˜ÛY\Ê	ÏLŒKŒ\˜ËˆŒ‹Œ	ÊJBˆ›Üˆ
-ÛÛœÝ™[X\ÙHÙˆÉÌŒ‹ŒKX[KŒIË	ÌŒ‹ŒKX[KŒ‰Ë	ÌŒ‹ŒKX[KŒÉË	ÌŒ‹ŒKX[K	Ë	ÌŒ‹ŒKX[KIË	ÌŒ‹ŒK\˜ËŒIË	ÌŒ‹ŒK\˜ËŒ‰Ë	ÌŒ‹ŒK\˜ËŒÉ×JHÂˆ\ÜÙ\›ÚÊ[[YP[\›˜]]™\Ëš[˜ÛY\Ê™[X\ÙJKÜÝ™KZ[œÝ[ÚXÚÈ™\]Z\™\È[[YH	Ü™[X\Ù_X
-BˆBˆ\ÜÙ\›ÚÊ\[[YP[\›˜]]™\Ëš[˜ÛY\Ê	ÌŒ‹ŒK\˜Ë	ÊK	Û›ÈÝ[™[Û™HÚXÛY[\[[YHË^\ÝÈÛˆœIÊBˆ\ÜÙ\›ÚÊ\[[YP[\›˜]]™\Ëš[˜ÛY\Ê	ÌŒ‹ŒK\˜ËIÊK	Û›ÈÝ[™[Û™HÚXÛY[\[[YHËH^\ÝÈÛˆœIÊBˆ\ÜÙ\›ÚÊ\[[YP[\›˜]]™\Ëš[˜ÛY\Ê	ÌŒ‹Œ‹X[KŒ‰ÊK	Û›ÈÝ[™[Û™HÚXÛY[\[[YH[KŒˆ^\ÝÈÛˆœIÊBˆ›Üˆ
-ÛÛœÝ˜[YHÙˆÛY[Ë™š[\Š˜[YHOˆ˜[YHOOH[[YJJHÂˆÛÛœÝ[\›˜]]™\ÈHX[šY™\ÝœY\‘\[™[˜ÚY\ÖÛ˜[YWKœÜ]
-	È	ÊBˆ›Üˆ
-ÛÛœÝ™[X\ÙHÙˆÉÌŒ‹Œ\˜ËŒ‰Ë	ÌŒ‹ŒKX[KŒIË	ÌŒ‹ŒKX[KŒ‰Ë	ÌŒ‹ŒKX[KŒÉË	ÌŒ‹ŒKX[K	Ë	ÌŒ‹ŒKX[KIË	ÌŒ‹ŒK\˜ËŒIË	ÌŒ‹ŒK\˜ËŒ‰Ë	ÌŒ‹ŒK\˜ËŒÉË	ÌŒ‹ŒK\˜Ë	Ë	ÌŒ‹ŒK\˜ËIË	ÌŒ‹Œ‹X[KŒ‰×JHÂˆ\ÜÙ\›ÚÊ[\›˜]]™\Ëš[˜ÛY\Ê™[X\ÙJK	Û˜[Y_H]\Ý^XÚ]HÝ\ÜX›\ÚY	Ü™[X\Ù_X
-BˆBˆ\ÜÙ\›ÚÊ[\›˜]]™\Ëš[˜ÛY\Ê	ÏLŒKŒ\˜ËˆŒ‹Œ	ÊK	Û˜[Y_H™]Z[œÈ]È\ÝÜšXØ[›Ý[™
-Bˆ\ÜÙ\™\]X[
-[\›˜]]™\Ë™š[\Š˜[YHOˆ˜[YKš[˜ÛY\Ê	ÌŒ‹ŒIÊJK›[™ÝL
-Bˆ\ÜÙ\›ÚÊX[\›˜]]™\Ëš[˜ÛY\Ê	Ê‰ÊJBˆBŸJB‚\Ý
-	ÔÈÝ\Ü\È^XÝXÜ›ÜÜÈHÜÝ[™X›\ÚYRHY\œÈÚ]Ý]]\™H™\™[X\ÙHÛZ[\ÉË\Þ[˜È
+test('client peer declarations match the official Host pre-install contract', async () => {
+  const manifest = JSON.parse(await readFile(new URL('../package.json', import.meta.url), 'utf8'))
+  const clients = manifest.dsh.client.inject
+  assert.equal(clients.length, 6)
+  const runtime = '@deepseek-ai/dsh-client-runtime'
+  assert.ok(clients.includes(runtime))
+  const runtimeAlternatives = manifest.peerDependencies[runtime].split(' || ')
+  assert.ok(runtimeAlternatives.includes('>=0.1.0-rc.6 <0.2.0'))
+  for (const release of ['0.2.1-alpha.1', '0.2.1-alpha.2', '0.2.1-alpha.3', '0.2.1-alpha.4', '0.2.1-alpha.5', '0.2.1-rc.1', '0.2.1-rc.2', '0.2.1-rc.3']) {
+    assert.ok(runtimeAlternatives.includes(release), `Host pre-install check requires runtime ${release}`)
+  }
+  assert.ok(!runtimeAlternatives.includes('0.2.1-rc.4'), 'no standalone dsh-client-runtime RC.4 exists on npm')
+  assert.ok(!runtimeAlternatives.includes('0.2.1-rc.5'), 'no standalone dsh-client-runtime RC.5 exists on npm')
+  assert.ok(!runtimeAlternatives.includes('0.2.2-alpha.2'), 'no standalone dsh-client-runtime alpha.2 exists on npm')
+  for (const name of clients.filter(value => value !== runtime)) {
+    const alternatives = manifest.peerDependencies[name].split(' || ')
+    for (const release of ['0.2.0-rc.2', '0.2.1-alpha.1', '0.2.1-alpha.2', '0.2.1-alpha.3', '0.2.1-alpha.4', '0.2.1-alpha.5', '0.2.1-rc.1', '0.2.1-rc.2', '0.2.1-rc.3', '0.2.1-rc.4', '0.2.1-rc.5', '0.2.2-alpha.2']) {
+      assert.ok(alternatives.includes(release), `${name} must explicitly support published ${release}`)
+    }
+    assert.ok(alternatives.includes('>=0.1.0-rc.6 <0.2.0'), `${name} retains its historical bound`)
+    assert.equal(alternatives.filter(value => value.includes('0.2.1')).length, 10)
+    assert.ok(!alternatives.includes('*'))
+  }
+})
 
-HOˆÂˆÛÛœÝX[šY™\ÝH”ÓÓ‹œ\œÙJ]ØZ]™XYš[J™]ÈT“
-	Ë‹‹ÜXÚØYÙKšœÛÛ‰Ë[\Ü›Y]K\›
-K	Ý]Ž	ÊJBˆÛÛœÝ[[YHH	ÐY\ÙYZËXZKÙÚXÛY[\[[YIÂˆÛÛœÝZPÛY[ÈHX[šY™\Ý™Ú˜ÛY[š[š™XÝ™š[\Š˜[YHOˆ˜[YHOOH[[YJBˆ›Üˆ
-ÛÛœÝ˜[™ÙHÙˆÛX[šY™\Ý™Ú˜ÛÛ\]Xš[]K™ÚX[šY™\Ý™[™Ú[™\Ë™Úˆ‹‹ZPÛY[Ë›X\
-˜[YHOˆX[šY™\ÝœY\‘\[™[˜ÚY\ÖÛ˜[YWJWJHÂˆ›Üˆ
-ÛÛœÝ™[X\ÙHÙˆÉÌŒ‹ŒK\˜ËŒIË	ÌŒ‹ŒK\˜ËŒ‰Ë	ÌŒ‹ŒK\˜ËŒÉË	ÌŒ‹ŒK\˜Ë	Ë	ÌŒ‹ŒK\˜ËIË	ÌŒ‹Œ‹X[KŒ‰×JH\ÜÙ\›ÚÊ˜[™ÙKœÜ]
-	È	ÊKš[˜ÛY\Ê™[X\ÙJJBˆ\ÜÙ\›ÚÊ\˜[™ÙKš[˜ÛY\Ê	Ê‰ÊJBˆ\ÜÙ\›ÚÊ\˜[™ÙKœÜ]
-	È	ÊKœÛÛYJ\Oˆ×LŒ—‹Ë\Ý
-\
-JJBˆBˆ\ÜÙ\™\]X[
-X[šY™\Ý™\œÚ[Û‹	ÌŽKŒÍ	ÊBˆ\ÜÙ\›ÚÊÉÝ[šÛ›ÝÛ‰Ë	ØÛÛ\]X›I×Kš[˜ÛY\ÊX[šY™\Ý™Ú˜ÛÛ\]Xš[]K™Ú™[X\Ù\ÖÉÌŒ‹ŒK\˜ËŒI×JJBˆ\ÜÙ\™\]X[
-X[šY™\Ý™Ú˜ÛÛ\]Xš[]K™ÚÜ\˜][ÛœÖÉÌŒ‹ŒK\˜ËŒI×Kœ›Û˜XÚË	Ý[šÛ›ÝÛ‰ÊBˆ\ÜÙ\™\]X[
-X[šY™\Ý™Ú˜ÛÛ\]Xš[]K™Ú™[X\Ù\ÖÉÌŒ‹ŒK\˜ËŒÉ×K	ØÛÛ\]X›IÊBˆ\ÜÙ\™Y\\]X[
-X[šY™\Ý™Ú˜ÛÛ\]Xš[]K™ÚÜ\˜][ÛœÖÉÌŒ‹ŒK\˜ËŒÉ×KÂˆ[œÝ[ˆ	Ü\ÜÙY	ËÝ\ˆ	Ü\ÜÙY	Ë[š[œÝ[ˆ	Ü\ÜÙY	Ë›Û˜XÚÎˆ	Ý[šÛ›ÝÛ‰ËˆJBˆ\ÜÙ\™\]X[
-X[šY™\Ý™Ú˜ÛÛ\]Xš[]K™Ú™[X\Ù\ÖÉÌŒ‹ŒK\˜Ë	×K	ØÛÛ\]X›IÊBˆ\ÜÙ\™Y\\]X[
-X[šY™\Ý™Ú˜ÛÛ\]Xš[]K™ÚÜ\˜][ÛœÖÉÌŒ‹ŒK\˜Ë	×KÂˆ[œÝ[ˆ	Ü\ÜÙY	ËÝ\ˆ	Ü\ÜÙY	Ë[š[œÝ[ˆ	Ü\ÜÙY	Ë›Û˜XÚÎˆ	Ý[šÛ›ÝÛ‰ËˆJBˆ\ÜÙ\™\]X[
-X[šY™\Ý™Ú˜ÛÛ\]Xš[]K™Ú™[X\Ù\ÖÉÌŒ‹ŒK\˜ËI×K	ØÛÛ\]X›IÊBˆ\ÜÙ\™Y\\]X[
-X[šY™\Ý™Ú˜ÛÛ\]Xš[]K™ÚÜ\˜][ÛœÖÉÌŒ‹ŒK\˜ËI×KÂˆ[œÝ[ˆ	Ü\ÜÙY	ËÝ\ˆ	Ü\ÜÙY	Ë[š[œÝ[ˆ	Ü\ÜÙY	Ë›Û˜XÚÎˆ	Ý[šÛ›ÝÛ‰ËˆJBˆ\ÜÙ\™\]X[
-X[šY™\Ý™Ú˜ÛÛ\]Xš[]K™Ú™[X\Ù\ÖÉÌŒ‹Œ‹X[KŒ‰×K	ØÛÛ\]X›IÊBˆ\ÜÙ\™Y\\]X[
-X[šY™\Ý™Ú˜ÛÛ\]Xš[]K™ÚÜ\˜][ÛœÖÉÌŒ‹Œ‹X[KŒ‰×KÂˆ[œÝ[ˆ	Ü\ÜÙY	ËÝ\ˆ	Ü\ÜÙY	Ë[š[œÝ[ˆ	Ü\ÜÙY	Ë›Û˜XÚÎˆ	Ý[šÛ›ÝÛ‰ËˆJBŸJB‚\Ý
-	Ý\Ü˜YHX]š^\Ù\ÈH^XÝÜ™\™YÙ™šXÚX[]\Ý]™YH™[X\ÙHÚ[™ÝÉË\Þ[˜È
+test('RC support is exact across the host and published UI peers without future prerelease claims', async () => {
+  const manifest = JSON.parse(await readFile(new URL('../package.json', import.meta.url), 'utf8'))
+  const runtime = '@deepseek-ai/dsh-client-runtime'
+  const uiClients = manifest.dsh.client.inject.filter(name => name !== runtime)
+  for (const range of [manifest.dsh.compatibility.dsh, manifest.engines.dsh,
+    ...uiClients.map(name => manifest.peerDependencies[name])]) {
+    for (const release of ['0.2.1-rc.1', '0.2.1-rc.2', '0.2.1-rc.3', '0.2.1-rc.4', '0.2.1-rc.5', '0.2.2-alpha.2']) assert.ok(range.split(' || ').includes(release))
+    assert.ok(!range.includes('*'))
+    assert.ok(!range.split(' || ').some(part => /^>=0\.2\./.test(part)))
+  }
+  assert.equal(manifest.version, '0.9.34')
+  assert.ok(['unknown', 'compatible'].includes(manifest.dsh.compatibility.dshReleases['0.2.1-rc.1']))
+  assert.equal(manifest.dsh.compatibility.dshOperations['0.2.1-rc.1'].rollback, 'unknown')
+  assert.equal(manifest.dsh.compatibility.dshReleases['0.2.1-rc.3'], 'compatible')
+  assert.deepEqual(manifest.dsh.compatibility.dshOperations['0.2.1-rc.3'], {
+    install: 'passed', start: 'passed', uninstall: 'passed', rollback: 'unknown',
+  })
+  assert.equal(manifest.dsh.compatibility.dshReleases['0.2.1-rc.4'], 'compatible')
+  assert.deepEqual(manifest.dsh.compatibility.dshOperations['0.2.1-rc.4'], {
+    install: 'passed', start: 'passed', uninstall: 'passed', rollback: 'unknown',
+  })
+  assert.equal(manifest.dsh.compatibility.dshReleases['0.2.1-rc.5'], 'compatible')
+  assert.deepEqual(manifest.dsh.compatibility.dshOperations['0.2.1-rc.5'], {
+    install: 'passed', start: 'passed', uninstall: 'passed', rollback: 'unknown',
+  })
+  assert.equal(manifest.dsh.compatibility.dshReleases['0.2.2-alpha.2'], 'compatible')
+  assert.deepEqual(manifest.dsh.compatibility.dshOperations['0.2.2-alpha.2'], {
+    install: 'passed', start: 'passed', uninstall: 'passed', rollback: 'unknown',
+  })
+})
 
-HOˆÂˆÛÛœÝ™\Ý[H]ØZ]™\ÛÛ™QÚ\Ü˜YSX]š^
-\Þ[˜ÈÜ[ÛœÈOˆÂˆ\ÜÙ\™\]X[
-Ü[ÛœËœ™[X\ÙPÛÝ[ÊBˆ™]\›ˆÂˆ]]Üš]Nˆ	ÛÙ™šXÚX[YÚ]X‹\™[X\Ù\ËX[™[œK\X›\ÚY]™\œÚ[ÛœÉËˆ™[X\ÙPÛÝ[ˆËˆ]\Ý™\œÚ[ÛŽˆ	ÌŒ‹Œ‹X[KŒ‰Ëˆ™[X\Ù\ÎˆÉÌŒ‹ŒK\˜Ë	Ë	ÌŒ‹ŒK\˜ËIË	ÌŒ‹Œ‹X[KŒ‰×KˆÚ[›™[ÎˆÂˆÈYÎˆ	Û]\Ý	ËÚ[™ˆ	Ü™]šY]ÉË™\œÚ[ÛŽˆ	ÌŒ‹ŒK\˜ËIÈKˆÈYÎˆ	Û™^	ËÚ[™ˆ	Ü™]šY]ÉË™\œÚ[ÛŽˆ	ÌŒ‹ŒK\˜ËIÈKˆÈYÎˆ	Ø[IËÚ[™ˆ	Ü™]šY]ÉË™\œÚ[ÛŽˆ	ÌŒ‹Œ‹X[KŒ‰ÈKˆKˆBˆJBˆ\ÜÙ\™Y\\]X[
-™\Ý[Âˆ]\Ý™\œÚ[ÛŽˆ	ÌŒ‹Œ‹X[KŒ‰Ëˆ™[X\Ù\ÎˆÉÌŒ‹ŒK\˜Ë	Ë	ÌŒ‹ŒK\˜ËIË	ÌŒ‹Œ‹X[KŒ‰×Kˆ™]š[Ý\Ô™[X\Ù\ÎˆÉÌŒ‹ŒK\˜Ë	Ë	ÌŒ‹ŒK\˜ËI×Kˆ™^™\œÚ[ÛŽˆ[ˆJBŸJB‚\Ý
-	Ý\Ü˜YHX]š^˜Z[ÈÛÜÙYÛˆ[˜ÛÛ\]HÜˆ[›Ü™\™YÙ™šXÚX[™[X\ÙH]šY[˜ÙIË\Þ[˜È
+test('upgrade matrix uses the exact ordered official latest-three release window', async () => {
+  const result = await resolveDshUpgradeMatrix(async options => {
+    assert.equal(options.releaseCount, 3)
+    return {
+      authority: 'official-github-releases-and-npm-published-versions',
+      releaseCount: 3,
+      latestVersion: '0.2.2-alpha.2',
+      releases: ['0.2.1-rc.4', '0.2.1-rc.5', '0.2.2-alpha.2'],
+      channels: [
+        { tag: 'latest', kind: 'preview', version: '0.2.1-rc.5' },
+        { tag: 'next', kind: 'preview', version: '0.2.1-rc.5' },
+        { tag: 'alpha', kind: 'preview', version: '0.2.2-alpha.2' },
+      ],
+    }
+  })
+  assert.deepEqual(result, {
+    latestVersion: '0.2.2-alpha.2',
+    releases: ['0.2.1-rc.4', '0.2.1-rc.5', '0.2.2-alpha.2'],
+    previousReleases: ['0.2.1-rc.4', '0.2.1-rc.5'],
+    nextVersion: null,
+  })
+})
 
-HOˆÂˆ]ØZ]\ÜÙ\œ™Z™XÝÊˆ™\ÛÛ™QÚ\Ü˜YSX]š^
-\Þ[˜È
+test('upgrade matrix fails closed on incomplete or unordered official release evidence', async () => {
+  await assert.rejects(
+    resolveDshUpgradeMatrix(async () => ({
+      authority: 'official-github-releases-and-npm-published-versions',
+      releaseCount: 3,
+      latestVersion: '0.1.7-rc.1',
+      releases: ['0.1.7-alpha.1', '0.1.7-rc.1'],
+      channels: [],
+    })),
+    /complete ordered latest-three window/,
+  )
+  await assert.rejects(
+    resolveDshUpgradeMatrix(async () => ({
+      authority: 'untrusted',
+      releaseCount: 3,
+      latestVersion: '0.1.7-alpha.2',
+      releases: ['0.1.7-alpha.1', '0.1.7-alpha.2', '0.1.7-rc.1'],
+      channels: [],
+    })),
+    /complete ordered latest-three window/,
+  )
+})
 
-HOˆ
-Âˆ]]Üš]Nˆ	ÛÙ™šXÚX[YÚ]X‹\™[X\Ù\ËX[™[œK\X›\ÚY]™\œÚ[ÛœÉËˆ™[X\ÙPÛÝ[ˆËˆ]\Ý™\œÚ[ÛŽˆ	ÌŒKË\˜ËŒIËˆ™[X\Ù\ÎˆÉÌŒKËX[KŒIË	ÌŒKË\˜ËŒI×KˆÚ[›™[Îˆ×KˆJJKˆØÛÛ\]HÜ™\™Y]\Ý]™YHÚ[™ÝËËˆ
-Bˆ]ØZ]\ÜÙ\œ™Z™XÝÊˆ™\ÛÛ™QÚ\Ü˜YSX]š^
-\Þ[˜È
+test('runtime workflow has one timeout and keeps the expensive disposable smoke bounded', async () => {
+  const workflow = await readFile(new URL('../.github/workflows/upgrade-matrix.yml', import.meta.url), 'utf8')
+  const runtime = workflow.split('\n  runtime:\n')[1]?.split('\n  previous-latest-three:\n')[0]
+  assert.ok(runtime)
+  assert.equal(runtime.match(/^\s+timeout-minutes:/gm)?.length, 1)
+  assert.match(runtime, /timeout-minutes: 20/)
+  assert.equal(workflow.match(/DSH_TEST_PLUGIN_SPEC: github:AI-Scarlett\/DSH-Store#/g)?.length, 3)
+  const smoke = await readFile(new URL('../scripts/test-disposable-upgrade.mjs', import.meta.url), 'utf8')
+  assert.match(smoke, /assert\.equal\(after, baselineConfig/)
+  assert.match(smoke, /signal: AbortSignal\.timeout\(60000\)/)
+  const nextChannel = workflow.split('\n  next-channel:\n')[1]
+  assert.ok(nextChannel)
+  assert.match(nextChannel, /needs\.resolve\.outputs\.next_version != ''/)
+  assert.match(nextChannel, /@deepseek-ai\/dsh@\$DSH_VERSION/)
+  assert.match(nextChannel, /scripts\/test-disposable-upgrade\.mjs/)
+  const registryWorkflow = await readFile(new URL('../.github/workflows/registry.yml', import.meta.url), 'utf8')
+  assert.match(registryWorkflow, /verify-dsh-upgrade-plan\.mjs docs\/ops\/dsh-native-market-rc5-desktop-20261030\.json/)
+  assert.match(registryWorkflow, /verify-dsh-upgrade-plan\.mjs docs\/ops\/dsh-native-market-desktop-authority-20261101\.json/)
+  assert.match(registryWorkflow, /verify-dsh-upgrade-plan\.mjs docs\/ops\/dsh-native-market-desktop-blocked-check-20261101\.json/)
+  assert.match(registryWorkflow, /verify-dsh-upgrade-plan\.mjs docs\/ops\/dsh-native-market-desktop-guidance-ranking-20261103\.json/)
+})
 
-HOˆ
-Âˆ]]Üš]Nˆ	Ý[\ÝY	Ëˆ™[X\ÙPÛÝ[ˆËˆ]\Ý™\œÚ[ÛŽˆ	ÌŒKËX[KŒ‰Ëˆ™[X\Ù\ÎˆÉÌŒKËX[KŒIË	ÌŒKËX[KŒ‰Ë	ÌŒKË\˜ËŒI×KˆÚ[›™[Îˆ×KˆJJKˆØÛÛ\]HÜ™\™Y]\Ý]™YHÚ[™ÝËËˆ
-BŸJB‚\Ý
-	Ü[[YHÛÜšÙ›ÝÈ\ÈÛ™H[Y[Ý][™ÙY\ÈH^[œÚ]™H\ÜÜØX›HÛ[ÚÙH›Ý[™Y	Ë\Þ[˜È
+test('next channel must be a well-formed preview and newer than the active latest-three target', async () => {
+  const resolve = async channels => resolveDshUpgradeMatrix(async () => ({
+    authority: 'official-github-releases-and-npm-published-versions',
+    releaseCount: 3,
+    releases: ['0.2.1-rc.1', '0.2.1-rc.2', '0.2.1-rc.3'],
+    latestVersion: '0.2.1-rc.3',
+    channels,
+  }))
+  assert.equal((await resolve([{ tag: 'next', kind: 'preview', version: '0.2.2-alpha.1' }])).nextVersion, '0.2.2-alpha.1')
+  assert.equal((await resolve([{ tag: 'next', kind: 'preview', version: '0.2.1-rc.2' }])).nextVersion, null)
+  await assert.rejects(resolve([{ tag: 'next', kind: 'stable', version: '0.2.0' }]), /next channel is malformed/)
+  await assert.rejects(resolve([{ tag: 'next', kind: 'preview', version: 'not-a-version' }]), /next channel is malformed/)
+  await assert.rejects(resolve([
+    { tag: 'next', kind: 'preview', version: '0.2.0-rc.1' },
+    { tag: 'next', kind: 'preview', version: '0.2.0-rc.2' },
+  ]), /duplicate next channels/)
+})
 
-HOˆÂˆÛÛœÝÛÜšÙ›ÝÈH]ØZ]™XYš[J™]ÈT“
-	Ë‹‹Ë™Ú]X‹ÝÛÜšÙ›ÝÜËÝ\Ü˜YK[X]š^ž[[	Ë[\Ü›Y]K\›
-K	Ý]Ž	ÊBˆÛÛœÝ[[YHHÛÜšÙ›ÝËœÜ]
-	×ˆ[[YN—‰ÊVÌWOËœÜ]
-	×ˆ™]š[Ý\Ë[]\Ý]™YN—‰ÊVÌBˆ\ÜÙ\›ÚÊ[[YJBˆ\ÜÙ\™\]X[
-[[YK›X]Ú
-×—ÊÝ[Y[Ý][Z[]\Î‹ÙÛJOË›[™ÝJBˆ\ÜÙ\›X]Ú
-[[YKÝ[Y[Ý][Z[]\ÎˆŒÊBˆ\ÜÙ\™\]X[
-ÛÜšÙ›ÝË›X]Ú
-ÑÒÕTÕÔQÒS—ÔÔPÎˆÚ]XŽRKTØØ\›]ÑÒTÝÜ™HËÙÊOË›[™ÝÊBˆÛÛœÝÛ[ÚÙHH]ØZ]™XYš[J™]ÈT“
-	Ë‹‹ÜØÜš\ËÝ\ÝY\ÜÜØX›K]\Ü˜YK›ZœÉË[\Ü›Y]K\›
-K	Ý]Ž	ÊBˆ\ÜÙ\›X]Ú
-Û[ÚÙKØ\ÜÙ\™\]X[
-Y\‹˜\Ù[[™PÛÛ™šYËÊBˆ\ÜÙ\›X]Ú
-Û[ÚÙKÜÚYÛ˜[ˆX›ÜÚYÛ˜[[Y[Ý]
-Œ
-KÊBˆÛÛœÝ™^Ú[›™[HÛÜšÙ›ÝËœÜ]
-	×ˆ™^XÚ[›™[—‰ÊVÌWBˆ\ÜÙ\›ÚÊ™^Ú[›™[
-Bˆ\ÜÙ\›X]Ú
-™^Ú[›™[Û™YY×œ™\ÛÛ™W›Ý]]×›™^Ý™\œÚ[ÛˆOH	ÉËÊBˆ\ÜÙ\›X]Ú
-™^Ú[›™[ÐY\ÙYZËXZWÙÚ	ÒÕ‘T”ÒSÓ‹ÊBˆ\ÜÙ\›X]Ú
-™^Ú[›™[ÜØÜš\×Ý\ÝY\ÜÜØX›K]\Ü˜YW›ZœËÊBˆÛÛœÝ™YÚ\ÝžUÛÜšÙ›ÝÈH]ØZ]™XYš[J™]ÈT“
-	Ë‹‹Ë™Ú]X‹ÝÛÜšÙ›ÝÜËÜ™YÚ\ÝžKž[[	Ë[\Ü›Y]K\›
-K	Ý]Ž	ÊBˆ\ÜÙ\›X]Ú
-™YÚ\ÝžUÛÜšÙ›ÝËÝ™\šYžKYÚ]\Ü˜YK\[—›ZœÈØÜ×ÛÜ×ÙÚ[˜]]™K[X\šÙ]\˜ÍKY\ÚÝÜLŒŒLÌšœÛÛ‹ÊBˆ\ÜÙ\›X]Ú
-™YÚ\ÝžUÛÜšÙ›ÝËÝ™\šYžKYÚ]\Ü˜YK\[—›ZœÈØÜ×ÛÜ×ÙÚ[˜]]™K[X\šÙ]Y\ÚÝÜX]]Üš]KLŒŒLLWšœÛÛ‹ÊBˆ\ÜÙ\›X]Ú
-™YÚ\ÝžUÛÜšÙ›ÝËÝ™\šYžKYÚ]\Ü˜YK\[—›ZœÈØÜ×ÛÜ×ÙÚ[˜]]™K[X\šÙ]Y\ÚÝÜX›ØÚÙYXÚXÚËLŒŒLLWšœÛÛ‹ÊBˆ\ÜÙ\›X]Ú
-™YÚ\ÝžUÛÜšÙ›ÝËÝ™\šYžKYÚ]\Ü˜YK\[—›ZœÈØÜ×ÛÜ×ÙÚ[˜]]™K[X\šÙ]Y\ÚÝÜYÝZY[˜ÙK\˜[šÚ[™ËLŒŒLL×šœÛÛ‹ÊBŸJB‚\Ý
-	Û™^Ú[›™[]\Ý™HHÙ[Y›Ü›YY™]šY]È[™™]Ù\ˆ[ˆHXÝ]™H]\Ý]™YH\™Ù]	Ë\Þ[˜È
-
-HOˆÂˆÛÛœÝ™\ÛÛ™HH\Þ[˜ÈÚ[›™[ÈOˆ™\ÛÛ™QÚ\Ü˜YSX]š^
-\Þ[˜È
-
-HOˆ
-Âˆ]]Üš]Nˆ	ÛÙ™šXÚX[YÚ]X‹\™[X\Ù\ËX[™[œK\X›\ÚY]™\œÚ[ÛœÉËˆ™[X\ÙPÛÝ[ˆËˆ™[X\Ù\ÎˆÉÌŒ‹ŒK\˜ËŒIË	ÌŒ‹ŒK\˜ËŒ‰Ë	ÌŒ‹ŒK\˜ËŒÉ×Kˆ]\Ý™\œÚ[ÛŽˆ	ÌŒ‹ŒK\˜ËŒÉËˆÚ[›™[ËˆJJBˆ\ÜÙ\™\]X[
-
-]ØZ]™\ÛÛ™JÞÈYÎˆ	Û™^	ËÚ[™ˆ	Ü™]šY]ÉË™\œÚ[ÛŽˆ	ÌŒ‹Œ‹X[KŒIÈWJJK›™^™\œÚ[Û‹	ÌŒ‹Œ‹X[KŒIÊBˆ\ÜÙ\™\]X[
-
-]ØZ]™\ÛÛ™JÞÈYÎˆ	Û™^	ËÚ[™ˆ	Ü™]šY]ÉË™\œÚ[ÛŽˆ	ÌŒ‹ŒK\˜ËŒ‰ÈWJJK›™^™\œÚ[Û‹[
-Bˆ]ØZ]\ÜÙ\œ™Z™XÝÊ™\ÛÛ™JÞÈYÎˆ	Û™^	ËÚ[™ˆ	ÜÝX›IË™\œÚ[ÛŽˆ	ÌŒ‹Œ	ÈWJKÛ™^Ú[›™[\ÈX[›Ü›YYÊBˆ]ØZ]\ÜÙ\œ™Z™XÝÊ™\ÛÛ™JÞÈYÎˆ	Û™^	ËÚ[™ˆ	Ü™]šY]ÉË™\œÚ[ÛŽˆ	Û›ÝXK]™\œÚ[Û‰ÈWJKÛ™^Ú[›™[\ÈX[›Ü›YYÊBˆ]ØZ]\ÜÙ\œ™Z™XÝÊ™\ÛÛ™JÂˆÈYÎˆ	Û™^	ËÚ[™ˆ	Ü™]šY]ÉË™\œÚ[ÛŽˆ	ÌŒ‹Œ\˜ËŒIÈKˆÈYÎˆ	Û™^	ËÚ[™ˆ	Ü™]šY]ÉË™\œÚ[ÛŽˆ	ÌŒ‹Œ\˜ËŒ‰ÈKˆJKÙ\XØ]H™^Ú[›™[ËÊBŸJB‚\Ý
-	ÛX]š^™\ÛÛ™\ˆ\ÜÙ\ÈHÚÜ[]™YÜ™Y[X[Û›HÈ]]Üš]H™]Ú[™™]™\ˆÝ]]È]	Ë\Þ[˜È
-
-HOˆÂˆÛÛœÝ™\Ý[H]ØZ]™\ÛÛ™QÚ\Ü˜YSX]š^
-\Þ[˜ÈÜ[ÛœÈOˆÂˆ\ÜÙ\™\]X[
-Ü[ÛœË™Ú]X•ÚÙ[‹	Ùš^\™K\ÚÜ[]™Y]ÚÙ[‰ÊBˆ\ÜÙ\™\]X[
-Ü[ÛœËœ™[X\ÙPÛÝ[ÊBˆ™]\›ˆÈ]]Üš]Nˆ	ÛÙ™šXÚX[YÚ]X‹\™[X\Ù\ËX[™[œK\X›\ÚY]™\œÚ[ÛœÉË™[X\ÙPÛÝ[ˆËˆ™[X\Ù\ÎˆÉÌŒ‹ŒK\˜ËŒIË	ÌŒ‹ŒK\˜ËŒ‰Ë	ÌŒ‹ŒK\˜ËŒÉ×K]\Ý™\œÚ[ÛŽˆ	ÌŒ‹ŒK\˜ËŒÉËÚ[›™[Îˆ×HBˆKÈÚ]X•ÚÙ[Žˆ	Ùš^\™K\ÚÜ[]™Y]ÚÙ[‰ÈJBˆ\ÜÙ\™Ù\Ó›ÝX]Ú
-”ÓÓ‹œÝš[™ÚYžJ™\Ý[
-KÙš^\™K\ÚÜ[]™Y]ÚÙ[‹ÊBŸJB
+test('matrix resolver passes the short-lived credential only to authority fetch and never outputs it', async () => {
+  const result = await resolveDshUpgradeMatrix(async options => {
+    assert.equal(options.githubToken, 'fixture-short-lived-token')
+    assert.equal(options.releaseCount, 3)
+    return { authority: 'official-github-releases-and-npm-published-versions', releaseCount: 3,
+      releases: ['0.2.1-rc.1', '0.2.1-rc.2', '0.2.1-rc.3'], latestVersion: '0.2.1-rc.3', channels: [] }
+  }, { githubToken: 'fixture-short-lived-token' })
+  assert.doesNotMatch(JSON.stringify(result), /fixture-short-lived-token/)
+})
