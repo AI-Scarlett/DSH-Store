@@ -51,11 +51,12 @@ DSH 从此版本优先读取插件的 `engines.dsh`，缺少它时才检查所�
 ### 使用固定 GitHub Commit 安装
 
 优先使用上方的原生索引，或从[当前修复入口](https://dsh.store/repair/)核对受审的固定源码。
-Catalog 当前固定 DSH Store `0.9.35`、Commit `c7ecac249e66de529b537757cee5b8e114d70ef8`。此版本修复商城宽屏导航间距，并在完整目录、推荐榜和必装榜的搜索旁恢复 DSH Desktop 适配声明筛选；筛选只表示 Catalog 是否声明适配，未声明不等于不兼容。默认分支 GitHub 安装入口仍在逐次确认后交给 DSH Desktop 官方插件管理器，最终安装结果以 DSH 返回和安装清单核对为准。Catalog 仍只声明 `web` Profile；真实 Desktop 尚未载入 0.9.35，筛选交互待单独验收。
+Catalog 当前固定 DSH Store `0.9.35`、Commit `c7ecac249e66de529b537757cee5b8e114d70ef8`。此版本修复商城宽屏导航间距，并在完整目录、推荐榜和必装榜的搜索旁恢复 DSH Desktop 适配声明筛选；筛选只表示 Catalog 是否声明适配，未声明不等于不兼容。默认分支 GitHub 安装入口仍在逐次确认后交给 DSH Desktop 官方插件管理器，最终安装结果以 DSH 返回和安装清单核对为准。Catalog 仍只声明 `web` Profile；最新 Desktop 截图已显示适配声明筛选，`0.9.36` 的按钮样式和加载期标签需在安装后单独验收。
 - 源码 `0.9.31` 修复推荐榜和必装榜切换时两个标签共用当前榜单数量的问题；榜单计数分别绑定各自榜单，商城主内容增加响应式左右留白并略微扩大卡片间距。
 - 源码 `0.9.32` 已由 PR [#1727](https://github.com/AI-Scarlett/DSH-Store/pull/1727) 合并，修复完整目录搜索误命中审核原因和其他内部说明的问题：两字及更短的查询只匹配插件标识、GitHub 仓库和搜索词；较长查询再匹配用途描述；结果按名称、包名、仓库和关键词相关度排序。该修复包含在本次固定到 Catalog 的 `0.9.35` 中。
 - 源码 `0.9.33` 已由 PR [#1728](https://github.com/AI-Scarlett/DSH-Store/pull/1728) 合并：响应式铺开商城导航，提供 DSH 官方组件与已安装插件只读视图；审核建议改为白话说明、技术原因可展开查看，最终安装结果仍以 DSH Desktop 官方管理器为准；必装榜补位项显示类别、可核对星标顺序和未知星标提示。源码 `0.9.34` 将官方插件与已安装插件收纳到“本机插件”下的两个子 Tab，并进一步拉开主导航间距。源码 `0.9.34` 已由 PR [#1729](https://github.com/AI-Scarlett/DSH-Store/pull/1729) 合并并于此前固定到 Catalog；源码 `0.9.35` 已由 PR [#1731](https://github.com/AI-Scarlett/DSH-Store/pull/1731) 合并，本次 Catalog 固定该版本。真实 Desktop 的新界面仍需加载后单独验收。
-- 源码 `0.9.35` 修正 `0.9.34` 导航在宽屏被等分拉伸、入口散开的布局；标签改为固定间距并按屏幕宽度换行。“本机插件”中的官方插件与已安装插件使用单独的二级 Tab。完整目录、推荐榜与必装榜恢复 DSH Desktop 适配声明筛选，明确区分“已声明适配”与“未声明”，未声明不表示不兼容。该版本已固定到 Catalog；真实 Desktop 中的筛选和导航仍需回归验收。
+- 源码 `0.9.35` 修正 `0.9.34` 导航在宽屏被等分拉伸、入口散开的布局；标签改为固定间距并按屏幕宽度换行。“本机插件”中的官方插件与已安装插件使用单独的二级 Tab。完整目录、推荐榜与必装榜恢复 DSH Desktop 适配声明筛选，明确区分“已声明适配”与“未声明”，未声明不表示不兼容。该版本已固定到 Catalog；随后 Desktop 截图确认筛选控件已出现，视图标签的按钮辨识度与榜单加载文案由 `0.9.36` 修正并待实机验收。
+- 源码 `0.9.36` 将商城各视图 Tab 改为有边框的按钮，选中与未选中状态更容易辨认；目录或榜单计数尚未就绪时保留固定标签名称，不显示省略号。Catalog 仍固定 `0.9.35`，需在源码合并后另行发布 `0.9.36`。
 源码 `0.9.28` 修复旧版商城无法提交自身更新的问题：只要 DSH 清单确认安装的是同一 Store 仓库且当前版本低于 Catalog 固定版本，更新入口就会把目标固定 Commit 直接交给 DSH `installBundle()`，不要求旧安装来源可解析为完整 Commit，也不调用 `removeBundle()`。DSH 明确拒绝时保留其错误；不确定结果只核对一次，不会重试。该修复包含在源码 `0.9.29` 中，并已通过独立 Catalog 发布；当前 Catalog 已更新到 `0.9.35`。
 通过 DSH 官方 CLI 安装 Catalog 当前固定的 `0.9.35` Commit：
 
@@ -98,13 +99,13 @@ Bundle 启停通过 DSH 官方 `inspect`、`installBundle`、`removeBundle`、`s
 都显示 Catalog 包名与完整固定 Commit 并要求确认。卸载还要求 DSH 标记该 Bundle 可移除，且本机已安装
 来源与 Catalog 仓库一致。启停只使用官方 Bundle Profile Patch 管理接口，不调用 Loader/Fiber API。
 超时或结果不确定时商城刷新清单且不会自动重试。所有操作仅针对 DSH 自己的 Desktop Profile，不会误写
-`web` Profile，也不会让固定 `3080` 端口的 Guardian 接管 Desktop。候选发现和健康报告仍由标准 DSH Web 管理器提供；Desktop 的安装、启动状态以官方插件管理器返回值为准。真实 Desktop 上已核验 `0.9.31` 的旧界面；本次 Catalog 更新包含 `0.9.32`–`0.9.35` 的商城改进。真实 Desktop 尚未载入 `0.9.35`，新搜索筛选与导航的安装和界面验收尚未完成，因此 Catalog 仍只声明 `web` Profile。
+`web` Profile，也不会让固定 `3080` 端口的 Guardian 接管 Desktop。候选发现和健康报告仍由标准 DSH Web 管理器提供；Desktop 的安装、启动状态以官方插件管理器返回值为准。真实 Desktop 上已核验 `0.9.31` 的旧界面；本次 Catalog 更新包含 `0.9.32`–`0.9.35` 的商城改进。最新 Desktop 截图已显示 DSH Desktop 适配声明筛选；源码 `0.9.36` 的 Tab 按钮样式和加载态标签仍待更新后实机验收，因此 Catalog 仍只声明 `web` Profile。
 
 ## 当前概况
 
 | 项目 | 当前状态 |
 | --- | --- |
-| Catalog 固定版本 | `0.9.35`（恢复完整目录、推荐榜和必装榜中的 DSH Desktop 适配声明筛选，并修复宽屏导航间距；真实 Desktop 0.9.35 加载验收待完成） |
+| Catalog 固定版本 | `0.9.35`（恢复完整目录、推荐榜和必装榜中的 DSH Desktop 适配声明筛选，并修复宽屏导航间距；Desktop 截图已显示筛选，`0.9.36` 的 Tab 样式验收待更新） |
 | 收录条目 | 以 GitHub `registry/catalog-index.json` 的实时 `entries.length` 为准 |
 | Catalog 审核通过 | 以实时 Catalog 中 `status: approved` 的条目数为准 |
 | Desktop 可交由 DSH 检查 | Catalog 项使用固定 Commit；公开 DSH 插件目录项使用规范 GitHub 仓库；每次操作经明确确认，Store 审核状态与兼容建议不决定 DSH 的最终结果 |

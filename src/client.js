@@ -511,8 +511,9 @@ window.__ModuleLoader__.load({
       },
       compactButton: { borderRadius: '7px', padding: '4px 8px', fontSize: '11px', lineHeight: '18px' },
       tabButton: {
-        border: '1px solid transparent', borderRadius: '9px', padding: '7px 13px', background: 'transparent',
-        color: 'var(--dsw-alias-label-secondary)', cursor: 'pointer', fontSize: '12px', lineHeight: '20px', fontWeight: 500,
+        border: '1px solid var(--dsw-alias-border-l2)', borderRadius: '9px', padding: '8px 13px',
+        background: 'var(--dsw-alias-bg-layer-2)', color: 'var(--dsw-alias-label-primary)',
+        cursor: 'pointer', fontSize: '12px', lineHeight: '20px', fontWeight: 600,
         transition: 'background-color 120ms ease, color 120ms ease, border-color 120ms ease, box-shadow 120ms ease',
       },
       activeTabButton: {
@@ -2872,8 +2873,9 @@ window.__ModuleLoader__.load({
         }
       }, [directoryRows, rankingState.status, rankingState.snapshot])
       const rankedDirectoryRows = ['recommended', 'essential'].includes(view) ? rankingRowsByType[view] : []
-      const rankingTabCount = type => rankingState.status === 'ready' ? rankingRowsByType[type].length
-        : rankingState.status === 'error' ? '不可用' : '…'
+      const rankingTabCount = type => rankingState.status === 'ready' ? ` · ${rankingRowsByType[type].length}` : ''
+      const directoryTabCount = directoryState.status === 'ready' ? ` · ${directoryRows.length}`
+        : directoryState.status === 'error' ? ' · 暂不可用' : ''
       const activeDirectoryRows = ['recommended', 'essential'].includes(view) ? rankedDirectoryRows : directoryRows
       const directoryCategoryIds = useMemo(() => [...new Set(activeDirectoryRows.flatMap(entry => entry.categories || []))].sort(), [activeDirectoryRows])
       const catalogCategoryIds = useMemo(() => [...new Set(entries.flatMap(entry => entry.categories || []))].sort(), [entries])
@@ -3877,15 +3879,15 @@ window.__ModuleLoader__.load({
             React.createElement(TabButton, { active: view === 'directory',
               style: styles.marketViewTab,
               onClick: () => { setView('directory'); setDirectoryListingFilter('all'); setDirectoryReviewFilter('all'); setSortBy('recommended'); setPage(1) } },
-              `全部已知插件 · ${directoryState.status === 'ready' ? directoryRows.length : directoryState.status === 'error' ? '暂不可用' : '…'}`),
+              `全部已知插件${directoryTabCount}`),
             React.createElement(TabButton, { active: view === 'recommended',
               style: styles.marketViewTab,
               onClick: () => { setView('recommended'); setDirectoryListingFilter('all'); setDirectoryReviewFilter('all'); setPage(1) } },
-              `推荐榜单 · ${rankingTabCount('recommended')}`),
+              `推荐榜单${rankingTabCount('recommended')}`),
             React.createElement(TabButton, { active: view === 'essential',
               style: styles.marketViewTab,
               onClick: () => { setView('essential'); setDirectoryListingFilter('all'); setDirectoryReviewFilter('all'); setPage(1) } },
-              `必装榜单 · ${rankingTabCount('essential')}`),
+              `必装榜单${rankingTabCount('essential')}`),
             React.createElement(TabButton, { active: view === 'catalog',
               style: styles.marketViewTab,
               onClick: () => { setView('catalog'); setListFilter('all'); setPage(1) } }, `Catalog 审核记录 · ${entries.length}`),

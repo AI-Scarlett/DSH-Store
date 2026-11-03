@@ -1,0 +1,95 @@
+{
+  "schemaVersion": 1,
+  "type": "dsh-native-market-upgrade",
+  "planId": "dsh-native-market-tab-controls-20261103",
+  "planFile": "docs/ops/dsh-native-market-tab-controls-20261103.json",
+  "createdAt": "2026-11-03T16:25:17+08:00",
+  "baseCommit": "bfed2434c5c1b4915833d6384be38fda7cd17046",
+  "scope": [
+    "README.md",
+    "docs/ops/dsh-native-market-tab-controls-20261103.json",
+    "docs/reviews/dsh-native-market-tab-controls-20261103.md",
+    "package.json",
+    "src/client.js",
+    "test/catalog.test.mjs",
+    "test/contracts.test.mjs",
+    "test/desktop-compat.test.mjs",
+    "test/upgrade-matrix.test.mjs"
+  ],
+  "preconditions": {
+    "README.md": "b5c263d00a32ae4c5211488ce06fbbf0e0ec9c65fc12204ff50464c1a5619fff",
+    "docs/ops/dsh-native-market-tab-controls-20261103.json": null,
+    "docs/reviews/dsh-native-market-tab-controls-20261103.md": null,
+    "package.json": "edad905f4e161d829d74c4151ef2e2c8f16350e51e883ed875eb301caefa9d59",
+    "src/client.js": "62ed4b08360e9af98ed0fccabf361f26a06241818a98498eba86522c8931aa82",
+    "test/catalog.test.mjs": "1e86cb88af663a61bd21dbaf678d7454023b2b6dc4dcbd5b7167fe49f94ba0f5",
+    "test/contracts.test.mjs": "1190392e36c7b8862d23e681e7cea3b4c1e0a9d51f1249f5e0a4353c2ff800bc",
+    "test/desktop-compat.test.mjs": "2380434623de572cda21e225b8030883aeff9d1c8186bcac088f7a2a6fcf3b42",
+    "test/upgrade-matrix.test.mjs": "294442bdefaa164e00e9449f7ac922348711ebfb253873c3c40dc6b70860be4a"
+  },
+  "postconditions": {
+    "README.md": "6ef1fa18954a8d1a513028000dc3c0f4dd2ac6139d4928d2c6da1567bda1d0c4",
+    "docs/reviews/dsh-native-market-tab-controls-20261103.md": "f66749e37709b1faf96a775138969f0e2f5bfb8e4eae679831dbad8da5adf2d6",
+    "package.json": "5f9f7b50546ddf39fd695e36cc975268a0287a98e789386a8b2c78f1b1b0087f",
+    "src/client.js": "e17804ba8397a6236e73cf05004cd95a91748a90d761faf9c9f4eb5f658417d5",
+    "test/catalog.test.mjs": "7e14cc8bf0f6f2b733c654b91fdc175d0279e0a78d1c9d69711daf59f5ec8372",
+    "test/contracts.test.mjs": "c544ffcc2778610cac8c8a5774c0f5e5cc4a189c08b36037be05ab91f019b1d6",
+    "test/desktop-compat.test.mjs": "f53157ed91c6a872f32980572165c289fa2ae0644ba5f968026be9a333e6cb58",
+    "test/upgrade-matrix.test.mjs": "72d875c71831b9016662f65ec86a9fe9d28a0df64dca32fb93f1a3c1c35b7e1c"
+  },
+  "authorization": {
+    "source": "direct-user-request",
+    "request": "用户要求商城视图标签看起来像可点击按钮，并移除推荐榜与必装榜加载时的省略号；此前已要求推送、发布和合并。",
+    "githubWriteCredential": "short-lived-token-required",
+    "publication": "auditable-ci-checked-pull-request-only"
+  },
+  "objective": "发布 DSH Store 0.9.36，增强全部商城视图标签的按钮辨识度，并让榜单和目录标签在加载时不显示省略号。",
+  "change": {
+    "tabs": "未选中 Tab 使用可见边框和背景，选中 Tab 保留高对比底色；标签保持完整可读并随窗口宽度换行。",
+    "labels": "推荐榜和必装榜尚未取得计数时仅显示固定名称；完整目录加载时也不输出省略号。计数在数据就绪后继续显示。",
+    "tests": "扩展隔离 Desktop fixture，验证 Tab 样式、加载期间固定名称和榜单数据就绪后的独立计数。",
+    "boundary": "不改变搜索、筛选、安装决策、DSH Catalog、真实 Profile、Loader/Fiber 或重启行为。"
+  },
+  "gates": [
+    "Fresh typed plan binds origin/main Commit bfed2434c5c1b4915833d6384be38fda7cd17046, exact files, and precondition SHA-256 hashes.",
+    "Disposable Desktop fixture checks inactive tabs have visible button affordance, active styling remains distinct, and no tab label renders an ellipsis while counts load.",
+    "Run focused Desktop UI coverage, npm run check, npm pack --dry-run --json, the typed plan verifier, and git diff --check.",
+    "Submit through a CI-checked source PR and require exact-head checks before merge.",
+    "After source merge, prepare a separate fresh Catalog release plan for 0.9.36 and verify public surfaces independently.",
+    "Real DSH Desktop package/Profile update and visible acceptance remain separately planned and explicitly confirmed."
+  ],
+  "rollback": "Revert only the source UI change through a new auditable CI-checked PR. No Catalog, DSH Profile, package installation, or restart is mutated by this source PR.",
+  "healthCheck": "Require verified plan hashes, Desktop fixture assertions, full npm check, package dry run, diff check, and exact-head PR CI; separately verify Catalog publication and real Desktop loading.",
+  "commands": [
+    {
+      "argv": ["node", "--test", "test/desktop-compat.test.mjs"],
+      "expected": "Disposable Desktop view-tab checks pass"
+    },
+    {
+      "argv": ["npm", "run", "check"],
+      "expected": "Registry validation and full repository checks pass"
+    },
+    {
+      "argv": ["npm", "pack", "--dry-run", "--json"],
+      "expected": "dsh-safe-plugin-manager@0.9.36 package contents are valid"
+    },
+    {
+      "argv": ["node", "scripts/verify-dsh-upgrade-plan.mjs", "docs/ops/dsh-native-market-tab-controls-20261103.json"],
+      "expected": "DSH_UPGRADE_PLAN_OK"
+    },
+    {
+      "argv": ["git", "diff", "--check"],
+      "expected": "exit 0"
+    }
+  ],
+  "execution": {
+    "status": "source-verified-pr-pending",
+    "sourceBase": "bfed2434c5c1b4915833d6384be38fda7cd17046",
+    "packageVersion": "0.9.36",
+    "sourceChecks": "passed: Desktop fixtures 47/47; npm run check REGISTRY_OK entries=875 and 594/594; package dry run 1,075 files; node --check src/client.js; git diff --check",
+    "deterministicPlan": "passed: DSH_UPGRADE_PLAN_OK base=bfed2434c5c1b4915833d6384be38fda7cd17046 changed=9",
+    "exactHeadCi": "pending",
+    "catalogPublication": "not part of source PR",
+    "realDesktop": "not verified"
+  }
+}
