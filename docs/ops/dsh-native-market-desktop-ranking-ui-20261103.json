@@ -1,0 +1,128 @@
+{
+  "schemaVersion": 1,
+  "type": "dsh-native-market-upgrade",
+  "planId": "dsh-native-market-desktop-ranking-ui-20261103",
+  "planFile": "docs/ops/dsh-native-market-desktop-ranking-ui-20261103.json",
+  "createdAt": "2026-11-03T01:21:54Z",
+  "baseCommit": "0cc294ef0e20112314f6d8cdc8b6de25a489de6f",
+  "scope": [
+    ".github/workflows/registry.yml",
+    "README.md",
+    "docs/ops/dsh-native-market-desktop-ranking-ui-20261103.json",
+    "docs/reviews/dsh-native-market-desktop-ranking-ui-20261103.md",
+    "package.json",
+    "src/client.js",
+    "test/catalog.test.mjs",
+    "test/contracts.test.mjs",
+    "test/desktop-compat.test.mjs",
+    "test/upgrade-matrix.test.mjs"
+  ],
+  "preconditions": {
+    ".github/workflows/registry.yml": "2cc8cb6391c5e753d8e5faf47f37eb7536f12b40f98e90ed426a153e6cdc83b4",
+    "README.md": "f7cce7ad0cfa95898d9e18f2fdf14a36212a9379620cabafba7ad7751e0fbe71",
+    "docs/ops/dsh-native-market-desktop-ranking-ui-20261103.json": null,
+    "docs/reviews/dsh-native-market-desktop-ranking-ui-20261103.md": null,
+    "package.json": "cdf91343b01a5d40e6c1f04e4f181c2601eb8f4da195e72e6101df15b4057ad1",
+    "src/client.js": "429b7212b89c7142ef606843026257f766435a23b5d85f64435aa6c914c9d7ed",
+    "test/catalog.test.mjs": "883d43488078952a3f6ac575377eec7dd1a3eea730cc128bc0d51fde721816ab",
+    "test/contracts.test.mjs": "1391e9f381a44ea983ee94326c6b0f762fd5f7851ffcb522d7318b833d1ad9ad",
+    "test/desktop-compat.test.mjs": "81a6a4a7200420843858da46f8bcca3d3f52286ba5d3dd9105f749c9648f3b12",
+    "test/upgrade-matrix.test.mjs": "04c8712d70bf38488325d27bf399c165899ca9139788ae53731d9271c7547fa0"
+  },
+  "postconditions": {
+    ".github/workflows/registry.yml": "35cc77a3f61f7d9f490e9d16a27156781805f6d4e49211c28f648db86e934516",
+    "README.md": "097d803734f3d06f903000bdea2197ad9cb8715e79a3f7571e2a57b9bb6b8a9b",
+    "docs/reviews/dsh-native-market-desktop-ranking-ui-20261103.md": "6602316cdc4240e611c43d454cc436865c2e404c650afe68b8af79cb051056b2",
+    "package.json": "339aa6643a4766e1c6efbfd8b6b6276fa03ada0e45020d55a4c6b325bc447fe7",
+    "src/client.js": "e287b234747903a5f513be0fdeb7dac1389f52793f5262fab566094caad3efe9",
+    "test/catalog.test.mjs": "3e4122d9d559de9a117a5f02798f794fbf06a892fa905600db838dd1d93ecc36",
+    "test/contracts.test.mjs": "b62f300d473cc952346d6a2974325683d8e9d68084685369cf316b3c513e55dc",
+    "test/desktop-compat.test.mjs": "14d36b83a0c95af5de4c4e05bced3b89ff7655f2cd009dff4a6403ec4f583370",
+    "test/upgrade-matrix.test.mjs": "5cc3364eb9cf77ea2577dcfde731a8a68f38613f2f98bd5add1e4aedce898a14"
+  },
+  "authorization": {
+    "source": "direct-user-request",
+    "request": "用户要求优化 DSH Desktop 插件商城左右留白，并指出推荐榜和必装榜切换时顶部数据显示错误，允许实际操作测试；此前明确要求推送与合并商城修复。",
+    "githubWriteCredential": "short-lived-token-required",
+    "publication": "auditable-ci-checked-pull-request-only"
+  },
+  "objective": "修复推荐榜与必装榜切换时顶部数量标签共用当前榜单计数的问题，给商城主内容增加符合 DSH Desktop 的响应式左右留白，并将源码更新到 0.9.31。",
+  "runtimeReproduction": {
+    "observedVersion": "0.9.30",
+    "observedIn": "running DSH Desktop, official plugin marketplace panel",
+    "recommendedTabCount": 160,
+    "essentialTabCount": 30,
+    "failure": "Both labels showed the selected ranking count; cards themselves switched to the selected board."
+  },
+  "change": {
+    "packageVersion": "0.9.31",
+    "storeViews": "Create and memoize recommended and essential row arrays independently from the same verified website snapshot. Each tab label reads its own total count; selected-board search, category filtering, results, and pagination continue to use that board.",
+    "layout": "Center the marketplace root and add responsive horizontal padding with CSS clamp(16px, 2.5vw, 30px), balanced vertical padding, and a 14px card-grid gap. Preserve the existing single scroll container and sticky search controls.",
+    "installAuthority": "No install behavior changes. Store labels, review states, and ranking positions remain advisory; DSH Desktop official plugin manager continues to decide installation outcomes.",
+    "catalog": "This source PR does not change the Catalog pin. Catalog remains 0.9.30 until a separate fresh Catalog policy plan is approved through its exact confirmation phrase.",
+    "runtime": "Do not change DSH core or @deepseek-ai packages; do not write a real DSH Profile, install/update a real package, restart Desktop, or execute third-party source."
+  },
+  "gates": [
+    "The typed plan binds base Commit 0cc294ef0e20112314f6d8cdc8b6de25a489de6f, exact changed-file scope, base SHA-256 values, and reviewed postcondition hashes.",
+    "A disposable Desktop fixture with deliberately different recommended and essential totals verifies both labels after switching to either board and checks page rows against marketplace/rankings/model.js.",
+    "The Desktop component fixture verifies the root centered responsive insets, CSS clamp padding, and widened card gap; preserve the existing bounded scroll and sticky controls.",
+    "The official DSH Desktop 0.9.30 interface was operated to reproduce the existing count bug; it is not loaded with the proposed 0.9.31 source and does not count as acceptance of the fix.",
+    "The package version is 0.9.31 while the public Catalog stays at 0.9.30 until a separate policy publication. Never infer public release from this source PR.",
+    "Use disposable tests only. Do not mutate a real Profile, DSH package, or restart state. Revert through an auditable PR if health checks fail."
+  ],
+  "rollback": "Revert only this source change through an auditable CI-checked PR. The Catalog remains pinned to 0.9.30; no Profile backup or restoration is needed because no real Profile or Desktop package is touched.",
+  "healthCheck": "Require DSH_UPGRADE_PLAN_OK, 45/45 focused Desktop tests, npm run check with registry validation and all 592 tests, npm pack --dry-run for 0.9.31, node --check src/client.js, git diff --check, and exact-head PR CI. Separately verify the new Catalog publication and real Desktop acceptance later; neither is inferred here.",
+  "commands": [
+    {
+      "argv": [
+        "node",
+        "--test",
+        "test/desktop-compat.test.mjs"
+      ],
+      "expected": "45 disposable Desktop tests pass, including per-board counts, board contents, and responsive inset styling"
+    },
+    {
+      "argv": [
+        "npm",
+        "run",
+        "check"
+      ],
+      "expected": "REGISTRY_OK and all repository tests pass"
+    },
+    {
+      "argv": [
+        "npm",
+        "pack",
+        "--dry-run",
+        "--json"
+      ],
+      "expected": "dsh-safe-plugin-manager@0.9.31 package contents are valid"
+    },
+    {
+      "argv": [
+        "node",
+        "scripts/verify-dsh-upgrade-plan.mjs",
+        "docs/ops/dsh-native-market-desktop-ranking-ui-20261103.json"
+      ],
+      "expected": "DSH_UPGRADE_PLAN_OK"
+    },
+    {
+      "argv": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "expected": "exit 0"
+    }
+  ],
+  "execution": {
+    "status": "local-source-verified-pr-pending",
+    "sourceBase": "0cc294ef0e20112314f6d8cdc8b6de25a489de6f",
+    "packageVersion": "0.9.31",
+    "catalogVersion": "0.9.30 until separate policy publication",
+    "exactHeadCi": "pending PR creation",
+    "publicReadback": "not part of this source PR; 0.9.30 remains public",
+    "realDesktop": "0.9.30 count bug reproduced; 0.9.31 source not loaded",
+    "pullRequest": null
+  }
+}

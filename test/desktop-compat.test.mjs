@@ -222,7 +222,9 @@ function desktopRankingFixture() {
       weeklyStars: 10, categories: ['tools'] }),
     desktopRankingEntry({ id: 'build-dsh-plugin', name: 'Build DSH Plugin', repositoryUrl: 'https://github.com/AI-Scarlett/build-dsh-plugin',
       weeklyStars: 5, categories: ['ai'] }),
+    desktopRankingEntry({ id: 'zero-star-category-leader', name: 'Zero star category leader', weeklyStars: 0, categories: ['zero-weekly'] }),
   ])
+  rankingSnapshot.categories.push({ id: 'zero-weekly', zh: '零星标', en: 'Zero Stars' })
   const catalogEntries = rankingSnapshot.entries.filter(entry => entry.source === 'catalog').map(entry => desktopEntry({
     id: entry.id, packageName: `@acme/${entry.id}`, commit: desktopCommit, status: entry.reviewStatus,
     statusReason: entry.listingReason || undefined, repositoryUrl: entry.repositoryUrl,
@@ -608,6 +610,9 @@ test('official Desktop registers 插件商城 and mirrors the complete website d
   const root = desktopNodes(tree).find(node => node.type === 'section' && node.props?.['aria-label'].startsWith('插件商城（DSH-Store）'))
   assert.match(root.props.style.height, /100vh/)
   assert.equal(root.props.style.overflowY, 'auto')
+  assert.equal(root.props.style.marginInline, 'auto')
+  assert.equal(root.props.style.padding, '14px clamp(16px, 2.5vw, 30px) 28px')
+  assert.equal(desktopNodes(tree).find(node => node.props?.['aria-label'] === '全部已知插件').props.style.gap, '14px')
   assert.equal(root.props.tabIndex, 0)
   assert.equal(desktopNodes(tree).find(node => node.props?.['aria-label'] === '目录搜索和筛选').props.style.position, 'sticky')
   for (const label of ['关闭', '卸载', '查看详情']) {
@@ -723,6 +728,8 @@ test('Desktop recommendation and essential boards match the official website ran
   const panel = harness.getComponent('DesktopStorePanel')
   await harness.runEffects(panel)
   await waitForDesktopTree(harness, tree => desktopText(tree).includes('全部已知插件'))
+  const expectedCounts = Object.fromEntries(['recommended', 'essential'].map(type => [type, rankingEntries(rankingSnapshot, type).length]))
+  assert.notEqual(expectedCounts.recommended, expectedCounts.essential, 'fixture exposes cross-board count leakage')
 
   for (const [type, tabPrefix] of [['recommended', '推荐榜单'], ['essential', '必装榜单']]) {
     let tree = await harness.render()
@@ -734,6 +741,13 @@ test('Desktop recommendation and essential boards match the official website ran
     await harness.runEffects(panel)
     tree = await waitForDesktopTree(harness, value => desktopText(value).includes(type === 'recommended' ? '官网推荐榜' : '官网必装榜')
       && !desktopText(value).includes('正在读取官网榜单'))
+    for (const [countType, countLabel] of [['recommended', '推荐榜单'], ['essential', '必装榜单']]) {
+      const countTab = desktopNodes(tree).find(node => node.type === 'button' && node.props.role === 'tab'
+        && node.children?.some(value => String(value).startsWith(countLabel)))
+      assert.ok(countTab, `${countLabel} tab is visible`)
+      assert.match(desktopText(countTab), new RegExp(`${countLabel} · ${expectedCounts[countType]}$`),
+        `${countLabel} count stays bound to its own ranking after switching to ${type}`)
+    }
 
     const expectedIds = rankingEntries(rankingSnapshot, type).map(entry => entry.id)
     const pageCount = Math.max(1, Math.ceil(expectedIds.length / 30))

@@ -529,6 +529,7 @@ window.__ModuleLoader__.load({
       marketRoot: {
         display: 'flex', flexDirection: 'column', gap: '14px', width: '100%', maxWidth: '1180px', minWidth: 0, minHeight: 0,
         height: 'calc(100vh - 24px)', maxHeight: 'calc(100vh - 24px)', boxSizing: 'border-box',
+        marginInline: 'auto', padding: '14px clamp(16px, 2.5vw, 30px) 28px',
         overflowX: 'hidden', overflowY: 'auto', overscrollBehaviorY: 'contain', WebkitOverflowScrolling: 'touch',
       },
       marketHero: {
@@ -549,7 +550,7 @@ window.__ModuleLoader__.load({
       marketFilterTabs: { display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: '6px' },
       marketResults: { display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '8px' },
       marketListViewport: { width: '100%', minWidth: 0, overflow: 'visible' },
-      marketGrid: { display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(340px, 100%), 1fr))', gap: '10px', alignItems: 'stretch' },
+      marketGrid: { display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(340px, 100%), 1fr))', gap: '14px', alignItems: 'stretch' },
       marketCard: {
         display: 'flex', flexDirection: 'column', gap: '9px', minWidth: 0, padding: '13px',
         border: '1px solid var(--dsw-alias-border-l2)', borderRadius: '12px', background: 'var(--dsw-alias-bg-layer-3)',
@@ -2774,10 +2775,16 @@ window.__ModuleLoader__.load({
         if (directoryState.status === 'error') return createDesktopKnownDirectory(loadState.catalog, { discovery: { entries: [] }, candidates: [] })
         return []
       }, [loadState.status, loadState.catalog, directoryState.status, directoryState.snapshot])
-      const rankedDirectoryRows = useMemo(() => {
-        if (!['recommended', 'essential'].includes(view) || rankingState.status !== 'ready') return []
-        return createDesktopRankingRows(directoryRows, rankingState.snapshot, view)
-      }, [directoryRows, rankingState.status, rankingState.snapshot, view])
+      const rankingRowsByType = useMemo(() => {
+        if (rankingState.status !== 'ready') return { recommended: [], essential: [] }
+        return {
+          recommended: createDesktopRankingRows(directoryRows, rankingState.snapshot, 'recommended'),
+          essential: createDesktopRankingRows(directoryRows, rankingState.snapshot, 'essential'),
+        }
+      }, [directoryRows, rankingState.status, rankingState.snapshot])
+      const rankedDirectoryRows = ['recommended', 'essential'].includes(view) ? rankingRowsByType[view] : []
+      const rankingTabCount = type => rankingState.status === 'ready' ? rankingRowsByType[type].length
+        : rankingState.status === 'error' ? '不可用' : '…'
       const activeDirectoryRows = ['recommended', 'essential'].includes(view) ? rankedDirectoryRows : directoryRows
       const directoryCategoryIds = useMemo(() => [...new Set(activeDirectoryRows.flatMap(entry => entry.categories || []))].sort(), [activeDirectoryRows])
       const catalogCategoryIds = useMemo(() => [...new Set(entries.flatMap(entry => entry.categories || []))].sort(), [entries])
@@ -3698,10 +3705,10 @@ window.__ModuleLoader__.load({
               `全部已知插件 · ${directoryState.status === 'ready' ? directoryRows.length : directoryState.status === 'error' ? '暂不可用' : '…'}`),
             React.createElement(TabButton, { active: view === 'recommended',
               onClick: () => { setView('recommended'); setDirectoryListingFilter('all'); setDirectoryReviewFilter('all'); setPage(1) } },
-              `推荐榜单 · ${rankingState.status === 'ready' ? rankedDirectoryRows.length : rankingState.status === 'error' ? '不可用' : '…'}`),
+              `推荐榜单 · ${rankingTabCount('recommended')}`),
             React.createElement(TabButton, { active: view === 'essential',
               onClick: () => { setView('essential'); setDirectoryListingFilter('all'); setDirectoryReviewFilter('all'); setPage(1) } },
-              `必装榜单 · ${rankingState.status === 'ready' ? rankedDirectoryRows.length : rankingState.status === 'error' ? '不可用' : '…'}`),
+              `必装榜单 · ${rankingTabCount('essential')}`),
             React.createElement(TabButton, { active: view === 'catalog',
               onClick: () => { setView('catalog'); setListFilter('all'); setPage(1) } }, `Catalog 审核记录 · ${entries.length}`),
             React.createElement(TabButton, { active: view === 'installed',
