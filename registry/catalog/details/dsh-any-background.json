@@ -22,24 +22,24 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "8f5b6237109d3a97fead5c3bf874511d7d07e57d",
-  "version": "0.4.2",
+  "commit": "c9b9490ba2118a4048df8e10961194a8a427bf5d",
+  "version": "0.4.3",
   "categories": [
     "themes"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-28T20:37:44.000Z",
-    "observedAt": "2026-10-29T04:46:23.000Z",
+    "updatedAt": "2026-11-02T10:22:24.000Z",
+    "observedAt": "2026-11-03T07:18:33.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-10-29T04:46:23.000Z",
-      "evidenceUrl": "https://github.com/Tkingxiao/dsh-any-background/commit/8f5b6237109d3a97fead5c3bf874511d7d07e57d",
+      "checkedAt": "2026-11-03T07:18:33.000Z",
+      "evidenceUrl": "https://github.com/Tkingxiao/dsh-any-background/commit/c9b9490ba2118a4048df8e10961194a8a427bf5d",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -78,7 +78,7 @@
   },
   "admission": {
     "engine": "bounded-source-v3",
-    "binding": "5987ae37fe4413a08d1c6ea607869fe563469c26ef1cc98107f9bb395656529c",
+    "binding": "11c5b46a09a431485f1d346fadc3725fa5a29e2636e0a272b1bc6968e5e6383d",
     "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
     "state": "review-required",
     "sourceContract": "unverified",
@@ -94,7 +94,7 @@
   "status": "blocked",
   "statusReason": "Automatic policy blocked installation: Node.js compatibility is not explicitly declared; runtime or optional dependencies require a separate supply-chain review; runtime source contains the files permission signal; runtime source contains the network permission signal",
   "compatibility": {
-    "dsh": "0.2.0-rc.1 || 0.2.0-rc.2 || 0.2.1-alpha.1 || 0.2.1-alpha.2 || 0.2.1-alpha.3 || 0.2.1-alpha.4 || 0.2.1-alpha.5 || 0.2.1-rc.1 || 0.2.1-rc.2 || 0.2.1-rc.3 || >=0.2.0-rc.1",
+    "dsh": "0.2.0-rc.1 || 0.2.0-rc.2 || 0.2.1-alpha.1 || 0.2.1-alpha.2 || 0.2.1-alpha.3 || 0.2.1-alpha.4 || 0.2.1-alpha.5 || 0.2.1-rc.1 || 0.2.1-rc.2 || 0.2.1-rc.3 || 0.2.1-rc.4 || 0.2.1-rc.5 || 0.2.2-alpha.2 || >=0.2.0-rc.1",
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
@@ -114,9 +114,9 @@
       "0.2.1-rc.1": "compatible",
       "0.2.1-rc.2": "compatible",
       "0.2.1-rc.3": "compatible",
-      "0.2.1-rc.4": "unknown",
-      "0.2.2-alpha.2": "unknown",
-      "0.2.1-rc.5": "unknown"
+      "0.2.1-rc.4": "compatible",
+      "0.2.1-rc.5": "compatible",
+      "0.2.2-alpha.2": "compatible"
     },
     "dshOperations": {
       "rc.7": {
@@ -233,13 +233,13 @@
         "uninstall": "unknown",
         "rollback": "unknown"
       },
-      "0.2.2-alpha.2": {
+      "0.2.1-rc.5": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",
         "rollback": "unknown"
       },
-      "0.2.1-rc.5": {
+      "0.2.2-alpha.2": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",
