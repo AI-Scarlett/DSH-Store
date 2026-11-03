@@ -2872,22 +2872,29 @@ window.__ModuleLoader__.load({
         for (const row of activeDirectoryRows) for (const id of row.categories || []) counts.set(id, (counts.get(id) || 0) + 1)
         return counts
       }, [activeDirectoryRows])
-      const directorySearchIndex = useMemo(() => activeDirectoryRows.map(row => ({
-        row,
-        text: [row.id, row.sourceId, row.alias, row.packageName, row.name, row.description,
-          row.catalogIndexEntry?.nameZh, row.catalogIndexEntry?.nameEn, row.catalogIndexEntry?.version,
-          row.catalogIndexEntry?.status, ...(row.catalogIndexEntry?.searchTerms || []),
-          row.repositoryUrl, row.detailUrl, row.kind, row.catalogEntry?.statusReason,
-          row.candidateEntry?.status, row.candidateEntry?.statusReason,
-          row.rankingEntry?.listingReason,
-          row.rankingEntry?.recommendationKind, row.rankingEntry?.reviewStatus,
-          row.rankingEntry?.communityRecommendation?.evidenceUrl,
-          ...(row.rankingEntry?.wins || []).map(item => item.zh || item.en),
-          row.rankingEntry?.categoryPick?.zh, row.rankingEntry?.categoryPick?.en,
-          ...(row.categories || []), ...(row.categories || []).map(id => categoryLabels[id])]
-          .filter(value => value !== null && value !== undefined)
-          .map(value => String(value).toLocaleLowerCase()).join('\n'),
-      })), [activeDirectoryRows, categoryLabels])
+      const directorySearchIndex = useMemo(() => {
+        const normalizedFields = values => values.filter(value => value !== null && value !== undefined)
+          .map(value => String(value).normalize('NFKC').toLocaleLowerCase())
+        return activeDirectoryRows.map(row => ({
+          row,
+          identity: normalizedFields([
+            row.id, row.sourceId, row.alias, row.packageName, row.name,
+            row.catalogIndexEntry?.nameZh, row.catalogIndexEntry?.nameEn,
+          ]),
+          repository: normalizedFields([row.repositoryUrl]),
+          keywords: normalizedFields([
+            ...(row.catalogIndexEntry?.searchTerms || []), ...(row.catalogEntry?.searchTerms || []),
+            ...(row.candidateEntry?.topics || []), ...(row.categories || []),
+            ...(row.categories || []).map(id => categoryLabels[id]),
+            ...(row.rankingEntry?.wins || []).flatMap(item => [item.zh, item.en]),
+            row.rankingEntry?.categoryPick?.zh, row.rankingEntry?.categoryPick?.en,
+          ]),
+          description: normalizedFields([
+            row.description, row.catalogEntry?.description, row.candidateEntry?.description,
+            row.rankingEntry?.description,
+          ]),
+        }))
+      }, [activeDirectoryRows, categoryLabels])
       const directoryOrderedSearchIndex = useMemo(() => {
         if (['recommended', 'essential'].includes(view)) return directorySearchIndex
         return [...directorySearchIndex].sort((left, right) => {
@@ -2902,18 +2909,44 @@ window.__ModuleLoader__.load({
         })
       }, [directorySearchIndex, sortBy, view])
       const directoryFiltered = useMemo(() => {
-        const needle = query.trim().toLocaleLowerCase()
-        return directoryOrderedSearchIndex.filter(({ row, text }) => (!category || row.categories.includes(category))
-          && (directoryListingFilter === 'all' || (directoryListingFilter === 'listed' ? Boolean(row.catalogIndexEntry) : !row.catalogIndexEntry))
-          && (directoryReviewFilter === 'all'
-            || (directoryReviewFilter === 'approved' && row.catalogIndexEntry?.status === 'approved')
-            || (directoryReviewFilter === 'blocked' && row.catalogIndexEntry?.status === 'blocked')
-            || (directoryReviewFilter === 'unlisted-catalog' && row.catalogIndexEntry?.status === 'unlisted')
-            || (directoryReviewFilter === 'reviewing' && !row.catalogIndexEntry && row.candidateEntry?.status === 'reviewing')
-            || (directoryReviewFilter === 'rejected' && !row.catalogIndexEntry && row.candidateEntry?.status === 'rejected')
-            || (directoryReviewFilter === 'discovered' && !row.catalogIndexEntry && row.candidateEntry?.status === 'discovered')
-            || (directoryReviewFilter === 'public-only' && !row.catalogIndexEntry && !row.candidateEntry))
-          && (!needle || text.includes(needle))).map(({ row }) => row)
+        const terms = query.normalize('NFKC').trim().toLocaleLowerCase().split(/\s+/).filter(Boolean)
+        const groupScore = (fields, term, weight) => {
+          let score = 0
+          for (const field of fields) {
+            if (field === term) score = Math.max(score, weight + 300)
+            else if (field.startsWith(term)) score = Math.max(score, weight + 200)
+            else if (field.includes(term)) score = Math.max(score, weight + 100)
+          }
+          return score
+        }
+        const matches = directoryOrderedSearchIndex.flatMap((item, order) => {
+          const { row } = item
+          if ((category && !row.categories.includes(category))
+            || (directoryListingFilter !== 'all'
+              && (directoryListingFilter === 'listed' ? !row.catalogIndexEntry : Boolean(row.catalogIndexEntry)))) return []
+          if (directoryReviewFilter !== 'all'
+            && !((directoryReviewFilter === 'approved' && row.catalogIndexEntry?.status === 'approved')
+              || (directoryReviewFilter === 'blocked' && row.catalogIndexEntry?.status === 'blocked')
+              || (directoryReviewFilter === 'unlisted-catalog' && row.catalogIndexEntry?.status === 'unlisted')
+              || (directoryReviewFilter === 'reviewing' && !row.catalogIndexEntry && row.candidateEntry?.status === 'reviewing')
+              || (directoryReviewFilter === 'rejected' && !row.catalogIndexEntry && row.candidateEntry?.status === 'rejected')
+              || (directoryReviewFilter === 'discovered' && !row.catalogIndexEntry && row.candidateEntry?.status === 'discovered')
+              || (directoryReviewFilter === 'public-only' && !row.catalogIndexEntry && !row.candidateEntry))) return []
+          if (!terms.length) return [{ row, order, score: 0 }]
+          let score = 0
+          for (const term of terms) {
+            const fields = term.length <= 2
+              ? [groupScore(item.identity, term, 1_000), groupScore(item.repository, term, 700), groupScore(item.keywords, term, 400)]
+              : [groupScore(item.identity, term, 1_000), groupScore(item.repository, term, 700),
+                groupScore(item.keywords, term, 400), groupScore(item.description, term, 100)]
+            const termScore = Math.max(...fields)
+            if (!termScore) return []
+            score += termScore
+          }
+          return [{ row, order, score }]
+        })
+        if (terms.length) matches.sort((left, right) => right.score - left.score || left.order - right.order)
+        return matches.map(({ row }) => row)
       }, [directoryOrderedSearchIndex, query, category, directoryListingFilter, directoryReviewFilter])
       const directoryPageSize = ['recommended', 'essential'].includes(view) ? DESKTOP_RANKING_PAGE_SIZE : MARKET_PAGE_SIZE
       const directoryPageCount = Math.max(1, Math.ceil(directoryFiltered.length / directoryPageSize))

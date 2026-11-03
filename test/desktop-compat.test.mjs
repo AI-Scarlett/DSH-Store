@@ -720,6 +720,49 @@ test('Desktop directory keeps records beyond the former 700-item range searchabl
   assert.match(desktopText(tree), /1 条结果 · 第 1 \/ 1 页/)
 })
 
+test('Desktop full-directory search ignores moderation boilerplate and ranks plugin identity matches first', async () => {
+  const image = desktopEntry({ id: 'dsh-image-tool', packageName: '@acme/dsh-image-tool', commit: desktopCommit })
+  image.name = 'dsh-image-tool'
+  image.description = 'Creates and edits images.'
+  image.searchTerms = ['image generation']
+  const bodyOnly = desktopEntry({ id: 'text-tool', packageName: '@acme/text-tool', commit: 'b'.repeat(40) })
+  bodyOnly.name = 'text-tool'
+  bodyOnly.description = 'A simple image utility.'
+  const boilerplateOnly = desktopEntry({ id: 'security-audit-helper', packageName: '@acme/security-audit-helper',
+    commit: 'c'.repeat(40), status: 'blocked',
+    statusReason: 'Automatic policy blocked installation: runtime security warnings require review' })
+  boilerplateOnly.name = 'security-audit-helper'
+  boilerplateOnly.description = 'Reviews package security.'
+  const catalog = desktopCatalog([image, bodyOnly, boilerplateOnly])
+  const harness = createDesktopHarness({ catalog, directoryDocuments: desktopDirectoryDocuments(catalog) })
+  await harness.ready
+  await harness.render()
+  await harness.runEffects(harness.getComponent('DesktopStorePanel'))
+  let tree = await waitForDesktopTree(harness, value => desktopText(value).includes('全部已知插件 · 3'))
+  const search = desktopNodes(tree).find(node => node.type === 'input' && node.props['aria-label'] === '搜索全部已知插件')
+  assert.ok(search)
+
+  search.props.onChange({ target: { value: 'im' } })
+  tree = await harness.render()
+  let results = desktopNodes(tree).filter(node => node.type === 'article')
+  assert.equal(results.length, 1, 'short search excludes incidental description and moderation-reason matches')
+  assert.match(desktopText(results[0]), /dsh-image-tool/)
+
+  const updatedSearch = desktopNodes(tree).find(node => node.type === 'input' && node.props['aria-label'] === '搜索全部已知插件')
+  updatedSearch.props.onChange({ target: { value: 'image' } })
+  tree = await harness.render()
+  results = desktopNodes(tree).filter(node => node.type === 'article')
+  assert.equal(results.length, 2, 'longer searches also match relevant description text')
+  assert.match(desktopText(results[0]), /dsh-image-tool/, 'plugin name and package matches rank before body-only matches')
+  assert.match(desktopText(results[1]), /text-tool/)
+
+  const imageSearch = desktopNodes(tree).find(node => node.type === 'input' && node.props['aria-label'] === '搜索全部已知插件')
+  imageSearch.props.onChange({ target: { value: 'installation' } })
+  tree = await harness.render()
+  assert.equal(desktopNodes(tree).filter(node => node.type === 'article').length, 0,
+    'moderation rationale is not user-searchable plugin metadata')
+})
+
 test('Desktop recommendation and essential boards match the official website ranking algorithm and show review reasons', async () => {
   const { rankingSnapshot, catalog, directoryDocuments } = desktopRankingFixture()
   const harness = createDesktopHarness({ catalog, directoryDocuments, rankingSnapshot })
