@@ -3,7 +3,7 @@
   "registry": {
     "name": "DSH STORE Candidate Discovery Registry",
     "repositoryUrl": "https://github.com/AI-Scarlett/DSH-Store",
-    "updatedAt": "2026-11-02T04:52:02.000Z",
+    "updatedAt": "2026-11-03T07:18:33.000Z",
     "trustBoundary": {
       "installActionsDisabled": true,
       "catalogPromotionRequired": true,
@@ -18422,6 +18422,101 @@
       "status": "reviewing",
       "route": "direct-review",
       "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "t-auto-dsh-ops",
+      "name": "T-Auto/dsh-ops",
+      "description": "Discovered GitHub repository awaiting a compatible DSH Bundle.",
+      "repositoryUrl": "https://github.com/T-Auto/dsh-ops",
+      "defaultBranch": "main",
+      "latestCommit": "32daf5bdc53f82acddaf616a1e5bce0af0c32c95",
+      "sourceUpdatedAt": "2026-11-02T02:44:46.000Z",
+      "discoveredAt": "2026-11-03T07:18:33.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@ec0da427b36a703c1d3692a8726c27114f463f12:data/plugins/T-Auto__dsh-ops.yml:sha256=5a72f79a1aa84f49643fae077a4e44a1e492f4c14661a96035010d8f7ef22c9a:at=2026-11-03T07:26:29.089Z:owner=183904010"
+      ],
+      "topics": [
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "tabbit-browser-dsh-tabbit",
+      "name": "Tabbit-Browser/dsh-tabbit",
+      "description": "Discovered GitHub repository awaiting a compatible DSH Bundle.",
+      "repositoryUrl": "https://github.com/Tabbit-Browser/dsh-tabbit",
+      "defaultBranch": "main",
+      "latestCommit": "4d256b7db3317961e3599bf2820e8b1be6e2d2be",
+      "sourceUpdatedAt": "2026-11-03T04:48:41.000Z",
+      "discoveredAt": "2026-11-03T07:18:33.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@ec0da427b36a703c1d3692a8726c27114f463f12:data/plugins/Tabbit-Browser__dsh-tabbit.yml:sha256=ae6e34ed6c042e731871cc9a8b4599b6cee3f57c629292a7958d453953142003:at=2026-11-03T07:26:29.089Z:owner=265154593"
+      ],
+      "topics": [
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "syyr1987-dsh-linghun",
+      "name": "syyr1987/dsh-linghun",
+      "description": "Discovered GitHub repository awaiting a compatible DSH Bundle.",
+      "repositoryUrl": "https://github.com/syyr1987/dsh-linghun",
+      "defaultBranch": "master",
+      "latestCommit": "377e1304e4a21bcef7674c2f3724043ffe0d566b",
+      "sourceUpdatedAt": "2026-10-10T04:02:47.000Z",
+      "discoveredAt": "2026-11-03T07:18:33.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@ec0da427b36a703c1d3692a8726c27114f463f12:data/plugins/syyr1987__dsh-linghun.yml:sha256=fe58a245451b764f00d20700e5d362c38c29acd15235e2930c49b67ebedfc0db:at=2026-11-03T07:26:29.089Z:owner=325100045"
+      ],
+      "topics": [
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "syzke-dsh-translate-on-select",
+      "name": "syzke/dsh-translate-on-select",
+      "description": "Discovered GitHub repository awaiting a compatible DSH Bundle.",
+      "repositoryUrl": "https://github.com/syzke/dsh-translate-on-select",
+      "defaultBranch": "main",
+      "latestCommit": "d2d1eb7c68ce0443caaf7fcc693c299a0417b9c2",
+      "sourceUpdatedAt": "2026-10-14T13:06:43.000Z",
+      "discoveredAt": "2026-11-03T07:18:33.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@ec0da427b36a703c1d3692a8726c27114f463f12:data/plugins/syzke__dsh-translate-on-select.yml:sha256=1dd560d2f54e4fe281b4c41d0ec32b9a4edee68d6e70900e0832f3975a298b66:at=2026-11-03T07:26:29.089Z:owner=134018193"
+      ],
+      "topics": [
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "fanofacane-dsh-fan",
+      "name": "fanofacane/DSH-FAN",
+      "description": "Discovered GitHub repository awaiting a compatible DSH Bundle.",
+      "repositoryUrl": "https://github.com/fanofacane/DSH-FAN",
+      "defaultBranch": "ios/phase1-spike",
+      "latestCommit": "011ea6de923e01f5b1842074fa02f71cea2fe789",
+      "sourceUpdatedAt": "2026-11-03T07:25:56.000Z",
+      "discoveredAt": "2026-11-03T07:18:33.000Z",
+      "discoverySources": [
+        "github-automatic-radar-v1"
+      ],
+      "topics": [
+        "automatic-radar"
+      ],
+      "status": "rejected",
+      "route": "monorepo-review",
+      "statusReason": "SUBMISSION_PACKAGE_AMBIGUOUS: Multiple DSH plugins were found. Set Plugin path to one of: runtime/bridge/dsh-go-bridge, runtime/media/dsh-media, sdk/plugin-kit/skill/template"
     }
   ]
 }

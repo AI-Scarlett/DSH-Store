@@ -19,28 +19,28 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "1ef1af04410f1bed1e0309e9816a4988f0348291",
-  "version": "0.1.13",
+  "commit": "ae8adafcbb97eb8a159314e792dc7b31973760ed",
+  "version": "0.1.17",
   "categories": [
     "memory"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-11-02T05:00:02.000Z",
-    "observedAt": "2026-11-02T04:52:02.000Z",
+    "updatedAt": "2026-11-03T03:14:36.000Z",
+    "observedAt": "2026-11-03T07:18:33.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-policy-v1",
-      "checkedAt": "2026-11-02T04:52:02.000Z",
-      "evidenceUrl": "https://github.com/IcyDate/ofttold-memory/commit/1ef1af04410f1bed1e0309e9816a4988f0348291",
+      "method": "automated-fixed-source-recheck-v1",
+      "checkedAt": "2026-11-03T07:18:33.000Z",
+      "evidenceUrl": "https://github.com/IcyDate/ofttold-memory/commit/ae8adafcbb97eb8a159314e792dc7b31973760ed",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
+      "summary": "The external-only or non-installable listing metadata was refreshed from a fixed Commit; no installability was inferred."
     },
     "installability": {
       "status": "unknown",
@@ -50,7 +50,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No third-party installation or build code was executed by the automation."
+      "summary": "The updated fixed Commit was not installed or built by Catalog automation."
     },
     "runtime": {
       "status": "unknown",
@@ -60,7 +60,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No DSH runtime acceptance was inferred from static automation."
+      "summary": "No DSH runtime acceptance was carried forward after the source changed."
     },
     "securityReview": {
       "status": "unknown",
@@ -70,12 +70,12 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Automated source policy is not an independent security audit."
+      "summary": "Automated fixed-source review is not an independent security audit."
     }
   },
   "admission": {
     "engine": "bounded-source-v3",
-    "binding": "85fc895274ee4db6bd8ca3dc3751c9e51a05acc00c91d6be79530cad275f40c1",
+    "binding": "c611a2df02d95d55e60f77d7df8ff4279a6ff96dd39683b1ca0b00393cca2649",
     "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
     "state": "review-required",
     "sourceContract": "verified",
@@ -87,8 +87,9 @@
   "entryIds": [
     "ofttold-memory"
   ],
+  "configOverrides": [],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: runtime or optional dependencies require a separate supply-chain review; runtime dependencies do not have one unambiguous fixed lockfile for supply-chain review; runtime source contains the files permission signal",
+  "statusReason": "Automatic policy blocked installation: runtime source contains the files permission signal",
   "compatibility": {
     "dsh": ">=0.2.1-rc.2 <0.3.0",
     "dshReleases": {
@@ -191,9 +192,7 @@
         "unknown"
       ]
     },
-    "externalDependencies": [
-      "zod"
-    ],
+    "externalDependencies": [],
     "reviewStatus": "automated-scan"
   },
   "risk": {
