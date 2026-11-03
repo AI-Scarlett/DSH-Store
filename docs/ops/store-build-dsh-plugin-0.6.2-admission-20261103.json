@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
   "type": "third-party-catalog-fixed-source-admission",
-  "planId": "store-build-dsh-plugin-0-6-2-admission-20261103",
+  "planId": "store-build-dsh-plugin-0-6-2-merge-20261103",
   "planPath": "docs/ops/store-build-dsh-plugin-0.6.2-admission-20261103.json",
-  "createdAt": "2026-11-03T12:45:13.132Z",
+  "createdAt": "2026-11-03T13:52:20.000Z",
   "baseCommit": "270d59d215cd6715060cb43984bd04c63403de74",
   "scope": [
     "docs/ops/store-build-dsh-plugin-0.6.2-admission-20261103.json",
@@ -37,7 +37,32 @@
     "githubWriteCredential": "short-lived-token-required",
     "mutationRoute": "auditable-ci-checked-pull-request",
     "deterministicPolicyVerdictRequired": true,
-    "mergeAuthorized": false
+    "mergeAuthorized": true,
+    "mergeAuthorization": {
+      "source": "direct-user-request",
+      "request": "你合并上线啊 等什么呢",
+      "requestedAt": "2026-11-03T13:52:20.000Z",
+      "scope": "merge catalog PR #1741 after its exact-head CI passes and source PR #22 is merged",
+      "repository": "AI-Scarlett/DSH-Store",
+      "pullRequest": 1741,
+      "baseCommit": "270d59d215cd6715060cb43984bd04c63403de74",
+      "contentHeadAtPlanCreation": "ce6ad335f95fb8e79ce893a2fb043ad3fdb6a9b2",
+      "mergeMethod": "merge",
+      "fixedSourceCommit": "81ff7c73cefe53091e8710ad8851fe5a1167cdb0",
+      "prerequisiteSourcePullRequest": {
+        "repository": "AI-Scarlett/build-dsh-plugin",
+        "number": 22,
+        "expectedHead": "7f4bf5ed43d9f703c339349fc7830c8d241ff0f9",
+        "requiredRunId": 41643931783,
+        "requiredRunConclusion": "success",
+        "fixedCommitReachableOnMain": "81ff7c73cefe53091e8710ad8851fe5a1167cdb0"
+      },
+      "requiredCatalogChecks": [
+        "Registry validation",
+        "DSH upgrade matrix"
+      ],
+      "catalogChecksMustPassOnFinalHead": true
+    }
   },
   "sourceIdentity": {
     "repositoryUrl": "https://github.com/AI-Scarlett/build-dsh-plugin",
@@ -204,5 +229,14 @@
   "limitations": [
     "Catalog PR source points to the still-open source PR head Commit; it is public and fixed, and the source PR CI is green.",
     "Desktop-specific installation/UI acceptance is unverified and remains the official Desktop manager decision."
-  ]
+  ],
+  "previousPlanId": "store-build-dsh-plugin-0-6-2-admission-20261103",
+  "mergeOperation": {
+    "kind": "merge-reviewed-catalog-admission",
+    "expectedBaseCommit": "270d59d215cd6715060cb43984bd04c63403de74",
+    "preMergeChecks": "PR #1741 checks pass on its then-current exact head",
+    "sourceOrder": "Merge source PR #22 first; verify fixed Commit 81ff7c73cefe53091e8710ad8851fe5a1167cdb0 is reachable from build-dsh-plugin main.",
+    "method": "merge",
+    "rollback": "Revert the exact Catalog merge commit through a CI-checked PR; do not alter the fixed source or real DSH Profile."
+  }
 }
