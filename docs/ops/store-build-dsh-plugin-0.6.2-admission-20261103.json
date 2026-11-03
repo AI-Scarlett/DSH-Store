@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
   "type": "third-party-catalog-fixed-source-admission",
-  "planId": "store-build-dsh-plugin-0-6-2-merge-20261103",
+  "planId": "store-build-dsh-plugin-0-6-2-squash-merge-20261103",
   "planPath": "docs/ops/store-build-dsh-plugin-0.6.2-admission-20261103.json",
-  "createdAt": "2026-11-03T13:52:20.000Z",
+  "createdAt": "2026-11-03T14:15:20.000Z",
   "baseCommit": "270d59d215cd6715060cb43984bd04c63403de74",
   "scope": [
     "docs/ops/store-build-dsh-plugin-0.6.2-admission-20261103.json",
@@ -47,7 +47,7 @@
       "pullRequest": 1741,
       "baseCommit": "270d59d215cd6715060cb43984bd04c63403de74",
       "contentHeadAtPlanCreation": "ce6ad335f95fb8e79ce893a2fb043ad3fdb6a9b2",
-      "mergeMethod": "merge",
+      "mergeMethod": "squash",
       "fixedSourceCommit": "81ff7c73cefe53091e8710ad8851fe5a1167cdb0",
       "prerequisiteSourcePullRequest": {
         "repository": "AI-Scarlett/build-dsh-plugin",
@@ -230,13 +230,18 @@
     "Catalog PR source points to the still-open source PR head Commit; it is public and fixed, and the source PR CI is green.",
     "Desktop-specific installation/UI acceptance is unverified and remains the official Desktop manager decision."
   ],
-  "previousPlanId": "store-build-dsh-plugin-0-6-2-admission-20261103",
+  "previousPlanId": "store-build-dsh-plugin-0-6-2-merge-20261103",
   "mergeOperation": {
     "kind": "merge-reviewed-catalog-admission",
     "expectedBaseCommit": "270d59d215cd6715060cb43984bd04c63403de74",
     "preMergeChecks": "PR #1741 checks pass on its then-current exact head",
     "sourceOrder": "Merge source PR #22 first; verify fixed Commit 81ff7c73cefe53091e8710ad8851fe5a1167cdb0 is reachable from build-dsh-plugin main.",
-    "method": "merge",
+    "method": "squash",
     "rollback": "Revert the exact Catalog merge commit through a CI-checked PR; do not alter the fixed source or real DSH Profile."
+  },
+  "mergeMethodDecision": {
+    "method": "squash",
+    "evidence": "GitHub ruleset 20904616 requires linear history; GitHub rejected merge-commit method with HTTP 405.",
+    "rollback": "Revert the squash commit through a new CI-checked PR."
   }
 }
