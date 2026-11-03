@@ -34,6 +34,7 @@
   <link rel="stylesheet" href="./styles.css">
   <link rel="stylesheet" href="./store-layout.css?v=20260924v2">
   <link rel="stylesheet" href="./home-redesign.css?v=20260924-raycast-store-9">
+  <link rel="stylesheet" href="./assistant.css">
   <script defer src="./motion.js"></script>
   <script type="application/ld+json">
   {
@@ -137,6 +138,7 @@
       <a href="./standards/" data-i18n="nav.standards" data-analytics-event="standards_open" data-analytics-item="header">收录标准</a>
       <a href="./build/" data-i18n="nav.build" data-analytics-event="build_tab_open" data-analytics-item="header">开发插件</a>
       <a href="./faq/" data-i18n="nav.faq" data-analytics-event="faq_open" data-analytics-item="header">常见问题</a>
+      <a href="./admin/">模型后台</a>
       <a href="./about/" data-i18n="nav.about" data-analytics-event="about_open" data-analytics-item="header">关于我们</a>
       <a href="https://github.com/AI-Scarlett/DSH-Store/blob/main/README.md" target="_blank" rel="noreferrer" data-analytics-event="usage_guide_open" data-analytics-item="header"><span data-i18n="nav.guide">使用说明</span><i class="nav-external" aria-hidden="true">↗</i></a>
       <a href="https://github.com/AI-Scarlett/DSH-Store/issues/new?template=plugin-submission.yml" target="_blank" rel="noreferrer" data-analytics-event="plugin_submission_open" data-analytics-item="header"><span data-i18n="nav.submit">提交插件</span><i class="nav-external" aria-hidden="true">↗</i></a>
@@ -157,6 +159,36 @@
         <div class="system-status"><span></span><b data-i18n="hero.eyebrow">DSH TRUSTED EXTENSION LAYER</b><em>ONLINE</em></div>
         <h1 id="hero-title"><span class="hero-brand-title">DSH STORE · PLUGIN ECOSYSTEM</span><span data-i18n="hero.title1">让 DSH，</span><br><em data-i18n="hero.title2">拥有更多可能。</em></h1>
         <p class="hero-lead" data-i18n="hero.lead">发现插件、核对来源与权限，并在 DSH Desktop 内通过 DSH STORE 查看和管理已审核条目。安装兼容性由官方插件管理器校验；客户端适配标识不作为安装门槛。</p>
+                <!-- AI Requirement Selection Dialogue Box (inspired by aiaiai.help TaskInput) -->
+        <section class="ai-task-panel" aria-label="AI 插件需求选型与推荐">
+          <div class="ai-task-header">
+            <div class="ai-badge-group">
+              <span class="ai-badge">✨ AI 需求选型 · 智能插件推荐</span>
+              <span class="ai-task-subtitle">输入你想完成的任务，AI 匹配 DSH 插件并生成官方安装命令</span>
+            </div>
+            <a class="ai-admin-shortcut" href="./admin/" title="进入大模型配置管理后台">⚙ 模型配置</a>
+          </div>
+          <form id="hero-ai-task-form">
+            <div class="ai-task-input-wrap">
+              <span class="ai-task-icon" aria-hidden="true">✦</span>
+              <textarea id="hero-ai-textarea" class="ai-task-textarea" rows="2" placeholder="例如：精读知网论文并撰写大纲、在微信/QQ中收发DSH消息、查看大模型API余额、增强会话长期记忆…"></textarea>
+            </div>
+            <div class="ai-task-toolbar">
+              <div class="ai-task-chips" aria-label="快捷示例">
+                <span class="ai-chips-label">试试这样问：</span>
+                <button type="button" class="ai-chip-btn" data-query="知网论文精读并写大纲">知网论文精读 ↗</button>
+                <button type="button" class="ai-chip-btn" data-query="在微信和QQ中接入DSH会话">微信 / QQ 接入 ↗</button>
+                <button type="button" class="ai-chip-btn" data-query="实时查看 DeepSeek API 余额">模型 API 余额 ↗</button>
+                <button type="button" class="ai-chip-btn" data-query="给大模型增加长期记忆和会话检索">长期记忆增强 ↗</button>
+                <button type="button" class="ai-chip-btn" data-query="制作网页PPT与卡片设计排版">网页 PPT 排版 ↗</button>
+              </div>
+              <button type="submit" id="hero-ai-submit" class="ai-submit-btn">
+                <span>智能推荐插件 ↗</span>
+              </button>
+            </div>
+          </form>
+          <div id="hero-ai-results" class="ai-results-panel" style="display: none;"></div>
+        </section>
         <form class="store-search-form" action="./plugins/" role="search"><label for="home-plugin-search" data-i18n="home.searchLabel">搜索插件</label><span aria-hidden="true">⌕</span><input id="home-plugin-search" type="search" maxlength="80" placeholder="搜索插件名称、用途或英文包名" data-i18n-placeholder="home.search"><button type="submit" data-i18n="home.searchAction">搜索插件 ↗</button></form>
         <div class="hero-actions">
           <a class="button button-primary" href="./plugins/" data-analytics-event="catalog_open" data-analytics-item="hero"><span data-i18n="action.explore">查看全部插件</span><i aria-hidden="true">↗</i></a>
@@ -291,5 +323,27 @@
   <dialog id="plugin-dialog" aria-labelledby="dialog-title"><div class="dialog-shell"><header class="dialog-header"><div><span id="dialog-kicker" class="dialog-kicker">PLUGIN DETAIL</span><h2 id="dialog-title" data-i18n="dialog.title">插件详情</h2></div><button id="dialog-close" class="dialog-close" type="button" aria-label="Close">×</button></header><div id="dialog-body" class="dialog-body"></div></div></dialog>
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
   <script defer src="./app.js"></script>
+  <!-- Global Floating AI Assistant Widget (inspired by aiaiai.help FloatingAssistant) -->
+  <button type="button" id="floating-assistant-launcher" class="floating-assistant-launcher" aria-label="打开 AI 选型助手">
+    <span>🤖</span> <span>AI 选型助手</span>
+  </button>
+
+  <div id="floating-assistant-modal" class="floating-assistant-modal" role="dialog" aria-modal="true" aria-label="DSH Store 选型助手">
+    <div class="modal-header">
+      <div class="modal-title"><span>🤖</span> DSH Store 智能选型顾问</div>
+      <button type="button" id="floating-assistant-close" class="modal-close-btn" aria-label="关闭">×</button>
+    </div>
+    <div id="floating-assistant-body" class="modal-body">
+      <div class="chat-bubble assistant">
+        你好！我是 DSH Store 智能选型助手 🤖。告诉我你想做的事情或工作流需求（例如“知网论文精读”、“微信/QQ机器人”、“大模型API余额查看”），我将为你推荐最适合的已审核 DSH 插件并生成官方安装命令！
+      </div>
+    </div>
+    <div class="modal-footer">
+      <input type="text" id="floating-assistant-input" class="modal-input" placeholder="输入你想完成的任务..." />
+      <button type="button" id="floating-assistant-send" class="modal-send-btn">发送</button>
+    </div>
+  </div>
+
+  <script defer src="./assistant.js"></script>
 </body>
 </html>
