@@ -2,7 +2,7 @@
   "id": "build-dsh-plugin",
   "name": "DSH 插件开发工作流（Build DSH Plugin）",
   "packageName": "dsh-build-plugin",
-  "description": "把需求转为标准 DSH 插件与商城候选；0.5.0 增加管理类插件的登录校验、持久化操作与恢复边界审计，并区分源码检查和实际运行证据。",
+  "description": "按当前 DSH 规格帮助开发者规划、实现和审查插件，并准备商城准入材料。商店审核的是固定源码；在 DSH Desktop 中是否可安装及最终结果由 Desktop 官方插件管理器判断。",
   "searchTerms": [
     "DSH 插件开发工作流",
     "Build DSH Plugin",
@@ -28,9 +28,9 @@
   "defaultBranch": "main",
   "manifestPath": "package.json",
   "installPath": null,
-  "updatePolicy": "external-only",
-  "commit": "c71903bffd9098aecbca4b1cf60b0d7602c51f33",
-  "version": "0.6.1",
+  "updatePolicy": "user-reviewed",
+  "commit": "81ff7c73cefe53091e8710ad8851fe5a1167cdb0",
+  "version": "0.6.2",
   "categories": [
     "development",
     "workflow",
@@ -39,76 +39,80 @@
   "featured": true,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-11-01T02:15:58.000Z",
-    "observedAt": "2026-11-01T04:50:46.000Z",
+    "updatedAt": "2026-11-03T12:19:13.000Z",
+    "observedAt": "2026-11-03T12:45:13.132Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-11-01T04:50:46.000Z",
-      "evidenceUrl": "https://github.com/AI-Scarlett/build-dsh-plugin/commit/c71903bffd9098aecbca4b1cf60b0d7602c51f33",
+      "method": "owner-reviewed-fixed-source-v3",
+      "checkedAt": "2026-11-03T12:45:13.132Z",
+      "evidenceUrl": "https://github.com/AI-Scarlett/build-dsh-plugin/commit/81ff7c73cefe53091e8710ad8851fe5a1167cdb0",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "The external-only or non-installable listing metadata was refreshed from a fixed Commit; no installability was inferred."
+      "summary": "Fixed Commit 的清单、许可、Bundle Patch、Entry ID 和完整有界源码已复核。"
     },
     "installability": {
-      "status": "unknown",
-      "method": null,
-      "checkedAt": null,
-      "evidenceUrl": null,
-      "dshRelease": null,
-      "systems": [],
+      "status": "verified",
+      "method": "official-dsh-cli-disposable-profile-ci",
+      "checkedAt": "2026-11-03T12:45:13.132Z",
+      "evidenceUrl": "https://github.com/AI-Scarlett/build-dsh-plugin/actions/runs/41634793467",
+      "dshRelease": "0.2.2-alpha.3",
+      "systems": [
+        "linux",
+        "macos",
+        "windows"
+      ],
       "profiles": [],
-      "summary": "The updated fixed Commit was not installed or built by Catalog automation."
+      "summary": "官方 DSH CLI 的一次性 Profile 在最新三版完成安装验证；不代表 Desktop UI 或真实 Profile 验收。"
     },
     "runtime": {
-      "status": "unknown",
-      "method": null,
-      "checkedAt": null,
-      "evidenceUrl": null,
-      "dshRelease": null,
-      "systems": [],
+      "status": "verified",
+      "method": "official-dsh-cli-disposable-profile-ci",
+      "checkedAt": "2026-11-03T12:45:13.132Z",
+      "evidenceUrl": "https://github.com/AI-Scarlett/build-dsh-plugin/actions/runs/41634793467",
+      "dshRelease": "0.2.2-alpha.3",
+      "systems": [
+        "linux",
+        "macos",
+        "windows"
+      ],
       "profiles": [],
-      "summary": "No DSH runtime acceptance was carried forward after the source changed."
+      "summary": "最新三版 DSH CLI 一次性 Profile 的启动、卸载与回滚矩阵通过；Desktop UI 和真实 Profile 仍未验收。"
     },
     "securityReview": {
-      "status": "unknown",
-      "method": null,
-      "checkedAt": null,
-      "evidenceUrl": null,
+      "status": "verified",
+      "method": "owner-reviewed-bounded-static-fixed-source-analysis",
+      "checkedAt": "2026-11-03T12:45:13.132Z",
+      "evidenceUrl": "https://github.com/AI-Scarlett/build-dsh-plugin/commit/81ff7c73cefe53091e8710ad8851fe5a1167cdb0",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Automated fixed-source review is not an independent security audit."
+      "summary": "完成固定源码的有界人工复核并披露实际权限；未进行独立第三方安全审计。"
     }
   },
   "admission": {
     "engine": "bounded-source-v3",
-    "binding": "0db29adba7ab5ff9a7ad36d4b2ef489f149c7eab935b6a76e07cfc322098f637",
+    "binding": "943f79dfb3046a88c18e029c5b4255b5bc4064f3e5d8ff3cf7319f2d3cb4a224",
     "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
-    "state": "review-required",
+    "state": "reviewed",
     "sourceContract": "verified",
     "coverage": "complete",
-    "capabilities": "review-required",
+    "capabilities": "reviewed",
     "compatibility": "per-version-declaration",
-    "reviewRegistryDigest": "3ee824a897b999908d49e4102dc999a725cb096fc7b70eca0db7022561e73c07"
+    "reviewRegistryDigest": "f40e4a10a2ae7f8d8dadbbde3a7a03e9f7d967caf114a14d6a7bbfe46a93efbf"
   },
   "entryIds": [
     "dsh-build-plugin-skill-provider"
   ],
   "configOverrides": [],
-  "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: fixed-source security warnings require review; runtime source contains the files permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal",
+  "status": "approved",
+  "statusReason": null,
   "compatibility": {
-    "dsh": ">=0.1.0-rc.8 <0.2.0 || 0.1.5-alpha.1 || 0.1.5-alpha.2 || 0.1.5-rc.1 || 0.1.5-rc.2 || 0.2.0-rc.1 || 0.2.0-rc.2 || 0.2.1-alpha.1 || 0.2.1-alpha.2 || 0.2.1-rc.4 || 0.2.1-rc.5 || 0.2.2-alpha.2",
+    "dsh": ">=0.1.0-rc.8 <0.2.0 || 0.1.5-alpha.1 || 0.1.5-alpha.2 || 0.1.5-rc.1 || 0.1.5-rc.2 || 0.2.0-rc.1 || 0.2.0-rc.2 || 0.2.1-alpha.1 || 0.2.1-alpha.2 || 0.2.1-rc.4 || 0.2.1-rc.5 || 0.2.2-alpha.2 || 0.2.2-alpha.3",
     "dshReleases": {
-      "rc.7": "unknown",
-      "rc.8": "unknown",
-      "0.1.1-rc.1": "unknown",
-      "0.1.1-rc.2": "unknown",
       "0.1.2-alpha.2": "compatible",
       "0.1.2-alpha.3": "compatible",
       "0.1.2-alpha.4": "compatible",
@@ -131,7 +135,12 @@
       "0.2.1-alpha.2": "compatible",
       "0.2.1-rc.4": "compatible",
       "0.2.1-rc.5": "compatible",
-      "0.2.2-alpha.2": "compatible"
+      "0.2.2-alpha.2": "compatible",
+      "0.2.2-alpha.3": "compatible",
+      "rc.7": "unknown",
+      "rc.8": "unknown",
+      "0.1.1-rc.1": "unknown",
+      "0.1.1-rc.2": "unknown"
     },
     "dshOperations": {
       "rc.7": {
@@ -177,54 +186,6 @@
         "rollback": "unknown"
       },
       "0.1.2-alpha.5": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.1.2-rc.1": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.1.3-alpha.1": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.1.3-alpha.2": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.1.5-alpha.1": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.1.5-alpha.2": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.1.5-rc.1": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.1.5-rc.2": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.1.6-alpha.1": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",
@@ -295,30 +256,47 @@
         "start": "passed",
         "uninstall": "passed",
         "rollback": "passed"
+      },
+      "0.2.2-alpha.3": {
+        "install": "passed",
+        "start": "passed",
+        "uninstall": "passed",
+        "rollback": "passed"
       }
+    },
+    "latestWindow": {
+      "state": "current",
+      "releases": [
+        "0.2.1-rc.5",
+        "0.2.2-alpha.2",
+        "0.2.2-alpha.3"
+      ]
     },
     "node": ">=22.13.0",
     "systems": [],
     "profiles": []
   },
   "details": {
-    "pluginType": "unknown",
+    "pluginType": "feature",
     "installSource": "github",
     "license": "MIT",
     "permissions": {
-      "level": "unknown",
-      "files": "unknown",
-      "network": "unknown",
-      "commands": "unknown",
+      "level": "high",
+      "files": "read-only",
+      "network": "specified-services",
+      "commands": "none",
       "credentials": [
-        "unknown"
+        "api-key"
       ]
     },
-    "externalDependencies": [],
-    "reviewStatus": "automated-scan"
+    "externalDependencies": [
+      "GitHub Releases API",
+      "npm Registry"
+    ],
+    "reviewStatus": "manual-review"
   },
   "risk": {
     "installScripts": [],
-    "review": "automatic-policy-blocked-not-installable"
+    "review": "owner-reviewed-bounded-source-v3; no independent audit"
   }
 }

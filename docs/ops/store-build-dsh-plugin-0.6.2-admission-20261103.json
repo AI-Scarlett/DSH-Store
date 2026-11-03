@@ -1,0 +1,208 @@
+{
+  "schemaVersion": 1,
+  "type": "third-party-catalog-fixed-source-admission",
+  "planId": "store-build-dsh-plugin-0-6-2-admission-20261103",
+  "planPath": "docs/ops/store-build-dsh-plugin-0.6.2-admission-20261103.json",
+  "createdAt": "2026-11-03T12:45:13.132Z",
+  "baseCommit": "270d59d215cd6715060cb43984bd04c63403de74",
+  "scope": [
+    "docs/ops/store-build-dsh-plugin-0.6.2-admission-20261103.json",
+    "docs/reviews/build-dsh-plugin-0.6.2-admission-review-20261103.json",
+    "registry/admission-reviews.json",
+    "registry/catalog-index.json",
+    "registry/catalog.json",
+    "registry/catalog/details/build-dsh-plugin.json",
+    "test/desktop-compat.test.mjs"
+  ],
+  "preconditions": {
+    "docs/ops/store-build-dsh-plugin-0.6.2-admission-20261103.json": null,
+    "docs/reviews/build-dsh-plugin-0.6.2-admission-review-20261103.json": null,
+    "registry/admission-reviews.json": "33efecb2441aefe7adeaa6472dfcf15bf5a41473dd43c56719a9857ed4709b88",
+    "registry/catalog-index.json": "3dd7ce226c233d26bebc505ef5d150eeabc7f0fc6e6a6b67c25c09a4b27902fe",
+    "registry/catalog.json": "88c83cfa56b5767f9f1394a29d9f84d6d2b1c69f1fffe7bed2fd6f2b6b1a06aa",
+    "registry/catalog/details/build-dsh-plugin.json": "a456bdf0ba78e6af5f9a5183dcdeaa4c800e088d75c95a9b52dc8daacf514153",
+    "test/desktop-compat.test.mjs": "7a757048a12b4f56ccf24053a659ecc5673852df22249a9586618badfbea9175"
+  },
+  "postconditions": {
+    "docs/reviews/build-dsh-plugin-0.6.2-admission-review-20261103.json": "957378a2356fe5579a8fb52e027a2e2063d3f4acf7b9f20b0d23e16c7c52adb0",
+    "registry/admission-reviews.json": "94d160b3284e63dbf4b0a667a32d91122ccc5765b7e88a365681c6683ba3782a",
+    "registry/catalog-index.json": "8cacd067f7a7148758787e31550a915e63ea1b558daf72fdad327008ddecdf3c",
+    "registry/catalog.json": "ea6844811ee1cb2c87de32b4c8717b8e264220b88d709ddc422a5f890e3c7ad9",
+    "registry/catalog/details/build-dsh-plugin.json": "963fd3b24ee29c7430a8bc9b5b18c5d27ec6b436b5d6991b0c1e5dab663d68ab",
+    "test/desktop-compat.test.mjs": "2e13f94cd645ff2865307a9dffb1cad95a0a6ead7bf151b0e4d133a77f69d8c2"
+  },
+  "authorization": {
+    "source": "direct-user-request",
+    "request": "推送并提交商城审核",
+    "githubWriteCredential": "short-lived-token-required",
+    "mutationRoute": "auditable-ci-checked-pull-request",
+    "deterministicPolicyVerdictRequired": true,
+    "mergeAuthorized": false
+  },
+  "sourceIdentity": {
+    "repositoryUrl": "https://github.com/AI-Scarlett/build-dsh-plugin",
+    "commit": "81ff7c73cefe53091e8710ad8851fe5a1167cdb0",
+    "treeSha": "d03332135bd19754cb94b91ad4008035a4e226a7",
+    "packageName": "dsh-build-plugin",
+    "version": "0.6.2",
+    "manifestPath": "package.json",
+    "installPath": null,
+    "entryIds": [
+      "dsh-build-plugin-skill-provider"
+    ],
+    "license": "MIT",
+    "sourcePullRequest": {
+      "number": 22,
+      "headRef": "codex/dsh-022-alpha3",
+      "state": "open",
+      "headCommit": "81ff7c73cefe53091e8710ad8851fe5a1167cdb0"
+    }
+  },
+  "officialDshWindow": {
+    "authority": "official-GitHub-releases-and-npm-published-versions",
+    "resolvedAt": "2026-11-03T12:45:13.132Z",
+    "latestVersion": "0.2.2-alpha.3",
+    "releases": [
+      "0.2.1-rc.5",
+      "0.2.2-alpha.2",
+      "0.2.2-alpha.3"
+    ]
+  },
+  "sourceChecks": {
+    "runId": 41634793467,
+    "runUrl": "https://github.com/AI-Scarlett/build-dsh-plugin/actions/runs/41634793467",
+    "headCommit": "81ff7c73cefe53091e8710ad8851fe5a1167cdb0",
+    "verification": "success",
+    "releaseResolver": "success",
+    "compatibilityMatrix": [
+      {
+        "os": "ubuntu-latest",
+        "release": "0.2.1-rc.5",
+        "state": "success"
+      },
+      {
+        "os": "ubuntu-latest",
+        "release": "0.2.2-alpha.2",
+        "state": "success"
+      },
+      {
+        "os": "ubuntu-latest",
+        "release": "0.2.2-alpha.3",
+        "state": "success"
+      },
+      {
+        "os": "macos-latest",
+        "release": "0.2.1-rc.5",
+        "state": "success"
+      },
+      {
+        "os": "macos-latest",
+        "release": "0.2.2-alpha.2",
+        "state": "success"
+      },
+      {
+        "os": "macos-latest",
+        "release": "0.2.2-alpha.3",
+        "state": "success"
+      },
+      {
+        "os": "windows-latest",
+        "release": "0.2.1-rc.5",
+        "state": "success"
+      },
+      {
+        "os": "windows-latest",
+        "release": "0.2.2-alpha.2",
+        "state": "success"
+      },
+      {
+        "os": "windows-latest",
+        "release": "0.2.2-alpha.3",
+        "state": "success"
+      }
+    ],
+    "npmCheck": "success",
+    "realDesktopUi": "unverified",
+    "realProfile": "unchanged"
+  },
+  "policyVerdict": {
+    "engine": "bounded-source-v3",
+    "binding": "943f79dfb3046a88c18e029c5b4255b5bc4064f3e5d8ff3cf7319f2d3cb4a224",
+    "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
+    "state": "reviewed",
+    "sourceContract": "verified",
+    "coverage": "complete",
+    "capabilities": "reviewed",
+    "reviewRegistryDigest": "f40e4a10a2ae7f8d8dadbbde3a7a03e9f7d967caf114a14d6a7bbfe46a93efbf",
+    "permissions": {
+      "level": "high",
+      "files": "read-only",
+      "network": "specified-services",
+      "commands": "none",
+      "credentials": [
+        "api-key"
+      ]
+    }
+  },
+  "decision": {
+    "catalogStatus": "approved",
+    "updatePolicy": "user-reviewed",
+    "rationale": "Fixed source is structurally valid and manually reviewed. Elevated file/network/API-key capabilities remain disclosed and every update requires user review. DSH Desktop is the final authority for its own install decision."
+  },
+  "change": {
+    "update": "Pin existing build-dsh-plugin listing to 0.6.2 Commit 81ff7c73cefe53091e8710ad8851fe5a1167cdb0; set current official latest-three compatibility; add formal admission review; keep no Desktop-specific compatibility claim.",
+    "files": [
+      "docs/ops/store-build-dsh-plugin-0.6.2-admission-20261103.json",
+      "docs/reviews/build-dsh-plugin-0.6.2-admission-review-20261103.json",
+      "registry/admission-reviews.json",
+      "registry/catalog-index.json",
+      "registry/catalog.json",
+      "registry/catalog/details/build-dsh-plugin.json",
+      "test/desktop-compat.test.mjs"
+    ],
+    "unrelatedCatalogEntries": "unchanged",
+    "desktopFixture": "The current Catalog test expects the Build DSH Plugin entry to be approved; the directory card displays its Catalog status and an enabled install action is delegated to DSH Desktop."
+  },
+  "commands": [
+    {
+      "argv": [
+        "node",
+        "scripts/official-dsh-releases.mjs"
+      ],
+      "result": "latest-three 0.2.1-rc.5, 0.2.2-alpha.2, 0.2.2-alpha.3"
+    },
+    {
+      "argv": [
+        "npm",
+        "run",
+        "validate:registry"
+      ],
+      "result": "required before commit"
+    },
+    {
+      "argv": [
+        "npm",
+        "run",
+        "check"
+      ],
+      "result": "required before commit"
+    }
+  ],
+  "gates": [
+    "Fixed public Commit, tree, manifest, MIT license, Bundle Patch, entry identity, lifecycle scripts and runtime files are bound to exact hashes.",
+    "Complete bounded scan reads all packaged source and executes no third-party install, build, test, or runtime code.",
+    "The exact warning and capability signals are either precisely triaged or retained in declared permissions.",
+    "Deterministic admissionDecision returns reviewed with a complete source contract and latest-three compatibility.",
+    "Catalog CI revalidates Registry structure and the approved fixed source; the PR must stay open until CI passes.",
+    "No Desktop-specific compatibility, real Desktop UI, or real Profile success is inferred."
+  ],
+  "rollback": {
+    "source": "Close the unmerged Catalog PR or revert its exact merge commit through a CI-checked PR; prior Catalog Commit preserves recovery history.",
+    "runtime": "No real DSH Profile, package, or restart mutation is part of this Catalog submission."
+  },
+  "healthCheck": "ADMISSION_REVIEWED; validate:registry; npm run check; targeted verifyCatalogEntry; exact-head Catalog PR CI; after merge, separately verify GitHub Raw, Pages, dsh.store, and dsh-store.cn.",
+  "limitations": [
+    "Catalog PR source points to the still-open source PR head Commit; it is public and fixed, and the source PR CI is green.",
+    "Desktop-specific installation/UI acceptance is unverified and remains the official Desktop manager decision."
+  ]
+}

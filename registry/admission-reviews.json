@@ -2441,6 +2441,54 @@
           "none"
         ]
       }
+    },
+    {
+      "commit": "81ff7c73cefe53091e8710ad8851fe5a1167cdb0",
+      "binding": "943f79dfb3046a88c18e029c5b4255b5bc4064f3e5d8ff3cf7319f2d3cb4a224",
+      "repositoryUrl": "https://github.com/AI-Scarlett/build-dsh-plugin",
+      "verdict": "approved",
+      "reviewer": "Codex on behalf of AI-Scarlett",
+      "reviewedAt": "2026-11-03T12:45:13.132Z",
+      "rationale": "Complete fixed-source review of this exact MIT commit found no protected DSH mutation, runtime dependencies, lifecycle hooks, dynamic loading, native artifacts, or actual command execution. The sole child-process warning is the literal text in a static audit regex. File access is read-only. The bundled release resolver contacts only the fixed DSH GitHub Releases API and npm registry; it reads optional GITHUB_TOKEN for GitHub API authentication. Approve with these elevated signals disclosed under user-reviewed updates. Disposable DSH CLI latest-three install/start/uninstall/rollback evidence passed; Desktop-specific UI and real Profile acceptance remain unverified.",
+      "permissions": {
+        "level": "high",
+        "files": "read-only",
+        "network": "specified-services",
+        "commands": "none",
+        "credentials": [
+          "api-key"
+        ]
+      },
+      "dispositions": [
+        {
+          "kind": "false-positive",
+          "file": "build-dsh-plugin/scripts/audit-plugin.mjs",
+          "rule": "child-process",
+          "line": 157,
+          "sha256": "c6b569be0918a5bf2e7e04cd9e3d9437f34e34667f8ffd7d0fe1822ab58a95f2",
+          "rationale": "This line defines a regular expression used to detect forbidden imports; it does not call child_process or launch a process."
+        }
+      ],
+      "capabilityDispositions": [
+        {
+          "kind": "false-positive",
+          "signal": "credentials",
+          "file": "build-dsh-plugin/scripts/audit-marketplace-entry.mjs",
+          "line": 267,
+          "sha256": "fdaa38ccaf7c350b5c5afe1ad13ad6dc6f9ba2e9a9faf30979329d33547f6ca2",
+          "rationale": "This line validates Catalog permission field values; it does not read, store, or send a credential. The separate optional GitHub token read remains declared."
+        }
+      ],
+      "evidenceUrls": [
+        "https://github.com/AI-Scarlett/build-dsh-plugin/commit/81ff7c73cefe53091e8710ad8851fe5a1167cdb0",
+        "https://github.com/AI-Scarlett/build-dsh-plugin/blob/81ff7c73cefe53091e8710ad8851fe5a1167cdb0/package.json",
+        "https://github.com/AI-Scarlett/build-dsh-plugin/blob/81ff7c73cefe53091e8710ad8851fe5a1167cdb0/cordis.patch.yml",
+        "https://github.com/AI-Scarlett/build-dsh-plugin/blob/81ff7c73cefe53091e8710ad8851fe5a1167cdb0/src/index.mjs",
+        "https://github.com/AI-Scarlett/build-dsh-plugin/blob/81ff7c73cefe53091e8710ad8851fe5a1167cdb0/build-dsh-plugin/scripts/audit-plugin.mjs#L157",
+        "https://github.com/AI-Scarlett/build-dsh-plugin/blob/81ff7c73cefe53091e8710ad8851fe5a1167cdb0/build-dsh-plugin/scripts/audit-marketplace-entry.mjs#L267",
+        "https://github.com/AI-Scarlett/build-dsh-plugin/blob/81ff7c73cefe53091e8710ad8851fe5a1167cdb0/build-dsh-plugin/scripts/official-dsh-releases.mjs#L263",
+        "https://github.com/AI-Scarlett/build-dsh-plugin/actions/runs/41634793467"
+      ]
     }
   ]
 }
