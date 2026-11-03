@@ -546,7 +546,11 @@ window.__ModuleLoader__.load({
         position: 'sticky', top: 0, zIndex: 2, display: 'flex', flexDirection: 'column', gap: '8px',
         padding: '7px 0', background: 'var(--dsw-alias-bg-layer-1)',
       },
-      marketViewBar: { display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: '6px', paddingBottom: '10px', borderBottom: '1px solid var(--dsw-alias-border-l2)' },
+      marketViewBar: {
+        display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(148px, 100%), 1fr))',
+        alignItems: 'stretch', gap: '8px', paddingBottom: '10px', borderBottom: '1px solid var(--dsw-alias-border-l2)',
+      },
+      marketViewTab: { width: '100%', minWidth: 0, minHeight: '44px', justifyContent: 'center', textAlign: 'center', whiteSpace: 'normal', overflowWrap: 'anywhere', lineHeight: '1.35' },
       marketFilterTabs: { display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: '6px' },
       marketResults: { display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '8px' },
       marketListViewport: { width: '100%', minWidth: 0, overflow: 'visible' },
@@ -820,10 +824,10 @@ window.__ModuleLoader__.load({
         label)
     }
 
-    function TabButton({ children, active, onClick }) {
+    function TabButton({ children, active, onClick, style }) {
       return React.createElement('button', {
         type: 'button', role: 'tab', 'aria-selected': active, onClick,
-        style: { ...styles.tabButton, ...(active ? styles.activeTabButton : {}) },
+        style: { ...styles.tabButton, ...(active ? styles.activeTabButton : {}), ...(style || {}) },
       }, children)
     }
 
@@ -922,6 +926,26 @@ window.__ModuleLoader__.load({
         React.createElement('div', { style: { ...styles.muted, marginTop: '8px' } }, '只显示受限元数据，不返回或展示源码补丁；风险信号不等于完整安全审计。'))
     }
 
+    function ReviewAdvice({ reason, compact = false, allowDesktopHandoff = true }) {
+      const guidance = desktopReviewGuidance(reason)
+      if (!guidance) return null
+      const shownItems = compact ? guidance.items.slice(0, 2) : guidance.items
+      return React.createElement('div', { style: styles.notice, role: 'note' },
+        React.createElement('div', { style: styles.name }, '商城审核建议'),
+        React.createElement('div', { style: { ...styles.muted, marginTop: '4px' } },
+          shownItems.length === 1 ? shownItems[0]
+            : React.createElement('ul', { style: { margin: '5px 0 0', paddingInlineStart: '20px' } },
+              shownItems.map(item => React.createElement('li', { key: item, style: { marginTop: '3px' } }, item))),
+          compact && guidance.items.length > shownItems.length ? ` 另有 ${guidance.items.length - shownItems.length} 项提醒。` : ''),
+        React.createElement('div', { style: { ...styles.muted, marginTop: '6px' } },
+          allowDesktopHandoff
+            ? '这是 DSH Store 的参考提示，不代表 DSH Desktop 已拒绝安装，也不等于插件一定有问题。若本页提供“交由 DSH 检查安装”入口，你确认后可以提交；最终结果以 DSH 官方插件管理器返回为准。'
+            : '这是 DSH Store 对候选项目的说明，不代表插件一定有问题；这条候选记录还没有商城安装入口。可在“全部已知插件”中查找可提交给 DSH 官方管理器检查的来源。'),
+        React.createElement('details', { style: { marginTop: '6px' } },
+          React.createElement('summary', { style: { cursor: 'pointer', fontWeight: 600 } }, '查看技术检查详情'),
+          React.createElement('div', { style: { ...styles.code, marginTop: '5px', overflowWrap: 'anywhere', whiteSpace: 'pre-wrap' } }, guidance.raw)))
+    }
+
     function CandidateCard({ entry }) {
       const titleId = `dsh-store-candidate-${String(entry.id).replaceAll(/[^A-Za-z0-9_-]/g, '-')}`
       const status = entry.status === 'rejected' ? '已拒绝 / 已隔离' : entry.status === 'reviewing' ? '审核中' : '已发现'
@@ -934,9 +958,8 @@ window.__ModuleLoader__.load({
         React.createElement('div', { style: styles.cardTags },
           React.createElement('span', { style: styles.badge }, `发现来源 ${(entry.discoverySources || []).join(' / ') || '未知'}`),
           React.createElement('span', { style: styles.badge }, `审核路径 ${entry.route || '未知'}`)),
-        React.createElement('div', { style: entry.status === 'rejected' ? styles.error : styles.notice }, entry.status === 'rejected'
-          ? `拒绝原因：${entry.statusReason || '未提供'}；项目仍不可安装，可在源变更后重新审核。`
-          : '该项目尚未晋升到可信安装目录，不提供安装、更新、启停或卸载操作。'),
+        entry.status === 'rejected' ? React.createElement(ReviewAdvice, { reason: entry.statusReason, allowDesktopHandoff: false })
+          : React.createElement('div', { style: styles.notice }, '该项目尚未晋升到可信安装目录，不提供安装、更新、启停或卸载操作。'),
         React.createElement('div', { style: styles.cardFooter },
           React.createElement('span', { style: styles.muted }, entry.sourceUpdatedAt ? `源更新 ${new Date(entry.sourceUpdatedAt).toLocaleDateString()}` : `发现于 ${new Date(entry.discoveredAt).toLocaleDateString()}`),
           React.createElement('a', { href: entry.repositoryUrl, target: '_blank', rel: 'noreferrer', style: styles.link }, '查看 GitHub 证据')))
@@ -969,6 +992,8 @@ window.__ModuleLoader__.load({
         React.createElement('div', { style: styles.code }, `${entry.packageName} · ${entry.version}`),
         React.createElement('div', { style: styles.cardDescription }, entry.description),
         React.createElement('div', { style: styles.muted }, `Commit ${entry.commit.slice(0, 12)} · ${entry.categories.map(id => categoryLabels[id] || id).join(' / ')}`),
+        ['blocked', 'unlisted'].includes(entry.status) && entry.statusReason
+          ? React.createElement(ReviewAdvice, { reason: entry.statusReason, compact: true }) : null,
         entry.recommendation ? React.createElement('a', { href: entry.recommendation.evidenceUrl, target: '_blank', rel: 'noreferrer', style: styles.link }, '作者互动推荐 · 查看公开交流') : null,
         entry.source.updatedAt ? React.createElement('div', { style: styles.muted },
           `固定提交时间 ${new Date(entry.source.updatedAt).toLocaleDateString()} · ${entry.source.provenance}`) : null,
@@ -1148,7 +1173,7 @@ window.__ModuleLoader__.load({
         !entry.catalogDetailsAvailable
           ? React.createElement('div', { style: styles.notice }, '当前 GitHub Catalog 详情文件尚未提供完整字段；缺失值按“未知 / 未声明”显示，未使用本地推测数据替代。')
           : null,
-        entry.statusReason ? React.createElement('div', { style: styles.error }, `策略说明：${entry.statusReason}`) : null,
+        entry.statusReason ? React.createElement(ReviewAdvice, { reason: entry.statusReason }) : null,
         entry.manualSourceUpdate && !readOnly ? React.createElement('div', { style: styles.notice },
           React.createElement('div', { style: styles.name }, '同版本源码更新：仅限 GitHub 手动操作'),
           React.createElement('div', { style: { ...styles.muted, marginTop: '6px' } }, entry.manualSourceUpdate.reason),
@@ -1536,6 +1561,56 @@ window.__ModuleLoader__.load({
       if (typeof value !== 'string') return null
       const normalized = value.replace(/[\u0000-\u001f\u007f]/g, ' ').replace(/\s+/g, ' ').trim()
       return normalized ? normalized.slice(0, limit) : null
+    }
+
+    function desktopReviewGuidance(value) {
+      const raw = desktopSafeReasonText(value, 2_000)
+      if (!raw) return null
+      const source = raw.replace(/^Automatic policy blocked installation:\s*/i, '')
+        .replace(/^Fixed-source recheck blocked installation:\s*/i, '')
+        .replace(/^DSH_LATEST_THREE_COMPATIBILITY_HOLD:\s*/i, '')
+      const items = []
+      const add = (pattern, message) => { if (pattern.test(source) && !items.includes(message)) items.push(message) }
+      add(/files permission signal|filesystem permission signal/i, '插件可能会读取或修改本机文件；请确认它确实需要访问这些文件。')
+      add(/network permission signal/i, '插件会连接网络；请确认它访问的服务和用途符合你的预期。')
+      add(/commands permission signal|command execution permission signal/i, '插件可能会运行系统命令；这会带来比普通界面插件更多的本机操作。')
+      add(/credentials permission signal|credential permission signal/i, '插件可能会接触登录凭证、密钥或令牌；请确认来源可信并了解它为什么需要这些信息。')
+      add(/nativeorexecutableartifacts permission signal|native or executable artifacts/i, '安装包包含可执行程序；商城不能只靠文本源码完整判断它运行时会做什么。')
+      add(/protecteddsh permission signal|protected dsh|@deepseek-ai namespace/i, '检查发现它可能触及 DSH 官方组件或核心功能；商城不会管理这类修改。')
+      const lifecycle = /install lifecycle scripts are present:\s*([^;]+)/i.exec(source)
+      if (lifecycle) items.push(`安装或更新时会自动运行脚本（${lifecycle[1]}）；建议先查看仓库里的脚本内容。`)
+      add(/runtime or optional dependencies require|runtime dependencies do not have one unambiguous fixed lockfile/i,
+        '插件还需要安装其他软件包；商城尚未核实完整依赖来源或具体版本。')
+      add(/fixed-source scan is incomplete|unobserved capability signals are unknown|source metadata exceeds|source exceeds the automatic review|tree exceeds the automatic review bound|scanner budget/i,
+        '商城没能检查完整源码，因此还不能确认它会访问哪些文件、网络或系统功能。')
+      add(/fixed-source security warnings require review|security findings require quarantine|dynamic module loading|code evaluation/i,
+        '自动检查发现需要人工确认的代码执行方式；这不等于已经判定有害，但商城还不能完成审核。')
+      add(/dsh compatibility is not explicitly declared|latest .* releases need rechecking|range-only or unknown compatibility|no compatible result/i,
+        '作者没有提供商城可核对的当前 DSH 版本兼容说明；安装是否适合你的环境由 DSH Desktop 再检查。')
+      add(/node(?:\.js)? compatibility is not explicitly declared/i,
+        '项目没有说明支持哪些 Node.js 版本；DSH Desktop 会按当前环境继续检查。')
+      add(/manifest repository does not match the canonical github repository|manifest and github repository metadata conflict/i,
+        '插件清单登记的 GitHub 地址和当前仓库信息对不上；请先确认这是正确的项目来源。')
+      add(/license metadata|license evidence|license does not match|license.*noassertion/i,
+        '项目的许可证信息缺失或互相不一致；商城暂时无法确认这份代码的使用许可。')
+      add(/runtime artifact is missing|local module is missing|artifact pattern has targets outside/i,
+        '安装清单需要的文件没有在发布源码中找到，或引用路径对不上；安装后可能缺少运行所需文件。')
+      add(/no package\.json declaring dsh\.bundle\.patch|no unambiguous standard dsh bundle|bundle patch contract is invalid/i,
+        '商城没有找到清晰有效的 DSH 插件安装配置；它可能不是 DSH 插件，或仓库还没准备好安装文件。')
+      add(/multiple dsh plugins|multiple package manifests|more than .* package manifests|set plugin path/i,
+        '仓库里有多个插件或安装目录，当前无法确定你想安装哪一个。')
+      add(/package ignore rules|unsupported artifacts|package contains symbolic links|package contains git submodules/i,
+        '仓库含有商城无法自动核对的发布文件或打包规则，需要进一步确认实际安装内容。')
+      add(/manifest does not declare an explicit distributable files list|files selectors are unsupported or ambiguous/i,
+        '插件没有清楚列出要发布的安装文件，商城无法确认最终安装包是否完整。')
+      add(/external discovery signal only|fixed-source catalog review required/i,
+        '商城只在公开目录里发现了这个项目，还没有完成对固定源码版本的审核。')
+      add(/store review is still pending|review is pending|awaiting (?:a |the )?review|pending review/i,
+        'DSH Store 还没有完成这项来源的收录审核；你仍可确认 GitHub 来源后交给 DSH Desktop 检查。')
+      add(/not listed|not in (?:the )?catalog|discovery.only|not approved for the catalog/i,
+        'DSH Store 目前没有这项插件的已收录记录；确认 GitHub 来源后，仍可交给 DSH Desktop 检查安装。')
+      if (!items.length) items.push('商城检查尚未通过，但这条原因还没有对应的简明解释；可展开查看原始检查记录。')
+      return { raw, items }
     }
 
     function desktopIncompatibilityReason(records) {
@@ -2062,21 +2137,26 @@ window.__ModuleLoader__.load({
       }
       const result = [...winners.values()].sort(compareStars)
       const selected = new Set(result.map(entry => entry.id))
-      const categoryMembers = data.categories.map(category => ({
-        category,
-        members: known.filter(entry => entry.weeklySnapshotMember && entry.weeklyCategories.includes(category.id)
-          && !['rejected', 'blocked'].includes(entry.reviewStatus)),
-      }))
+      const categoryMembers = data.categories.map(category => {
+        const snapshotMembers = data.entries.filter(entry => entry.weeklySnapshotMember && entry.weeklyCategories.includes(category.id)
+          && !['rejected', 'blocked'].includes(entry.reviewStatus))
+        return {
+          category,
+          members: known.filter(entry => entry.weeklySnapshotMember && entry.weeklyCategories.includes(category.id)
+            && !['rejected', 'blocked'].includes(entry.reviewStatus)),
+          unknownStars: snapshotMembers.filter(entry => !validStars(entry.weeklyStars)).length,
+        }
+      })
       for (let rank = 0; rank < known.length && result.length < DESKTOP_RANKING_PAGE_SIZE; rank++) {
         let any = false
-        for (const { category, members } of categoryMembers) {
+        for (const { category, members, unknownStars } of categoryMembers) {
           const entry = members[rank]
           if (!entry) continue
           any = true
           if (result.length >= DESKTOP_RANKING_PAGE_SIZE) break
           if (selected.has(entry.id) || entry.stars === 0 || ['rejected', 'blocked'].includes(entry.reviewStatus)) continue
           selected.add(entry.id)
-          result.push({ ...entry, wins: [], categoryPick: { ...category, observedRank: rank + 1 } })
+          result.push({ ...entry, wins: [], categoryPick: { ...category, observedRank: rank + 1, unknownStars } })
         }
         if (!any) break
       }
@@ -2799,6 +2879,8 @@ window.__ModuleLoader__.load({
       }
       const installedBundleForEntry = entry => installedByName.get(entry?.packageName)
         || (entry?.installMode === 'github-default-branch' ? installedByRepository.get(desktopEntryRepository(entry)) : null)
+      const isOfficialDesktopBundle = bundle => bundle?.official === true || bundle?.optional === true
+        || bundle?.name?.startsWith('@deepseek-ai/') === true
       const catalogPackageNames = new Set(entries.map(entry => entry.packageName))
       const normalizedQuery = query.trim().toLocaleLowerCase()
       const matching = entries.filter(entry => (!category || entry.categories?.includes(category))
@@ -2814,12 +2896,20 @@ window.__ModuleLoader__.load({
           .some(value => String(value || '').toLocaleLowerCase().includes(normalizedQuery))))
       const externalInstalledBundles = (loadState.status === 'ready' ? loadState.bundles : [])
         .filter(bundle => bundle?.installed === true && typeof bundle.name === 'string' && !catalogPackageNames.has(bundle.name))
-        .filter(bundle => bundle.official !== true && bundle.optional !== true && !bundle.name.startsWith('@deepseek-ai/'))
+        .filter(bundle => !isOfficialDesktopBundle(bundle))
         .filter(() => clientFilter !== 'declared')
         .filter(bundle => !category && (!normalizedQuery || [bundle.name, bundle.version, desktopSourceRepository(bundle.source)]
           .some(value => String(value || '').toLocaleLowerCase().includes(normalizedQuery))))
         .sort((left, right) => left.name.localeCompare(right.name, 'zh-CN'))
-      const installedCatalogEntries = matching.filter(entry => installedByName.get(entry.packageName)?.installed === true)
+      const officialBundles = inventoryState.status === 'ready' ? [...installedByName.values()]
+        .filter(bundle => bundle?.installed === true && isOfficialDesktopBundle(bundle))
+        .filter(bundle => !normalizedQuery || [bundle.name, bundle.version, desktopSourceRepository(bundle.source)]
+          .some(value => String(value || '').toLocaleLowerCase().includes(normalizedQuery)))
+        .sort((left, right) => left.name.localeCompare(right.name, 'zh-CN')) : []
+      const installedCatalogEntries = matching.filter(entry => {
+        const bundle = installedByName.get(entry.packageName)
+        return bundle?.installed === true && !isOfficialDesktopBundle(bundle)
+      })
       const statusCounts = {
         all: matching.length,
         approved: matching.filter(entry => entry.status === 'approved').length,
@@ -2835,6 +2925,8 @@ window.__ModuleLoader__.load({
       const rows = view === 'installed'
         ? [...installedCatalogEntries.map(entry => ({ kind: 'catalog', key: entry.id, entry })),
           ...externalInstalledBundles.map(bundle => ({ kind: 'external', key: bundle.name, bundle }))]
+        : view === 'official'
+          ? officialBundles.map(bundle => ({ kind: 'official', key: bundle.name, bundle }))
         : filteredCatalog.map(entry => ({ kind: 'catalog', key: entry.id, entry }))
       const filtered = rows.sort((left, right) => {
         const leftName = left.entry?.name || left.bundle?.name || ''
@@ -2850,7 +2942,7 @@ window.__ModuleLoader__.load({
       const pageCount = Math.max(1, Math.ceil(filtered.length / MARKET_PAGE_SIZE))
       const currentPage = Math.min(page, pageCount)
       const visible = filtered.slice((currentPage - 1) * MARKET_PAGE_SIZE, currentPage * MARKET_PAGE_SIZE)
-      const installedInventoryUnavailable = view === 'installed' && inventoryState.status !== 'ready'
+      const installedInventoryUnavailable = ['installed', 'official'].includes(view) && inventoryState.status !== 'ready'
       const directoryCounts = useMemo(() => {
         const counts = { all: directoryRows.length, listed: 0, unlisted: 0, approved: 0, blocked: 0,
           withdrawn: 0, reviewing: 0, rejected: 0, discovered: 0, publicOnly: 0 }
@@ -3434,8 +3526,10 @@ window.__ModuleLoader__.load({
         }, actionState.status === 'running' ? '正在由 DSH 处理…' : '确认并' + actionLabel(actionPlan.action)) : null) : null
 
       const userInstalledBundles = [...installedByName.values()].filter(bundle => bundle?.installed === true
-        && bundle.official !== true && bundle.optional !== true && !bundle.name?.startsWith('@deepseek-ai/'))
+        && !isOfficialDesktopBundle(bundle))
       const installedCount = userInstalledBundles.length
+      const officialPluginCount = [...installedByName.values()].filter(bundle => bundle?.installed === true
+        && isOfficialDesktopBundle(bundle)).length
       const enabledCount = userInstalledBundles.filter(bundle => bundle.enabled === true).length
       const disabledCount = userInstalledBundles.filter(bundle => bundle.enabled === false).length
       const hasFilters = Boolean(query || category || listFilter !== 'all' || clientFilter !== 'all' || sortBy !== 'recommended')
@@ -3448,6 +3542,9 @@ window.__ModuleLoader__.load({
       const directoryCategoryLabel = id => desktopDirectoryCategoryLabel(id, categoryLabels)
       const clearDirectoryFilters = () => {
         setQuery(''); setCategory(''); setDirectoryListingFilter('all'); setDirectoryReviewFilter('all'); setSortBy('recommended'); setPage(1)
+      }
+      const resetInventoryFilters = () => {
+        setQuery(''); setCategory(''); setListFilter('all'); setClientFilter('all'); setSortBy('recommended'); setPage(1)
       }
       const directoryViewContent = React.createElement(React.Fragment, null,
         React.createElement('div', { style: styles.marketDirectoryControls, 'aria-label': '目录搜索和筛选' },
@@ -3491,7 +3588,7 @@ window.__ModuleLoader__.load({
           ? React.createElement('div', { style: styles.muted, role: 'note' },
             view === 'recommended'
               ? '推荐依据沿用官网榜单（公开互动、周度星标和标注的官方工具位）；推荐不代表安全审查或兼容验证。'
-              : '必装榜沿用官网每周分类榜；榜单位置不代表所有用户都必须安装，也不代表安全审查。') : null,
+              : '必装榜沿用官网每周分类榜；“分类高星补位”表示当前能核对到的星标顺序。若有插件星标数未知，显示第 1 位也不代表已确认该分类冠军。榜单位置不代表所有用户都必须安装，也不代表安全审查。') : null,
         directoryState.status === 'loading' ? React.createElement('div', { style: styles.marketEmpty, role: 'status' },
           React.createElement('strong', { style: styles.name }, '正在读取官网完整目录'),
           React.createElement('span', { style: styles.muted }, '搜索框和分类筛选会在目录载入后覆盖全部记录。')) : null,
@@ -3527,7 +3624,7 @@ window.__ModuleLoader__.load({
             : null
           const rankingEntry = row.rankingEntry
           const reason = desktopSafeReasonText(rankingEntry?.listingStatus === 'not-listed'
-            ? rankingEntry.listingReason : entry?.statusReason || row.candidateEntry?.statusReason, 240)
+            ? rankingEntry.listingReason : entry?.statusReason || row.candidateEntry?.statusReason, 2_000)
           const unmanagedMessage = entry && installedBundle?.installed === true && !canManageBundle(entry, installedBundle)
             ? installedBundle.official === true ? '官方组件不由商城管理' : '已安装来源与商城记录不一致，商城不管理'
             : ''
@@ -3539,7 +3636,9 @@ window.__ModuleLoader__.load({
             : rankingEntry?.communityRecommendation ? '作者互动推荐'
               : rankingEntry?.recommendationKind === 'community-stars' ? '每周星标推荐'
                 : rankingEntry?.wins?.length ? `分类星标第一 · ${rankingEntry.wins.map(item => item.zh).join(' / ')}`
-                  : rankingEntry?.categoryPick ? `分类高星补充 · 第 ${rankingEntry.categoryPick.observedRank} 名` : ''
+                  : rankingEntry?.categoryPick
+                    ? `${rankingEntry.categoryPick.zh || rankingEntry.categoryPick.id} · 分类补位 · 可查星标第 ${rankingEntry.categoryPick.observedRank} 位${rankingEntry.categoryPick.unknownStars ? ` · ${rankingEntry.categoryPick.unknownStars} 个插件星标未知，冠军未确认` : ''}`
+                    : ''
           return React.createElement('article', { key: row.id, style: styles.marketCard, role: 'listitem',
             ...(rankingEntry ? { 'data-market-entry-id': rankingEntry.id } : {}) },
             React.createElement('div', { style: styles.cardHeader },
@@ -3557,8 +3656,7 @@ window.__ModuleLoader__.load({
               row.stars > 0 ? React.createElement('span', { style: styles.badge }, `★ ${new Intl.NumberFormat('zh-CN').format(row.stars)}`) : null,
               row.candidateEntry ? React.createElement('span', { style: styles.badge }, `候选：${row.candidateEntry.status}`) : null,
               rankingLabel ? React.createElement('span', { style: styles.badge }, rankingLabel) : null),
-            reason ? React.createElement('div', { style: styles.notice, role: 'note' },
-              rankingEntry?.listingStatus === 'not-listed' ? `DSH STORE 审核建议：${reason}` : reason) : null,
+            reason ? React.createElement(ReviewAdvice, { reason, compact: true }) : null,
             React.createElement('div', { style: styles.cardFooter },
               React.createElement('div', { style: styles.marketCardActions },
                 entry && ['approved', 'blocked'].includes(entry.status) ? React.createElement(React.Fragment, null,
@@ -3585,25 +3683,28 @@ window.__ModuleLoader__.load({
           `公开索引生成于 ${directoryState.snapshot.discovery.source.generatedAt.slice(0, 10)} · 数据来源 dsh.so（CC BY 4.0，保留署名） · Catalog 收录状态不代表审核通过。`) : null)
 
       const catalogViewContent = React.createElement(React.Fragment, null,
+        view === 'official' ? React.createElement('div', { style: styles.notice, role: 'note' },
+          '这里只展示 Desktop 安装清单中标记为官方或随 DSH 提供的组件。商城只读显示本机状态，安装、启停和卸载由 DSH Desktop 管理。') : null,
         installedInventoryUnavailable ? React.createElement('div', { style: styles.notice, role: 'status' },
           `DSH 安装清单${inventoryState.status === 'loading' ? '正在读取' : `暂不可用（${inventoryState.code}）`}；当前无法确认已安装列表，请刷新后重试。`) : null,
         React.createElement('div', { style: styles.marketToolbar },
           React.createElement('input', {
             type: 'search', value: query, onChange: event => { setQuery(event.target.value); setPage(1) },
             style: { ...styles.input, flex: '1 1 280px', minWidth: '180px' },
-            placeholder: '搜索名称、用途、别名、权限或 GitHub 仓库', 'aria-label': '搜索插件',
+            placeholder: view === 'official' ? '搜索官方插件包名、版本或来源' : '搜索名称、用途、别名、权限或 GitHub 仓库',
+            'aria-label': view === 'official' ? '搜索官方插件' : '搜索插件',
           }),
-          React.createElement('select', {
+          view !== 'official' ? React.createElement('select', {
             value: category, onChange: event => { setCategory(event.target.value); setPage(1) },
             style: styles.select, 'aria-label': '按分类筛选',
           }, React.createElement('option', { value: '' }, '全部分类'),
-          categoryIds.map(id => React.createElement('option', { key: id, value: id }, categoryLabels[id] || id))),
-          React.createElement('select', {
+          categoryIds.map(id => React.createElement('option', { key: id, value: id }, categoryLabels[id] || id))) : null,
+          view !== 'official' ? React.createElement('select', {
             value: clientFilter, onChange: event => { setClientFilter(event.target.value); setPage(1) },
             style: styles.select, 'aria-label': '按 Desktop 适配标识筛选',
           }, React.createElement('option', { value: 'all' }, '全部客户端适配状态'),
           React.createElement('option', { value: 'declared' }, '已声明适配 Desktop'),
-          React.createElement('option', { value: 'undeclared' }, '未声明适配 Desktop')),
+          React.createElement('option', { value: 'undeclared' }, '未声明适配 Desktop')) : null,
           React.createElement('select', {
             value: sortBy, onChange: event => { setSortBy(event.target.value); setPage(1) },
             style: styles.select, 'aria-label': '排序方式',
@@ -3615,34 +3716,45 @@ window.__ModuleLoader__.load({
             React.createElement(Button, { key: id, compact: true, primary: listFilter === id, ariaPressed: listFilter === id,
               onClick: () => { setListFilter(id); setPage(1) } }, `${label} · ${statusCounts[id]}`)))
           : React.createElement('div', { style: styles.marketStats, 'aria-label': '已安装插件状态' },
-            [[installedCount, 'DSH 已安装'], [enabledCount, '已启动'], [disabledCount, '已关闭'],
-              [externalInstalledBundles.length, '目录外只读']].map(([value, label]) =>
+            (view === 'official'
+              ? [[officialPluginCount, '已安装官方组件'],
+                [officialBundles.filter(bundle => bundle.enabled === true).length, '已启动'],
+                [officialBundles.filter(bundle => bundle.enabled === false).length, '已关闭']]
+              : [[installedCount, '已安装插件'], [enabledCount, '已启动'], [disabledCount, '已关闭'],
+                [externalInstalledBundles.length, '目录外只读']]).map(([value, label]) =>
               React.createElement('div', { key: label, style: styles.marketStat },
                 React.createElement('span', { style: styles.marketStatValue }, String(value)),
                 React.createElement('span', { style: styles.marketStatLabel }, label)))),
         React.createElement('div', { style: styles.marketResults },
           React.createElement('span', { style: styles.muted, role: 'status' },
             installedInventoryUnavailable ? '安装清单读取后才会显示结果。'
-              : `${filtered.length} 条结果 · 第 ${currentPage} / ${pageCount} 页 · ${view === 'installed' ? `其中 ${installedCatalogEntries.length} 个与 Catalog 匹配` : `Desktop Profile ${installedCount} 个已安装 bundle`}`),
+              : `${filtered.length} 条结果 · 第 ${currentPage} / ${pageCount} 页 · ${view === 'official'
+                ? 'DSH 官方组件只读展示'
+                : view === 'installed' ? `其中 ${installedCatalogEntries.length} 个与 Catalog 匹配`
+                  : `Desktop Profile ${installedCount} 个已安装 bundle`}`),
           hasFilters ? React.createElement(Button, { compact: true, onClick: () => {
             setQuery(''); setCategory(''); setListFilter('all'); setClientFilter('all'); setSortBy('recommended'); setPage(1)
           } }, '清除筛选') : null),
         filtered.length === 0 ? React.createElement('div', { style: styles.marketEmpty },
           React.createElement('strong', { style: styles.name }, installedInventoryUnavailable ? '无法读取已安装列表'
-            : view === 'installed' ? '当前没有匹配的已安装插件' : '没有匹配的插件'),
+            : view === 'official' ? '当前没有匹配的官方插件'
+              : view === 'installed' ? '当前没有匹配的已安装插件' : '没有匹配的插件'),
           React.createElement('span', { style: styles.muted }, installedInventoryUnavailable
             ? '这是 DSH 安装清单状态，不能据此判断为空。完整插件目录仍可浏览和搜索。'
-            : view === 'installed'
-            ? '已安装状态来自 DSH Desktop 官方插件管理器。清除筛选，或在插件目录中浏览可安装条目。'
+            : view === 'official'
+              ? '官方组件由 DSH Desktop 提供并管理；商城只显示 Desktop 返回的本机状态。'
+              : view === 'installed'
+                ? '已安装状态来自 DSH Desktop 官方插件管理器。清除筛选，或在插件目录中浏览可安装条目。'
             : '试试插件名、包名、用途、分类、权限或 GitHub 仓库。'),
           hasFilters ? React.createElement(Button, { compact: true, onClick: () => {
             setQuery(''); setCategory(''); setListFilter('all'); setClientFilter('all'); setSortBy('recommended'); setPage(1)
           } }, '清除筛选') : null) : null,
         React.createElement('div', {
           style: styles.marketListViewport,
-          'aria-label': view === 'installed' ? '已安装插件结果' : 'Catalog 审核记录结果',
-        }, React.createElement('div', { style: styles.marketGrid, role: 'list', 'aria-label': view === 'installed' ? '已安装插件目录' : '插件商城目录' }, visible.map(row => {
-          if (row.kind === 'external') {
+          'aria-label': view === 'official' ? '官方插件结果' : view === 'installed' ? '已安装插件结果' : 'Catalog 审核记录结果',
+        }, React.createElement('div', { style: styles.marketGrid, role: 'list',
+          'aria-label': view === 'official' ? '官方插件目录' : view === 'installed' ? '已安装插件目录' : '插件商城目录' }, visible.map(row => {
+          if (row.kind === 'external' || row.kind === 'official') {
             const bundle = row.bundle
             const sourceRepository = desktopSourceRepository(bundle.source)
             const bundleVersion = typeof bundle.version === 'string' && DESKTOP_VERSION.test(bundle.version) ? bundle.version : '未知版本'
@@ -3652,14 +3764,18 @@ window.__ModuleLoader__.load({
                 React.createElement(StatusPill, { label: bundle.enabled === true ? '已启动' : bundle.enabled === false ? '已关闭' : '状态未知',
                   tone: bundle.enabled === true ? 'var(--dsw-alias-state-success-primary)' : 'var(--dsw-alias-label-tertiary)' })),
               React.createElement('div', { style: styles.code }, bundle.name + ' · ' + bundleVersion),
-              React.createElement('div', { style: styles.muted }, '此插件没有可匹配的已审核 Catalog 固定来源记录；商城只显示 DSH Desktop 返回的状态。'),
+                React.createElement('div', { style: styles.muted }, row.kind === 'official'
+                  ? '这是 DSH 官方或随 DSH 提供的组件。商城仅展示官方插件管理器返回的本机状态，不提供商城管理操作。'
+                  : '此插件没有可匹配的已审核 Catalog 固定来源记录；商城只显示 DSH Desktop 返回的状态。'),
               React.createElement('div', { style: styles.marketBadges },
-                React.createElement('span', { style: styles.badge }, bundle.official === true ? 'DSH 官方组件' : '目录外插件'),
+                React.createElement('span', { style: styles.badge }, bundle.official === true || bundle.name.startsWith('@deepseek-ai/') ? 'DSH 官方组件' : bundle.optional === true ? 'DSH 可选组件' : '目录外插件'),
                 bundle.optional === true ? React.createElement('span', { style: styles.badge }, '可选组件') : null,
                 bundle.removable === true ? React.createElement('span', { style: styles.badge }, 'Desktop 允许卸载') : null),
               React.createElement('div', { style: styles.muted }, sourceRepository ? 'GitHub 来源：' + sourceRepository : '安装来源未公开显示'),
               React.createElement('div', { style: styles.marketCardActions },
-                React.createElement(Button, { compact: true, disabled: true, title: '没有受审固定 Commit 和权限记录，商城不管理目录外 Bundle。' }, '商城不管理')))
+                React.createElement(Button, { compact: true, disabled: true, title: row.kind === 'official'
+                  ? 'DSH 官方组件由 DSH Desktop 管理，商城只展示本机状态。'
+                  : '没有受审固定 Commit 和权限记录，商城不管理目录外 Bundle。' }, row.kind === 'official' ? 'DSH 官方管理' : '商城不管理')))
           }
           const entry = row.entry
           const installedBundle = installedByName.get(entry.packageName)
@@ -3685,8 +3801,7 @@ window.__ModuleLoader__.load({
               ...entry.categories.map(id => React.createElement('span', { key: id, style: styles.badge }, categoryLabels[id] || id)),
               React.createElement('span', { style: styles.badge }, licenseLabel(entry.details.license))),
             React.createElement('div', { style: styles.muted }, entry.commit ? 'Commit ' + entry.commit.slice(0, 12) : '固定 Commit 未提供'),
-            entry.status === 'blocked' ? React.createElement('div', { style: styles.notice },
-              'Catalog 审核建议：确认后可提交给 DSH Desktop 检查安装；这不是商城拒绝安装的结论。最终结果以 DSH 返回为准，审核原因见详情。') : null,
+            entry.status === 'blocked' ? React.createElement(ReviewAdvice, { reason: entry.statusReason, compact: true }) : null,
             React.createElement('div', { style: styles.cardFooter },
               React.createElement('div', { style: styles.marketCardActions },
                 ...actionButtons(entry, installedBundle, { includeUnavailable: true }),
@@ -3734,20 +3849,30 @@ window.__ModuleLoader__.load({
         loadState.status === 'ready' ? React.createElement(React.Fragment, null,
           React.createElement('div', { style: styles.marketViewBar, role: 'tablist', 'aria-label': '插件商城视图' },
             React.createElement(TabButton, { active: view === 'directory',
+              style: styles.marketViewTab,
               onClick: () => { setView('directory'); setDirectoryListingFilter('all'); setDirectoryReviewFilter('all'); setSortBy('recommended'); setPage(1) } },
               `全部已知插件 · ${directoryState.status === 'ready' ? directoryRows.length : directoryState.status === 'error' ? '暂不可用' : '…'}`),
             React.createElement(TabButton, { active: view === 'recommended',
+              style: styles.marketViewTab,
               onClick: () => { setView('recommended'); setDirectoryListingFilter('all'); setDirectoryReviewFilter('all'); setPage(1) } },
               `推荐榜单 · ${rankingTabCount('recommended')}`),
             React.createElement(TabButton, { active: view === 'essential',
+              style: styles.marketViewTab,
               onClick: () => { setView('essential'); setDirectoryListingFilter('all'); setDirectoryReviewFilter('all'); setPage(1) } },
               `必装榜单 · ${rankingTabCount('essential')}`),
             React.createElement(TabButton, { active: view === 'catalog',
+              style: styles.marketViewTab,
               onClick: () => { setView('catalog'); setListFilter('all'); setPage(1) } }, `Catalog 审核记录 · ${entries.length}`),
+            React.createElement(TabButton, { active: view === 'official',
+              style: styles.marketViewTab,
+              onClick: () => { setView('official'); resetInventoryFilters() } },
+              `官方插件 · ${inventoryState.status === 'ready' ? officialPluginCount : inventoryState.status === 'loading' ? '读取中' : '暂不可用'}`),
             React.createElement(TabButton, { active: view === 'installed',
-              onClick: () => { setView('installed'); setListFilter('all'); setPage(1) } },
-              `已安装 · ${inventoryState.status === 'ready' ? installedCount : inventoryState.status === 'loading' ? '读取中' : '暂不可用'}`),
-            React.createElement('a', { href: 'https://dsh.store/plugins/', target: '_blank', rel: 'noreferrer', style: styles.link }, '官网目录 ↗')),
+              style: styles.marketViewTab,
+              onClick: () => { setView('installed'); resetInventoryFilters() } },
+              `已安装插件 · ${inventoryState.status === 'ready' ? installedCount : inventoryState.status === 'loading' ? '读取中' : '暂不可用'}`),
+            React.createElement('a', { href: 'https://dsh.store/plugins/', target: '_blank', rel: 'noreferrer',
+              style: { ...styles.link, ...styles.marketViewTab, display: 'flex', alignItems: 'center' } }, '官网目录 ↗')),
           directoryViewActive ? directoryViewContent : catalogViewContent,
         detailEntry ? React.createElement(Modal, {
           open: true, onClose: () => setDetailEntry(null), title: detailEntry.name + ' · 插件详情',
@@ -3763,8 +3888,8 @@ window.__ModuleLoader__.load({
           React.createElement('div', { style: styles.actions, 'aria-label': '插件操作' },
             ...actionButtons(detailEntry, detailBundle, { includeUnavailable: true, allActions: true })),
           detailOperationsMessage ? React.createElement('div', { style: styles.notice, role: 'status' }, detailOperationsMessage) : null,
-          detailEntry.status === 'blocked' ? React.createElement('div', { style: styles.error, role: 'alert' },
-            'Catalog 审核原因：' + detailEntry.statusReason) : null,
+          ['blocked', 'unlisted'].includes(detailEntry.status) && detailEntry.statusReason
+            ? React.createElement(ReviewAdvice, { reason: detailEntry.statusReason }) : null,
           React.createElement('div', { style: styles.code }, detailEntry.packageName + ' · ' + detailEntry.version),
           React.createElement('div', { style: styles.muted }, 'GitHub 仓库：' + detailEntry.repositoryUrl),
           React.createElement('div', { style: styles.code }, '固定 Commit：' + detailEntry.commit),
@@ -3798,14 +3923,15 @@ window.__ModuleLoader__.load({
             ? React.createElement('div', { style: styles.code }, (actionPlan.action === 'update' ? '更新' : '安装')
               + ' spec：' + desktopInstallSpecifier(actionPlan.entry)) : null,
           ['install', 'update'].includes(actionPlan.action) && actionPlan.entry.status === 'blocked'
-            ? React.createElement('div', { style: styles.error, role: 'alert' },
-              'Store 复核建议：' + actionPlan.entry.statusReason + '。这是 Store 的风险提示，不是 DSH 的安装结论；最终安装/更新结果由 DSH 官方插件管理器返回。请先核对来源、权限和脚本。') : null,
+            ? React.createElement(ReviewAdvice, { reason: actionPlan.entry.statusReason, compact: true }) : null,
           actionPlan.entry.installMode === 'github-default-branch' && actionPlan.entry.status !== 'approved'
             ? React.createElement('div', { style: styles.notice, role: 'status' },
               (actionPlan.entry.directorySource === 'candidate' ? 'Store 候选审核状态：' : 'Store Catalog 状态：')
               + (actionPlan.entry.directorySource === 'candidate' ? actionPlan.entry.candidateStatus : actionPlan.entry.status)
-              + (actionPlan.entry.statusReason ? ' · ' + actionPlan.entry.statusReason : '')
               + '。这是商城建议，不是 DSH 的安装结论；你确认后仍可提交给 DSH Desktop，由 DSH 判断是否接受。') : null,
+          ['install', 'update'].includes(actionPlan.action) && actionPlan.entry.status !== 'approved'
+            && actionPlan.entry.status !== 'blocked' && actionPlan.entry.statusReason
+            ? React.createElement(ReviewAdvice, { reason: actionPlan.entry.statusReason, compact: true }) : null,
           ['install', 'update'].includes(actionPlan.action) && actionPlan.entry.updatePolicy === 'external-only'
             ? React.createElement('div', { style: styles.notice }, '更新策略：external-only。此次仅把当前 Catalog 固定 Commit 交由 DSH 检查；Store 不会自动跟随后续源码更新。') : null,
           React.createElement('div', { style: styles.muted },

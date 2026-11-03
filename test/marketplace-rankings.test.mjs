@@ -381,7 +381,8 @@ test('all charts show thirty unique rows without granting admission or editorial
   assert.doesNotMatch(renderRankingRows(recommended, { type: 'recommended' }), /商城精选/)
   const supplements = rankingEntries(data, 'essential').filter(e => e.categoryPick)
   assert.equal(supplements.length, 27)
-  assert.match(renderRankingRows(supplements, { type: 'essential' }), /分类高星补充/)
+  assert.match(renderRankingRows(supplements, { type: 'essential' }), /分类高星补位/)
+  assert.match(renderRankingRows(supplements, { type: 'essential' }), /工具 · 分类高星补位 · 当前可核对星标第/)
   assert.doesNotMatch(renderRankingRows(supplements, { type: 'essential' }), /星标第一/)
   assert.deepEqual(data, before)
 })
@@ -393,6 +394,8 @@ test('small and incomplete populations stay honest; blocked projects are not aut
   assert.equal(rows.length, 1)
   assert.equal(rows[0].wins.length, 0)
   assert.equal(rows[0].categoryPick.observedRank, 1)
+  assert.equal(rows[0].categoryPick.unknownStars, 1)
+  assert.match(renderRankingRows(rows, { type: 'essential' }), /1 个插件星标数未知，分类第一未确认/)
 })
 
 test('HTML metadata and bilingual chart copy do not advertise unsupported Store picks', async () => {

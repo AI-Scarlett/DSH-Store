@@ -38,7 +38,7 @@ test('RC support is exact across the host and published UI peers without future 
     assert.ok(!range.includes('*'))
     assert.ok(!range.split(' || ').some(part => /^>=0\.2\./.test(part)))
   }
-  assert.equal(manifest.version, '0.9.32')
+  assert.equal(manifest.version, '0.9.33')
   assert.ok(['unknown', 'compatible'].includes(manifest.dsh.compatibility.dshReleases['0.2.1-rc.1']))
   assert.equal(manifest.dsh.compatibility.dshOperations['0.2.1-rc.1'].rollback, 'unknown')
   assert.equal(manifest.dsh.compatibility.dshReleases['0.2.1-rc.3'], 'compatible')
@@ -124,6 +124,7 @@ test('runtime workflow has one timeout and keeps the expensive disposable smoke 
   assert.match(registryWorkflow, /verify-dsh-upgrade-plan\.mjs docs\/ops\/dsh-native-market-rc5-desktop-20261030\.json/)
   assert.match(registryWorkflow, /verify-dsh-upgrade-plan\.mjs docs\/ops\/dsh-native-market-desktop-authority-20261101\.json/)
   assert.match(registryWorkflow, /verify-dsh-upgrade-plan\.mjs docs\/ops\/dsh-native-market-desktop-blocked-check-20261101\.json/)
+  assert.match(registryWorkflow, /verify-dsh-upgrade-plan\.mjs docs\/ops\/dsh-native-market-desktop-guidance-ranking-20261103\.json/)
 })
 
 test('next channel must be a well-formed preview and newer than the active latest-three target', async () => {

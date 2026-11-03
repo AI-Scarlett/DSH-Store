@@ -1,0 +1,146 @@
+{
+  "schemaVersion": 1,
+  "type": "dsh-native-market-upgrade",
+  "planId": "dsh-native-market-desktop-guidance-ranking-20261103",
+  "planFile": "docs/ops/dsh-native-market-desktop-guidance-ranking-20261103.json",
+  "createdAt": "2026-11-03T03:34:30Z",
+  "baseCommit": "fd31e8458b0b393b07380e30bef0b850273dfa6c",
+  "scope": [
+    ".github/workflows/registry.yml",
+    "README.md",
+    "docs/ops/dsh-native-market-desktop-guidance-ranking-20261103.json",
+    "docs/reviews/dsh-native-market-desktop-guidance-ranking-20261103.md",
+    "marketplace/rankings/index.html",
+    "marketplace/rankings/model.js",
+    "marketplace/rankings/rankings.js",
+    "package.json",
+    "src/client.js",
+    "test/catalog.test.mjs",
+    "test/contracts.test.mjs",
+    "test/desktop-compat.test.mjs",
+    "test/marketplace-rankings.test.mjs",
+    "test/upgrade-matrix.test.mjs"
+  ],
+  "preconditions": {
+    ".github/workflows/registry.yml": "f515ca9f713e2cb97dd3074bcf326c95cb7b4ffe27cd7b7747682db5eaf1d4db",
+    "README.md": "6728355f14e94c6a1586601e11bce691500327baa524a801e30b86e107aeebc5",
+    "docs/ops/dsh-native-market-desktop-guidance-ranking-20261103.json": null,
+    "docs/reviews/dsh-native-market-desktop-guidance-ranking-20261103.md": null,
+    "marketplace/rankings/index.html": "f759b81104f8d9cdca5093313f515f3764d092c8c553058b102b869cc91d5176",
+    "marketplace/rankings/model.js": "8dcd08a8f0ea18b00d82f4cec4f78f7931c237de355bf8f70ec97b55ac429421",
+    "marketplace/rankings/rankings.js": "0453ed3363b87554fdd84c1bfcc60cc6d6a7f4b2038ed40df5895705eebd1192",
+    "package.json": "c9cfe510151a72075cf337cd0b2799bde663574e838b27688e2df8c121c0001f",
+    "src/client.js": "ec51c8c995b2189baec1174820575829e7e1354568590b99d8b1caf48bae0d45",
+    "test/catalog.test.mjs": "875c1b134e5fd5c17c0cd028fc7d772d32a49433fdf4252df51995f5b0f0eb96",
+    "test/contracts.test.mjs": "fb4d981f0ce8f279c828f1fa9a22135600d6e316017ab5c31a3b03e76521c975",
+    "test/desktop-compat.test.mjs": "b35ec61351ca3223c77a8c78fee4470c00a3ed1b1a04a90ba3b467df9e84dbb6",
+    "test/marketplace-rankings.test.mjs": "1efdada796eb8f9b97eb19c1b7776f6e20e2d95a4f31b6646f47745f9c6a2815",
+    "test/upgrade-matrix.test.mjs": "1f1d020f9c6266f721a53f922a22616e6ac859f4d209bcc57365e076df6fac65"
+  },
+  "postconditions": {
+    ".github/workflows/registry.yml": "ec5bb16fd4b945d1b8b5e71096dc7219c77c51e4a88db1cbc6b4387172f5c2b5",
+    "README.md": "40d302ed9645d878483464d50734ded4e8a2d6c3b4b1b1e1b3be10f6b96ddee7",
+    "docs/reviews/dsh-native-market-desktop-guidance-ranking-20261103.md": "bd60f6719c206d309fa21fef9d3b9a780212477d1a55dffdca71b97a7d632523",
+    "marketplace/rankings/index.html": "94976a66f8d8829e3f3d6d7ae82c79a63ff6d8e2144834aa85b020cda24dea50",
+    "marketplace/rankings/model.js": "76af131b6d12c2e6d2c6d4691b0b8e931b70a896b079b6a8ce612e01e4cd5c6f",
+    "marketplace/rankings/rankings.js": "dabc1dca7c70c784f87011caf8ef4bf03395c4eb0b3b1ba6f7ab5fe95e2a95f5",
+    "package.json": "f735cfbe7049e7902dc5010dbaf4167d034f911f1e4ef7010e9b1bc089830846",
+    "src/client.js": "874ab9d03dff62e13739b8edcb5e716cbfacc680fb83b9ed7921dd13a0c8aee8",
+    "test/catalog.test.mjs": "90e7b4142186e9789004d1b56ab50d7b415b40328e3d151b75c9acd9b2d467c5",
+    "test/contracts.test.mjs": "c1a5922b490a5ab36d9ed98a491c72c8212be712fdeedaab589e33da313d935e",
+    "test/desktop-compat.test.mjs": "40638769015b5fddd9d060a330ece082480e0e7d67a1220dbcf4b2ae81d1d286",
+    "test/marketplace-rankings.test.mjs": "9935b082173b9a8f346003d292c6d6eff14a212bd5e89a73b5c56d09897362f5",
+    "test/upgrade-matrix.test.mjs": "fc9ac1a16157566136a149255ab3fcb36b1b6a7021c0b94341bd36bf910efe24"
+  },
+  "authorization": {
+    "source": "direct-user-request",
+    "request": "用户要求优化 DSH Desktop 商城导航留白，增加官方插件与已安装插件两个入口，并继续完善审核建议和必装榜补位说明；此前已明确要求推送、发布与合并。",
+    "githubWriteCredential": "short-lived-token-required",
+    "publication": "auditable-ci-checked-pull-request-only"
+  },
+  "objective": "改善 DSH Desktop 插件商城导航布局；增加 DSH 官方组件与用户已安装插件只读视图；让审核建议更容易理解，并说明必装榜分类补位及星标数据边界。",
+  "change": {
+    "packageVersion": "0.9.33",
+    "layout": "Marketplace views use a responsive full-width grid, filling available horizontal space and wrapping naturally in narrow panels.",
+    "inventoryTabs": "Official and optional DSH bundles, including @deepseek-ai packages, and non-official installed bundles are separate read-only views sourced from the official Desktop plugin manager inventory. Switching views clears stale filters.",
+    "reviewAdvice": "Translate common Store audit evidence into plain Chinese; preserve the exact technical reason in an expandable detail. Store guidance stays advisory and the DSH Desktop manager decides install results.",
+    "rankings": "Supplemental essential picks show the category and observed star order, count entries whose stars are unknown, and avoid implying that an unverified pick is the category champion.",
+    "boundary": "No DSH core, @deepseek-ai package, real Profile, install/uninstall authority, Loader/Fiber, package installation, or restart behavior is changed in this source PR."
+  },
+  "gates": [
+    "Fresh typed plan binds current origin/main Commit, exact changed-file scope, base SHA-256 preconditions and reviewed postcondition hashes; CI runs the dedicated DSH upgrade-plan verifier.",
+    "Disposable Desktop fixtures verify responsive navigation, official versus user-installed inventory, per-view filtering, plain-language audit guidance, and ranking labels.",
+    "Run npm run check, package dry-run and git diff --check; require exact-head PR CI before merge.",
+    "After source merge, create a separate fresh Catalog policy plan pinned to the merged immutable source Commit and verify GitHub Raw, Pages, dsh.store and dsh-store.cn independently.",
+    "Real Desktop UI acceptance is a separate gate after publishing and updating the official Desktop package; tests and Catalog readback do not prove native UI acceptance."
+  ],
+  "rollback": "Revert only this source change through a new auditable CI-checked PR. Keep the current Catalog pin until a separate fresh source-bound Catalog plan passes all policy gates.",
+  "healthCheck": "Require DSH_UPGRADE_PLAN_OK, 74/74 focused Desktop and ranking tests, npm run check with REGISTRY_OK entries=875 and 594/594 tests, npm run build:marketplace, npm pack --dry-run --json, git diff --check and exact-head PR CI. Verify Catalog public deployment and real Desktop UI separately.",
+  "commands": [
+    {
+      "argv": [
+        "node",
+        "--test",
+        "test/desktop-compat.test.mjs",
+        "test/marketplace-rankings.test.mjs"
+      ],
+      "expected": "74 disposable UI and ranking tests pass"
+    },
+    {
+      "argv": [
+        "npm",
+        "run",
+        "check"
+      ],
+      "expected": "REGISTRY_OK and all repository tests pass"
+    },
+    {
+      "argv": [
+        "npm",
+        "pack",
+        "--dry-run",
+        "--json"
+      ],
+      "expected": "dsh-safe-plugin-manager@0.9.33 package contents are valid"
+    },
+    {
+      "argv": [
+        "npm",
+        "run",
+        "build:marketplace"
+      ],
+      "expected": "STATIC_MARKETPLACE_OK for the current Catalog snapshot"
+    },
+    {
+      "argv": [
+        "node",
+        "scripts/verify-dsh-upgrade-plan.mjs",
+        "docs/ops/dsh-native-market-desktop-guidance-ranking-20261103.json"
+      ],
+      "expected": "DSH_UPGRADE_PLAN_OK"
+    },
+    {
+      "argv": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "expected": "exit 0"
+    }
+  ],
+  "execution": {
+    "status": "local-source-verified-pr-pending",
+    "sourceBase": "fd31e8458b0b393b07380e30bef0b850273dfa6c",
+    "packageVersion": "0.9.33",
+    "catalogVersion": "0.9.31 until separate Catalog policy publication",
+    "focusedChecks": "passed: 74/74 Desktop and ranking tests",
+    "packageDryRun": "passed: dsh-safe-plugin-manager@0.9.33; 1075 files; 28652359 unpacked bytes",
+    "fullChecks": "passed: npm run check; REGISTRY_OK entries=875; 594/594 tests",
+    "exactHeadCi": "pending source PR",
+    "publicReadback": "not part of this source PR; Catalog 0.9.31 remains authoritative",
+    "realDesktop": "0.9.33 not installed or loaded; native UI acceptance pending separately",
+    "staticBuild": "passed: STATIC_MARKETPLACE_OK entries=875 manager=0.9.31",
+    "deterministicPlan": "passed: DSH_UPGRADE_PLAN_OK base=fd31e8458b0b393b07380e30bef0b850273dfa6c changed=14",
+    "diffCheck": "passed"
+  }
+}
