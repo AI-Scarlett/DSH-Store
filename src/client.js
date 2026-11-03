@@ -547,13 +547,17 @@ window.__ModuleLoader__.load({
         padding: '7px 0', background: 'var(--dsw-alias-bg-layer-1)',
       },
       marketViewBar: {
-        display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(180px, 100%), 1fr))',
-        alignItems: 'stretch', gap: '10px', paddingBottom: '12px', borderBottom: '1px solid var(--dsw-alias-border-l2)',
+        display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'flex-start',
+        gap: '8px 10px', paddingBottom: '12px', borderBottom: '1px solid var(--dsw-alias-border-l2)',
       },
-      marketViewTab: { width: '100%', minWidth: 0, minHeight: '46px', justifyContent: 'center', textAlign: 'center', whiteSpace: 'normal', overflowWrap: 'normal', lineHeight: '1.35' },
+      marketViewTab: {
+        boxSizing: 'border-box', width: 'auto', minWidth: 'min(168px, 100%)', maxWidth: '100%', flex: '0 0 auto',
+        minHeight: '46px', justifyContent: 'center', textAlign: 'center', whiteSpace: 'normal', overflowWrap: 'normal', lineHeight: '1.35',
+      },
       marketPluginTabs: {
-        display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(220px, 100%), 1fr))',
-        alignItems: 'stretch', gap: '10px', padding: '10px 0 2px',
+        display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'flex-start', alignSelf: 'flex-start',
+        boxSizing: 'border-box', maxWidth: '100%', gap: '8px', padding: '8px',
+        border: '1px solid var(--dsw-alias-border-l2)', borderRadius: '12px', background: 'var(--dsw-alias-bg-layer-2)',
       },
       marketFilterTabs: { display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: '6px' },
       marketResults: { display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '8px' },
@@ -2782,6 +2786,7 @@ window.__ModuleLoader__.load({
       const [listFilter, setListFilter] = useState('all')
       const [directoryListingFilter, setDirectoryListingFilter] = useState('all')
       const [directoryReviewFilter, setDirectoryReviewFilter] = useState('all')
+      const [directoryClientFilter, setDirectoryClientFilter] = useState('all')
       const [clientFilter, setClientFilter] = useState('all')
       const [sortBy, setSortBy] = useState('recommended')
       const [page, setPage] = useState(1)
@@ -2968,6 +2973,10 @@ window.__ModuleLoader__.load({
         for (const row of activeDirectoryRows) for (const id of row.categories || []) counts.set(id, (counts.get(id) || 0) + 1)
         return counts
       }, [activeDirectoryRows])
+      const directoryClientCounts = useMemo(() => {
+        const declared = activeDirectoryRows.filter(row => row.catalogEntry?.compatibility?.profiles?.includes('desktop') === true).length
+        return { all: activeDirectoryRows.length, declared, undeclared: activeDirectoryRows.length - declared }
+      }, [activeDirectoryRows])
       const directorySearchIndex = useMemo(() => {
         const normalizedFields = values => values.filter(value => value !== null && value !== undefined)
           .map(value => String(value).normalize('NFKC').toLocaleLowerCase())
@@ -3020,6 +3029,9 @@ window.__ModuleLoader__.load({
           if ((category && !row.categories.includes(category))
             || (directoryListingFilter !== 'all'
               && (directoryListingFilter === 'listed' ? !row.catalogIndexEntry : Boolean(row.catalogIndexEntry)))) return []
+          const declaresDesktop = row.catalogEntry?.compatibility?.profiles?.includes('desktop') === true
+          if ((directoryClientFilter === 'declared' && !declaresDesktop)
+            || (directoryClientFilter === 'undeclared' && declaresDesktop)) return []
           if (directoryReviewFilter !== 'all'
             && !((directoryReviewFilter === 'approved' && row.catalogIndexEntry?.status === 'approved')
               || (directoryReviewFilter === 'blocked' && row.catalogIndexEntry?.status === 'blocked')
@@ -3043,12 +3055,13 @@ window.__ModuleLoader__.load({
         })
         if (terms.length) matches.sort((left, right) => right.score - left.score || left.order - right.order)
         return matches.map(({ row }) => row)
-      }, [directoryOrderedSearchIndex, query, category, directoryListingFilter, directoryReviewFilter])
+      }, [directoryOrderedSearchIndex, query, category, directoryListingFilter, directoryReviewFilter, directoryClientFilter])
       const directoryPageSize = ['recommended', 'essential'].includes(view) ? DESKTOP_RANKING_PAGE_SIZE : MARKET_PAGE_SIZE
       const directoryPageCount = Math.max(1, Math.ceil(directoryFiltered.length / directoryPageSize))
       const directoryCurrentPage = Math.min(page, directoryPageCount)
       const directoryVisible = directoryFiltered.slice((directoryCurrentPage - 1) * directoryPageSize, directoryCurrentPage * directoryPageSize)
-      const directoryHasFilters = Boolean(query || category || directoryListingFilter !== 'all' || directoryReviewFilter !== 'all')
+      const directoryHasFilters = Boolean(query || category || directoryListingFilter !== 'all'
+        || directoryReviewFilter !== 'all' || directoryClientFilter !== 'all')
 
       const closeActionPlan = () => {
         if (actionState.status === 'running') return
@@ -3545,10 +3558,12 @@ window.__ModuleLoader__.load({
       ]
       const directoryCategoryLabel = id => desktopDirectoryCategoryLabel(id, categoryLabels)
       const clearDirectoryFilters = () => {
-        setQuery(''); setCategory(''); setDirectoryListingFilter('all'); setDirectoryReviewFilter('all'); setSortBy('recommended'); setPage(1)
+        setQuery(''); setCategory(''); setDirectoryListingFilter('all'); setDirectoryReviewFilter('all')
+        setDirectoryClientFilter('all'); setSortBy('recommended'); setPage(1)
       }
       const resetInventoryFilters = () => {
-        setQuery(''); setCategory(''); setListFilter('all'); setClientFilter('all'); setSortBy('recommended'); setPage(1)
+        setQuery(''); setCategory(''); setListFilter('all'); setClientFilter('all'); setDirectoryClientFilter('all')
+        setSortBy('recommended'); setPage(1)
       }
       const directoryViewContent = React.createElement(React.Fragment, null,
         React.createElement('div', { style: styles.marketDirectoryControls, 'aria-label': '目录搜索和筛选' },
@@ -3563,6 +3578,13 @@ window.__ModuleLoader__.load({
             style: styles.select, 'aria-label': '按分类筛选',
           }, React.createElement('option', { value: '' }, `全部分类 · ${activeDirectoryRows.length}`),
           categoryIds.map(id => React.createElement('option', { key: id, value: id }, `${directoryCategoryLabel(id)} · ${directoryCategoryCounts.get(id) || 0}`))),
+          React.createElement('select', {
+            value: directoryClientFilter, onChange: event => { setDirectoryClientFilter(event.target.value); setPage(1) },
+            style: { ...styles.select, minWidth: '220px' }, 'aria-label': '按 DSH Desktop 适配声明筛选',
+            title: '只按 Catalog 是否声明 Desktop Profile 筛选；未声明不等于不兼容。',
+          }, React.createElement('option', { value: 'all' }, `全部适配状态 · ${directoryClientCounts.all}`),
+          React.createElement('option', { value: 'declared' }, `已声明适配 DSH Desktop · ${directoryClientCounts.declared}`),
+          React.createElement('option', { value: 'undeclared' }, `未声明适配 DSH Desktop · ${directoryClientCounts.undeclared}`)),
           React.createElement('select', {
             value: directoryReviewFilter, onChange: event => { setDirectoryReviewFilter(event.target.value); setPage(1) },
             style: styles.select, 'aria-label': '按 DSH STORE 审核状态筛选',

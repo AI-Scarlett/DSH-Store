@@ -1,0 +1,93 @@
+{
+  "schemaVersion": 1,
+  "type": "dsh-native-market-upgrade",
+  "planId": "dsh-native-market-nav-filter-20261103",
+  "planFile": "docs/ops/dsh-native-market-nav-filter-20261103.json",
+  "createdAt": "2026-11-03T13:17:01+08:00",
+  "baseCommit": "2dea3afee7392f9050fc9a67bf8e0a444ee2d0fa",
+  "scope": [
+    "README.md",
+    "docs/ops/dsh-native-market-nav-filter-20261103.json",
+    "docs/reviews/dsh-native-market-nav-filter-20261103.md",
+    "package.json",
+    "src/client.js",
+    "test/catalog.test.mjs",
+    "test/contracts.test.mjs",
+    "test/desktop-compat.test.mjs",
+    "test/upgrade-matrix.test.mjs"
+  ],
+  "preconditions": {
+    "README.md": "c28943199abf4d08a58eec408629b3ba20c3738cc45a5b1969292d9e49d6055f",
+    "docs/ops/dsh-native-market-nav-filter-20261103.json": null,
+    "docs/reviews/dsh-native-market-nav-filter-20261103.md": null,
+    "package.json": "3516784806850de4a8aa8632f66196cb54304a2d7e768348044add2102931b3b",
+    "src/client.js": "4bf2411c38d9ea4f77dd694c0bd578846ec183118fb0a6df8494a5d805a8105a",
+    "test/catalog.test.mjs": "bb53de2b03d160d90db667e9525368c63028111afffca79f056a4d40429f8b4e",
+    "test/contracts.test.mjs": "835cabf19efd1ad1204a965c4323e95d7cea2428bd36a5b4e17dd264f13cf4d5",
+    "test/desktop-compat.test.mjs": "2fe51992903ad505c164254c18a113de73cddd1ca883b1c55a5723a5189cbc4c",
+    "test/upgrade-matrix.test.mjs": "deb10beb2d3940a4ecfd1dfd114526de1c3f92cc4f10eabfe745c092ac43ca82"
+  },
+  "postconditions": {
+    "README.md": "f0ff1616b4a591a5e5e3fe9de58d4c409f0b9fd5d37614c80c462a5bf0ce7611",
+    "docs/reviews/dsh-native-market-nav-filter-20261103.md": "fd3475cf967175922dbb915151d30782d246fa6c0244b0982a3855125759c775",
+    "package.json": "edad905f4e161d829d74c4151ef2e2c8f16350e51e883ed875eb301caefa9d59",
+    "src/client.js": "62ed4b08360e9af98ed0fccabf361f26a06241818a98498eba86522c8931aa82",
+    "test/catalog.test.mjs": "1e86cb88af663a61bd21dbaf678d7454023b2b6dc4dcbd5b7167fe49f94ba0f5",
+    "test/contracts.test.mjs": "1190392e36c7b8862d23e681e7cea3b4c1e0a9d51f1249f5e0a4353c2ff800bc",
+    "test/desktop-compat.test.mjs": "2380434623de572cda21e225b8030883aeff9d1c8186bcac088f7a2a6fcf3b42",
+    "test/upgrade-matrix.test.mjs": "294442bdefaa164e00e9449f7ac922348711ebfb253873c3c40dc6b70860be4a"
+  },
+  "authorization": {
+    "source": "direct-user-request",
+    "request": "用户指出 0.9.34 导航在宽屏被等分拉散，并指出完整目录搜索缺少此前的 DSH Desktop 适配筛选；要求检查并修正。此前已明确要求推送、发布和合并。",
+    "githubWriteCredential": "short-lived-token-required",
+    "publication": "auditable-ci-checked-pull-request-only"
+  },
+  "objective": "发布 DSH Store 0.9.35，修复宽屏导航标签被网格拉开和挤换行的问题，并在完整目录、推荐榜和必装榜搜索控件中恢复 Desktop 适配声明筛选。",
+  "change": {
+    "navigation": "以左对齐、固定间距、按内容宽度排列的 flex 标签组替代扩张等分列；宽度不足时自然换行。本机插件视图仍提供独立的官方插件与已安装插件二级 Tab。",
+    "filter": "完整目录、推荐榜和必装榜增加全部、已声明适配 DSH Desktop、未声明 Desktop 适配筛选；该筛选只表示 Catalog 声明，不将未声明说成不兼容，也不影响 DSH 官方安装判断。",
+    "release": "将包版本升级到 0.9.35，更新回归测试和说明。Catalog 固定版本须在源码合并后另走新鲜 Catalog 计划。"
+  },
+  "gates": [
+    "Fresh deterministic plan binds origin/main Commit 2dea3afee7392f9050fc9a67bf8e0a444ee2d0fa, exact file scope, and base SHA-256 preconditions.",
+    "Disposable Desktop tests verify compact responsive tab layout, nested local-plugin tabs, and that declared/undeclared Desktop adaptation filters return the correct full-directory results and reset correctly.",
+    "Run focused Desktop compatibility tests, npm run check, npm pack --dry-run --json, the typed plan verifier, and git diff --check.",
+    "Submit through a CI-checked source PR; require exact-head checks and merge only after all gates pass.",
+    "After source merge, prepare a separate fresh Catalog release plan and verify GitHub Raw, Pages, dsh.store, and dsh-store.cn independently.",
+    "Real DSH Desktop package/profile mutation remains separately planned and explicitly confirmed; source checks do not establish real Desktop acceptance."
+  ],
+  "rollback": "Revert only this source change through a CI-checked PR. No DSH Profile, package, restart, Catalog, or production website is mutated by this source PR.",
+  "healthCheck": "Require exact precondition and postcondition plan validation, Desktop fixture coverage, full npm check, package dry run, diff check, exact-head PR CI, separate Catalog publication, and independent four-surface readback.",
+  "commands": [
+    {
+      "argv": ["node", "--test", "test/desktop-compat.test.mjs"],
+      "expected": "all disposable Desktop compatibility cases pass"
+    },
+    {
+      "argv": ["npm", "run", "check"],
+      "expected": "REGISTRY_OK and full repository suite passes"
+    },
+    {
+      "argv": ["npm", "pack", "--dry-run", "--json"],
+      "expected": "dsh-safe-plugin-manager@0.9.35 package contents are valid"
+    },
+    {
+      "argv": ["node", "scripts/verify-dsh-upgrade-plan.mjs", "docs/ops/dsh-native-market-nav-filter-20261103.json"],
+      "expected": "DSH_UPGRADE_PLAN_OK"
+    },
+    {
+      "argv": ["git", "diff", "--check"],
+      "expected": "exit 0"
+    }
+  ],
+  "execution": {
+    "status": "source-verified-ready-for-pr",
+    "sourceBase": "2dea3afee7392f9050fc9a67bf8e0a444ee2d0fa",
+    "packageVersion": "0.9.35",
+    "sourceChecks": "passed: plan-bound hashes; Desktop fixtures 47/47; npm run check REGISTRY_OK entries=875 with 594/594 tests; npm pack dry-run 1075 files/28656225 bytes; git diff --check",
+    "exactHeadCi": "pending",
+    "publicReadback": "pending",
+    "realDesktop": "not verified"
+  }
+}

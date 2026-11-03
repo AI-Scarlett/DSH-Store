@@ -1167,10 +1167,11 @@ test('blocked entry handoff still fails closed on invalid source, unsafe paths, 
   assert.equal(harness.calls.installBundle.length, 0)
 })
 
-test('official Desktop nests official and installed plugin views and spreads marketplace tabs across the available width', async () => {
+test('official Desktop uses compact wrapping tabs and restores the full-directory Desktop adaptation filter', async () => {
   const catalogInstalled = desktopEntry({ id: 'dsh-installed-view', packageName: '@acme/dsh-installed-view', commit: 'b'.repeat(40) })
+  const webOnlyCatalog = desktopEntry({ id: 'dsh-web-only', packageName: '@acme/dsh-web-only', commit: 'd'.repeat(40), profiles: ['web'] })
   const harness = createDesktopHarness({
-    catalog: desktopCatalog([catalogInstalled]),
+    catalog: desktopCatalog([catalogInstalled, webOnlyCatalog]),
     installed: [
       { name: '@deepseek-ai/dsh-official-plugin', official: true, installed: true, removable: false, enabled: true,
         version: '0.2.2-alpha.2', source: 'npm:@deepseek-ai/dsh-official-plugin@0.2.2-alpha.2' },
@@ -1190,16 +1191,38 @@ test('official Desktop nests official and installed plugin views and spreads mar
 
   const tabList = desktopNodes(catalogTree).find(node => node.props.role === 'tablist' && node.props['aria-label'] === '插件商城视图')
   assert.ok(tabList)
-  assert.equal(tabList.props.style.display, 'grid')
-  assert.match(tabList.props.style.gridTemplateColumns, /180px/)
+  assert.equal(tabList.props.style.display, 'flex')
+  assert.equal(tabList.props.style.flexWrap, 'wrap')
+  assert.equal(tabList.props.style.justifyContent, 'flex-start')
+  assert.equal(tabList.props.style.gap, '8px 10px')
   const viewTabs = desktopNodes(tabList).filter(node => node.type === 'button' && node.props.role === 'tab')
   assert.equal(viewTabs.length, 5)
-  assert.ok(viewTabs.every(node => node.props.style.width === '100%'), 'each navigation tab uses its share of the available row')
+  assert.ok(viewTabs.every(node => node.props.style.width === 'auto'), 'navigation tabs keep their content-sized width')
+  assert.ok(viewTabs.every(node => node.props.style.flex === '0 0 auto'), 'unused space does not stretch navigation tabs')
   assert.ok(viewTabs.every(node => node.props.style.minHeight === '46px'))
   assert.equal(desktopNodes(catalogTree).some(node => node.props?.['aria-label'] === '本机插件视图'), false,
     'official and installed tabs stay inside the plugin section')
 
-  const directorySearch = desktopNodes(catalogTree).find(node => node.type === 'input' && node.props['aria-label'] === '搜索全部已知插件')
+  let adaptationFilter = desktopNodes(catalogTree).find(node => node.type === 'select'
+    && node.props['aria-label'] === '按 DSH Desktop 适配声明筛选')
+  assert.ok(adaptationFilter)
+  assert.equal(adaptationFilter.props.title, '只按 Catalog 是否声明 Desktop Profile 筛选；未声明不等于不兼容。')
+  assert.ok(desktopText(adaptationFilter).includes('已声明适配 DSH Desktop · 1'))
+  adaptationFilter.props.onChange({ target: { value: 'declared' } })
+  const declaredDirectory = await harness.render()
+  assert.match(desktopText(declaredDirectory), /1 条结果/)
+  assert.match(desktopText(declaredDirectory), /dsh-installed-view/)
+  assert.doesNotMatch(desktopText(declaredDirectory), /dsh-web-only/)
+
+  adaptationFilter = desktopNodes(declaredDirectory).find(node => node.type === 'select'
+    && node.props['aria-label'] === '按 DSH Desktop 适配声明筛选')
+  adaptationFilter.props.onChange({ target: { value: 'undeclared' } })
+  const undeclaredDirectory = await harness.render()
+  assert.match(desktopText(undeclaredDirectory), /dsh-web-only/)
+  assert.doesNotMatch(desktopText(undeclaredDirectory), /Name dsh-installed-view/)
+  assert.ok(desktopNodes(undeclaredDirectory).some(node => node.type === 'button' && node.children?.includes('清除筛选')))
+
+  const directorySearch = desktopNodes(undeclaredDirectory).find(node => node.type === 'input' && node.props['aria-label'] === '搜索全部已知插件')
   directorySearch.props.onChange({ target: { value: 'local-unlisted-plugin' } })
   let searchedDirectory = await harness.render()
   const localPluginsTab = desktopNodes(searchedDirectory).find(node => node.type === 'button' && node.props.role === 'tab'
@@ -1209,8 +1232,10 @@ test('official Desktop nests official and installed plugin views and spreads mar
   let pluginTree = await harness.render()
   let pluginTabList = desktopNodes(pluginTree).find(node => node.props.role === 'tablist' && node.props['aria-label'] === '本机插件视图')
   assert.ok(pluginTabList)
-  assert.equal(pluginTabList.props.style.display, 'grid')
-  assert.match(pluginTabList.props.style.gridTemplateColumns, /220px/)
+  assert.equal(pluginTabList.props.style.display, 'flex')
+  assert.equal(pluginTabList.props.style.flexWrap, 'wrap')
+  assert.equal(pluginTabList.props.style.alignSelf, 'flex-start')
+  assert.equal(pluginTabList.props.style.borderRadius, '12px')
   assert.equal(desktopNodes(pluginTabList).filter(node => node.type === 'button' && node.props.role === 'tab').length, 2)
   let installedTab = desktopNodes(pluginTabList).find(node => node.type === 'button'
     && node.children?.some(value => String(value).startsWith('已安装插件 · 2')))
