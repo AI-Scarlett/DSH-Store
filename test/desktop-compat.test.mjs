@@ -1167,7 +1167,7 @@ test('blocked entry handoff still fails closed on invalid source, unsafe paths, 
   assert.equal(harness.calls.installBundle.length, 0)
 })
 
-test('official Desktop separates official plugins from user-installed plugins and keeps marketplace tabs readable', async () => {
+test('official Desktop nests official and installed plugin views and spreads marketplace tabs across the available width', async () => {
   const catalogInstalled = desktopEntry({ id: 'dsh-installed-view', packageName: '@acme/dsh-installed-view', commit: 'b'.repeat(40) })
   const harness = createDesktopHarness({
     catalog: desktopCatalog([catalogInstalled]),
@@ -1186,29 +1186,40 @@ test('official Desktop separates official plugins from user-installed plugins an
   const catalogTree = await waitForDesktopTree(harness, tree => desktopText(tree).includes('Name dsh-installed-view'))
   const catalogTab = desktopNodes(catalogTree).find(node => node.type === 'button' && node.props.role === 'tab'
     && node.children?.some(value => String(value).startsWith('Catalog 审核记录 · ')))
-  const installedTab = desktopNodes(catalogTree).find(node => node.type === 'button' && node.props.role === 'tab'
-    && node.children?.some(value => String(value).startsWith('已安装插件 · 2')))
-  let officialTab = desktopNodes(catalogTree).find(node => node.type === 'button' && node.props.role === 'tab'
-    && node.children?.some(value => String(value).startsWith('官方插件 · 2')))
   assert.ok(catalogTab)
-  assert.ok(installedTab)
-  assert.ok(officialTab)
-  assert.equal(installedTab.props['aria-selected'], false)
-  assert.equal(officialTab.props['aria-selected'], false)
 
   const tabList = desktopNodes(catalogTree).find(node => node.props.role === 'tablist' && node.props['aria-label'] === '插件商城视图')
   assert.ok(tabList)
   assert.equal(tabList.props.style.display, 'grid')
-  assert.match(tabList.props.style.gridTemplateColumns, /auto-fit/)
+  assert.match(tabList.props.style.gridTemplateColumns, /180px/)
   const viewTabs = desktopNodes(tabList).filter(node => node.type === 'button' && node.props.role === 'tab')
-  assert.equal(viewTabs.length, 6)
+  assert.equal(viewTabs.length, 5)
   assert.ok(viewTabs.every(node => node.props.style.width === '100%'), 'each navigation tab uses its share of the available row')
+  assert.ok(viewTabs.every(node => node.props.style.minHeight === '46px'))
+  assert.equal(desktopNodes(catalogTree).some(node => node.props?.['aria-label'] === '本机插件视图'), false,
+    'official and installed tabs stay inside the plugin section')
 
   const directorySearch = desktopNodes(catalogTree).find(node => node.type === 'input' && node.props['aria-label'] === '搜索全部已知插件')
   directorySearch.props.onChange({ target: { value: 'local-unlisted-plugin' } })
   let searchedDirectory = await harness.render()
-  officialTab = desktopNodes(searchedDirectory).find(node => node.type === 'button' && node.props.role === 'tab'
-    && node.children?.some(value => String(value).startsWith('官方插件 · ')))
+  const localPluginsTab = desktopNodes(searchedDirectory).find(node => node.type === 'button' && node.props.role === 'tab'
+    && node.children?.includes('本机插件'))
+  assert.ok(localPluginsTab)
+  localPluginsTab.props.onClick()
+  let pluginTree = await harness.render()
+  let pluginTabList = desktopNodes(pluginTree).find(node => node.props.role === 'tablist' && node.props['aria-label'] === '本机插件视图')
+  assert.ok(pluginTabList)
+  assert.equal(pluginTabList.props.style.display, 'grid')
+  assert.match(pluginTabList.props.style.gridTemplateColumns, /220px/)
+  assert.equal(desktopNodes(pluginTabList).filter(node => node.type === 'button' && node.props.role === 'tab').length, 2)
+  let installedTab = desktopNodes(pluginTabList).find(node => node.type === 'button'
+    && node.children?.some(value => String(value).startsWith('已安装插件 · 2')))
+  let officialTab = desktopNodes(pluginTabList).find(node => node.type === 'button'
+    && node.children?.some(value => String(value).startsWith('官方插件 · 2')))
+  assert.ok(installedTab)
+  assert.ok(officialTab)
+  assert.equal(installedTab.props['aria-selected'], true)
+  assert.equal(officialTab.props['aria-selected'], false)
   officialTab.props.onClick()
 
   const officialTree = await harness.render()

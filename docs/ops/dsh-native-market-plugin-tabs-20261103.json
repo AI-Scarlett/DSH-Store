@@ -1,0 +1,120 @@
+{
+  "schemaVersion": 1,
+  "type": "dsh-native-market-upgrade",
+  "planId": "dsh-native-market-plugin-tabs-20261103",
+  "planFile": "docs/ops/dsh-native-market-plugin-tabs-20261103.json",
+  "createdAt": "2026-11-03T04:15:15.738Z",
+  "baseCommit": "8126cad644b8dad4336f4f7badf6204115039ac9",
+  "scope": [
+    "README.md",
+    "docs/ops/dsh-native-market-plugin-tabs-20261103.json",
+    "docs/reviews/dsh-native-market-desktop-guidance-ranking-20261103.md",
+    "package.json",
+    "src/client.js",
+    "test/catalog.test.mjs",
+    "test/contracts.test.mjs",
+    "test/desktop-compat.test.mjs",
+    "test/upgrade-matrix.test.mjs"
+  ],
+  "preconditions": {
+    "README.md": "40d302ed9645d878483464d50734ded4e8a2d6c3b4b1b1e1b3be10f6b96ddee7",
+    "docs/ops/dsh-native-market-plugin-tabs-20261103.json": null,
+    "docs/reviews/dsh-native-market-desktop-guidance-ranking-20261103.md": "bd60f6719c206d309fa21fef9d3b9a780212477d1a55dffdca71b97a7d632523",
+    "package.json": "f735cfbe7049e7902dc5010dbaf4167d034f911f1e4ef7010e9b1bc089830846",
+    "src/client.js": "874ab9d03dff62e13739b8edcb5e716cbfacc680fb83b9ed7921dd13a0c8aee8",
+    "test/catalog.test.mjs": "90e7b4142186e9789004d1b56ab50d7b415b40328e3d151b75c9acd9b2d467c5",
+    "test/contracts.test.mjs": "c1a5922b490a5ab36d9ed98a491c72c8212be712fdeedaab589e33da313d935e",
+    "test/desktop-compat.test.mjs": "40638769015b5fddd9d060a330ece082480e0e7d67a1220dbcf4b2ae81d1d286",
+    "test/upgrade-matrix.test.mjs": "fc9ac1a16157566136a149255ab3fcb36b1b6a7021c0b94341bd36bf910efe24"
+  },
+  "postconditions": {
+    "README.md": "b530c2f402410ef9a4efd7fe5061754f200df773c61e7fea3bfca8d484959a46",
+    "docs/reviews/dsh-native-market-desktop-guidance-ranking-20261103.md": "e69964e3dd4dcc6e305482e1f2726d4df0745a8ac8d957fdf7fd155b272c6440",
+    "package.json": "3516784806850de4a8aa8632f66196cb54304a2d7e768348044add2102931b3b",
+    "src/client.js": "4bf2411c38d9ea4f77dd694c0bd578846ec183118fb0a6df8494a5d805a8105a",
+    "test/catalog.test.mjs": "bb53de2b03d160d90db667e9525368c63028111afffca79f056a4d40429f8b4e",
+    "test/contracts.test.mjs": "835cabf19efd1ad1204a965c4323e95d7cea2428bd36a5b4e17dd264f13cf4d5",
+    "test/desktop-compat.test.mjs": "2fe51992903ad505c164254c18a113de73cddd1ca883b1c55a5723a5189cbc4c",
+    "test/upgrade-matrix.test.mjs": "deb10beb2d3940a4ecfd1dfd114526de1c3f92cc4f10eabfe745c092ac43ca82"
+  },
+  "authorization": {
+    "source": "direct-user-request",
+    "request": "用户要求优化商城导航留白，并在插件区增加“官方插件 / 已安装插件”两个 Tab；此前明确要求源码推送、发布和合并。",
+    "githubWriteCredential": "short-lived-token-required",
+    "publication": "auditable-ci-checked-pull-request-only"
+  },
+  "objective": "改进 DSH Desktop 商城主导航排布；将官方插件与已安装插件放入本机插件下的两个独立视图；保留 DSH Desktop 安装结果为唯一最终判断。",
+  "change": {
+    "packageVersion": "0.9.34",
+    "layout": "Widen top-level tab minimum tracks to 180px, distribute them across available width, and wrap responsively. The nested plugin tabs use two equal tracks with wider spacing.",
+    "inventoryTabs": "A single top-level 本机插件 view contains 官方插件 and 已安装插件 tabs. Both read the official Desktop inventory; switching clears stale filters. Official components remain read-only and user-installed bundles retain existing Store action rules.",
+    "installAuthority": "No install gate changes. Store advice remains advisory; confirmed install requests and success state are determined by the DSH Desktop official plugin manager.",
+    "boundary": "No DSH core, @deepseek-ai packages, real Profile, Loader/Fiber, install/uninstall authority, or restart behavior is changed."
+  },
+  "gates": [
+    "Fresh typed plan binds current origin/main Commit 8126cad644b8dad4336f4f7badf6204115039ac9, exact files and base SHA-256 preconditions.",
+    "Disposable Desktop fixture verifies top-level navigation width, nested plugin tabs, independent selection/filter reset, and official/user inventory separation.",
+    "Run npm run check, npm pack --dry-run --json and git diff --check; require exact-head PR CI before merge.",
+    "After merge, prepare a separate source-bound Catalog release plan; verify GitHub Raw, Pages, dsh.store and dsh-store.cn independently.",
+    "Real Desktop UI acceptance remains separate and must be recorded only after the published package is loaded in DSH Desktop."
+  ],
+  "rollback": "Revert only this source change through a new auditable CI-checked PR. Keep the current Catalog pin until a separate fresh Catalog plan passes.",
+  "healthCheck": "Require DSH_UPGRADE_PLAN_OK, focused Desktop UI tests, npm run check, npm pack dry-run, git diff --check, and exact-head PR CI. Verify Catalog public deployment and real Desktop UI separately.",
+  "commands": [
+    {
+      "argv": [
+        "node",
+        "--test",
+        "test/desktop-compat.test.mjs"
+      ],
+      "expected": "Desktop UI fixture tests pass"
+    },
+    {
+      "argv": [
+        "npm",
+        "run",
+        "check"
+      ],
+      "expected": "Registry validation and full repository checks pass"
+    },
+    {
+      "argv": [
+        "npm",
+        "pack",
+        "--dry-run",
+        "--json"
+      ],
+      "expected": "dsh-safe-plugin-manager@0.9.34 package contents are valid"
+    },
+    {
+      "argv": [
+        "node",
+        "scripts/verify-dsh-upgrade-plan.mjs",
+        "docs/ops/dsh-native-market-plugin-tabs-20261103.json"
+      ],
+      "expected": "DSH_UPGRADE_PLAN_OK"
+    },
+    {
+      "argv": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "expected": "exit 0"
+    }
+  ],
+  "execution": {
+    "status": "local-source-verified-pr-pending",
+    "sourceBase": "8126cad644b8dad4336f4f7badf6204115039ac9",
+    "packageVersion": "0.9.34",
+    "catalogVersion": "0.9.31 until separate Catalog policy publication",
+    "focusedChecks": "passed: 47/47 Desktop UI fixture tests",
+    "fullChecks": "passed: npm run check; REGISTRY_OK entries=875; 594/594 tests",
+    "packageDryRun": "passed: dsh-safe-plugin-manager@0.9.34; 1075 files; 28653268 unpacked bytes",
+    "deterministicPlan": "passed: DSH_UPGRADE_PLAN_OK base=8126cad644b8dad4336f4f7badf6204115039ac9 changed=9",
+    "diffCheck": "passed",
+    "exactHeadCi": "pending source PR",
+    "publicReadback": "not part of this source PR",
+    "realDesktop": "not verified in this turn"
+  }
+}
