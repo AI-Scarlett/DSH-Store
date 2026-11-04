@@ -1,0 +1,19 @@
+[Unit]
+Description=DSH Store AI Model Config & Recommendation Service
+After=network.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/opt/dsh-store/current
+Environment=DSH_MARKETPLACE_PORT=4173
+Environment=MODEL_SETTINGS_CONFIG_PATH=/var/lib/dsh-store/model-settings.json
+Environment=MODEL_SETTINGS_KEY_PATH=/var/lib/dsh-store/model-settings.key
+ExecStart=/usr/bin/node scripts/serve-marketplace.mjs
+Restart=always
+RestartSec=5
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target
