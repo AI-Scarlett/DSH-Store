@@ -117,6 +117,13 @@ const server = createServer(async (request, response) => {
     search = parsed.search || ''
   } catch {}
 
+  if (/(%60|`)+$/.test(pathname)) {
+    const cleaned = pathname.replace(/(%60|`)+$/, '') || '/'
+    response.writeHead(302, { location: `${cleaned}${search}`, 'cache-control': 'no-store' })
+    response.end()
+    return
+  }
+
   // Handle CORS preflight
   if (request.method === 'OPTIONS') {
     response.writeHead(204, {
