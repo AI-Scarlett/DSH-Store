@@ -1,4 +1,4 @@
-import { createCipheriv, createDecipheriv, createHash, randomBytes, timingSafeEqual } from 'node:crypto'
+import { createCipheriv, createDecipheriv, createHash, randomBytes, scryptSync, timingSafeEqual } from 'node:crypto'
 import { mkdir, readFile, writeFile } from 'node:fs/promises'
 import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -189,17 +189,23 @@ export async function decryptKey(encryptedString, customKeyPath) {
   return decrypted.toString('utf8')
 }
 
-export function hashPassword(password) {
+export function hashPassword(password, salt = randomBytes(16).toString('hex')) {
   if (!password || typeof password !== 'string') return ''
-  return createHash('sha256').update(password.trim()).digest('hex')
+  const hash = scryptSync(password.trim(), salt, 64).toString('hex')
+  return 's1:' + salt + ':' + hash
 }
 
 export function verifyPassword(providedPassword, expectedHash) {
   if (!expectedHash) return true // no password set yet
-  if (!providedPassword) return false
-  const providedHash = hashPassword(providedPassword)
-  if (providedHash.length !== expectedHash.length) return false
-  return timingSafeEqual(Buffer.from(providedHash), Buffer.from(expectedHash))
+  if (!providedPassword || typeof providedPassword !== 'string') return false
+  const stored = String(expectedHash).trim()
+  if (!stored.startsWith('s1:')) return false
+  const parts = stored.split(':')
+  if (parts.length !== 3) return false
+  const [, salt, expectedDigest] = parts
+  const computed = scryptSync(providedPassword.trim(), salt, 64).toString('hex')
+  if (computed.length !== expectedDigest.length) return false
+  return timingSafeEqual(Buffer.from(computed), Buffer.from(expectedDigest))
 }
 
 export function maskApiKey(plainOrEncrypted) {

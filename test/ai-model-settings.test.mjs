@@ -33,10 +33,11 @@ test('AES-256-GCM encryption and decryption round-trip with disposable key', asy
 
 test('Admin password hashing and verification', () => {
   const hash = hashPassword('my-admin-password')
-  assert.equal(hash.length, 64)
+  assert.match(hash, /^s1:[0-9a-f]{32}:[0-9a-f]{128}$/)
   assert.equal(verifyPassword('my-admin-password', hash), true)
   assert.equal(verifyPassword('wrong-password', hash), false)
   assert.equal(verifyPassword('', hash), false)
+  assert.equal(verifyPassword('my-admin-password', ''), true)
 })
 
 test('Settings persistence, encryption and public view masking', async () => {

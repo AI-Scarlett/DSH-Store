@@ -36,7 +36,7 @@
   }
 
   function getStoredAdminToken() {
-    return sessionStorage.getItem('dsh_admin_token') || localStorage.getItem('dsh_admin_token') || '';
+    return sessionStorage.getItem('dsh_admin_token') || '';
   }
 
   function setStoredAdminToken(token) {
@@ -227,15 +227,6 @@
       console.warn('API server unreachable, fallback to local settings', err);
     }
 
-    // Static fallback
-    const local = localStorage.getItem('dsh_local_model_settings');
-    if (local) {
-      try {
-        renderView(JSON.parse(local));
-        return;
-      } catch {}
-    }
-
     // Default view
     renderView({
       revision: 1,
@@ -341,22 +332,7 @@
       if (data.settings) renderView(data.settings);
       $('admin-new-password').value = '';
     } catch (err) {
-      // Fallback: save to localStorage if purely static
-      try {
-        const fallbackObj = {
-          ...payload,
-          revision: ((currentSettings?.revision || 1) + 1),
-          promptPlaceholder: payload.promptPlaceholder,
-          promptSuggestions: payload.promptSuggestions,
-          primary: { ...payload.primary, hasKey: Boolean(payload.primary.apiKey || currentSettings?.primary?.hasKey) },
-          backup: { ...payload.backup, hasKey: Boolean(payload.backup.usePrimaryKey || payload.backup.apiKey || currentSettings?.backup?.hasKey) }
-        };
-        localStorage.setItem('dsh_local_model_settings', JSON.stringify(fallbackObj));
-        showNotification('success', '✓ 配置已在本地客户端加密保存');
-        renderView(fallbackObj);
-      } catch (localErr) {
-        showNotification('error', '保存失败：' + err.message);
-      }
+      showNotification('error', '保存失败：' + (err.message || '网络或服务端异常'));
     } finally {
       saveBtn.disabled = false;
       saveBtn.textContent = '💾 保存全部配置';
