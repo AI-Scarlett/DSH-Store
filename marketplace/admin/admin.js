@@ -1,6 +1,12 @@
 (() => {
   'use strict';
 
+  if (typeof window !== 'undefined' && window.location && /(%60|`)+$/.test(window.location.pathname)) {
+    const cleaned = window.location.pathname.replace(/(%60|`)+$/, '') || '/';
+    window.location.replace(cleaned + window.location.search + window.location.hash);
+    return;
+  }
+
   const PRESETS = [
     {
       id: 'deepseek',
@@ -112,9 +118,18 @@
     );
   }
 
+  function uint8ToBase64(bytes) {
+    let binary = '';
+    const len = bytes.byteLength;
+    for (let i = 0; i < len; i++) {
+      binary += String.fromCharCode(bytes[i]);
+    }
+    return btoa(binary);
+  }
+
   async function exportKeyToBase64(key) {
     const raw = await window.crypto.subtle.exportKey('raw', key);
-    return btoa(String.fromCharCode(...new Uint8Array(raw)));
+    return uint8ToBase64(new Uint8Array(raw));
   }
 
   async function importKeyFromBase64(b64) {
@@ -137,8 +152,8 @@
       key,
       data
     );
-    const ivB64 = btoa(String.fromCharCode(...iv));
-    const cipherB64 = btoa(String.fromCharCode(...new Uint8Array(ciphertext)));
+    const ivB64 = uint8ToBase64(iv);
+    const cipherB64 = uint8ToBase64(new Uint8Array(ciphertext));
     return 'v1.' + ivB64 + '.' + cipherB64;
   }
 
@@ -604,30 +619,6 @@
         localStorage.setItem('dsh_public_ai_config', JSON.stringify({
           promptPlaceholder: updatedSettings.promptPlaceholder,
           promptSuggestions: updatedSettings.promptSuggestions
-        }));
-
-        // Store active model config for client-side recommendations
-        localStorage.setItem('dsh_client_active_model', JSON.stringify({
-          enabled: updatedSettings.enabled,
-          mode: updatedSettings.mode,
-          systemPrompt: updatedSettings.systemPrompt,
-          primary: {
-            preset: updatedSettings.primary.preset,
-            baseUrl: updatedSettings.primary.baseUrl,
-            model: updatedSettings.primary.model,
-            protocol: updatedSettings.primary.protocol,
-            timeoutSeconds: updatedSettings.primary.timeoutSeconds,
-            apiKey: primaryKey
-          },
-          backup: {
-            enabled: updatedSettings.backup.enabled,
-            preset: updatedSettings.backup.preset,
-            baseUrl: updatedSettings.backup.baseUrl,
-            model: updatedSettings.backup.model,
-            protocol: updatedSettings.backup.protocol,
-            timeoutSeconds: updatedSettings.backup.timeoutSeconds,
-            apiKey: updatedSettings.backup.usePrimaryKey ? primaryKey : backupKey
-          }
         }));
 
         currentSettings = updatedSettings;
