@@ -1,6 +1,12 @@
 (() => {
   'use strict';
 
+  if (typeof window !== 'undefined' && window.location && /(%60|`)+$/.test(window.location.pathname)) {
+    const cleaned = window.location.pathname.replace(/(%60|`)+$/, '') || '/';
+    window.location.replace(cleaned + window.location.search + window.location.hash);
+    return;
+  }
+
   const PRESETS = [
     {
       id: 'deepseek',
@@ -34,7 +40,7 @@
     }
   ];
 
-  const DEFAULT_SYSTEM_PROMPT = '你是一个严谨且实用的 DeepSeek Harness (DSH) 插件选型专家。你的任务是根据用户的需求，从已审核的 DSH 插件列表中挑选最适合的 1 到 3 个插件推荐给用户。\n\n【输出格式要求】：\n必须严格只输出合法的 JSON 格式，不要包含任何 markdown 代码块标记，不要包含多余寒暄。格式如下：\n{\n  "analysis": "简短说明用户需求和推荐逻辑（不超过80字）",\n  "plugins": [\n    {\n      "id": "插件唯一ID",\n      "reason": "为何该插件能满足需求的具体解释（不超过60字）"\n    }\n  ],\n  "suggestedQueries": ["可选的相关延伸提问1", "提问2"]\n}\n\n【原则】：\n1. 只能推荐给出的候选插件，严禁虚构不存在的插件或包名。\n2. 如果用户需求无法匹配任何插件，plugins 数组返回空，并在 analysis 中客观说明。';
+  const DEFAULT_SYSTEM_PROMPT = "\u4f60\u662f\u4e00\u4e2a\u4e25\u8c28\u4e14\u5b9e\u7528\u7684 DeepSeek Harness (DSH) \u63d2\u4ef6\u9009\u578b\u4e13\u5bb6\u3002\u4f60\u7684\u4efb\u52a1\u662f\u6839\u636e\u7528\u6237\u7684\u9700\u6c42\uff0c\u4ece\u5df2\u5ba1\u6838\u7684 DSH \u63d2\u4ef6\u5217\u8868\u4e2d\u6311\u9009\u6700\u9002\u5408\u7684 1 \u5230 3 \u4e2a\u63d2\u4ef6\u63a8\u8350\u7ed9\u7528\u6237\u3002\n\n\u3010\u8f93\u51fa\u683c\u5f0f\u8981\u6c42\u3011\uff1a\n\u5fc5\u987b\u4e25\u683c\u53ea\u8f93\u51fa\u5408\u6cd5\u7684 JSON \u683c\u5f0f\uff0c\u4e0d\u8981\u5305\u542b\u4efb\u4f55 markdown \u4ee3\u7801\u5757\u6807\u8bb0\uff0c\u4e0d\u8981\u5305\u542b\u591a\u4f59\u5bd2\u6684\u3002\u683c\u5f0f\u5982\u4e0b\uff1a\n{\n  \"analysis\": \"\u7b80\u77ed\u8bf4\u660e\u7528\u6237\u9700\u6c42\u548c\u63a8\u8350\u903b\u8f91\uff08\u4e0d\u8d85\u8fc780\u5b57\uff09\",\n  \"plugins\": [\n    {\n      \"id\": \"\u63d2\u4ef6\u552f\u4e00ID\",\n      \"reason\": \"\u4e3a\u4f55\u8be5\u63d2\u4ef6\u80fd\u6ee1\u8db3\u9700\u6c42\u7684\u5177\u4f53\u89e3\u91ca\uff08\u4e0d\u8d85\u8fc760\u5b57\uff09\"\n    }\n  ],\n  \"suggestedQueries\": [\"\u53ef\u9009\u7684\u76f8\u5173\u5ef6\u4f38\u63d0\u95ee1\", \"\u63d0\u95ee2\"]\n}\n\n\u3010\u539f\u5219\u3011\uff1a\n1. \u53ea\u80fd\u63a8\u8350\u7ed9\u51fa\u7684\u5019\u9009\u63d2\u4ef6\uff0c\u4e25\u7981\u865a\u6784\u4e0d\u5b58\u5728\u7684\u63d2\u4ef6\u6216\u5305\u540d\u3002\n2. \u5982\u679c\u7528\u6237\u9700\u6c42\u65e0\u6cd5\u5339\u914d\u4efb\u4f55\u63d2\u4ef6\uff0cplugins \u6570\u7ec4\u8fd4\u56de\u7a7a\uff0c\u5e76\u5728 analysis \u4e2d\u5ba2\u89c2\u8bf4\u660e\u3002";
 
   const DEFAULT_PROMPT_PLACEHOLDER = '输入你想完成的任务需求或插件名称（例如：知网论文精读并写大纲、在微信/QQ中接入DSH、查看API余额、增强会话长期记忆…）';
 
@@ -46,7 +52,13 @@
     { label: '网页 PPT 排版', query: '制作网页PPT与卡片设计排版' }
   ];
 
+  const VAULT_SALT = 'dsh-store-vault-salt-v1';
+  const DEFAULT_ADMIN_USER = 'admin';
+  const DEFAULT_ADMIN_PWD_HASH = 'a113fee5ebdb0d90c8307996a895b8980be704c81442adacc1fab2b4d8c0d252';
+
   let currentSettings = null;
+  let isStaticVaultMode = false;
+  let activeVaultKey = null;
 
   function $(id) { return document.getElementById(id); }
 
@@ -74,6 +86,131 @@
     }
   }
 
+  // Cryptographic Helpers for Client-Side Vault Mode (WebCrypto)
+  async function hashString(str) {
+    const enc = new TextEncoder();
+    const buf = await window.crypto.subtle.digest('SHA-256', enc.encode(str));
+    return Array.from(new Uint8Array(buf))
+      .map(b => b.toString(16).padStart(2, '0'))
+      .join('');
+  }
+
+  async function deriveVaultKey(password) {
+    const enc = new TextEncoder();
+    const passwordKey = await window.crypto.subtle.importKey(
+      'raw',
+      enc.encode(password),
+      'PBKDF2',
+      false,
+      ['deriveKey']
+    );
+    return window.crypto.subtle.deriveKey(
+      {
+        name: 'PBKDF2',
+        salt: enc.encode(VAULT_SALT),
+        iterations: 100000,
+        hash: 'SHA-256'
+      },
+      passwordKey,
+      { name: 'AES-GCM', length: 256 },
+      true,
+      ['encrypt', 'decrypt']
+    );
+  }
+
+  function uint8ToBase64(bytes) {
+    let binary = '';
+    const len = bytes.byteLength;
+    for (let i = 0; i < len; i++) {
+      binary += String.fromCharCode(bytes[i]);
+    }
+    return btoa(binary);
+  }
+
+  async function exportKeyToBase64(key) {
+    const raw = await window.crypto.subtle.exportKey('raw', key);
+    return uint8ToBase64(new Uint8Array(raw));
+  }
+
+  async function importKeyFromBase64(b64) {
+    const raw = Uint8Array.from(atob(b64), c => c.charCodeAt(0));
+    return window.crypto.subtle.importKey(
+      'raw',
+      raw,
+      { name: 'AES-GCM', length: 256 },
+      true,
+      ['encrypt', 'decrypt']
+    );
+  }
+
+  async function encryptVaultPayload(payload, key) {
+    const enc = new TextEncoder();
+    const iv = window.crypto.getRandomValues(new Uint8Array(12));
+    const data = enc.encode(JSON.stringify(payload));
+    const ciphertext = await window.crypto.subtle.encrypt(
+      { name: 'AES-GCM', iv },
+      key,
+      data
+    );
+    const ivB64 = uint8ToBase64(iv);
+    const cipherB64 = uint8ToBase64(new Uint8Array(ciphertext));
+    return 'v1.' + ivB64 + '.' + cipherB64;
+  }
+
+  async function decryptVaultPayload(str, key) {
+    if (!str || typeof str !== 'string') return null;
+    const parts = str.split('.');
+    if (parts.length !== 3 || parts[0] !== 'v1') return null;
+    const iv = Uint8Array.from(atob(parts[1]), c => c.charCodeAt(0));
+    const cipher = Uint8Array.from(atob(parts[2]), c => c.charCodeAt(0));
+    const decrypted = await window.crypto.subtle.decrypt(
+      { name: 'AES-GCM', iv },
+      key,
+      cipher
+    );
+    return JSON.parse(new TextDecoder().decode(decrypted));
+  }
+
+  function defaultVaultSettings() {
+    return {
+      revision: 1,
+      enabled: true,
+      mode: 'model-first',
+      dailyLimit: 0,
+      perVisitorHourlyLimit: 50,
+      adminUsername: localStorage.getItem('dsh_vault_admin_user') || DEFAULT_ADMIN_USER,
+      systemPrompt: DEFAULT_SYSTEM_PROMPT,
+      promptPlaceholder: DEFAULT_PROMPT_PLACEHOLDER,
+      promptSuggestions: DEFAULT_PROMPT_SUGGESTIONS,
+      primary: {
+        preset: 'deepseek',
+        label: 'DeepSeek 主模型',
+        protocol: 'openai-chat',
+        baseUrl: 'https://api.deepseek.com/v1',
+        model: 'deepseek-chat',
+        timeoutSeconds: 30,
+        maxTokens: 2048,
+        temperature: 0.3,
+        hasKey: false,
+        apiKey: ''
+      },
+      backup: {
+        enabled: false,
+        preset: 'qwen',
+        label: '通义千问 备用模型',
+        protocol: 'openai-chat',
+        baseUrl: 'https://dashscope.aliyuncs.com/compatible-mode/v1',
+        model: 'qwen-plus',
+        timeoutSeconds: 30,
+        maxTokens: 2048,
+        temperature: 0.3,
+        usePrimaryKey: false,
+        hasKey: false,
+        apiKey: ''
+      }
+    };
+  }
+
   function getStoredAdminToken() {
     return sessionStorage.getItem('dsh_admin_token') || '';
   }
@@ -83,6 +220,7 @@
       sessionStorage.setItem('dsh_admin_token', token);
     } else {
       sessionStorage.removeItem('dsh_admin_token');
+      sessionStorage.removeItem('dsh_vault_session_key');
     }
   }
 
@@ -127,6 +265,17 @@
     const username = getStoredAdminUsername();
     $('current-username-display').textContent = username;
     $('admin-current-user-hint').textContent = username;
+  }
+
+  function updateVaultModeUI() {
+    const badgeText = $('security-badge-text');
+    if (badgeText && isStaticVaultMode) {
+      badgeText.innerHTML = '<strong>纯静态端对端加密保险箱已激活 (Client-side AES-256-GCM)</strong>：当前运行于纯静态部署环境，大模型配置与 API Key 均采用 WebCrypto 硬件级加密保存在您的本地安全保险箱中，无需依赖外部后台进程。';
+    }
+    const authStatus = $('auth-status-badge');
+    if (authStatus && isStaticVaultMode) {
+      authStatus.textContent = '已激活客户端保险箱';
+    }
   }
 
   function populatePresetSelect(selectEl, selectedId) {
@@ -218,7 +367,7 @@
 
     // Auth Status & User Hints
     const authStatus = $('auth-status-badge');
-    authStatus.textContent = '已通过身份鉴权';
+    authStatus.textContent = isStaticVaultMode ? '已激活客户端保险箱' : '已通过身份鉴权';
     authStatus.className = 'key-status';
 
     const currentUsername = settings.adminUsername || getStoredAdminUsername() || 'admin';
@@ -240,7 +389,7 @@
     $('primary-clear-key').checked = false;
 
     const primaryStatus = $('primary-key-status');
-    if (settings.primary?.hasKey) {
+    if (settings.primary?.hasKey || (settings.primary?.apiKey && settings.primary.apiKey.length > 0)) {
       primaryStatus.textContent = '已加密保存 Key';
       primaryStatus.className = 'key-status';
     } else {
@@ -265,13 +414,15 @@
     updateBackupKeyVisibility();
 
     const backupStatus = $('backup-key-status');
-    if (settings.backup?.hasKey) {
+    if (settings.backup?.hasKey || (settings.backup?.apiKey && settings.backup.apiKey.length > 0)) {
       backupStatus.textContent = settings.backup.usePrimaryKey ? '共用主模型 Key' : '已加密保存 Key';
       backupStatus.className = 'key-status';
     } else {
       backupStatus.textContent = '未配置 Key';
       backupStatus.className = 'key-status none';
     }
+
+    if (isStaticVaultMode) updateVaultModeUI();
   }
 
   function updateBackupKeyVisibility() {
@@ -295,6 +446,41 @@
       return;
     }
 
+    if (token === 'static_vault_session' || isStaticVaultMode) {
+      isStaticVaultMode = true;
+      if (!activeVaultKey) {
+        const storedKeyB64 = sessionStorage.getItem('dsh_vault_session_key');
+        if (storedKeyB64) {
+          try {
+            activeVaultKey = await importKeyFromBase64(storedKeyB64);
+          } catch {}
+        }
+      }
+      if (!activeVaultKey) {
+        setStoredAdminToken('');
+        showLogin('安全会话已结束，请重新输入密码解锁保险箱');
+        return;
+      }
+
+      let settings = null;
+      const encryptedStr = localStorage.getItem('dsh_vault_settings');
+      if (encryptedStr) {
+        try {
+          settings = await decryptVaultPayload(encryptedStr, activeVaultKey);
+        } catch (decErr) {
+          console.warn('Failed to decrypt vault settings with current key:', decErr);
+        }
+      }
+      if (!settings) {
+        settings = defaultVaultSettings();
+      }
+
+      showDashboard();
+      updateVaultModeUI();
+      renderView(settings);
+      return;
+    }
+
     try {
       const res = await fetch('/api/admin/model-settings', {
         headers: { 'x-admin-token': token }
@@ -304,6 +490,12 @@
         showLogin('登录已失效或凭证过期，请重新登录');
         return;
       }
+      if (res.status === 404) {
+        isStaticVaultMode = true;
+        setStoredAdminToken('static_vault_session');
+        await loadSettings();
+        return;
+      }
       const data = await safeJson(res, '读取配置失败');
       if (res.ok && data.settings) {
         showDashboard();
@@ -311,7 +503,9 @@
         return;
       }
     } catch (err) {
-      console.warn('API fetch error', err);
+      console.warn('API fetch error, checking static fallback', err);
+      isStaticVaultMode = true;
+      await loadSettings();
     }
   }
 
@@ -363,6 +557,81 @@
     const saveBtn = $('save-btn');
     saveBtn.disabled = true;
     saveBtn.textContent = '⏳ 正在加密保存...';
+
+    if (isStaticVaultMode || token === 'static_vault_session') {
+      try {
+        if (!activeVaultKey) {
+          const storedKeyB64 = sessionStorage.getItem('dsh_vault_session_key');
+          if (storedKeyB64) activeVaultKey = await importKeyFromBase64(storedKeyB64);
+        }
+        if (!activeVaultKey) throw new Error('加密会话已失效，请重新输入密码登录');
+
+        // Handle username change
+        if (payload.newUsername) {
+          localStorage.setItem('dsh_vault_admin_user', payload.newUsername);
+          setStoredAdminUsername(payload.newUsername);
+        }
+
+        // Handle password change
+        if (payload.newPassword) {
+          const newHash = await hashString(VAULT_SALT + ':' + payload.newPassword);
+          localStorage.setItem('dsh_vault_admin_pwd_hash', newHash);
+          activeVaultKey = await deriveVaultKey(payload.newPassword);
+          const newRawKeyB64 = await exportKeyToBase64(activeVaultKey);
+          sessionStorage.setItem('dsh_vault_session_key', newRawKeyB64);
+        }
+
+        const base = currentSettings || defaultVaultSettings();
+        let primaryKey = base.primary?.apiKey || '';
+        if (payload.primary.clearKey) primaryKey = '';
+        else if (payload.primary.apiKey) primaryKey = payload.primary.apiKey;
+
+        let backupKey = base.backup?.apiKey || '';
+        if (payload.backup.clearKey) backupKey = '';
+        else if (payload.backup.apiKey) backupKey = payload.backup.apiKey;
+
+        const updatedSettings = {
+          revision: (base.revision || 1) + 1,
+          enabled: payload.enabled,
+          mode: payload.mode,
+          dailyLimit: payload.dailyLimit,
+          perVisitorHourlyLimit: payload.perVisitorHourlyLimit,
+          adminUsername: payload.newUsername || base.adminUsername || DEFAULT_ADMIN_USER,
+          systemPrompt: payload.systemPrompt || DEFAULT_SYSTEM_PROMPT,
+          promptPlaceholder: payload.promptPlaceholder || DEFAULT_PROMPT_PLACEHOLDER,
+          promptSuggestions: payload.promptSuggestions,
+          primary: {
+            ...payload.primary,
+            hasKey: Boolean(primaryKey),
+            apiKey: primaryKey
+          },
+          backup: {
+            ...payload.backup,
+            hasKey: payload.backup.usePrimaryKey ? Boolean(primaryKey) : Boolean(backupKey),
+            apiKey: backupKey
+          }
+        };
+
+        const encryptedStr = await encryptVaultPayload(updatedSettings, activeVaultKey);
+        localStorage.setItem('dsh_vault_settings', encryptedStr);
+
+        // Store public suggestions & placeholder for home page
+        localStorage.setItem('dsh_public_ai_config', JSON.stringify({
+          promptPlaceholder: updatedSettings.promptPlaceholder,
+          promptSuggestions: updatedSettings.promptSuggestions
+        }));
+
+        currentSettings = updatedSettings;
+        renderView(updatedSettings);
+        showNotification('success', '✓ 全部配置已通过 WebCrypto AES-256-GCM 硬件加密并保存生效 (版本 v' + updatedSettings.revision + ')');
+      } catch (err) {
+        showNotification('error', '保存失败：' + (err.message || '未知错误'));
+      } finally {
+        saveBtn.disabled = false;
+        saveBtn.textContent = '💾 保存全部配置';
+      }
+      return;
+    }
 
     try {
       const res = await fetch('/api/admin/model-settings', {
@@ -424,9 +693,95 @@
       temperature: 0.1
     };
 
-    const apiKey = $(slot + '-api-key').value.trim();
+    let apiKey = $(slot + '-api-key').value.trim();
     const usePrimaryKey = slot === 'backup' && $('backup-use-primary-key').checked;
-    const primaryApiKey = $('primary-api-key').value.trim();
+    const primaryApiKey = $('primary-api-key').value.trim() || currentSettings?.primary?.apiKey || '';
+
+    if (slot === 'backup' && usePrimaryKey) {
+      apiKey = primaryApiKey;
+    } else if (!apiKey && currentSettings?.[slot]?.apiKey) {
+      apiKey = currentSettings[slot].apiKey;
+    }
+
+    if (isStaticVaultMode || token === 'static_vault_session') {
+      const start = Date.now();
+      try {
+        if (!apiKey) throw new Error('缺少 API Key，请先输入密钥');
+        if (!endpoint.baseUrl) throw new Error('缺少 API 基础地址');
+        if (!endpoint.model) throw new Error('缺少模型 ID');
+
+        const controller = new AbortController();
+        const timeoutMs = (endpoint.timeoutSeconds || 20) * 1000;
+        const timer = setTimeout(() => controller.abort(), timeoutMs);
+
+        const isAnthropic = endpoint.protocol === 'anthropic';
+        const url = isAnthropic
+          ? (endpoint.baseUrl.replace(/\/+$/, '') + '/messages')
+          : (endpoint.baseUrl.replace(/\/+$/, '') + '/chat/completions');
+
+        const headers = { 'Content-Type': 'application/json' };
+        let body;
+        if (isAnthropic) {
+          headers['x-api-key'] = apiKey;
+          headers['anthropic-version'] = '2023-06-01';
+          headers['anthropic-dangerous-direct-browser-access'] = 'true';
+          body = JSON.stringify({
+            model: endpoint.model,
+            max_tokens: 30,
+            messages: [{ role: 'user', content: 'Ping' }]
+          });
+        } else {
+          headers['Authorization'] = 'Bearer ' + apiKey;
+          body = JSON.stringify({
+            model: endpoint.model,
+            max_tokens: 30,
+            temperature: 0.1,
+            messages: [{ role: 'user', content: 'Ping' }]
+          });
+        }
+
+        const res = await fetch(url, {
+          method: 'POST',
+          headers,
+          body,
+          signal: controller.signal
+        });
+        clearTimeout(timer);
+        const latencyMs = Date.now() - start;
+
+        if (!res.ok) {
+          const errText = await res.text().catch(() => '');
+          let msg = 'HTTP ' + res.status;
+          try {
+            const parsed = JSON.parse(errText);
+            msg += ': ' + (parsed.error?.message || parsed.message || errText.slice(0, 160));
+          } catch {
+            if (errText) msg += ': ' + errText.slice(0, 160);
+          }
+          throw new Error(msg);
+        }
+
+        const data = await res.json();
+        let reply = '';
+        if (isAnthropic) {
+          reply = data.content?.[0]?.text || '';
+        } else {
+          reply = data.choices?.[0]?.message?.content || '';
+        }
+
+        resultBox.style.display = 'flex';
+        resultBox.className = 'test-result-box success';
+        resultBox.innerHTML = '<span><strong>✓ 终端直连成功</strong> (' + latencyMs + ' ms) · 模型回复: ' + escapeHtml(reply.trim().slice(0, 80) || 'PONG') + '</span>';
+      } catch (err) {
+        resultBox.style.display = 'flex';
+        resultBox.className = 'test-result-box error';
+        resultBox.innerHTML = '<span><strong>✗ 测试失败</strong>：' + escapeHtml(err.message || '网络或跨域异常') + '</span>';
+      } finally {
+        btn.disabled = false;
+        btn.textContent = slot === 'primary' ? '🔌 测试主模型连接' : '🔌 测试备用模型连接';
+      }
+      return;
+    }
 
     try {
       const res = await fetch('/api/admin/model-settings/test', {
@@ -494,26 +849,68 @@
       const username = $('login-username').value.trim();
       const password = $('login-password').value.trim();
 
+      let backendStatus = null;
+      let backendData = null;
+
       try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 3500);
         const res = await fetch('/api/admin/login', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ username, password })
+          body: JSON.stringify({ username, password }),
+          signal: controller.signal
         });
-        const data = await safeJson(res, '登录失败');
-        if (!res.ok) {
-          throw new Error(data.error || '登录失败，请检查账号与密码');
+        clearTimeout(timeoutId);
+        backendStatus = res.status;
+        const contentType = res.headers.get('content-type') || '';
+        if (contentType.includes('application/json')) {
+          backendData = await res.json();
+        }
+      } catch (networkErr) {
+        console.info('Backend login unreachable, falling back to static vault mode', networkErr);
+      }
+
+      try {
+        if (backendStatus === 200 && backendData?.ok) {
+          isStaticVaultMode = false;
+          setStoredAdminToken(backendData.token);
+          setStoredAdminUsername(backendData.username || username);
+          $('login-password').value = '';
+
+          showDashboard();
+          showNotification('success', '✓ 登录成功，欢迎管理员 ' + (backendData.username || username));
+          await loadSettings();
+          return;
         }
 
-        setStoredAdminToken(data.token);
-        setStoredAdminUsername(data.username || username);
+        if (backendStatus === 401) {
+          throw new Error(backendData?.error || '管理员账号或密码不正确');
+        }
+
+        // Static Vault Mode Fallback (when online backend is 404 or unreachable)
+        const expectedUser = localStorage.getItem('dsh_vault_admin_user') || DEFAULT_ADMIN_USER;
+        const expectedHash = localStorage.getItem('dsh_vault_admin_pwd_hash') || DEFAULT_ADMIN_PWD_HASH;
+        const inputHash = await hashString(VAULT_SALT + ':' + password);
+
+        if (username !== expectedUser || inputHash !== expectedHash) {
+          throw new Error('管理员账号或密码不正确');
+        }
+
+        isStaticVaultMode = true;
+        activeVaultKey = await deriveVaultKey(password);
+        const rawKeyB64 = await exportKeyToBase64(activeVaultKey);
+        sessionStorage.setItem('dsh_vault_session_key', rawKeyB64);
+        setStoredAdminToken('static_vault_session');
+        setStoredAdminUsername(username);
         $('login-password').value = '';
 
         showDashboard();
-        showNotification('success', '✓ 登录成功，欢迎管理员 ' + (data.username || username));
+        updateVaultModeUI();
+        showNotification('success', '✓ 登录成功！已进入静态保险箱模式 (AES-256-GCM 硬件加密保护)');
         await loadSettings();
       } catch (err) {
-        $('login-error-banner').textContent = err.message;
+        $('login-error-banner').textContent = err.message || '登录失败，请检查账号与密码';
         $('login-error-banner').style.display = 'block';
       } finally {
         submitBtn.disabled = false;
@@ -528,6 +925,7 @@
     logoutBtn.addEventListener('click', () => {
       setStoredAdminToken('');
       setStoredAdminUsername('');
+      activeVaultKey = null;
       showLogin();
       showNotification('info', '已安全退出登录');
     });
@@ -541,4 +939,3 @@
     showLogin();
   }
 })();
-

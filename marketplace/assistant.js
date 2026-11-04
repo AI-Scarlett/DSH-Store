@@ -313,27 +313,38 @@
 
     // Dynamic config hydrate
     async function hydratePublicSettings() {
+      let data = null;
       try {
         const res = await fetch('/api/ai/public-config');
-        if (!res.ok) return;
-        const data = await res.json();
-        if (!data.ok) return;
-        if (data.promptPlaceholder) {
-          textarea.placeholder = data.promptPlaceholder;
-        }
-        if (Array.isArray(data.promptSuggestions) && data.promptSuggestions.length > 0) {
-          const chipsEl = $('hero-ai-chips');
-          if (chipsEl) {
-            chipsEl.innerHTML = '<span class="ai-chips-label">试试这样问：</span>' +
-              data.promptSuggestions.map(item => {
-                const lbl = escapeHtml(item.label || item.query || '');
-                const q = escapeHtml(item.query || item.label || '');
-                return '<button type="button" class="ai-chip-btn" data-query="' + q + '">' + lbl + ' ↗</button>';
-              }).join('');
-            bindChips(chipsEl);
-          }
+        if (res.ok) {
+          const json = await res.json();
+          if (json && json.ok) data = json;
         }
       } catch {}
+
+      if (!data) {
+        try {
+          const cached = localStorage.getItem('dsh_public_ai_config');
+          if (cached) data = JSON.parse(cached);
+        } catch {}
+      }
+
+      if (!data) return;
+      if (data.promptPlaceholder && textarea) {
+        textarea.placeholder = data.promptPlaceholder;
+      }
+      if (Array.isArray(data.promptSuggestions) && data.promptSuggestions.length > 0) {
+        const chipsEl = $('hero-ai-chips');
+        if (chipsEl) {
+          chipsEl.innerHTML = '<span class="ai-chips-label">试试这样问：</span>' +
+            data.promptSuggestions.map(function(item) {
+              const lbl = escapeHtml(item.label || item.query || '');
+              const q = escapeHtml(item.query || item.label || '');
+              return '<button type="button" class="ai-chip-btn" data-query="' + q + '">' + lbl + ' ↗</button>';
+            }).join('');
+          bindChips(chipsEl);
+        }
+      }
     }
     hydratePublicSettings();
   }
