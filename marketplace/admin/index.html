@@ -57,12 +57,12 @@
         <div class="form-group">
           <label class="checkbox-group">
             <input type="checkbox" id="model-enabled-toggle" checked>
-            <strong>启用站内大模型智能选型与推荐</strong>
+            <strong>启用站内大模型智能插件推荐</strong>
           </label>
           <span class="form-hint">关闭后将纯使用本地 Catalog 语义规则引擎，不消耗任何大模型 Token</span>
         </div>
         <div class="form-group">
-          <label class="form-label" for="model-mode-select">选型推荐模式</label>
+          <label class="form-label" for="model-mode-select">推荐解析模式</label>
           <select class="form-select" id="model-mode-select">
             <option value="model-first">大模型优先（优先调用模型，失败时退回规则）</option>
             <option value="rules-first">规则匹配优先（常规走规则，复杂长句调用模型）</option>
@@ -83,6 +83,33 @@
           </div>
           <textarea class="form-textarea" id="system-prompt-input" rows="4"></textarea>
           <span class="form-hint">引导模型严格基于 DSH Store 真实收录的插件目录进行客观推荐，禁止虚构插件名称。</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- 首页搜索与推荐文案配置 -->
+    <section class="admin-card">
+      <div class="admin-card-header">
+        <h2><span>💬</span> 首页搜索与推荐文案配置 (Prompt & Suggestions)</h2>
+      </div>
+      <div class="admin-form-grid">
+        <div class="form-group full-width">
+          <label class="form-label" for="prompt-placeholder-input">
+            <span>首页输入框默认占位提示 (Placeholder)</span>
+          </label>
+          <input class="form-input" id="prompt-placeholder-input" type="text" placeholder="输入你想完成的任务需求或插件名称（例如：知网论文精读并写大纲、在微信/QQ中接入DSH、查看API余额、增强会话长期记忆…）">
+          <span class="form-hint">用户未输入内容时，首页对话框中显示的灰色引导占位文案</span>
+        </div>
+        <div class="form-group full-width">
+          <div class="form-label">
+            <label>「试试这样问」快捷推荐示例 (Suggestions)</label>
+            <div style="display: flex; gap: 8px;">
+              <button type="button" class="btn btn-secondary" id="add-suggestion-btn" style="padding: 3px 10px; font-size: 0.78rem;">＋ 添加示例</button>
+              <button type="button" class="btn btn-secondary" id="reset-suggestions-btn" style="padding: 3px 10px; font-size: 0.78rem;">恢复默认示例</button>
+            </div>
+          </div>
+          <div id="suggestions-list-container" class="suggestions-list-wrap"></div>
+          <span class="form-hint">配置首页输入框下方的快捷示例标签。左侧为按钮展示名称，右侧为点击后填入的完整需求 query。</span>
         </div>
       </div>
     </section>

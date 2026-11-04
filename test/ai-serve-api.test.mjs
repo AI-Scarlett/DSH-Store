@@ -38,13 +38,19 @@ test('serve-marketplace API endpoints handle recommendations, admin settings, an
     assert.equal(homeRes.status, 200)
     const homeHtml = await homeRes.text()
     assert.ok(homeHtml.includes('ai-task-panel'))
+    assert.ok(homeHtml.includes('unified-hero-form'))
     assert.ok(homeHtml.includes('floating-assistant-modal'))
+    assert.ok(homeHtml.includes('插件助手'))
+    assert.ok(!homeHtml.includes('模型后台'))
+    assert.ok(!homeHtml.includes('ai-admin-shortcut'))
 
     // 2. Static admin
     const adminRes = await fetch(`${baseUrl}/marketplace/admin/`)
     assert.equal(adminRes.status, 200)
     const adminHtml = await adminRes.text()
     assert.ok(adminHtml.includes('大模型配置管理后台'))
+    assert.ok(adminHtml.includes('prompt-placeholder-input'))
+    assert.ok(adminHtml.includes('suggestions-list-container'))
 
     // 3. AI Recommend API
     const recRes = await fetch(`${baseUrl}/api/ai/recommend`, {
@@ -75,6 +81,11 @@ test('serve-marketplace API endpoints handle recommendations, admin settings, an
         enabled: true,
         mode: 'model-first',
         newPassword: 'test-admin-pass',
+        promptPlaceholder: '自定义占位提示文案',
+        promptSuggestions: [
+          { label: '自定义示例1', query: '需求1' },
+          { label: '自定义示例2', query: '需求2' },
+        ],
         primary: {
           preset: 'deepseek',
           label: 'DeepSeek 主模型',
@@ -97,6 +108,8 @@ test('serve-marketplace API endpoints handle recommendations, admin settings, an
     const savedData = await postSettingsRes.json()
     assert.equal(savedData.ok, true)
     assert.equal(savedData.settings.hasPassword, true)
+    assert.equal(savedData.settings.promptPlaceholder, '自定义占位提示文案')
+    assert.equal(savedData.settings.promptSuggestions.length, 2)
     assert.equal(savedData.settings.primary.hasKey, true)
     assert.equal(savedData.settings.backup.hasKey, true)
 

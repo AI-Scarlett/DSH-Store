@@ -12,9 +12,28 @@
 
   const DEFAULT_SYSTEM_PROMPT = '你是一名精通 DeepSeek Harness (DSH) 插件生态的官方架构师与选型专家。\n你的职责是深入理解用户的实际业务、任务与工作流需求，结合 DSH Store 已收录并严格审查的插件目录，为用户推荐最适合的插件组合。\n\n对于每个推荐的插件，你需要明确提供：\n1. 插件名称与用途简述\n2. 匹配理由（它如何解决用户的需求）\n3. 精准的官方固定 Commit 安装命令（格式为 dsh plugin add @author/name 或包名）\n4. 权限与安全声明（网络、文件系统、自动化脚本等）\n\n请保持回答严谨、专业、实用。禁止捏造不存在的插件名称或未收录的虚假命令。';
 
+  const DEFAULT_PROMPT_PLACEHOLDER = '输入你想完成的任务需求或插件名称（例如：知网论文精读并写大纲、在微信/QQ中接入DSH、查看API余额、增强会话长期记忆…）';
+
+  const DEFAULT_PROMPT_SUGGESTIONS = [
+    { label: '知网论文精读', query: '知网论文精读并写大纲' },
+    { label: '微信 / QQ 接入', query: '在微信和QQ中接入DSH会话' },
+    { label: '模型 API 余额', query: '实时查看 DeepSeek API 余额' },
+    { label: '长期记忆增强', query: '给大模型增加长期记忆和会话检索' },
+    { label: '网页 PPT 排版', query: '制作网页PPT与卡片设计排版' }
+  ];
+
   let currentSettings = null;
 
   function $(id) { return document.getElementById(id); }
+
+  function escapeHtml(str) {
+    return String(str || '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
 
   function getStoredAdminToken() {
     return sessionStorage.getItem('dsh_admin_token') || localStorage.getItem('dsh_admin_token') || '';
@@ -59,6 +78,51 @@
     if (typeof preset.temperature === 'number') $(slot + '-temperature').value = preset.temperature;
   }
 
+  function createSuggestionRow(label, query) {
+    label = label || '';
+    query = query || '';
+    const row = document.createElement('div');
+    row.className = 'suggestion-row';
+    row.innerHTML = [
+      '<input class="form-input suggestion-label-input" type="text" placeholder="按钮名称 (例如: 知网论文精读)" value="' + escapeHtml(label) + '">',
+      '<input class="form-input suggestion-query-input" type="text" placeholder="填入需求 (例如: 知网论文精读并写大纲)" value="' + escapeHtml(query) + '">',
+      '<button type="button" class="btn-del-suggestion" title="删除此条">✕ 删除</button>'
+    ].join('');
+
+    row.querySelector('.btn-del-suggestion').addEventListener('click', () => {
+      row.remove();
+    });
+    return row;
+  }
+
+  function renderSuggestionsList(items) {
+    const container = $('suggestions-list-container');
+    if (!container) return;
+    container.innerHTML = '';
+    const list = Array.isArray(items) && items.length > 0 ? items : DEFAULT_PROMPT_SUGGESTIONS;
+    list.forEach(item => {
+      const lbl = typeof item === 'string' ? item : (item.label || item.query || '');
+      const q = typeof item === 'string' ? item : (item.query || item.label || '');
+      container.appendChild(createSuggestionRow(lbl, q));
+    });
+  }
+
+  function collectSuggestions() {
+    const rows = document.querySelectorAll('.suggestion-row');
+    const result = [];
+    rows.forEach(r => {
+      const lbl = r.querySelector('.suggestion-label-input')?.value.trim() || '';
+      const q = r.querySelector('.suggestion-query-input')?.value.trim() || '';
+      if (lbl || q) {
+        result.push({
+          label: lbl || q,
+          query: q || lbl
+        });
+      }
+    });
+    return result;
+  }
+
   function renderView(settings) {
     currentSettings = settings;
 
@@ -68,6 +132,10 @@
     $('daily-limit-input').value = settings.dailyLimit || 0;
     $('hourly-limit-input').value = settings.perVisitorHourlyLimit || 50;
     $('system-prompt-input').value = settings.systemPrompt || DEFAULT_SYSTEM_PROMPT;
+
+    // Prompt & Suggestions
+    $('prompt-placeholder-input').value = settings.promptPlaceholder || DEFAULT_PROMPT_PLACEHOLDER;
+    renderSuggestionsList(settings.promptSuggestions || DEFAULT_PROMPT_SUGGESTIONS);
 
     // Auth Status
     const authStatus = $('auth-status-badge');
@@ -177,6 +245,8 @@
       perVisitorHourlyLimit: 50,
       hasPassword: false,
       systemPrompt: DEFAULT_SYSTEM_PROMPT,
+      promptPlaceholder: DEFAULT_PROMPT_PLACEHOLDER,
+      promptSuggestions: DEFAULT_PROMPT_SUGGESTIONS,
       primary: {
         preset: 'deepseek',
         label: 'DeepSeek 主模型',
@@ -208,6 +278,9 @@
     const token = $('admin-token-input').value.trim();
     if (token) setStoredAdminToken(token);
 
+    const placeholderVal = $('prompt-placeholder-input').value.trim();
+    const suggestionsVal = collectSuggestions();
+
     const payload = {
       enabled: $('model-enabled-toggle').checked,
       mode: $('model-mode-select').value,
@@ -215,6 +288,8 @@
       perVisitorHourlyLimit: Number($('hourly-limit-input').value) || 50,
       newPassword: $('admin-new-password').value.trim(),
       systemPrompt: $('system-prompt-input').value.trim(),
+      promptPlaceholder: placeholderVal || DEFAULT_PROMPT_PLACEHOLDER,
+      promptSuggestions: suggestionsVal.length > 0 ? suggestionsVal : DEFAULT_PROMPT_SUGGESTIONS,
       primary: {
         preset: $('primary-preset-select').value,
         label: $('primary-label-input').value.trim(),
@@ -271,6 +346,8 @@
         const fallbackObj = {
           ...payload,
           revision: ((currentSettings?.revision || 1) + 1),
+          promptPlaceholder: payload.promptPlaceholder,
+          promptSuggestions: payload.promptSuggestions,
           primary: { ...payload.primary, hasKey: Boolean(payload.primary.apiKey || currentSettings?.primary?.hasKey) },
           backup: { ...payload.backup, hasKey: Boolean(payload.backup.usePrimaryKey || payload.backup.apiKey || currentSettings?.backup?.hasKey) }
         };
@@ -353,6 +430,12 @@
   $('reload-btn').addEventListener('click', loadSettings);
   $('reset-prompt-btn').addEventListener('click', () => {
     $('system-prompt-input').value = DEFAULT_SYSTEM_PROMPT;
+  });
+  $('add-suggestion-btn').addEventListener('click', () => {
+    $('suggestions-list-container').appendChild(createSuggestionRow('', ''));
+  });
+  $('reset-suggestions-btn').addEventListener('click', () => {
+    renderSuggestionsList(DEFAULT_PROMPT_SUGGESTIONS);
   });
 
   // Init

@@ -53,25 +53,7 @@
   color: #94a3b8;
 }
 
-.ai-admin-shortcut {
-  font-size: 0.8rem;
-  color: #60a5fa;
-  text-decoration: none;
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  padding: 2px 8px;
-  border-radius: 6px;
-  background: rgba(40, 116, 245, 0.12);
-  border: 1px solid rgba(40, 116, 245, 0.25);
-  transition: all 0.2s;
-}
 
-.ai-admin-shortcut:hover {
-  background: rgba(40, 116, 245, 0.25);
-  color: #93c5fd;
-  border-color: #60a5fa;
-}
 
 .ai-task-input-wrap {
   position: relative;
@@ -532,9 +514,17 @@
     flex-direction: column;
     align-items: flex-start;
   }
-  .ai-submit-btn {
-    width: 100%;
-    justify-content: center;
+  body.home-page .hero-copy .store-search-form.unified-hero-form .ai-task-actions {
+    width: 100% !important;
+    margin-left: 0 !important;
+    display: flex !important;
+    gap: 8px !important;
+  }
+  body.home-page .hero-copy .store-search-form.unified-hero-form button.ai-catalog-jump-btn,
+  body.home-page .hero-copy .store-search-form.unified-hero-form button.ai-submit-btn {
+    flex: 1 !important;
+    justify-content: center !important;
+    min-width: 0 !important;
   }
   .floating-assistant-modal {
     right: 12px;
@@ -542,4 +532,99 @@
     width: calc(100vw - 24px);
     height: 70vh;
   }
+}
+
+.sr-only {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
+body.home-page .hero-copy .store-search-form.unified-hero-form {
+  display: block !important;
+  grid-area: auto !important;
+  grid-template-columns: none !important;
+  background: transparent !important;
+  border: none !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  min-height: auto !important;
+  margin: 0 !important;
+  width: 100% !important;
+  overflow: visible !important;
+}
+
+body.home-page .hero-copy .store-search-form.unified-hero-form label.sr-only {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
+body.home-page .hero-copy .store-search-form.unified-hero-form .ai-task-actions {
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+  margin-left: auto !important;
+}
+
+body.home-page .hero-copy .store-search-form.unified-hero-form button.ai-catalog-jump-btn {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  background: rgba(255, 255, 255, 0.08) !important;
+  color: #cbd5e1 !important;
+  border: 1px solid rgba(255, 255, 255, 0.18) !important;
+  border-radius: 10px !important;
+  padding: 9px 16px !important;
+  font-size: 0.88rem !important;
+  font-weight: 600 !important;
+  min-width: auto !important;
+  align-self: auto !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+  line-height: normal !important;
+}
+
+body.home-page .hero-copy .store-search-form.unified-hero-form button.ai-catalog-jump-btn:hover {
+  background: rgba(255, 255, 255, 0.16) !important;
+  color: #fff !important;
+  border-color: rgba(255, 255, 255, 0.35) !important;
+  transform: translateY(-1px) !important;
+}
+
+body.home-page .hero-copy .store-search-form.unified-hero-form button.ai-submit-btn {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  background: linear-gradient(135deg, #2874f5 0%, #17bfe3 100%) !important;
+  color: #ffffff !important;
+  border: none !important;
+  border-radius: 10px !important;
+  padding: 9px 20px !important;
+  font-size: 0.92rem !important;
+  font-weight: 600 !important;
+  min-width: auto !important;
+  align-self: auto !important;
+  box-shadow: 0 4px 14px rgba(40, 116, 245, 0.35) !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+  line-height: normal !important;
+}
+
+body.home-page .hero-copy .store-search-form.unified-hero-form button.ai-submit-btn:hover {
+  box-shadow: 0 6px 20px rgba(40, 116, 245, 0.5) !important;
+  transform: translateY(-1px) !important;
 }

@@ -199,40 +199,68 @@
     });
   }
 
-  // --- Hero Section Task Dialogue ---
+  // --- Hero Section Task Dialogue & Unified Search ---
   function initHeroTaskDialogue() {
     const form = $('hero-ai-task-form');
     const textarea = $('hero-ai-textarea');
     const submitBtn = $('hero-ai-submit');
+    const catalogJumpBtn = $('hero-catalog-jump');
     const resultsContainer = $('hero-ai-results');
+    const searchInput = $('home-plugin-search');
     if (!form || !textarea) return;
 
+    function syncHiddenSearch() {
+      if (searchInput) {
+        searchInput.value = textarea.value.trim().slice(0, 80);
+      }
+    }
+
+    textarea.addEventListener('input', syncHiddenSearch);
+
     textarea.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) {
+      if (e.key === 'Enter' && !e.shiftKey) {
         e.preventDefault();
         form.requestSubmit();
       }
     });
 
-    document.querySelectorAll('.ai-chip-btn').forEach(chip => {
-      chip.addEventListener('click', () => {
-        const text = chip.getAttribute('data-query') || chip.textContent.trim();
-        textarea.value = text;
-        form.requestSubmit();
+    if (catalogJumpBtn) {
+      catalogJumpBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        const query = textarea.value.trim().slice(0, 80);
+        const destination = new URL('./plugins/', window.location.href);
+        if (query) destination.hash = 'q=' + encodeURIComponent(query);
+        window.location.assign(destination.href);
       });
-    });
+    }
 
+    function bindChips(container) {
+      container.querySelectorAll('.ai-chip-btn').forEach(chip => {
+        chip.addEventListener('click', () => {
+          const text = chip.getAttribute('data-query') || chip.textContent.trim();
+          textarea.value = text;
+          syncHiddenSearch();
+          form.requestSubmit();
+        });
+      });
+    }
+    bindChips(document);
+
+    // Intercept submit in capture phase so app.js does not trigger premature navigation
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
+      e.stopImmediatePropagation();
+
       const query = textarea.value.trim();
       if (!query) return;
+      syncHiddenSearch();
 
       submitBtn.disabled = true;
-      submitBtn.innerHTML = '<span>⏳ 正在选型...</span>';
+      submitBtn.innerHTML = '<span>⏳ 正在分析推荐...</span>';
       resultsContainer.style.display = 'block';
       resultsContainer.innerHTML = [
         '<div class="ai-results-summary">',
-        '  <span>🤖 选型专家正在解析你的需求并比对 DSH 插件目录...</span>',
+        '  <span>🤖 插件助手正在解析你的需求并比对 DSH 插件目录...</span>',
         '</div>'
       ].join('');
 
@@ -269,18 +297,46 @@
         resultsContainer.querySelectorAll('.ai-followup-chip').forEach(btn => {
           btn.addEventListener('click', () => {
             textarea.value = btn.getAttribute('data-query');
+            syncHiddenSearch();
             form.requestSubmit();
             resultsContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
           });
         });
 
       } catch (err) {
-        resultsContainer.innerHTML = '<div class="ai-results-summary" style="color: #f87171;">选型推荐失败：' + escapeHtml(err.message) + '</div>';
+        resultsContainer.innerHTML = '<div class="ai-results-summary" style="color: #f87171;">插件推荐失败：' + escapeHtml(err.message) + '</div>';
       } finally {
         submitBtn.disabled = false;
-        submitBtn.innerHTML = '<span>智能推荐插件 ↗</span>';
+        submitBtn.innerHTML = '<span>智能推荐 ↗</span>';
       }
-    });
+    }, true);
+
+    // Dynamic config hydrate
+    async function hydratePublicSettings() {
+      try {
+        const res = await fetch('/api/admin/model-settings');
+        if (!res.ok) return;
+        const data = await res.json();
+        if (!data.ok || !data.settings) return;
+        const s = data.settings;
+        if (s.promptPlaceholder) {
+          textarea.placeholder = s.promptPlaceholder;
+        }
+        if (Array.isArray(s.promptSuggestions) && s.promptSuggestions.length > 0) {
+          const chipsEl = $('hero-ai-chips');
+          if (chipsEl) {
+            chipsEl.innerHTML = '<span class="ai-chips-label">试试这样问：</span>' +
+              s.promptSuggestions.map(item => {
+                const lbl = escapeHtml(item.label || item.query || '');
+                const q = escapeHtml(item.query || item.label || '');
+                return '<button type="button" class="ai-chip-btn" data-query="' + q + '">' + lbl + ' ↗</button>';
+              }).join('');
+            bindChips(chipsEl);
+          }
+        }
+      } catch {}
+    }
+    hydratePublicSettings();
   }
 
   // --- Floating Assistant Drawer ---
@@ -339,7 +395,7 @@
         appendMessage('assistant', data.summary, cards);
       } catch (err) {
         body.removeChild(loadingBubble);
-        appendMessage('assistant', '选型推荐出错：' + err.message);
+        appendMessage('assistant', '插件推荐出错：' + err.message);
       } finally {
         sendBtn.disabled = false;
         input.focus();

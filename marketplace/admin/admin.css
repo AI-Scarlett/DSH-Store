@@ -354,3 +354,59 @@ body {
     grid-template-columns: 1fr;
   }
 }
+
+.suggestions-list-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.suggestion-row {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.suggestion-row .form-input {
+  min-height: 38px;
+  padding: 8px 12px;
+  font-size: 0.88rem;
+}
+
+.suggestion-row .suggestion-label-input {
+  width: 180px;
+  flex-shrink: 0;
+}
+
+.suggestion-row .suggestion-query-input {
+  flex: 1;
+}
+
+.suggestion-row .btn-del-suggestion {
+  background: rgba(239, 68, 68, 0.14);
+  color: #f87171;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  padding: 7px 12px;
+  border-radius: 6px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+}
+
+.suggestion-row .btn-del-suggestion:hover {
+  background: rgba(239, 68, 68, 0.28);
+  color: #fff;
+}
+
+@media (max-width: 640px) {
+  .suggestion-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .suggestion-row .suggestion-label-input {
+    width: 100%;
+  }
+}
