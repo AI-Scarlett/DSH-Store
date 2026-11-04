@@ -59,6 +59,21 @@
       .replace(/'/g, '&#39;');
   }
 
+  async function safeJson(res, defaultError = '请求失败') {
+    const contentType = res.headers.get('content-type') || '';
+    if (!contentType.includes('application/json')) {
+      if (res.status === 404) {
+        throw new Error('后台服务接口未就绪 (404)。请确保本地预览服务已启动：node scripts/serve-marketplace.mjs');
+      }
+      throw new Error('服务端返回了非 JSON 格式响应 (HTTP ' + res.status + ')');
+    }
+    try {
+      return await res.json();
+    } catch {
+      throw new Error(defaultError + '：无法解析服务器 JSON 返回');
+    }
+  }
+
   function getStoredAdminToken() {
     return sessionStorage.getItem('dsh_admin_token') || '';
   }
@@ -289,13 +304,11 @@
         showLogin('登录已失效或凭证过期，请重新登录');
         return;
       }
-      if (res.ok) {
-        const data = await res.json();
-        if (data.settings) {
-          showDashboard();
-          renderView(data.settings);
-          return;
-        }
+      const data = await safeJson(res, '读取配置失败');
+      if (res.ok && data.settings) {
+        showDashboard();
+        renderView(data.settings);
+        return;
       }
     } catch (err) {
       console.warn('API fetch error', err);
@@ -361,7 +374,7 @@
         body: JSON.stringify(payload)
       });
 
-      const data = await res.json();
+      const data = await safeJson(res, '保存失败');
       if (!res.ok) {
         if (res.status === 401) {
           setStoredAdminToken('');
@@ -431,7 +444,7 @@
         })
       });
 
-      const data = await res.json();
+      const data = await safeJson(res, '测试连接失败');
       resultBox.style.display = 'flex';
       if (data.ok) {
         resultBox.className = 'test-result-box success';
@@ -487,7 +500,7 @@
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ username, password })
         });
-        const data = await res.json();
+        const data = await safeJson(res, '登录失败');
         if (!res.ok) {
           throw new Error(data.error || '登录失败，请检查账号与密码');
         }
