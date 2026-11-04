@@ -1,0 +1,60 @@
+{
+  "schemaVersion": 1,
+  "type": "dsh-native-market-upgrade",
+  "planId": "dsh-native-market-desktop-filter-select-polish-20261103",
+  "planFile": "docs/ops/dsh-native-market-desktop-filter-select-polish-20261103.json",
+  "createdAt": "2026-11-03T15:45:00.000Z",
+  "baseCommit": "a4e5d5e34e7c7934251c87450169b8be1224eaa0",
+  "scope": [
+    ".github/workflows/registry.yml",
+    "README.md",
+    "docs/ops/dsh-native-market-desktop-filter-select-polish-20261103.json",
+    "docs/reviews/dsh-native-market-desktop-filter-select-polish-20261103.md",
+    "package.json",
+    "src/client.js",
+    "test/catalog.test.mjs",
+    "test/contracts.test.mjs",
+    "test/upgrade-matrix.test.mjs"
+  ],
+  "preconditions": {
+    ".github/workflows/registry.yml": "8e72cfa959024686ec716ef1bb5af1972ebfeb77fea62fd571728d16c5dd7847",
+    "README.md": "6583540ba01d18bd25108cd0a9520676df716ecc715553cab36cae7adab9c6bd",
+    "docs/ops/dsh-native-market-desktop-filter-select-polish-20261103.json": null,
+    "docs/reviews/dsh-native-market-desktop-filter-select-polish-20261103.md": null,
+    "package.json": "fc25830f4cbce1c75f97df6e51e3bced45af0b79d3ab75c7f48cb66fa936b6a8",
+    "src/client.js": "b812c54780138ff5181a9bf3795acd94634395c394f07deb3a2028f97b71f98e",
+    "test/catalog.test.mjs": "91d5261b242babf29dc35aa2aae2bbaade4efcb804ee1189d8b590d123259f7e",
+    "test/contracts.test.mjs": "1b8cc31624ce3ecc4032c5f18fce1deddef6d01850809b6f593e32ce54666d16",
+    "test/upgrade-matrix.test.mjs": "5fc6e34c9c3bab2e0769491e7d31df2c3fdf02e146ab8a8d7593304bcaabafa6"
+  },
+  "postconditions": {
+    ".github/workflows/registry.yml": "deba0e2f3300a100143ca6ddaffc5015a7b7099f9b03ff6a391cf4fc9f529543",
+    "README.md": "504e3d876ba5f1f81162003d0a0a43592e8e9225ef3652ef80d9dd4bbc9fce5f",
+    "docs/reviews/dsh-native-market-desktop-filter-select-polish-20261103.md": "d3717caf98fe8f7357c410d904cda338c1ebbe6e3b2d2a35dcfa67a3e42d2e4f",
+    "package.json": "f981b8727611c927b576210e4ffd78808cb4266dbc9372698ab6ca9c4e9b7836",
+    "src/client.js": "2261c21a0e89b054094e4e96c4c6685b0272ed65c39f4489bdefe0f2613e3667",
+    "test/catalog.test.mjs": "9b1d2b0bda474369c2a3a5e43a61325e6652ad6179c38b112fe587b1e09778b5",
+    "test/contracts.test.mjs": "0d533b18c25d345014ff2a5fe0427a338fb3c20eebeb2817d28500cb8908678c",
+    "test/upgrade-matrix.test.mjs": "6b8356d863e257efd8cfdadc94cb5cb623ecff14895e63c481c6eb7cf46e30dc"
+  },
+  "authorization": {
+    "source": "direct-user-request",
+    "request": "用户反馈 Desktop 筛选框文字只露出一半，存在下半截截断视觉缺陷，要求优化修复。",
+    "githubWriteCredential": "short-lived-token-required",
+    "publication": "auditable-source-pull-request-then-separate-first-party-Catalog-policy-release"
+  },
+  "objective": "修复 Desktop 插件商城筛选下拉选择框在固定高度下文字垂直基线被下半部截断的问题，规范 select 样式与留白。",
+  "change": {
+    "packageVersion": "0.9.38",
+    "selectStyles": "Set select vertical padding to 0 and line-height to normal, keeping 26px right padding for arrow clearance",
+    "facetSelects": "Standardize category, client adaptation, and review filter selects to height 34px and borderRadius 8px"
+  },
+  "gates": [
+    "Bind plan to exact base Commit and preconditions; verify with scripts/verify-dsh-upgrade-plan.mjs",
+    "Pass all 47 Desktop compatibility test cases",
+    "Pass npm run check",
+    "Pass git diff --check"
+  ],
+  "rollback": "Revert to 0.9.37 via CI pull request without mutating real Profiles.",
+  "healthCheck": "node --test test/desktop-compat.test.mjs && npm run check pass"
+}
