@@ -5,11 +5,11 @@ After=network.target
 [Service]
 Type=simple
 User=root
-WorkingDirectory=/opt/dsh-store/current
+WorkingDirectory=/opt/dsh-model-service
 Environment=DSH_MARKETPLACE_PORT=4173
 Environment=MODEL_SETTINGS_CONFIG_PATH=/var/lib/dsh-store/model-settings.json
 Environment=MODEL_SETTINGS_KEY_PATH=/var/lib/dsh-store/model-settings.key
-ExecStart=/usr/bin/node scripts/serve-marketplace.mjs
+ExecStart=/usr/bin/env node scripts/serve-marketplace.mjs
 Restart=always
 RestartSec=5
 StandardOutput=journal
