@@ -45,9 +45,14 @@ function safePath(urlPath) {
     if (!scoped || scoped.startsWith('..') || isAbsolute(scoped)) return null
     return target
   }
-  if (!pathname.startsWith('/marketplace/')) return null
-  const requested = pathname.endsWith('/') ? `${pathname}index.html` : pathname
-  const target = resolve(marketplaceRoot, requested.slice('/marketplace/'.length))
+  let subPath = pathname
+  if (subPath.startsWith('/marketplace/')) {
+    subPath = subPath.slice('/marketplace/'.length)
+  } else if (subPath.startsWith('/')) {
+    subPath = subPath.slice(1)
+  }
+  const requested = subPath.endsWith('/') ? `${subPath}index.html` : subPath
+  const target = resolve(marketplaceRoot, requested)
   const scoped = relative(marketplaceRoot, target)
   if (!scoped || scoped.startsWith('..') || isAbsolute(scoped)) return null
   return target
@@ -79,8 +84,11 @@ function sendJson(response, statusCode, data) {
 
 const server = createServer(async (request, response) => {
   let pathname = '/'
+  let search = ''
   try {
-    pathname = new URL(request.url || '/', 'http://127.0.0.1').pathname
+    const parsed = new URL(request.url || '/', 'http://127.0.0.1')
+    pathname = parsed.pathname
+    search = parsed.search || ''
   } catch {}
 
   // Handle CORS preflight
@@ -191,7 +199,19 @@ const server = createServer(async (request, response) => {
     return
   }
 
-  const target = safePath(request.url || '/')
+  // Route convenience redirects:
+  if (pathname === '/' || pathname === '/marketplace') {
+    response.writeHead(302, { location: `/marketplace/${search}`, 'cache-control': 'no-store' })
+    response.end()
+    return
+  }
+  if (pathname === '/admin' || pathname === '/admin/' || pathname === '/marketplace/admin') {
+    response.writeHead(302, { location: `/marketplace/admin/${search}`, 'cache-control': 'no-store' })
+    response.end()
+    return
+  }
+
+  let target = safePath(request.url || '/')
   if (!target) {
     response.writeHead(400, { 'content-type': 'text/plain; charset=utf-8' })
     response.end('Bad Request')
@@ -199,8 +219,20 @@ const server = createServer(async (request, response) => {
   }
 
   try {
-    const fileInfo = await stat(target)
-    if (!fileInfo.isFile()) throw new Error('Not a file')
+    let fileInfo = await stat(target)
+    if (fileInfo.isDirectory()) {
+      if (!pathname.endsWith('/')) {
+        response.writeHead(302, { location: `${pathname}/${search}`, 'cache-control': 'no-store' })
+        response.end()
+        return
+      }
+      const indexTarget = resolve(target, 'index.html')
+      fileInfo = await stat(indexTarget)
+      if (!fileInfo.isFile()) throw new Error('Not a file')
+      target = indexTarget
+    } else if (!fileInfo.isFile()) {
+      throw new Error('Not a file')
+    }
     response.writeHead(200, {
       'content-length': fileInfo.size,
       'content-type': mimeTypes.get(extname(target).toLowerCase()) || 'application/octet-stream',
@@ -217,5 +249,6 @@ const server = createServer(async (request, response) => {
 
 server.listen(port, host, () => {
   console.log(`DSH plugin marketplace: http://${host}:${port}/marketplace/`)
+  console.log(`DSH model admin portal: http://${host}:${port}/marketplace/admin/`)
   console.log('Press Ctrl+C to stop.')
 })
