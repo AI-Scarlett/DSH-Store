@@ -329,17 +329,18 @@
   <script defer src="./app.js"></script>
   <!-- Global Floating AI Assistant Widget (inspired by aiaiai.help FloatingAssistant) -->
   <button type="button" id="floating-assistant-launcher" class="floating-assistant-launcher" aria-label="打开插件助手">
-    <span>🤖</span> <span>插件助手</span>
+    <img class="floating-assistant-icon" src="./dsh-store-icon.png" alt="" width="22" height="22">
+    <span>插件助手</span>
   </button>
 
   <div id="floating-assistant-modal" class="floating-assistant-modal" role="dialog" aria-modal="true" aria-label="DSH Store 插件助手">
     <div class="modal-header">
-      <div class="modal-title"><span>🤖</span> DSH Store 插件助手</div>
+      <div class="modal-title"><img class="floating-assistant-icon" src="./dsh-store-icon.png" alt="" width="20" height="20"> DSH Store 插件助手</div>
       <button type="button" id="floating-assistant-close" class="modal-close-btn" aria-label="关闭">×</button>
     </div>
     <div id="floating-assistant-body" class="modal-body">
       <div class="chat-bubble assistant">
-        你好！我是 DSH Store 插件助手 🤖。告诉我你想做的事情或工作流需求（例如“知网论文精读”、“微信/QQ机器人”、“大模型API余额查看”），我将为你推荐最适合的已审核 DSH 插件并生成官方安装命令！
+        你好！我是 DSH Store 插件助手。告诉我你想做的事情或工作流需求（例如“知网论文精读”、“微信/QQ机器人”、“大模型API余额查看”），我将为你推荐最适合的已审核 DSH 插件并生成官方安装命令！
       </div>
     </div>
     <div class="modal-footer">
