@@ -34,6 +34,7 @@
   <link rel="stylesheet" href="./styles.css">
   <link rel="stylesheet" href="./store-layout.css?v=20260924v2">
   <link rel="stylesheet" href="./home-redesign.css?v=20260924-raycast-store-9">
+  <link rel="stylesheet" href="./assistant.css">
   <script defer src="./motion.js"></script>
   <script type="application/ld+json">
   {
@@ -157,7 +158,42 @@
         <div class="system-status"><span></span><b data-i18n="hero.eyebrow">DSH TRUSTED EXTENSION LAYER</b><em>ONLINE</em></div>
         <h1 id="hero-title"><span class="hero-brand-title">DSH STORE · PLUGIN ECOSYSTEM</span><span data-i18n="hero.title1">让 DSH，</span><br><em data-i18n="hero.title2">拥有更多可能。</em></h1>
         <p class="hero-lead" data-i18n="hero.lead">发现插件、核对来源与权限，并在 DSH Desktop 内通过 DSH STORE 查看和管理已审核条目。安装兼容性由官方插件管理器校验；客户端适配标识不作为安装门槛。</p>
-        <form class="store-search-form" action="./plugins/" role="search"><label for="home-plugin-search" data-i18n="home.searchLabel">搜索插件</label><span aria-hidden="true">⌕</span><input id="home-plugin-search" type="search" maxlength="80" placeholder="搜索插件名称、用途或英文包名" data-i18n-placeholder="home.search"><button type="submit" data-i18n="home.searchAction">搜索插件 ↗</button></form>
+        <!-- Unified Search & AI Recommendation Component (merges catalog search and AI recommendation) -->
+        <section class="ai-task-panel" aria-label="智能插件搜索与推荐">
+          <div class="ai-task-header">
+            <div class="ai-badge-group">
+              <span class="ai-badge">✨ 智能插件搜索与推荐</span>
+              <span class="ai-task-subtitle">输入你想完成的任务或插件名称，AI 匹配 DSH 插件并生成官方安装命令</span>
+            </div>
+          </div>
+          <form id="hero-ai-task-form" class="store-search-form unified-hero-form" action="./plugins/" role="search">
+            <label for="hero-ai-textarea" class="sr-only">搜索插件或输入需求</label>
+            <input id="home-plugin-search" type="hidden" name="q">
+            <div class="ai-task-input-wrap">
+              <span class="ai-task-icon" aria-hidden="true">✦</span>
+              <textarea id="hero-ai-textarea" class="ai-task-textarea" rows="2" placeholder="输入你想完成的任务需求或插件名称（例如：知网论文精读并写大纲、在微信/QQ中接入DSH、查看API余额、增强会话长期记忆…）"></textarea>
+            </div>
+            <div class="ai-task-toolbar">
+              <div class="ai-task-chips" id="hero-ai-chips" aria-label="快捷示例">
+                <span class="ai-chips-label">试试这样问：</span>
+                <button type="button" class="ai-chip-btn" data-query="知网论文精读并写大纲">知网论文精读 ↗</button>
+                <button type="button" class="ai-chip-btn" data-query="在微信和QQ中接入DSH会话">微信 / QQ 接入 ↗</button>
+                <button type="button" class="ai-chip-btn" data-query="实时查看 DeepSeek API 余额">模型 API 余额 ↗</button>
+                <button type="button" class="ai-chip-btn" data-query="给大模型增加长期记忆和会话检索">长期记忆增强 ↗</button>
+                <button type="button" class="ai-chip-btn" data-query="制作网页PPT与卡片设计排版">网页 PPT 排版 ↗</button>
+              </div>
+              <div class="ai-task-actions">
+                <button type="button" id="hero-catalog-jump" class="ai-catalog-jump-btn" title="直接前往插件目录搜索">
+                  <span>全量目录 ↗</span>
+                </button>
+                <button type="submit" id="hero-ai-submit" class="ai-submit-btn">
+                  <span>智能推荐 ↗</span>
+                </button>
+              </div>
+            </div>
+          </form>
+          <div id="hero-ai-results" class="ai-results-panel" style="display: none;"></div>
+        </section>
         <div class="hero-actions">
           <a class="button button-primary" href="./plugins/" data-analytics-event="catalog_open" data-analytics-item="hero"><span data-i18n="action.explore">查看全部插件</span><i aria-hidden="true">↗</i></a>
           <a class="button button-secondary" href="#safety"><span data-i18n="action.trust">了解安全机制</span><i aria-hidden="true">↓</i></a>
@@ -291,5 +327,28 @@
   <dialog id="plugin-dialog" aria-labelledby="dialog-title"><div class="dialog-shell"><header class="dialog-header"><div><span id="dialog-kicker" class="dialog-kicker">PLUGIN DETAIL</span><h2 id="dialog-title" data-i18n="dialog.title">插件详情</h2></div><button id="dialog-close" class="dialog-close" type="button" aria-label="Close">×</button></header><div id="dialog-body" class="dialog-body"></div></div></dialog>
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
   <script defer src="./app.js"></script>
+  <!-- Global Floating AI Assistant Widget (inspired by aiaiai.help FloatingAssistant) -->
+  <button type="button" id="floating-assistant-launcher" class="floating-assistant-launcher" aria-label="打开插件助手">
+    <img class="floating-assistant-icon" src="./dsh-store-icon.png" alt="" width="22" height="22">
+    <span>插件助手</span>
+  </button>
+
+  <div id="floating-assistant-modal" class="floating-assistant-modal" role="dialog" aria-modal="true" aria-label="DSH Store 插件助手">
+    <div class="modal-header">
+      <div class="modal-title"><img class="floating-assistant-icon" src="./dsh-store-icon.png" alt="" width="20" height="20"> DSH Store 插件助手</div>
+      <button type="button" id="floating-assistant-close" class="modal-close-btn" aria-label="关闭">×</button>
+    </div>
+    <div id="floating-assistant-body" class="modal-body">
+      <div class="chat-bubble assistant">
+        你好！我是 DSH Store 插件助手。告诉我你想做的事情或工作流需求（例如“知网论文精读”、“微信/QQ机器人”、“大模型API余额查看”），我将为你推荐最适合的已审核 DSH 插件并生成官方安装命令！
+      </div>
+    </div>
+    <div class="modal-footer">
+      <input type="text" id="floating-assistant-input" class="modal-input" placeholder="输入你想完成的任务需求或插件名称..." />
+      <button type="button" id="floating-assistant-send" class="modal-send-btn">发送</button>
+    </div>
+  </div>
+
+  <script defer src="./assistant.js"></script>
 </body>
 </html>

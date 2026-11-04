@@ -1,0 +1,253 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <title>DSH STORE · 大模型配置管理后台</title>
+  <link rel="icon" type="image/png" sizes="1254x1254" href="../dsh-store-icon.png">
+  <link rel="stylesheet" href="./admin.css">
+</head>
+<body>
+  <header class="admin-header">
+    <div class="admin-brand">
+      <img class="admin-logo" src="../dsh-store-icon.png" alt="DSH Store">
+      <div class="admin-title-group">
+        <h1>DSH STORE · 大模型配置管理后台 <span class="admin-badge">LLM Admin Hub</span></h1>
+        <p class="admin-desc">配置主备大模型解析端点、安全密钥与 RAG 检索参数</p>
+      </div>
+    </div>
+    <div class="admin-header-actions">
+      <a class="admin-back-link" href="../">← 返回官网首页</a>
+    </div>
+  </header>
+
+  <main class="admin-container">
+    <div id="notification-banner" class="notification-banner" role="status"></div>
+
+    <div class="security-badge">
+      <span aria-hidden="true">🔒</span>
+      <span><strong>AES-256-GCM 硬件加密保护</strong>：所有大模型 API Key 均在服务端与安全存储中强加密保存，前台不返回明文，不包含在公开源码或静态包中。</span>
+    </div>
+
+    <!-- 管理员口令校验卡片 -->
+    <section class="admin-card">
+      <div class="admin-card-header">
+        <h2><span>🛡️</span> 管理员访问口令 (Admin Secret)</h2>
+        <span id="auth-status-badge" class="key-status none">待验证</span>
+      </div>
+      <div class="admin-form-grid">
+        <div class="form-group">
+          <label class="form-label" for="admin-token-input">输入管理员口令 <span class="form-hint">未设置口令时可留空直接配置</span></label>
+          <input class="form-input" id="admin-token-input" type="password" placeholder="输入口令以解锁保存与测试权限">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="admin-new-password">修改/设定新口令 <span class="form-hint">留空表示保持当前口令不变</span></label>
+          <input class="form-input" id="admin-new-password" type="password" placeholder="设定新的管理员口令">
+        </div>
+      </div>
+    </section>
+
+    <!-- 解析总控策略 -->
+    <section class="admin-card">
+      <div class="admin-card-header">
+        <h2><span>⚡</span> 模型解析策略与限制 (Strategy & Limits)</h2>
+      </div>
+      <div class="admin-form-grid">
+        <div class="form-group">
+          <label class="checkbox-group">
+            <input type="checkbox" id="model-enabled-toggle" checked>
+            <strong>启用站内大模型智能插件推荐</strong>
+          </label>
+          <span class="form-hint">关闭后将纯使用本地 Catalog 语义规则引擎，不消耗任何大模型 Token</span>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="model-mode-select">推荐解析模式</label>
+          <select class="form-select" id="model-mode-select">
+            <option value="model-first">大模型优先（优先调用模型，失败时退回规则）</option>
+            <option value="rules-first">规则匹配优先（常规走规则，复杂长句调用模型）</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="daily-limit-input">全站每日调用上限 <span class="form-hint">0 表示不限</span></label>
+          <input class="form-input" id="daily-limit-input" type="number" min="0" value="0">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="hourly-limit-input">单访客每小时解析上限</label>
+          <input class="form-input" id="hourly-limit-input" type="number" min="5" max="500" value="50">
+        </div>
+        <div class="form-group full-width">
+          <div class="form-label">
+            <label for="system-prompt-input">系统提示词 (System Prompt)</label>
+            <button type="button" class="btn btn-secondary" id="reset-prompt-btn" style="padding: 3px 10px; font-size: 0.78rem;">恢复默认提示词</button>
+          </div>
+          <textarea class="form-textarea" id="system-prompt-input" rows="4"></textarea>
+          <span class="form-hint">引导模型严格基于 DSH Store 真实收录的插件目录进行客观推荐，禁止虚构插件名称。</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- 首页搜索与推荐文案配置 -->
+    <section class="admin-card">
+      <div class="admin-card-header">
+        <h2><span>💬</span> 首页搜索与推荐文案配置 (Prompt & Suggestions)</h2>
+      </div>
+      <div class="admin-form-grid">
+        <div class="form-group full-width">
+          <label class="form-label" for="prompt-placeholder-input">
+            <span>首页输入框默认占位提示 (Placeholder)</span>
+          </label>
+          <input class="form-input" id="prompt-placeholder-input" type="text" placeholder="输入你想完成的任务需求或插件名称（例如：知网论文精读并写大纲、在微信/QQ中接入DSH、查看API余额、增强会话长期记忆…）">
+          <span class="form-hint">用户未输入内容时，首页对话框中显示的灰色引导占位文案</span>
+        </div>
+        <div class="form-group full-width">
+          <div class="form-label">
+            <label>「试试这样问」快捷推荐示例 (Suggestions)</label>
+            <div style="display: flex; gap: 8px;">
+              <button type="button" class="btn btn-secondary" id="add-suggestion-btn" style="padding: 3px 10px; font-size: 0.78rem;">＋ 添加示例</button>
+              <button type="button" class="btn btn-secondary" id="reset-suggestions-btn" style="padding: 3px 10px; font-size: 0.78rem;">恢复默认示例</button>
+            </div>
+          </div>
+          <div id="suggestions-list-container" class="suggestions-list-wrap"></div>
+          <span class="form-hint">配置首页输入框下方的快捷示例标签。左侧为按钮展示名称，右侧为点击后填入的完整需求 query。</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- 主模型配置 -->
+    <section class="admin-card">
+      <div class="admin-card-header">
+        <h2><span>🎯</span> 主模型配置 (Primary Model)</h2>
+        <span id="primary-key-status" class="key-status none">未配置 Key</span>
+      </div>
+      <div class="admin-form-grid">
+        <div class="form-group">
+          <label class="form-label" for="primary-preset-select">服务商快捷预设</label>
+          <select class="form-select" id="primary-preset-select"></select>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="primary-label-input">配置名称</label>
+          <input class="form-input" id="primary-label-input" type="text" value="DeepSeek 主模型">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="primary-base-url">API 基础地址 (Base URL)</label>
+          <input class="form-input mono" id="primary-base-url" type="url" placeholder="https://api.deepseek.com/v1">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="primary-model-id">模型 ID (Model Name)</label>
+          <input class="form-input mono" id="primary-model-id" type="text" placeholder="deepseek-chat">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="primary-protocol">接口协议</label>
+          <select class="form-select" id="primary-protocol">
+            <option value="openai-chat">OpenAI Chat 兼容 (/chat/completions)</option>
+            <option value="anthropic">Anthropic Messages (/messages)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="primary-api-key">API Key <span class="form-hint">已保存留空即保留，新输入将替换</span></label>
+          <input class="form-input mono" id="primary-api-key" type="password" placeholder="sk-••••••••••••••••">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="primary-timeout">超时时间 (秒)</label>
+          <input class="form-input" id="primary-timeout" type="number" min="5" max="120" value="30">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="primary-max-tokens">最大输出 Tokens</label>
+          <input class="form-input" id="primary-max-tokens" type="number" min="256" max="8192" value="2048">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="primary-temperature">采样温度 (Temperature)</label>
+          <input class="form-input" id="primary-temperature" type="number" min="0" max="2" step="0.1" value="0.3">
+        </div>
+        <div class="form-group" style="justify-content: flex-end;">
+          <label class="checkbox-group" style="margin-top: 10px;">
+            <input type="checkbox" id="primary-clear-key">
+            <span>清除当前主模型已保存的 Key</span>
+          </label>
+        </div>
+      </div>
+      <div class="card-actions">
+        <button type="button" class="btn btn-secondary" id="primary-test-btn">🔌 测试主模型连接</button>
+      </div>
+      <div id="primary-test-result" class="test-result-box" style="display: none;"></div>
+    </section>
+
+    <!-- 备用模型配置 -->
+    <section class="admin-card">
+      <div class="admin-card-header">
+        <h2><span>🔄</span> 备用模型配置 (Backup Model / Failover)</h2>
+        <span id="backup-key-status" class="key-status none">未配置 Key</span>
+      </div>
+      <div class="admin-form-grid">
+        <div class="form-group full-width">
+          <label class="checkbox-group">
+            <input type="checkbox" id="backup-enabled-toggle">
+            <strong>启用备用模型容灾</strong>
+          </label>
+          <span class="form-hint">主模型请求超时、限流或不可用时，系统自动无感重试备用模型</span>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="backup-preset-select">服务商快捷预设</label>
+          <select class="form-select" id="backup-preset-select"></select>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="backup-label-input">配置名称</label>
+          <input class="form-input" id="backup-label-input" type="text" value="通义千问 备用模型">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="backup-base-url">API 基础地址 (Base URL)</label>
+          <input class="form-input mono" id="backup-base-url" type="url" placeholder="https://dashscope.aliyuncs.com/compatible-mode/v1">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="backup-model-id">模型 ID (Model Name)</label>
+          <input class="form-input mono" id="backup-model-id" type="text" placeholder="qwen-plus">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="backup-protocol">接口协议</label>
+          <select class="form-select" id="backup-protocol">
+            <option value="openai-chat">OpenAI Chat 兼容 (/chat/completions)</option>
+            <option value="anthropic">Anthropic Messages (/messages)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="checkbox-group" style="margin-top: 10px;">
+            <input type="checkbox" id="backup-use-primary-key">
+            <span>使用主模型的 API Key（当厂商相同时勾选）</span>
+          </label>
+        </div>
+        <div class="form-group" id="backup-api-key-container">
+          <label class="form-label" for="backup-api-key">独立 API Key <span class="form-hint">留空保持已存密钥</span></label>
+          <input class="form-input mono" id="backup-api-key" type="password" placeholder="sk-••••••••••••••••">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="backup-timeout">超时时间 (秒)</label>
+          <input class="form-input" id="backup-timeout" type="number" min="5" max="120" value="30">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="backup-max-tokens">最大输出 Tokens</label>
+          <input class="form-input" id="backup-max-tokens" type="number" min="256" max="8192" value="2048">
+        </div>
+        <div class="form-group" style="justify-content: flex-end;">
+          <label class="checkbox-group" style="margin-top: 10px;">
+            <input type="checkbox" id="backup-clear-key">
+            <span>清除当前备用模型已保存的 Key</span>
+          </label>
+        </div>
+      </div>
+      <div class="card-actions">
+        <button type="button" class="btn btn-secondary" id="backup-test-btn">🔌 测试备用模型连接</button>
+      </div>
+      <div id="backup-test-result" class="test-result-box" style="display: none;"></div>
+    </section>
+
+    <!-- 保存按钮栏 -->
+    <div style="display: flex; justify-content: flex-end; gap: 14px; margin-top: 10px;">
+      <button type="button" class="btn btn-secondary" id="reload-btn">🔄 重新读取</button>
+      <button type="button" class="btn btn-primary" id="save-btn">💾 保存全部配置</button>
+    </div>
+  </main>
+
+  <script src="./admin.js"></script>
+</body>
+</html>
