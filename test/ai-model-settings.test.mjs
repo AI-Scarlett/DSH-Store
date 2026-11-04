@@ -7,11 +7,13 @@ import {
   decryptKey,
   defaultSettings,
   encryptKey,
+  generateSessionToken,
   hashPassword,
   loadModelSettings,
   saveModelSettings,
   toPublicView,
   verifyPassword,
+  verifySessionToken,
 } from '../src/ai-model-settings.mjs'
 
 const root = new URL('../', import.meta.url)
@@ -38,6 +40,19 @@ test('Admin password hashing and verification', () => {
   assert.equal(verifyPassword('wrong-password', hash), false)
   assert.equal(verifyPassword('', hash), false)
   assert.equal(verifyPassword('my-admin-password', ''), true)
+})
+
+test('Session token generation and verification', () => {
+  const secretKey = Buffer.from('01234567890123456789012345678901')
+  const token = generateSessionToken('admin', secretKey)
+  assert.ok(typeof token === 'string' && token.length > 20)
+
+  const verified = verifySessionToken(token, secretKey)
+  assert.equal(verified?.username, 'admin')
+  assert.ok(typeof verified?.timestamp === 'number')
+
+  assert.equal(verifySessionToken('invalid-token', secretKey), null)
+  assert.equal(verifySessionToken(token, Buffer.from('wrongkeywrongkeywrongkeywrongkey')), null)
 })
 
 test('Settings persistence, encryption and public view masking', async () => {

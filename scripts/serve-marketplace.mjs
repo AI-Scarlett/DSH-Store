@@ -1,14 +1,20 @@
+import { timingSafeEqual } from 'node:crypto'
 import { createReadStream } from 'node:fs'
 import { stat } from 'node:fs/promises'
 import { createServer } from 'node:http'
 import { extname, isAbsolute, relative, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import {
+  DEFAULT_ADMIN_PASSWORD,
+  DEFAULT_ADMIN_USERNAME,
+  generateSessionToken,
+  getEncryptionKey,
   loadModelSettings,
   saveModelSettings,
   testEndpointConnection,
   toPublicView,
   verifyPassword,
+  verifySessionToken,
 } from '../src/ai-model-settings.mjs'
 import { loadCatalogIndex, recommendPlugins } from '../src/ai-recommend.mjs'
 
@@ -82,6 +88,26 @@ function sendJson(response, statusCode, data) {
   response.end(JSON.stringify(data))
 }
 
+async function authenticateAdmin(request, settings) {
+  const authHeader = request.headers['authorization'] || ''
+  const tokenHeader = request.headers['x-admin-token'] || ''
+  const token = tokenHeader || (authHeader.startsWith('Bearer ') ? authHeader.slice(7) : '')
+  if (!token) return false
+
+  try {
+    const sessionSecret = await getEncryptionKey()
+    const session = verifySessionToken(token, sessionSecret)
+    if (session && session.username === (settings.adminUsername || DEFAULT_ADMIN_USERNAME)) {
+      return true
+    }
+  } catch {}
+
+  if (settings.adminPasswordHash && verifyPassword(token, settings.adminPasswordHash)) {
+    return true
+  }
+  return false
+}
+
 const server = createServer(async (request, response) => {
   let pathname = '/'
   let search = ''
@@ -125,14 +151,64 @@ const server = createServer(async (request, response) => {
     return
   }
 
+  if (pathname === '/api/ai/public-config') {
+    if (request.method !== 'GET') {
+      sendJson(response, 405, { error: 'Method Not Allowed' })
+      return
+    }
+    try {
+      const settings = await loadModelSettings()
+      sendJson(response, 200, {
+        ok: true,
+        promptPlaceholder: settings.promptPlaceholder,
+        promptSuggestions: settings.promptSuggestions,
+      })
+    } catch (err) {
+      sendJson(response, 500, { ok: false, error: err.message })
+    }
+    return
+  }
+
+  if (pathname === '/api/admin/login') {
+    if (request.method !== 'POST') {
+      sendJson(response, 405, { error: 'Method Not Allowed' })
+      return
+    }
+    try {
+      const body = await readJsonBody(request)
+      const username = (body.username || '').trim()
+      const password = (body.password || '').trim()
+      const settings = await loadModelSettings()
+      const expectedUser = settings.adminUsername || DEFAULT_ADMIN_USERNAME
+      const expectedHash = settings.adminPasswordHash
+
+      const userMatches = username.length === expectedUser.length && timingSafeEqual(Buffer.from(username), Buffer.from(expectedUser))
+      const passMatches = verifyPassword(password, expectedHash)
+
+      if (!userMatches || !passMatches) {
+        sendJson(response, 401, { ok: false, error: '管理员账号或密码不正确' })
+        return
+      }
+
+      const sessionSecret = await getEncryptionKey()
+      const token = generateSessionToken(expectedUser, sessionSecret)
+      sendJson(response, 200, { ok: true, token, username: expectedUser })
+    } catch (err) {
+      sendJson(response, 500, { ok: false, error: err.message })
+    }
+    return
+  }
+
   if (pathname === '/api/admin/model-settings') {
-    const authHeader = request.headers['authorization'] || ''
-    const tokenHeader = request.headers['x-admin-token'] || ''
-    const providedPass = tokenHeader || (authHeader.startsWith('Bearer ') ? authHeader.slice(7) : '')
+    const settings = await loadModelSettings()
+    const isAuthed = await authenticateAdmin(request, settings)
+    if (!isAuthed) {
+      sendJson(response, 401, { ok: false, error: '管理员未登录或登录已过期，请先登录' })
+      return
+    }
 
     if (request.method === 'GET') {
       try {
-        const settings = await loadModelSettings()
         const pub = toPublicView(settings)
         sendJson(response, 200, { ok: true, settings: pub })
       } catch (err) {
@@ -143,15 +219,16 @@ const server = createServer(async (request, response) => {
 
     if (request.method === 'POST') {
       try {
-        const settings = await loadModelSettings()
-        if (settings.adminPasswordHash && !verifyPassword(providedPass, settings.adminPasswordHash)) {
-          sendJson(response, 401, { ok: false, error: '管理员口令不正确或未提供' })
-          return
-        }
-
         const body = await readJsonBody(request)
         const updated = await saveModelSettings(body)
-        sendJson(response, 200, { ok: true, settings: toPublicView(updated), message: '配置已安全加密保存' })
+        const sessionSecret = await getEncryptionKey()
+        const refreshedToken = generateSessionToken(updated.adminUsername || DEFAULT_ADMIN_USERNAME, sessionSecret)
+        sendJson(response, 200, {
+          ok: true,
+          settings: toPublicView(updated),
+          token: refreshedToken,
+          message: '配置已安全加密保存',
+        })
       } catch (err) {
         sendJson(response, 500, { ok: false, error: err.message })
       }
@@ -168,12 +245,10 @@ const server = createServer(async (request, response) => {
       return
     }
     try {
-      const authHeader = request.headers['authorization'] || ''
-      const tokenHeader = request.headers['x-admin-token'] || ''
-      const providedPass = tokenHeader || (authHeader.startsWith('Bearer ') ? authHeader.slice(7) : '')
       const settings = await loadModelSettings()
-      if (settings.adminPasswordHash && !verifyPassword(providedPass, settings.adminPasswordHash)) {
-        sendJson(response, 401, { ok: false, error: '管理员口令不正确或未提供' })
+      const isAuthed = await authenticateAdmin(request, settings)
+      if (!isAuthed) {
+        sendJson(response, 401, { ok: false, error: '管理员未登录或登录已过期，请先登录' })
         return
       }
 

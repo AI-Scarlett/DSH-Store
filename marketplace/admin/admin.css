@@ -410,3 +410,65 @@ body {
     width: 100%;
   }
 }
+
+
+/* --- Login Card & User Bar Styles --- */
+.admin-user-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--admin-card);
+  border: 1px solid var(--admin-border);
+  padding: 4px 14px;
+  border-radius: 999px;
+}
+
+.admin-user-bar .user-greeting {
+  font-size: 0.85rem;
+  color: var(--admin-text);
+  font-weight: 500;
+}
+
+.admin-login-card {
+  max-width: 440px;
+  margin: 60px auto;
+  background: var(--admin-card);
+  backdrop-filter: blur(16px);
+  border: 1px solid var(--admin-border);
+  border-radius: 16px;
+  padding: 36px 32px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.45);
+}
+
+.admin-login-card .login-header {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.admin-login-card .login-header h2 {
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: var(--admin-text);
+  margin: 0 0 8px 0;
+}
+
+.admin-login-card .login-header p {
+  font-size: 0.85rem;
+  color: var(--admin-muted);
+  margin: 0;
+}
+
+.login-error-banner {
+  background: rgba(239, 68, 68, 0.16);
+  border: 1px solid rgba(239, 68, 68, 0.35);
+  color: #fca5a5;
+  font-size: 0.85rem;
+  padding: 10px 14px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.login-form .form-group {
+  margin-bottom: 18px;
+}

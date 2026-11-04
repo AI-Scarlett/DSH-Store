@@ -1,4 +1,4 @@
-import { createCipheriv, createDecipheriv, createHash, randomBytes, scryptSync, timingSafeEqual } from 'node:crypto'
+import { createCipheriv, createDecipheriv, createHash, createHmac, randomBytes, scryptSync, timingSafeEqual } from 'node:crypto'
 import { mkdir, readFile, writeFile } from 'node:fs/promises'
 import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -6,6 +6,9 @@ import { fileURLToPath } from 'node:url'
 const projectRoot = resolve(fileURLToPath(new URL('..', import.meta.url)))
 export const DEFAULT_CONFIG_PATH = process.env.MODEL_SETTINGS_CONFIG_PATH ? resolve(process.env.MODEL_SETTINGS_CONFIG_PATH) : resolve(projectRoot, ".local/model-settings.json")
 export const DEFAULT_KEY_PATH = process.env.MODEL_SETTINGS_KEY_PATH ? resolve(process.env.MODEL_SETTINGS_KEY_PATH) : resolve(projectRoot, ".local/model-settings.key")
+
+export const DEFAULT_ADMIN_USERNAME = process.env.DSH_ADMIN_USERNAME || 'admin'
+export const DEFAULT_ADMIN_PASSWORD = process.env.DSH_ADMIN_PASSWORD || 'dsh2026admin'
 
 export const MODEL_PRESETS = [
   {
@@ -100,7 +103,8 @@ export function defaultSettings() {
     mode: 'model-first', // 'model-first' | 'rules-first'
     dailyLimit: 0, // 0 = 不限
     perVisitorHourlyLimit: 50,
-    adminPasswordHash: '', // SHA-256 of admin password, empty = prompt to set
+    adminUsername: DEFAULT_ADMIN_USERNAME,
+    adminPasswordHash: hashPassword(DEFAULT_ADMIN_PASSWORD),
     systemPrompt: DEFAULT_SYSTEM_PROMPT,
     promptPlaceholder: DEFAULT_PROMPT_PLACEHOLDER,
     promptSuggestions: DEFAULT_PROMPT_SUGGESTIONS,
@@ -208,6 +212,32 @@ export function verifyPassword(providedPassword, expectedHash) {
   return timingSafeEqual(Buffer.from(computed), Buffer.from(expectedDigest))
 }
 
+export function generateSessionToken(username, secretKey) {
+  const payload = username + ':' + Date.now()
+  const signature = createHmac('sha256', secretKey).update(payload).digest('hex')
+  return Buffer.from(payload + ':' + signature).toString('base64url')
+}
+
+export function verifySessionToken(token, secretKey, maxAgeMs = 7 * 24 * 3600 * 1000) {
+  if (!token || typeof token !== 'string') return null
+  try {
+    const raw = Buffer.from(token, 'base64url').toString('utf8')
+    const parts = raw.split(':')
+    if (parts.length !== 3) return null
+    const [username, timestampStr, signature] = parts
+    const timestamp = Number(timestampStr)
+    if (!Number.isFinite(timestamp)) return null
+    if (Date.now() - timestamp > maxAgeMs || timestamp > Date.now() + 60000) return null
+    const payload = username + ':' + timestampStr
+    const expectedSig = createHmac('sha256', secretKey).update(payload).digest('hex')
+    if (signature.length !== expectedSig.length) return null
+    if (!timingSafeEqual(Buffer.from(signature), Buffer.from(expectedSig))) return null
+    return { username, timestamp }
+  } catch {
+    return null
+  }
+}
+
 export function maskApiKey(plainOrEncrypted) {
   if (!plainOrEncrypted) return ''
   return '••••••••••••••••'
@@ -236,6 +266,7 @@ export function toPublicView(settings) {
     dailyLimit: settings.dailyLimit || 0,
     perVisitorHourlyLimit: settings.perVisitorHourlyLimit || 50,
     hasPassword: Boolean(settings.adminPasswordHash),
+    adminUsername: settings.adminUsername || DEFAULT_ADMIN_USERNAME,
     systemPrompt: settings.systemPrompt || DEFAULT_SYSTEM_PROMPT,
     promptPlaceholder: typeof settings.promptPlaceholder === 'string' && settings.promptPlaceholder.trim()
       ? settings.promptPlaceholder.trim()
@@ -288,7 +319,14 @@ export async function saveModelSettings(input, configPath = DEFAULT_CONFIG_PATH,
     backupEncrypted = await encryptKey(input.backup.apiKey.trim(), customKeyPath)
   }
 
-  let passwordHash = current.adminPasswordHash
+  let adminUsername = current.adminUsername || DEFAULT_ADMIN_USERNAME
+  if (input.newUsername && typeof input.newUsername === 'string' && input.newUsername.trim()) {
+    adminUsername = input.newUsername.trim()
+  } else if (input.adminUsername && typeof input.adminUsername === 'string' && input.adminUsername.trim()) {
+    adminUsername = input.adminUsername.trim()
+  }
+
+  let passwordHash = current.adminPasswordHash || hashPassword(DEFAULT_ADMIN_PASSWORD)
   if (input.newPassword && typeof input.newPassword === 'string' && input.newPassword.trim()) {
     passwordHash = hashPassword(input.newPassword.trim())
   }
@@ -301,6 +339,7 @@ export async function saveModelSettings(input, configPath = DEFAULT_CONFIG_PATH,
     perVisitorHourlyLimit: Number.isInteger(input.perVisitorHourlyLimit) && input.perVisitorHourlyLimit > 0
       ? input.perVisitorHourlyLimit
       : current.perVisitorHourlyLimit,
+    adminUsername,
     adminPasswordHash: passwordHash,
     systemPrompt: typeof input.systemPrompt === 'string' && input.systemPrompt.trim()
       ? input.systemPrompt.trim()

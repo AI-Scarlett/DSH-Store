@@ -314,19 +314,18 @@
     // Dynamic config hydrate
     async function hydratePublicSettings() {
       try {
-        const res = await fetch('/api/admin/model-settings');
+        const res = await fetch('/api/ai/public-config');
         if (!res.ok) return;
         const data = await res.json();
-        if (!data.ok || !data.settings) return;
-        const s = data.settings;
-        if (s.promptPlaceholder) {
-          textarea.placeholder = s.promptPlaceholder;
+        if (!data.ok) return;
+        if (data.promptPlaceholder) {
+          textarea.placeholder = data.promptPlaceholder;
         }
-        if (Array.isArray(s.promptSuggestions) && s.promptSuggestions.length > 0) {
+        if (Array.isArray(data.promptSuggestions) && data.promptSuggestions.length > 0) {
           const chipsEl = $('hero-ai-chips');
           if (chipsEl) {
             chipsEl.innerHTML = '<span class="ai-chips-label">试试这样问：</span>' +
-              s.promptSuggestions.map(item => {
+              data.promptSuggestions.map(item => {
                 const lbl = escapeHtml(item.label || item.query || '');
                 const q = escapeHtml(item.query || item.label || '');
                 return '<button type="button" class="ai-chip-btn" data-query="' + q + '">' + lbl + ' ↗</button>';

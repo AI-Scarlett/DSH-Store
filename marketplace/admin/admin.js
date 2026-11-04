@@ -1,22 +1,46 @@
-(function() {
+(() => {
   'use strict';
 
   const PRESETS = [
-    { id: 'deepseek', name: 'DeepSeek 官方', protocol: 'openai-chat', baseUrl: 'https://api.deepseek.com/v1', model: 'deepseek-chat', maxTokens: 2048, timeoutSeconds: 30, temperature: 0.3 },
-    { id: 'minimax', name: 'MiniMax 国内', protocol: 'openai-chat', baseUrl: 'https://api.minimax.cn/v1', model: 'MiniMax-M3', maxTokens: 2048, timeoutSeconds: 30, temperature: 0.3 },
-    { id: 'qwen', name: '通义千问 (Qwen)', protocol: 'openai-chat', baseUrl: 'https://dashscope.aliyuncs.com/compatible-mode/v1', model: 'qwen-plus', maxTokens: 2048, timeoutSeconds: 30, temperature: 0.3 },
-    { id: 'openai', name: 'OpenAI 官方', protocol: 'openai-chat', baseUrl: 'https://api.openai.com/v1', model: 'gpt-4o-mini', maxTokens: 2048, timeoutSeconds: 30, temperature: 0.3 },
-    { id: 'claude', name: 'Anthropic Claude', protocol: 'anthropic', baseUrl: 'https://api.anthropic.com/v1', model: 'claude-3-5-sonnet-20241022', maxTokens: 2048, timeoutSeconds: 30, temperature: 0.3 },
-    { id: 'custom', name: '自定义兼容接口', protocol: 'openai-chat', baseUrl: '', model: '', maxTokens: 2048, timeoutSeconds: 30, temperature: 0.3 }
+    {
+      id: 'deepseek',
+      name: 'DeepSeek 官方',
+      protocol: 'openai-chat',
+      baseUrl: 'https://api.deepseek.com/v1',
+      model: 'deepseek-chat',
+      maxTokens: 2048,
+      timeoutSeconds: 30,
+      temperature: 0.3
+    },
+    {
+      id: 'minimax',
+      name: 'MiniMax 国内',
+      protocol: 'openai-chat',
+      baseUrl: 'https://api.minimax.cn/v1',
+      model: 'MiniMax-M3',
+      maxTokens: 2048,
+      timeoutSeconds: 30,
+      temperature: 0.3
+    },
+    {
+      id: 'qwen',
+      name: '通义千问 (Qwen)',
+      protocol: 'openai-chat',
+      baseUrl: 'https://dashscope.aliyuncs.com/compatible-mode/v1',
+      model: 'qwen-plus',
+      maxTokens: 2048,
+      timeoutSeconds: 30,
+      temperature: 0.3
+    }
   ];
 
-  const DEFAULT_SYSTEM_PROMPT = '你是一名精通 DeepSeek Harness (DSH) 插件生态的官方架构师与选型专家。\n你的职责是深入理解用户的实际业务、任务与工作流需求，结合 DSH Store 已收录并严格审查的插件目录，为用户推荐最适合的插件组合。\n\n对于每个推荐的插件，你需要明确提供：\n1. 插件名称与用途简述\n2. 匹配理由（它如何解决用户的需求）\n3. 精准的官方固定 Commit 安装命令（格式为 dsh plugin add @author/name 或包名）\n4. 权限与安全声明（网络、文件系统、自动化脚本等）\n\n请保持回答严谨、专业、实用。禁止捏造不存在的插件名称或未收录的虚假命令。';
+  const DEFAULT_SYSTEM_PROMPT = '你是一个严谨且实用的 DeepSeek Harness (DSH) 插件选型专家。你的任务是根据用户的需求，从已审核的 DSH 插件列表中挑选最适合的 1 到 3 个插件推荐给用户。\n\n【输出格式要求】：\n必须严格只输出合法的 JSON 格式，不要包含任何 markdown 代码块标记，不要包含多余寒暄。格式如下：\n{\n  "analysis": "简短说明用户需求和推荐逻辑（不超过80字）",\n  "plugins": [\n    {\n      "id": "插件唯一ID",\n      "reason": "为何该插件能满足需求的具体解释（不超过60字）"\n    }\n  ],\n  "suggestedQueries": ["可选的相关延伸提问1", "提问2"]\n}\n\n【原则】：\n1. 只能推荐给出的候选插件，严禁虚构不存在的插件或包名。\n2. 如果用户需求无法匹配任何插件，plugins 数组返回空，并在 analysis 中客观说明。';
 
   const DEFAULT_PROMPT_PLACEHOLDER = '输入你想完成的任务需求或插件名称（例如：知网论文精读并写大纲、在微信/QQ中接入DSH、查看API余额、增强会话长期记忆…）';
 
   const DEFAULT_PROMPT_SUGGESTIONS = [
-    { label: '知网论文精读', query: '知网论文精读并写大纲' },
-    { label: '微信 / QQ 接入', query: '在微信和QQ中接入DSH会话' },
+    { label: '知网论文精读', query: '知网论文研究精读并分步写作大纲' },
+    { label: 'QQ 微信机器人', query: '把 DSH 接入 QQ 或微信群做智能客服' },
     { label: '模型 API 余额', query: '实时查看 DeepSeek API 余额' },
     { label: '长期记忆增强', query: '给大模型增加长期记忆和会话检索' },
     { label: '网页 PPT 排版', query: '制作网页PPT与卡片设计排版' }
@@ -47,6 +71,18 @@
     }
   }
 
+  function getStoredAdminUsername() {
+    return sessionStorage.getItem('dsh_admin_username') || 'admin';
+  }
+
+  function setStoredAdminUsername(username) {
+    if (username) {
+      sessionStorage.setItem('dsh_admin_username', username);
+    } else {
+      sessionStorage.removeItem('dsh_admin_username');
+    }
+  }
+
   function showNotification(type, message) {
     const el = $('notification-banner');
     el.className = 'notification-banner ' + type + ' show';
@@ -54,6 +90,28 @@
     setTimeout(() => {
       el.className = 'notification-banner';
     }, 6000);
+  }
+
+  function showLogin(errMsg) {
+    $('admin-login-view').style.display = 'block';
+    $('admin-dashboard-view').style.display = 'none';
+    $('admin-user-bar').style.display = 'none';
+    const banner = $('login-error-banner');
+    if (errMsg) {
+      banner.textContent = errMsg;
+      banner.style.display = 'block';
+    } else {
+      banner.style.display = 'none';
+    }
+  }
+
+  function showDashboard() {
+    $('admin-login-view').style.display = 'none';
+    $('admin-dashboard-view').style.display = 'block';
+    $('admin-user-bar').style.display = 'flex';
+    const username = getStoredAdminUsername();
+    $('current-username-display').textContent = username;
+    $('admin-current-user-hint').textContent = username;
   }
 
   function populatePresetSelect(selectEl, selectedId) {
@@ -99,25 +157,31 @@
     const container = $('suggestions-list-container');
     if (!container) return;
     container.innerHTML = '';
-    const list = Array.isArray(items) && items.length > 0 ? items : DEFAULT_PROMPT_SUGGESTIONS;
-    list.forEach(item => {
-      const lbl = typeof item === 'string' ? item : (item.label || item.query || '');
-      const q = typeof item === 'string' ? item : (item.query || item.label || '');
-      container.appendChild(createSuggestionRow(lbl, q));
-    });
+    if (Array.isArray(items) && items.length > 0) {
+      items.forEach(item => {
+        const lbl = item.label || item.query || '';
+        const q = item.query || item.label || '';
+        container.appendChild(createSuggestionRow(lbl, q));
+      });
+    }
   }
 
   function collectSuggestions() {
-    const rows = document.querySelectorAll('.suggestion-row');
+    const container = $('suggestions-list-container');
+    if (!container) return DEFAULT_PROMPT_SUGGESTIONS;
+    const rows = container.querySelectorAll('.suggestion-row');
     const result = [];
     rows.forEach(r => {
-      const lbl = r.querySelector('.suggestion-label-input')?.value.trim() || '';
-      const q = r.querySelector('.suggestion-query-input')?.value.trim() || '';
-      if (lbl || q) {
-        result.push({
-          label: lbl || q,
-          query: q || lbl
-        });
+      const lblInput = r.querySelector('.suggestion-label-input');
+      const qInput = r.querySelector('.suggestion-query-input');
+      const label = (lblInput?.value || '').trim();
+      const query = (qInput?.value || '').trim();
+      if (label && query) {
+        result.push({ label, query });
+      } else if (query) {
+        result.push({ label: query, query });
+      } else if (label) {
+        result.push({ label, query: label });
       }
     });
     return result;
@@ -137,15 +201,16 @@
     $('prompt-placeholder-input').value = settings.promptPlaceholder || DEFAULT_PROMPT_PLACEHOLDER;
     renderSuggestionsList(settings.promptSuggestions || DEFAULT_PROMPT_SUGGESTIONS);
 
-    // Auth Status
+    // Auth Status & User Hints
     const authStatus = $('auth-status-badge');
-    if (settings.hasPassword) {
-      authStatus.textContent = '已设口令保护';
-      authStatus.className = 'key-status';
-    } else {
-      authStatus.textContent = '未设口令';
-      authStatus.className = 'key-status none';
-    }
+    authStatus.textContent = '已通过身份鉴权';
+    authStatus.className = 'key-status';
+
+    const currentUsername = settings.adminUsername || getStoredAdminUsername() || 'admin';
+    $('admin-current-user-hint').textContent = currentUsername;
+    $('current-username-display').textContent = currentUsername;
+    $('admin-username-input').value = '';
+    $('admin-new-password').value = '';
 
     // Primary
     populatePresetSelect($('primary-preset-select'), settings.primary?.preset || 'deepseek');
@@ -210,77 +275,50 @@
 
   async function loadSettings() {
     const token = getStoredAdminToken();
-    if (token) $('admin-token-input').value = token;
+    if (!token) {
+      showLogin();
+      return;
+    }
 
     try {
       const res = await fetch('/api/admin/model-settings', {
-        headers: token ? { 'x-admin-token': token } : {}
+        headers: { 'x-admin-token': token }
       });
+      if (res.status === 401) {
+        setStoredAdminToken('');
+        showLogin('登录已失效或凭证过期，请重新登录');
+        return;
+      }
       if (res.ok) {
         const data = await res.json();
         if (data.settings) {
+          showDashboard();
           renderView(data.settings);
           return;
         }
       }
     } catch (err) {
-      console.warn('API server unreachable, fallback to local settings', err);
+      console.warn('API fetch error', err);
     }
-
-    // Default view
-    renderView({
-      revision: 1,
-      enabled: true,
-      mode: 'model-first',
-      dailyLimit: 0,
-      perVisitorHourlyLimit: 50,
-      hasPassword: false,
-      systemPrompt: DEFAULT_SYSTEM_PROMPT,
-      promptPlaceholder: DEFAULT_PROMPT_PLACEHOLDER,
-      promptSuggestions: DEFAULT_PROMPT_SUGGESTIONS,
-      primary: {
-        preset: 'deepseek',
-        label: 'DeepSeek 主模型',
-        protocol: 'openai-chat',
-        baseUrl: 'https://api.deepseek.com/v1',
-        model: 'deepseek-chat',
-        timeoutSeconds: 30,
-        maxTokens: 2048,
-        temperature: 0.3,
-        hasKey: false
-      },
-      backup: {
-        enabled: false,
-        preset: 'qwen',
-        label: '通义千问 备用模型',
-        protocol: 'openai-chat',
-        baseUrl: 'https://dashscope.aliyuncs.com/compatible-mode/v1',
-        model: 'qwen-plus',
-        timeoutSeconds: 30,
-        maxTokens: 2048,
-        temperature: 0.3,
-        usePrimaryKey: false,
-        hasKey: false
-      }
-    });
   }
 
   async function saveSettings() {
-    const token = $('admin-token-input').value.trim();
-    if (token) setStoredAdminToken(token);
-
-    const placeholderVal = $('prompt-placeholder-input').value.trim();
-    const suggestionsVal = collectSuggestions();
+    const token = getStoredAdminToken();
+    if (!token) {
+      showLogin('请先登录管理员账号');
+      return;
+    }
 
     const payload = {
       enabled: $('model-enabled-toggle').checked,
       mode: $('model-mode-select').value,
       dailyLimit: Number($('daily-limit-input').value) || 0,
       perVisitorHourlyLimit: Number($('hourly-limit-input').value) || 50,
-      newPassword: $('admin-new-password').value.trim(),
       systemPrompt: $('system-prompt-input').value.trim(),
-      promptPlaceholder: placeholderVal || DEFAULT_PROMPT_PLACEHOLDER,
-      promptSuggestions: suggestionsVal.length > 0 ? suggestionsVal : DEFAULT_PROMPT_SUGGESTIONS,
+      promptPlaceholder: $('prompt-placeholder-input').value.trim(),
+      promptSuggestions: collectSuggestions(),
+      newUsername: $('admin-username-input').value.trim(),
+      newPassword: $('admin-new-password').value.trim(),
       primary: {
         preset: $('primary-preset-select').value,
         label: $('primary-label-input').value.trim(),
@@ -325,12 +363,23 @@
 
       const data = await res.json();
       if (!res.ok) {
+        if (res.status === 401) {
+          setStoredAdminToken('');
+          showLogin('登录已失效，请重新登录');
+          return;
+        }
         throw new Error(data.error || '保存失败');
+      }
+
+      if (data.token) {
+        setStoredAdminToken(data.token);
+      }
+      if (data.settings?.adminUsername) {
+        setStoredAdminUsername(data.settings.adminUsername);
       }
 
       showNotification('success', '✓ 配置已完成 AES-256-GCM 硬件加密并保存生效 (版本 v' + (data.settings?.revision || '1') + ')');
       if (data.settings) renderView(data.settings);
-      $('admin-new-password').value = '';
     } catch (err) {
       showNotification('error', '保存失败：' + (err.message || '网络或服务端异常'));
     } finally {
@@ -340,7 +389,12 @@
   }
 
   async function testConnection(slot) {
-    const token = $('admin-token-input').value.trim();
+    const token = getStoredAdminToken();
+    if (!token) {
+      showLogin('请先登录管理员账号以测试连接');
+      return;
+    }
+
     const btn = $(slot + '-test-btn');
     const resultBox = $(slot + '-test-result');
     btn.disabled = true;
@@ -414,6 +468,64 @@
     renderSuggestionsList(DEFAULT_PROMPT_SUGGESTIONS);
   });
 
-  // Init
-  loadSettings();
+  // Login Form Submission
+  const loginForm = $('admin-login-form');
+  if (loginForm) {
+    loginForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const submitBtn = $('login-submit-btn');
+      submitBtn.disabled = true;
+      submitBtn.textContent = '⏳ 正在验证登录...';
+      $('login-error-banner').style.display = 'none';
+
+      const username = $('login-username').value.trim();
+      const password = $('login-password').value.trim();
+
+      try {
+        const res = await fetch('/api/admin/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username, password })
+        });
+        const data = await res.json();
+        if (!res.ok) {
+          throw new Error(data.error || '登录失败，请检查账号与密码');
+        }
+
+        setStoredAdminToken(data.token);
+        setStoredAdminUsername(data.username || username);
+        $('login-password').value = '';
+
+        showDashboard();
+        showNotification('success', '✓ 登录成功，欢迎管理员 ' + (data.username || username));
+        await loadSettings();
+      } catch (err) {
+        $('login-error-banner').textContent = err.message;
+        $('login-error-banner').style.display = 'block';
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = '登 录 控 制 台 ➔';
+      }
+    });
+  }
+
+  // Logout Button
+  const logoutBtn = $('admin-logout-btn');
+  if (logoutBtn) {
+    logoutBtn.addEventListener('click', () => {
+      setStoredAdminToken('');
+      setStoredAdminUsername('');
+      showLogin();
+      showNotification('info', '已安全退出登录');
+    });
+  }
+
+  // Init auth and dashboard
+  const initialToken = getStoredAdminToken();
+  if (initialToken) {
+    loadSettings();
+  } else {
+    showLogin();
+  }
 })();
+
