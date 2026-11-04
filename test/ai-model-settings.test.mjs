@@ -86,6 +86,19 @@ test('Settings persistence, encryption and public view masking', async () => {
     assert.equal(pub.backup.encryptedKey, undefined)
     assert.equal(pub.primary.apiKey, undefined)
     assert.equal(pub.backup.apiKey, undefined)
+    assert.equal(typeof pub.promptPlaceholder, 'string')
+    assert.ok(Array.isArray(pub.promptSuggestions))
+
+    // Test custom prompt placeholder and suggestions persistence
+    const custom = await saveModelSettings({
+      promptPlaceholder: '自定义占位提示词',
+      promptSuggestions: [{ label: '知网测试', query: '测试论文精读' }],
+    }, configPath, keyPath)
+    assert.equal(custom.promptPlaceholder, '自定义占位提示词')
+    assert.deepEqual(custom.promptSuggestions, [{ label: '知网测试', query: '测试论文精读' }])
+    const customPub = toPublicView(custom)
+    assert.equal(customPub.promptPlaceholder, '自定义占位提示词')
+    assert.deepEqual(customPub.promptSuggestions, [{ label: '知网测试', query: '测试论文精读' }])
   } finally {
     await rm(dir, { recursive: true, force: true })
   }

@@ -46,7 +46,7 @@ function safePath(urlPath) {
     return target
   }
   let subPath = pathname
-  if (subPath.startsWith('/marketplace/')) {
+  if (pathname.startsWith('/marketplace/')) {
     subPath = subPath.slice('/marketplace/'.length)
   } else if (subPath.startsWith('/')) {
     subPath = subPath.slice(1)

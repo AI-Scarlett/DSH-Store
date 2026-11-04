@@ -81,6 +81,18 @@ export const DEFAULT_SYSTEM_PROMPT = `你是一名精通 DeepSeek Harness (DSH) 
 
 请保持回答严谨、专业、实用。禁止捏造不存在的插件名称或未收录的虚假命令。`
 
+
+
+export const DEFAULT_PROMPT_PLACEHOLDER = '输入你想完成的任务需求或插件名称（例如：知网论文精读并写大纲、在微信/QQ中接入DSH、查看API余额、增强会话长期记忆…）'
+
+export const DEFAULT_PROMPT_SUGGESTIONS = [
+  { label: '知网论文精读', query: '知网论文精读并写大纲' },
+  { label: '微信 / QQ 接入', query: '在微信和QQ中接入DSH会话' },
+  { label: '模型 API 余额', query: '实时查看 DeepSeek API 余额' },
+  { label: '长期记忆增强', query: '给大模型增加长期记忆和会话检索' },
+  { label: '网页 PPT 排版', query: '制作网页PPT与卡片设计排版' },
+]
+
 export function defaultSettings() {
   return {
     revision: 1,
@@ -90,6 +102,8 @@ export function defaultSettings() {
     perVisitorHourlyLimit: 50,
     adminPasswordHash: '', // SHA-256 of admin password, empty = prompt to set
     systemPrompt: DEFAULT_SYSTEM_PROMPT,
+    promptPlaceholder: DEFAULT_PROMPT_PLACEHOLDER,
+    promptSuggestions: DEFAULT_PROMPT_SUGGESTIONS,
     primary: {
       preset: 'deepseek',
       label: 'DeepSeek 主模型',
@@ -217,6 +231,12 @@ export function toPublicView(settings) {
     perVisitorHourlyLimit: settings.perVisitorHourlyLimit || 50,
     hasPassword: Boolean(settings.adminPasswordHash),
     systemPrompt: settings.systemPrompt || DEFAULT_SYSTEM_PROMPT,
+    promptPlaceholder: typeof settings.promptPlaceholder === 'string' && settings.promptPlaceholder.trim()
+      ? settings.promptPlaceholder.trim()
+      : DEFAULT_PROMPT_PLACEHOLDER,
+    promptSuggestions: Array.isArray(settings.promptSuggestions) && settings.promptSuggestions.length > 0
+      ? settings.promptSuggestions.map(s => typeof s === 'string' ? { label: s, query: s } : { label: s.label || s.query || '', query: s.query || s.label || '' }).filter(s => s.label && s.query)
+      : DEFAULT_PROMPT_SUGGESTIONS,
     primary: {
       preset: settings.primary?.preset || 'deepseek',
       label: settings.primary?.label || 'DeepSeek 主模型',
@@ -279,6 +299,12 @@ export async function saveModelSettings(input, configPath = DEFAULT_CONFIG_PATH,
     systemPrompt: typeof input.systemPrompt === 'string' && input.systemPrompt.trim()
       ? input.systemPrompt.trim()
       : current.systemPrompt,
+    promptPlaceholder: typeof input.promptPlaceholder === 'string' && input.promptPlaceholder.trim()
+      ? input.promptPlaceholder.trim()
+      : (typeof current.promptPlaceholder === 'string' ? current.promptPlaceholder : DEFAULT_PROMPT_PLACEHOLDER),
+    promptSuggestions: Array.isArray(input.promptSuggestions)
+      ? input.promptSuggestions.map(s => typeof s === 'string' ? { label: s.trim(), query: s.trim() } : { label: (s.label || s.query || '').trim(), query: (s.query || s.label || '').trim() }).filter(s => s.label && s.query)
+      : (Array.isArray(current.promptSuggestions) ? current.promptSuggestions : DEFAULT_PROMPT_SUGGESTIONS),
     primary: {
       preset: input.primary?.preset || current.primary.preset,
       label: input.primary?.label || current.primary.label,
