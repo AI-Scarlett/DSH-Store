@@ -1,0 +1,62 @@
+{
+  "schemaVersion": 1,
+  "type": "dsh-native-market-upgrade",
+  "planId": "dsh-native-market-desktop-confirm-command-polish-20261104",
+  "planFile": "docs/ops/dsh-native-market-desktop-confirm-command-polish-20261104.json",
+  "createdAt": "2026-11-04T01:30:00.000Z",
+  "baseCommit": "07429e0ff8489ba648180ea799eff9858c93a993",
+  "scope": [
+    ".github/workflows/registry.yml",
+    "README.md",
+    "docs/ops/dsh-native-market-desktop-confirm-command-polish-20261104.json",
+    "docs/reviews/dsh-native-market-desktop-confirm-command-polish-20261104.md",
+    "package.json",
+    "src/client.js",
+    "test/catalog.test.mjs",
+    "test/contracts.test.mjs",
+    "test/upgrade-matrix.test.mjs"
+  ],
+  "preconditions": {
+    ".github/workflows/registry.yml": "bf249abd12fc826a71493cff7e6d30d0ab3ce5aa9049db25a8200ed2a1349a48",
+    "README.md": "de61f7686b33a5eaf1255e422bc9a4a97657eb74e1b474a2f4efe7c6c42049da",
+    "docs/ops/dsh-native-market-desktop-confirm-command-polish-20261104.json": null,
+    "docs/reviews/dsh-native-market-desktop-confirm-command-polish-20261104.md": null,
+    "package.json": "f981b8727611c927b576210e4ffd78808cb4266dbc9372698ab6ca9c4e9b7836",
+    "src/client.js": "2261c21a0e89b054094e4e96c4c6685b0272ed65c39f4489bdefe0f2613e3667",
+    "test/catalog.test.mjs": "9b1d2b0bda474369c2a3a5e43a61325e6652ad6179c38b112fe587b1e09778b5",
+    "test/contracts.test.mjs": "0d533b18c25d345014ff2a5fe0427a338fb3c20eebeb2817d28500cb8908678c",
+    "test/upgrade-matrix.test.mjs": "6b8356d863e257efd8cfdadc94cb5cb623ecff14895e63c481c6eb7cf46e30dc"
+  },
+  "postconditions": {
+    ".github/workflows/registry.yml": "0bf8dd587ccac8748c9a6469fd6811e4a1f2d6276cb4f7654b33eeab4a24aeac",
+    "README.md": "2b347a17f136faa684d1e660a126b86ca7eb3af885f7c92877074191008e4b30",
+    "docs/reviews/dsh-native-market-desktop-confirm-command-polish-20261104.md": "2921682deaf5b6664b38dc05cd1e025e6b033589b15ab3f88521d9a9629df8ef",
+    "package.json": "9e8db8e0d7d343fe73165098d38a8f486a4a0d81cec38544b7b83438d0b82232",
+    "src/client.js": "db8a1259f2de2e124836130783d4aa0af059a2d531ed593be93ddef81d13e647",
+    "test/catalog.test.mjs": "31d8b211553d7a2710fa47a618f584045324db47036c735974808a6c1e94627e",
+    "test/contracts.test.mjs": "5cec00a3a3c6ae5f88f581c0fb27989202bfc1aaee9e141da6e51e45004827b8",
+    "test/upgrade-matrix.test.mjs": "c60da457b16a4f95df21808bd702cb9107c8191c23ae962dd96e3f2c4e2b3ac1"
+  },
+  "authorization": {
+    "source": "direct-user-request",
+    "request": "用户反馈 Desktop 确认弹窗中命令溢出显示不全，要求优化修复。",
+    "githubWriteCredential": "short-lived-token-required",
+    "publication": "auditable-source-pull-request-then-separate-first-party-Catalog-policy-release"
+  },
+  "objective": "修复 Desktop 插件安装与更新确认弹窗中确认命令超出卡片边缘与输入框显示不全的视觉缺陷，将完整命令呈现于支持换行与全选复制的专用等宽代码容器中，分离提示文案避免文本溢出，并为 DesktopStorePanel 补全 DETAIL_MODAL_CSS 弹窗样式注入。",
+  "change": {
+    "packageVersion": "0.9.39",
+    "actionConfirmCode": "Dedicated monospace container with wordBreak: break-all, overflowWrap: anywhere, and userSelect: all",
+    "actionConfirmInput": "Box sizing border-box, width 100%, 34px height, 11.5px monospace font and title attribute",
+    "actionConfirmLabel": "Separated prompt label from confirmation command phrase",
+    "modalCss": "Injected DETAIL_MODAL_CSS in DesktopStorePanel and added overflow-x: hidden on detail content"
+  },
+  "gates": [
+    "Bind plan to exact base Commit and preconditions; verify with scripts/verify-dsh-upgrade-plan.mjs",
+    "Pass all 47 Desktop compatibility test cases",
+    "Pass npm run check",
+    "Pass git diff --check"
+  ],
+  "rollback": "Revert to 0.9.38 via CI pull request without mutating real Profiles.",
+  "healthCheck": "node --test test/desktop-compat.test.mjs && npm run check pass"
+}
