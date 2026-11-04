@@ -18,6 +18,8 @@ test('serve-marketplace API endpoints handle recommendations, admin settings, an
       DSH_MARKETPLACE_PORT: String(testPort),
       MODEL_SETTINGS_CONFIG_PATH: join(dir, 'settings.json'),
       MODEL_SETTINGS_KEY_PATH: join(dir, 'test.key'),
+      DSH_ADMIN_USERNAME: 'admin',
+      DSH_ADMIN_PASSWORD: 'dsh2026admin',
     },
     stdio: ['ignore', 'pipe', 'pipe'],
   })
@@ -49,6 +51,7 @@ test('serve-marketplace API endpoints handle recommendations, admin settings, an
     assert.equal(adminRes.status, 200)
     const adminHtml = await adminRes.text()
     assert.ok(adminHtml.includes('大模型配置管理后台'))
+    assert.ok(adminHtml.includes('admin-login-view'))
     assert.ok(adminHtml.includes('prompt-placeholder-input'))
     assert.ok(adminHtml.includes('suggestions-list-container'))
 
@@ -64,23 +67,62 @@ test('serve-marketplace API endpoints handle recommendations, admin settings, an
     assert.ok(recData.plugins.length > 0)
     assert.ok(recData.plugins[0].installCommand.startsWith('dsh plugin add '))
 
-    // 4. Admin Model Settings GET (default settings, masked)
-    const getSettingsRes = await fetch(`${baseUrl}/api/admin/model-settings`)
+    // 4. Public AI Config API
+    const pubConfigRes = await fetch(`${baseUrl}/api/ai/public-config`)
+    assert.equal(pubConfigRes.status, 200)
+    const pubConfigData = await pubConfigRes.json()
+    assert.equal(pubConfigData.ok, true)
+    assert.ok(typeof pubConfigData.promptPlaceholder === 'string')
+    assert.ok(Array.isArray(pubConfigData.promptSuggestions))
+
+    // 5. Admin Settings unauthenticated GET should fail (401)
+    const unauthGetRes = await fetch(`${baseUrl}/api/admin/model-settings`)
+    assert.equal(unauthGetRes.status, 401)
+
+    // 6. Admin Login with wrong credentials should fail (401)
+    const badLoginRes = await fetch(`${baseUrl}/api/admin/login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username: 'admin', password: 'wrongpassword' }),
+    })
+    assert.equal(badLoginRes.status, 401)
+
+    // 7. Admin Login with correct credentials should succeed (200)
+    const loginRes = await fetch(`${baseUrl}/api/admin/login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username: 'admin', password: 'dsh2026admin' }),
+    })
+    assert.equal(loginRes.status, 200)
+    const loginData = await loginRes.json()
+    assert.equal(loginData.ok, true)
+    assert.ok(typeof loginData.token === 'string')
+    const sessionToken = loginData.token
+
+    // 8. Admin Model Settings GET with valid session token
+    const getSettingsRes = await fetch(`${baseUrl}/api/admin/model-settings`, {
+      headers: { 'x-admin-token': sessionToken },
+    })
     assert.equal(getSettingsRes.status, 200)
     const settingsData = await getSettingsRes.json()
     assert.equal(settingsData.ok, true)
-    assert.equal(settingsData.settings.hasPassword, false)
+    assert.equal(settingsData.settings.adminUsername, 'admin')
+    assert.equal(settingsData.settings.hasPassword, true)
     assert.equal(settingsData.settings.primary.apiKey, undefined)
     assert.equal(settingsData.settings.primary.encryptedKey, undefined)
 
-    // 5. Admin Model Settings POST (save new config and password)
+    // 9. Admin Model Settings POST with session token (update username & password)
     const postSettingsRes = await fetch(`${baseUrl}/api/admin/model-settings`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        'x-admin-token': sessionToken,
+      },
       body: JSON.stringify({
         enabled: true,
         mode: 'model-first',
-        newPassword: 'test-admin-pass',
+        newUsername: 'superadmin',
+        newPassword: 'new-secure-password-2026',
         promptPlaceholder: '自定义占位提示文案',
         promptSuggestions: [
           { label: '自定义示例1', query: '需求1' },
@@ -107,30 +149,35 @@ test('serve-marketplace API endpoints handle recommendations, admin settings, an
     assert.equal(postSettingsRes.status, 200)
     const savedData = await postSettingsRes.json()
     assert.equal(savedData.ok, true)
+    assert.equal(savedData.settings.adminUsername, 'superadmin')
     assert.equal(savedData.settings.hasPassword, true)
     assert.equal(savedData.settings.promptPlaceholder, '自定义占位提示文案')
     assert.equal(savedData.settings.promptSuggestions.length, 2)
     assert.equal(savedData.settings.primary.hasKey, true)
     assert.equal(savedData.settings.backup.hasKey, true)
 
-    // 6. Admin Model Settings POST with wrong password should fail (401)
-    const unauthorizedRes = await fetch(`${baseUrl}/api/admin/model-settings`, {
+    // 10. Login with new credentials succeeds
+    const newLoginRes = await fetch(`${baseUrl}/api/admin/login`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'x-admin-token': 'wrong-password' },
-      body: JSON.stringify({ enabled: false }),
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username: 'superadmin', password: 'new-secure-password-2026' }),
     })
-    assert.equal(unauthorizedRes.status, 401)
+    assert.equal(newLoginRes.status, 200)
+    const newLoginData = await newLoginRes.json()
+    assert.equal(newLoginData.ok, true)
+    assert.equal(newLoginData.username, 'superadmin')
 
-    // 7. Admin Model Settings POST with correct password should succeed
-    const authorizedRes = await fetch(`${baseUrl}/api/admin/model-settings`, {
+    // 11. Old credentials should now fail
+    const oldLoginRes = await fetch(`${baseUrl}/api/admin/login`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'x-admin-token': 'test-admin-pass' },
-      body: JSON.stringify({ enabled: true }),
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username: 'admin', password: 'dsh2026admin' }),
     })
-    assert.equal(authorizedRes.status, 200)
+    assert.equal(oldLoginRes.status, 401)
 
   } finally {
     child.kill('SIGTERM')
     await rm(dir, { recursive: true, force: true })
   }
 })
+

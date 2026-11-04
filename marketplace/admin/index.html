@@ -18,6 +18,10 @@
       </div>
     </div>
     <div class="admin-header-actions">
+      <div id="admin-user-bar" class="admin-user-bar" style="display: none;">
+        <span class="user-greeting">👤 <span id="current-username-display">admin</span></span>
+        <button type="button" id="admin-logout-btn" class="btn btn-secondary btn-sm" style="padding: 4px 12px; font-size: 0.82rem;">退出登录</button>
+      </div>
       <a class="admin-back-link" href="../">← 返回官网首页</a>
     </div>
   </header>
@@ -25,28 +29,56 @@
   <main class="admin-container">
     <div id="notification-banner" class="notification-banner" role="status"></div>
 
-    <div class="security-badge">
-      <span aria-hidden="true">🔒</span>
-      <span><strong>AES-256-GCM 硬件加密保护</strong>：所有大模型 API Key 均在服务端与安全存储中强加密保存，前台不返回明文，不包含在公开源码或静态包中。</span>
-    </div>
-
-    <!-- 管理员口令校验卡片 -->
-    <section class="admin-card">
-      <div class="admin-card-header">
-        <h2><span>🛡️</span> 管理员访问口令 (Admin Secret)</h2>
-        <span id="auth-status-badge" class="key-status none">待验证</span>
+    <!-- 登录视图（未登录时展示） -->
+    <section id="admin-login-view" class="admin-login-card">
+      <div class="login-header">
+        <img src="../dsh-store-icon.png" alt="DSH Store" width="56" height="56" style="border-radius: 12px; margin-bottom: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.25);">
+        <h2>管理员安全登录</h2>
+        <p>请输入管理员账号与密码以解锁大模型配置后台</p>
       </div>
-      <div class="admin-form-grid">
+      <div id="login-error-banner" class="login-error-banner" style="display: none;" role="alert"></div>
+      <form id="admin-login-form" class="login-form">
         <div class="form-group">
-          <label class="form-label" for="admin-token-input">输入管理员口令 <span class="form-hint">未设置口令时可留空直接配置</span></label>
-          <input class="form-input" id="admin-token-input" type="password" placeholder="输入口令以解锁保存与测试权限">
+          <label class="form-label" for="login-username">管理员账号</label>
+          <input class="form-input" id="login-username" type="text" autocomplete="username" placeholder="请输入管理员账号 (默认: admin)" required>
         </div>
         <div class="form-group">
-          <label class="form-label" for="admin-new-password">修改/设定新口令 <span class="form-hint">留空表示保持当前口令不变</span></label>
-          <input class="form-input" id="admin-new-password" type="password" placeholder="设定新的管理员口令">
+          <label class="form-label" for="login-password">管理员密码</label>
+          <input class="form-input" id="login-password" type="password" autocomplete="current-password" placeholder="请输入管理员密码" required>
         </div>
+        <button type="submit" id="login-submit-btn" class="btn btn-primary" style="width: 100%; justify-content: center; padding: 12px; margin-top: 10px; font-size: 0.95rem;">登 录 控 制 台 ➔</button>
+      </form>
+      <div class="login-footer" style="margin-top: 18px; text-align: center;">
+        <a class="admin-back-link" href="../" style="font-size: 0.85rem; color: #94a3b8;">← 返回官网首页</a>
       </div>
     </section>
+
+    <!-- 配置管理面板（登录后展示） -->
+    <div id="admin-dashboard-view" style="display: none;">
+      <div class="security-badge">
+        <span aria-hidden="true">🔒</span>
+        <span><strong>AES-256-GCM 硬件加密保护</strong>：所有大模型 API Key 均在服务端与安全存储中强加密保存，前台不返回明文，不包含在公开源码或静态包中。</span>
+      </div>
+
+      <!-- 管理员账号与安全设置卡片 -->
+      <section class="admin-card">
+        <div class="admin-card-header">
+          <h2><span>🛡️</span> 管理员账号与安全设置 (Account & Security)</h2>
+          <span id="auth-status-badge" class="key-status">已通过身份鉴权</span>
+        </div>
+        <div class="admin-form-grid">
+          <div class="form-group">
+            <label class="form-label" for="admin-username-input">修改管理员账号</label>
+            <input class="form-input" id="admin-username-input" type="text" placeholder="保持不变可留空">
+            <span class="form-hint">当前登录账号：<strong id="admin-current-user-hint">admin</strong>（留空表示不修改）</span>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="admin-new-password">修改管理员密码</label>
+            <input class="form-input" id="admin-new-password" type="password" placeholder="设定新密码，留空保持当前密码">
+            <span class="form-hint">密码采用 scrypt + 独立随机盐算法加密哈希存储</span>
+          </div>
+        </div>
+      </section>
 
     <!-- 解析总控策略 -->
     <section class="admin-card">
@@ -242,9 +274,10 @@
     </section>
 
     <!-- 保存按钮栏 -->
-    <div style="display: flex; justify-content: flex-end; gap: 14px; margin-top: 10px;">
-      <button type="button" class="btn btn-secondary" id="reload-btn">🔄 重新读取</button>
-      <button type="button" class="btn btn-primary" id="save-btn">💾 保存全部配置</button>
+      <div style="display: flex; justify-content: flex-end; gap: 14px; margin-top: 10px;">
+        <button type="button" class="btn btn-secondary" id="reload-btn">🔄 重新读取</button>
+        <button type="button" class="btn btn-primary" id="save-btn">💾 保存全部配置</button>
+      </div>
     </div>
   </main>
 
