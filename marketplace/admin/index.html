@@ -260,6 +260,10 @@
           <label class="form-label" for="backup-max-tokens">最大输出 Tokens</label>
           <input class="form-input" id="backup-max-tokens" type="number" min="256" max="8192" value="2048">
         </div>
+        <div class="form-group">
+          <label class="form-label" for="backup-temperature">采样温度 (Temperature)</label>
+          <input class="form-input" id="backup-temperature" type="number" min="0" max="2" step="0.1" value="0.3">
+        </div>
         <div class="form-group" style="justify-content: flex-end;">
           <label class="checkbox-group" style="margin-top: 10px;">
             <input type="checkbox" id="backup-clear-key">
