@@ -607,28 +607,37 @@ window.__ModuleLoader__.load({
         background: 'var(--dsw-alias-bg-layer-2)',
         border: '1px solid var(--dsw-alias-border-l2)',
         marginTop: '4px',
+        boxSizing: 'border-box',
+        width: '100%',
+        maxWidth: '100%',
       },
-      actionConfirmLabel: { display: 'flex', flexDirection: 'column', gap: '8px' },
+      actionConfirmLabel: {
+        display: 'flex', flexDirection: 'column', gap: '8px',
+        width: '100%', maxWidth: '100%', minWidth: 0,
+      },
       actionConfirmCode: {
+        boxSizing: 'border-box', width: '100%', maxWidth: '100%', minWidth: 0,
         fontFamily: 'ui-monospace, SFMono-Regular, Menlo, monospace',
-        fontSize: '11.5px', fontWeight: 650,
-        padding: '2px 6px', borderRadius: '5px',
+        fontSize: '11.5px', lineHeight: '1.45', fontWeight: 650,
+        padding: '7px 9px', borderRadius: '7px',
         background: 'var(--dsw-alias-bg-layer-1)',
         border: '1px solid var(--dsw-alias-border-l2)',
         color: 'var(--dsw-alias-label-primary)',
         wordBreak: 'break-all',
+        overflowWrap: 'anywhere',
+        userSelect: 'all',
+        cursor: 'text',
       },
       actionConfirmInput: {
+        boxSizing: 'border-box', width: '100%', maxWidth: '100%', minWidth: 0,
         fontFamily: 'ui-monospace, SFMono-Regular, Menlo, monospace',
-        fontSize: '12px',
-        height: '36px',
-        padding: '0 10px',
+        fontSize: '11.5px', lineHeight: '20px',
+        height: '34px',
+        padding: '0 9px',
         borderRadius: '7px',
         border: '1px solid var(--dsw-alias-border-l2)',
         background: 'var(--dsw-alias-bg-layer-1)',
         color: 'var(--dsw-alias-label-primary)',
-        boxSizing: 'border-box',
-        width: '100%',
       },
       marketPluginTabs: {
         display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'flex-start', alignSelf: 'flex-start',
@@ -703,7 +712,7 @@ window.__ModuleLoader__.load({
 
     const DETAIL_MODAL_CSS = `
       .dsh-safe-plugin-detail-modal { width: min(680px, 100%) !important; max-height: min(760px, calc(100vh - 48px)); }
-      .dsh-safe-plugin-detail-content { min-height: 0; overflow-y: auto; }
+      .dsh-safe-plugin-detail-content { min-height: 0; overflow-y: auto; overflow-x: hidden; }
     `
 
     const DETAIL_LABELS = {
@@ -3919,6 +3928,7 @@ window.__ModuleLoader__.load({
         }, loading: false, onPageChange: setPage }))
 
       return React.createElement('section', { style: styles.marketRoot, tabIndex: 0, 'aria-label': '插件商城（DSH-Store），可滚动浏览' },
+        React.createElement('style', null, DETAIL_MODAL_CSS),
         React.createElement('div', { style: styles.marketHero },
           React.createElement('div', { style: styles.toolbar },
             React.createElement('div', { style: styles.headingCopy },
@@ -4092,13 +4102,19 @@ window.__ModuleLoader__.load({
             '操作结果暂时无法确认。商城已刷新 Desktop Profile；请核对当前状态后再决定下一步，不会自动重试。') : null,
           !['success', 'error', 'unknown'].includes(actionState.status) ? React.createElement('div', { style: styles.actionConfirmCard },
             React.createElement('label', { style: styles.actionConfirmLabel },
-              '输入 ' + actionPlan.confirmation + '，确认在当前 Desktop Profile 执行'
+              React.createElement('span', { style: { fontSize: '12px', lineHeight: '18px', color: 'var(--dsw-alias-label-secondary)' } },
+                '确认在当前 Desktop Profile 执行'
                 + (['install', 'update'].includes(actionPlan.action) && actionPlan.entry.status === 'blocked'
-                  ? 'DSH 检查与' + actionLabel(actionPlan.action) : actionLabel(actionPlan.action)) + '：',
+                  ? 'DSH 检查与' + actionLabel(actionPlan.action) : actionLabel(actionPlan.action)) + '，请输入以下命令：'),
+              React.createElement('div', {
+                style: styles.actionConfirmCode,
+                title: '确认命令（可双击或拖选复制）',
+              }, actionPlan.confirmation),
               React.createElement('input', {
                 value: confirmation, onChange: event => { setConfirmation(event.target.value) },
                 style: styles.actionConfirmInput, placeholder: actionPlan.confirmation, disabled: actionState.status === 'running',
                 autoComplete: 'off', spellCheck: false, 'aria-label': '操作确认短语',
+                title: actionPlan.confirmation,
               }))) : null)) : null) : null)
     }
 
