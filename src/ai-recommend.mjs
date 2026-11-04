@@ -42,13 +42,24 @@ export async function loadCatalogIndex(customPath) {
     return entries
   } catch {
     if (!customPath) {
-      try {
-        const raw = await readFile(CATALOG_INDEX_PATH, "utf8")
-        const data = JSON.parse(raw)
-        const entries = (Array.isArray(data.entries) ? data.entries : []).map(normalizeCatalogEntry)
-        cachedCatalog = entries
-        return entries
-      } catch {}
+      const fallbackCandidates = [
+        CATALOG_INDEX_PATH,
+        "/opt/dsh-store/current/registry/catalog.json",
+        "/opt/dsh-store-cn/current/registry/catalog.json",
+        "/opt/dsh-store/current/registry/catalog-index.json",
+        "/opt/dsh-store-cn/current/registry/catalog-index.json",
+      ]
+      for (const fb of fallbackCandidates) {
+        try {
+          const raw = await readFile(fb, "utf8")
+          const data = JSON.parse(raw)
+          const entries = (Array.isArray(data.entries) ? data.entries : []).map(normalizeCatalogEntry)
+          if (entries.length > 0) {
+            cachedCatalog = entries
+            return entries
+          }
+        } catch {}
+      }
     }
     return []
   }
