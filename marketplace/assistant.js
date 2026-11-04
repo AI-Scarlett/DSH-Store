@@ -97,6 +97,114 @@
       });
   }
 
+  async function callClientModelRecommendation(query, clientModel, catalog) {
+    const activeEndpoint = clientModel.primary;
+    if (!activeEndpoint || !activeEndpoint.apiKey || !activeEndpoint.baseUrl || !activeEndpoint.model) {
+      return null;
+    }
+
+    const candidates = localSearchCandidates(query, catalog, 12);
+    const candidateContext = candidates.map(function(p, idx) {
+      return (idx + 1) + '. [' + p.id + '] ' + (p.displayName || p.name) + ' (版本: ' + (p.version || '') + '): ' + (p.description || '') + ' 类别: ' + (p.categories || []).join(',');
+    }).join('\n');
+
+    const systemPrompt = (clientModel.systemPrompt || '') +
+      '\n\n【可选插件目录上下文】：\n' + candidateContext;
+
+    const controller = new AbortController();
+    const timeoutMs = (activeEndpoint.timeoutSeconds || 30) * 1000;
+    const timer = setTimeout(function() { controller.abort(); }, timeoutMs);
+
+    try {
+      const isAnthropic = activeEndpoint.protocol === 'anthropic';
+      const url = isAnthropic
+        ? (activeEndpoint.baseUrl.replace(/\/+$/, '') + '/messages')
+        : (activeEndpoint.baseUrl.replace(/\/+$/, '') + '/chat/completions');
+
+      const headers = { 'Content-Type': 'application/json' };
+      let body;
+      if (isAnthropic) {
+        headers['x-api-key'] = activeEndpoint.apiKey;
+        headers['anthropic-version'] = '2023-06-01';
+        headers['anthropic-dangerous-direct-browser-access'] = 'true';
+        body = JSON.stringify({
+          model: activeEndpoint.model,
+          max_tokens: 1024,
+          messages: [
+            { role: 'user', content: systemPrompt + '\n\n用户需求：' + query }
+          ]
+        });
+      } else {
+        headers['Authorization'] = 'Bearer ' + activeEndpoint.apiKey;
+        body = JSON.stringify({
+          model: activeEndpoint.model,
+          max_tokens: 1024,
+          temperature: 0.3,
+          messages: [
+            { role: 'system', content: systemPrompt },
+            { role: 'user', content: query }
+          ]
+        });
+      }
+
+      const res = await fetch(url, {
+        method: 'POST',
+        headers,
+        body,
+        signal: controller.signal
+      });
+      clearTimeout(timer);
+
+      if (!res.ok) return null;
+      const data = await res.json();
+      const rawContent = isAnthropic
+        ? (data.content && data.content[0] ? data.content[0].text : '')
+        : (data.choices && data.choices[0] && data.choices[0].message ? data.choices[0].message.content : '');
+
+      if (!rawContent) return null;
+
+      let jsonStr = rawContent.trim();
+      const codeBlockMatch = jsonStr.match(/```(?:json)?\s*([\s\S]*?)\s*```/);
+      if (codeBlockMatch) jsonStr = codeBlockMatch[1].trim();
+
+      const parsed = JSON.parse(jsonStr);
+      const recommendedPlugins = [];
+      if (Array.isArray(parsed.plugins)) {
+        for (const item of parsed.plugins) {
+          const matched = catalog.find(function(c) { return c.id === item.id || c.name === item.id; });
+          if (matched) {
+            recommendedPlugins.push({
+              id: matched.id,
+              name: matched.name,
+              displayName: matched.displayName || matched.name,
+              description: item.reason || matched.description || '',
+              categories: matched.categories || [],
+              stars: matched.stars || 0,
+              version: matched.version || '',
+              commit: matched.commit || '',
+              repositoryUrl: matched.repositoryUrl || null,
+              clientAdaptation: Boolean(matched.clientAdaptation)
+            });
+          }
+        }
+      }
+
+      return {
+        ok: true,
+        source: 'model',
+        modelName: activeEndpoint.model,
+        analysis: parsed.analysis || '已根据您的需求匹配插件：',
+        summary: parsed.analysis || '已根据您的需求匹配插件：',
+        plugins: recommendedPlugins.length ? recommendedPlugins : candidates.slice(0, 3),
+        suggestions: Array.isArray(parsed.suggestedQueries) ? parsed.suggestedQueries : []
+      };
+    } catch (err) {
+      clearTimeout(timer);
+      console.warn('Client model recommendation fallback:', err);
+      return null;
+    }
+  }
+
   async function queryRecommendation(query) {
     try {
       const res = await fetch('/api/ai/recommend', {
@@ -107,6 +215,19 @@
       if (res.ok) {
         const data = await res.json();
         if (data.ok) return data;
+      }
+    } catch {}
+
+    // Check if client-side active model is configured in localStorage
+    try {
+      const clientModelRaw = localStorage.getItem('dsh_client_active_model');
+      if (clientModelRaw) {
+        const clientModel = JSON.parse(clientModelRaw);
+        if (clientModel.enabled !== false && clientModel.primary && clientModel.primary.apiKey && clientModel.primary.baseUrl && clientModel.primary.model) {
+          const catalog = await fetchLocalCatalog();
+          const llmResult = await callClientModelRecommendation(query, clientModel, catalog);
+          if (llmResult && llmResult.ok) return llmResult;
+        }
       }
     } catch {}
 
@@ -313,29 +434,40 @@
 
     // Dynamic config hydrate
     async function hydratePublicSettings() {
+      let data = null;
       try {
         const res = await fetch('/api/ai/public-config');
-        if (!res.ok) return;
-        const data = await res.json();
-        if (!data.ok) return;
-        if (data.promptPlaceholder) {
-          textarea.placeholder = data.promptPlaceholder;
-        }
-        if (Array.isArray(data.promptSuggestions) && data.promptSuggestions.length > 0) {
-          const chipsEl = $('hero-ai-chips');
-          if (chipsEl) {
-            chipsEl.innerHTML = '<span class="ai-chips-label">试试这样问：</span>' +
-              data.promptSuggestions.map(item => {
-                const lbl = escapeHtml(item.label || item.query || '');
-                const q = escapeHtml(item.query || item.label || '');
-                return '<button type="button" class="ai-chip-btn" data-query="' + q + '">' + lbl + ' ↗</button>';
-              }).join('');
-            bindChips(chipsEl);
-          }
+        if (res.ok) {
+          const json = await res.json();
+          if (json.ok) data = json;
         }
       } catch {}
+
+      if (!data) {
+        try {
+          const cached = localStorage.getItem('dsh_public_ai_config');
+          if (cached) data = JSON.parse(cached);
+        } catch {}
+      }
+
+      if (!data) return;
+      if (data.promptPlaceholder && textarea) {
+        textarea.placeholder = data.promptPlaceholder;
+      }
+      if (Array.isArray(data.promptSuggestions) && data.promptSuggestions.length > 0) {
+        const chipsEl = $('hero-ai-chips');
+        if (chipsEl) {
+          chipsEl.innerHTML = '<span class="ai-chips-label">试试这样问：</span>' +
+            data.promptSuggestions.map(function(item) {
+              const lbl = escapeHtml(item.label || item.query || '');
+              const q = escapeHtml(item.query || item.label || '');
+              return '<button type="button" class="ai-chip-btn" data-query="' + q + '">' + lbl + ' ↗</button>';
+            }).join('');
+          bindChips(chipsEl);
+        }
+      }
     }
-    hydratePublicSettings();
+        hydratePublicSettings();
   }
 
   // --- Floating Assistant Drawer ---
