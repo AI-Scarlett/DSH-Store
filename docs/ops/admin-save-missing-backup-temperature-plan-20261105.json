@@ -1,0 +1,72 @@
+{
+  "schemaVersion": 1,
+  "planId": "admin-save-missing-backup-temperature-20261105",
+  "operation": "repair-admin-settings-save-before-fetch",
+  "status": "validated-pending-pr-and-deployment",
+  "createdAt": "2026-11-05",
+  "repository": "AI-Scarlett/DSH-Store",
+  "baseCommit": "2ca8a4fc09d7099ae38cbc57d32d12d227b100dd",
+  "objective": "Restore saving model settings when the backup model is disabled by adding the missing backup temperature input read by the admin script.",
+  "evidence": {
+    "rootCauseConfirmed": true,
+    "adminScriptReferencesMissingElement": "marketplace/admin/admin.js reads backup-temperature while constructing the POST payload before fetch.",
+    "localAndDomesticAdminHtmlLackElement": true,
+    "deployedAdminScriptSha256": "4fe489c7d1662d69ad063349f1f0254c835f3a37e5f3158bb56209a63dcf0274",
+    "sourceAdminScriptSha256": "4fe489c7d1662d69ad063349f1f0254c835f3a37e5f3158bb56209a63dcf0274",
+    "deployedAdminHtmlSha256": "24156ca07b9da1f1fe9927e979d0dee4730bec3bad4fcee6a85105eaace62684"
+  },
+  "mutation": {
+    "exactFileScope": true,
+    "files": [
+      {
+        "path": "docs/ops/admin-save-missing-backup-temperature-plan-20261105.json",
+        "stateBefore": "absent",
+        "sha256Before": null
+      },
+      {
+        "path": "marketplace/admin/index.html",
+        "stateBefore": "present",
+        "sha256Before": "924cb56ebe704c1af9f68e09fba15f04fc5ab922a3611a21105a92ea884782fb",
+        "sha256After": "1055e4704098e95fe8d2ff471b2a2e1a71143b036eb36af76df995d43f92406c"
+      }
+    ],
+    "externalEffects": {
+      "modelServiceMutation": false,
+      "modelConfigurationMutation": false,
+      "credentialsIncluded": false,
+      "catalogMutation": false,
+      "authorOutreach": false,
+      "profileOrDshMutation": false,
+      "staticProductionPublication": true
+    }
+  },
+  "deterministicGates": [
+    "The backup-temperature input exists exactly once and is inside the backup model settings card.",
+    "Every literal DOM id read by marketplace/admin/admin.js exists in marketplace/admin/index.html.",
+    "npm run check passes before commit.",
+    "The domestic and international marketplace static builds contain the repaired admin page.",
+    "A CI-checked pull request contains only the declared source file and this plan.",
+    "After publication, both production /admin/ pages contain the backup-temperature control; the model-settings POST can be observed only in an authorized admin browser session."
+  ],
+  "deployment": {
+    "source": "CI-checked pull request to protected main",
+    "staticPages": "Existing marketplace workflow builds the domestic and international artifacts from main.",
+    "storefronts": "Use the existing storefront refresh path, then read back dsh.store/admin/ and dsh-store.cn/admin/.",
+    "rollback": "Revert the dedicated source commit through an audited pull request; retain the last known-good static deployment until the replacement passes public readback."
+  },
+  "rollback": "Revert the single HTML change through an audited pull request; no model settings or server data are changed by this fix.",
+  "authorization": "The user reported that saving model configuration on the production admin page sends no request and asked to continue resolving the live issue. This repair is limited to the static admin UI; it does not publish backend code or credentials.",
+  "execution": {
+    "status": "validated-pending-pr-and-deployment",
+    "pullRequest": null,
+    "sourceCommit": null,
+    "checks": {
+      "domIds": "passed; all 54 literal admin.js DOM selectors exist in the HTML; backup-temperature occurs once.",
+      "npmRunCheck": "passed; registry validation and 604 tests passed.",
+      "gitDiffCheck": "passed.",
+      "domesticStaticBuild": "passed; STATIC_MARKETPLACE_OK; generated admin page contains the backup-temperature control once.",
+      "internationalStaticBuild": "passed; STATIC_MARKETPLACE_OK; generated admin page contains the backup-temperature control once."
+    },
+    "deploymentReadback": {}
+  }
+}
