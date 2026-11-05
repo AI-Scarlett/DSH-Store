@@ -13,6 +13,7 @@
   "objective": "Keep ranking API release verification strict while accepting the exact deterministic DSH server-article navigation substitution applied after the Pages manifest is verified.",
   "fileScope": {
     "modify": [
+      "deploy/setup-model-service.sh",
       "scripts/serve-marketplace.mjs",
       "test/fixtures/ranking-release.mjs",
       "test/ranking-curation-api.test.mjs"
@@ -23,6 +24,7 @@
   },
   "preconditions": {
     "sha256AtBaseCommit": {
+      "deploy/setup-model-service.sh": "cc883217b273ccc8cb43c569f089081ce30a6f9a448f1cdd3ddabd888ce1cf4d",
       "scripts/serve-marketplace.mjs": "f79cdbe25f4c401aaf7768a85fa658b292c60a54753c4218b62b0249044fe1b5",
       "test/fixtures/ranking-release.mjs": "c0a58ad959c0b1dec6bae751921e9f0f614b3ea0c414b7dc88b1bbc289ce3e79",
       "test/ranking-curation-api.test.mjs": "f3779fedfff805180fedefb8a78793a4e58f321824e07a3a88e7b2d8e9062c49"
@@ -33,6 +35,7 @@
   },
   "postconditions": {
     "sha256": {
+      "deploy/setup-model-service.sh": "bcf054e11c7f8dd4cb3af4b12a33ed216a97fb207e289d148882ccdbc2c32f89",
       "scripts/serve-marketplace.mjs": "9d54263b76fa4b4791a6948229e719acddc93dd98f9a1ce9a0fdf3e668372084",
       "test/fixtures/ranking-release.mjs": "f65183c2ea41c8879e12ed4f14f925d2192815183d698401f2bb44ca5550e409",
       "test/ranking-curation-api.test.mjs": "f01b7d3ee573e9a3e70f922eeadfebbc65a749af332a97a2b4e4d2e4b875bd82"
@@ -62,6 +65,7 @@
       "The ranking data file must continue to match its exact size and SHA-256 in release-manifest.json.",
       "The HTML-pinned ranking digest must still match the verified data-file SHA-256.",
       "The ranking snapshot sourceCommit must still match release-manifest.json.",
+      "The embedded setup archive must contain the exact updated server script bytes and must pass its archive integrity checks.",
       "The API fixture covers the deterministic server transformation and retains the tamper rejection case.",
       "Required CI checks pass on the exact pull-request head before merge.",
       "After merge, deploy the exact merged backend source to both registered hosts and verify public config, ranking API, and unauthenticated admin rejection."
