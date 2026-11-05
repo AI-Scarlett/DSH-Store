@@ -23,6 +23,8 @@ DSH STORE 是一个运行在 DeepSeek Harness（DSH）设置页中的第三方
 > [GitHub Pages](https://ai-scarlett.github.io/DSH-Store/marketplace/repair/)
 > 查看官方修复/升级方案；修复页只有在 Catalog 固定到包含修复器的完整 Commit 后才会生成命令。
 
+> **DSH Store 0.9.40 兼容记录：**已用官方 DSH 0.2.2-rc.1 和一次性 Profile 完成 CLI 安装、配置检查、启动/API 冒烟与卸载还原；安装/启动/卸载通过，回滚未验证。DSH Desktop 实际 UI 仍未实机验收。
+
 ## 在 DSH 原生「发现」中添加商城
 
 DSH `0.2.1-alpha.4` 新增实验性「自定义插件市场」。在 **插件 → 实验性插件 → 更多** 中打开它，再进入 **发现 → 添加索引源**，填入：

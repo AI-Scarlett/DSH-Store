@@ -12,7 +12,20 @@ const root = await mkdtemp(join(dirname(resolve('.')), 'store-e3-'))
 const env = Object.fromEntries(Object.entries(process.env).filter(([key]) => !/TOKEN|SECRET|PASSWORD|API_KEY/i.test(key)))
 Object.assign(env, { DSH_HOME: join(root, 'home'), DSH_AGENTS_HOME: join(root, 'agents'), DSH_TELEMETRY_DISABLED: '1', npm_config_cache: join(root, 'cache'), CI: 'true' })
 const run = args => new Promise((resolveRun, reject) => execFile(process.execPath, [cli, ...args], { cwd: root, env, timeout: 180000, maxBuffer: 6 * 1024 * 1024 }, (error, stdout, stderr) => {
-  if (error) return reject(Object.assign(new Error('Official CLI failed'), { exitCode: error.code, codes: [...new Set((String(stdout) + String(stderr)).match(/\b(?:ERR_[A-Z0-9_]+|ENOENT|EPERM|EACCES|EBUSY|ENOSPC|EINVAL)\b/g) ?? [])], stage: args.slice(0, 4).join(' ') }))
+  if (error) {
+    const output = `${String(stdout)}\n${String(stderr)}`
+      .replaceAll(root, '<temporary-profile>')
+      .replaceAll(process.env.RUNNER_TEMP ?? '\0', '<runner-temp>')
+      .replaceAll(process.env.GITHUB_WORKSPACE ?? '\0', '<workspace>')
+      .replace(/(?:gh[pousr]_[A-Za-z0-9_]{20,}|github_pat_[A-Za-z0-9_]{20,})/g, '<redacted-token>')
+      .replace(/https?:\/\/[^\s]+/g, '<redacted-url>')
+      .split(/\r?\n/).filter(line => line.trim() !== '').slice(-8).join(' | ').slice(-1200)
+    return reject(Object.assign(new Error('Official CLI failed'), {
+      exitCode: error.code,
+      codes: [...new Set((String(stdout) + String(stderr)).match(/\b(?:ERR_[A-Z0-9_]+|ENOENT|EPERM|EACCES|EBUSY|ENOSPC|EINVAL)\b/g) ?? [])],
+      stage: args.slice(0, 4).join(' '), output,
+    }))
+  }
   resolveRun(stdout)
 }))
 let child
@@ -62,7 +75,7 @@ try {
   assert.equal(after, baselineConfig, 'uninstall must restore the exact pre-install Profile composition')
   console.log(JSON.stringify({ status: 'passed', cliVersion: (await run(['--version'])).trim(), install: true, dumpConfig: true, startup: true, unauthenticated: 401, authenticated: 200, crossOrigin: 403, journal: true, activation: true, uninstall: true, buildBundle: Boolean(buildRoot), realProfile: 'unchanged' }))
 } catch (error) {
-  console.error(JSON.stringify({ status: 'failed', message: error.message, stage: error.stage, exitCode: error.exitCode, codes: error.codes })); process.exitCode = 1
+  console.error(JSON.stringify({ status: 'failed', message: error.message, stage: error.stage, exitCode: error.exitCode, codes: error.codes, output: error.output })); process.exitCode = 1
 } finally {
   if (child && child.exitCode === null) { child.kill('SIGKILL'); await new Promise(done => child.once('exit', done)) }
   await rm(root, { recursive: true, force: true })

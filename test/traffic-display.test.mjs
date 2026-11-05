@@ -6,7 +6,7 @@ import { join } from 'node:path'
 import test from 'node:test'
 import { normalizePublicTrafficSnapshot } from '../marketplace/traffic-model.js'
 
-const generatorPath = new URL('../deploy/generate-public-dsh-store-traffic.py', import.meta.url)
+const generatorPath = decodeURIComponent(new URL('../deploy/generate-public-dsh-store-traffic.py', import.meta.url).pathname)
 
 function beijingDate(date) {
   const parts = new Intl.DateTimeFormat('en-CA', {
@@ -94,7 +94,7 @@ test('public snapshot generator emits only seven PV/UV rows and excludes visitor
     const input = join(directory, 'source.json')
     const output = join(directory, 'public.json')
     await writeFile(input, JSON.stringify(analyticsFixture()), 'utf8')
-    const result = spawnSync('python3', [generatorPath.pathname, '--input', input, '--output', output], { encoding: 'utf8' })
+    const result = spawnSync('python3', [generatorPath, '--input', input, '--output', output], { encoding: 'utf8' })
     assert.equal(result.status, 0, result.stderr)
     const snapshot = JSON.parse(await readFile(output, 'utf8'))
     assert.deepEqual(Object.keys(snapshot), ['schemaVersion', 'site', 'timeZone', 'generatedAt', 'sourceUpdatedAt', 'fresh', 'today', 'days'])
@@ -115,13 +115,13 @@ test('stale source is marked stale; malformed metrics leave the prior public sna
     const input = join(directory, 'source.json')
     const output = join(directory, 'public.json')
     await writeFile(input, JSON.stringify(analyticsFixture({ stale: true })), 'utf8')
-    const staleResult = spawnSync('python3', [generatorPath.pathname, '--input', input, '--output', output], { encoding: 'utf8' })
+    const staleResult = spawnSync('python3', [generatorPath, '--input', input, '--output', output], { encoding: 'utf8' })
     assert.equal(staleResult.status, 0, staleResult.stderr)
     assert.equal(JSON.parse(await readFile(output, 'utf8')).fresh, false)
 
     const prior = await readFile(output, 'utf8')
     await writeFile(input, JSON.stringify(analyticsFixture({ invalidCount: true })), 'utf8')
-    const invalidResult = spawnSync('python3', [generatorPath.pathname, '--input', input, '--output', output], { encoding: 'utf8' })
+    const invalidResult = spawnSync('python3', [generatorPath, '--input', input, '--output', output], { encoding: 'utf8' })
     assert.equal(invalidResult.status, 1)
     assert.equal(await readFile(output, 'utf8'), prior)
   })
