@@ -18,9 +18,10 @@ test('client peer declarations match the official Host pre-install contract', as
   assert.ok(!runtimeAlternatives.includes('0.2.1-rc.5'), 'no standalone dsh-client-runtime RC.5 exists on npm')
   assert.ok(!runtimeAlternatives.includes('0.2.2-alpha.2'), 'no standalone dsh-client-runtime alpha.2 exists on npm')
   assert.ok(!runtimeAlternatives.includes('0.2.2-alpha.3'), 'no standalone dsh-client-runtime alpha.3 exists on npm')
+  assert.ok(!runtimeAlternatives.includes('0.2.2-rc.1'), 'no standalone dsh-client-runtime rc.1 exists on npm')
   for (const name of clients.filter(value => value !== runtime)) {
     const alternatives = manifest.peerDependencies[name].split(' || ')
-    for (const release of ['0.2.0-rc.2', '0.2.1-alpha.1', '0.2.1-alpha.2', '0.2.1-alpha.3', '0.2.1-alpha.4', '0.2.1-alpha.5', '0.2.1-rc.1', '0.2.1-rc.2', '0.2.1-rc.3', '0.2.1-rc.4', '0.2.1-rc.5', '0.2.2-alpha.2', '0.2.2-alpha.3']) {
+    for (const release of ['0.2.0-rc.2', '0.2.1-alpha.1', '0.2.1-alpha.2', '0.2.1-alpha.3', '0.2.1-alpha.4', '0.2.1-alpha.5', '0.2.1-rc.1', '0.2.1-rc.2', '0.2.1-rc.3', '0.2.1-rc.4', '0.2.1-rc.5', '0.2.2-alpha.2', '0.2.2-alpha.3', '0.2.2-rc.1']) {
       assert.ok(alternatives.includes(release), `${name} must explicitly support published ${release}`)
     }
     assert.ok(alternatives.includes('>=0.1.0-rc.6 <0.2.0'), `${name} retains its historical bound`)
@@ -35,12 +36,13 @@ test('RC support is exact across the host and published UI peers without future 
   const uiClients = manifest.dsh.client.inject.filter(name => name !== runtime)
   for (const range of [manifest.dsh.compatibility.dsh, manifest.engines.dsh,
     ...uiClients.map(name => manifest.peerDependencies[name])]) {
-    for (const release of ['0.2.1-rc.1', '0.2.1-rc.2', '0.2.1-rc.3', '0.2.1-rc.4', '0.2.1-rc.5', '0.2.2-alpha.2', '0.2.2-alpha.3']) assert.ok(range.split(' || ').includes(release))
+    for (const release of ['0.2.1-rc.1', '0.2.1-rc.2', '0.2.1-rc.3', '0.2.1-rc.4', '0.2.1-rc.5', '0.2.2-alpha.2', '0.2.2-alpha.3', '0.2.2-rc.1']) assert.ok(range.split(' || ').includes(release))
     assert.ok(!range.includes('*'))
     assert.ok(!range.split(' || ').some(part => /^>=0\.2\./.test(part)))
   }
-  assert.equal(manifest.version, '0.9.39')
+  assert.equal(manifest.version, '0.9.40')
   assert.ok(['unknown', 'compatible'].includes(manifest.dsh.compatibility.dshReleases['0.2.1-rc.1']))
+  assert.equal(manifest.dsh.compatibility.dshReleases['0.2.2-rc.1'], 'compatible')
   assert.equal(manifest.dsh.compatibility.dshOperations['0.2.1-rc.1'].rollback, 'unknown')
   assert.equal(manifest.dsh.compatibility.dshReleases['0.2.1-rc.3'], 'compatible')
   assert.deepEqual(manifest.dsh.compatibility.dshOperations['0.2.1-rc.3'], {
@@ -60,6 +62,10 @@ test('RC support is exact across the host and published UI peers without future 
   })
   assert.equal(manifest.dsh.compatibility.dshReleases['0.2.2-alpha.3'], 'compatible')
   assert.deepEqual(manifest.dsh.compatibility.dshOperations['0.2.2-alpha.3'], {
+    install: 'passed', start: 'passed', uninstall: 'passed', rollback: 'unknown',
+  })
+  assert.equal(manifest.dsh.compatibility.dshReleases['0.2.2-rc.1'], 'compatible')
+  assert.deepEqual(manifest.dsh.compatibility.dshOperations['0.2.2-rc.1'], {
     install: 'passed', start: 'passed', uninstall: 'passed', rollback: 'unknown',
   })
 })

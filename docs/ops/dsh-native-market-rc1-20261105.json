@@ -1,0 +1,91 @@
+{
+  "schemaVersion": 1,
+  "type": "dsh-native-market-upgrade",
+  "planId": "dsh-native-market-rc1-20261105",
+  "planFile": "docs/ops/dsh-native-market-rc1-20261105.json",
+  "createdAt": "2026-11-05T02:55:00Z",
+  "baseCommit": "89dcbf2e015a0631e39de0d64b5cfe7e4e0bf400",
+  "scope": [
+    ".github/workflows/upgrade-matrix.yml",
+    "README.md",
+    "docs/ops/dsh-native-market-rc1-20261105.json",
+    "package.json",
+    "test/catalog.test.mjs",
+    "test/contracts.test.mjs",
+    "test/upgrade-matrix.test.mjs"
+  ],
+  "preconditions": {
+    ".github/workflows/upgrade-matrix.yml": "243feb54f4b5fc0e87726704b2ebfc8b268f03a00960ea491e9b30087ef25723",
+    "README.md": "14231ba0921abe24e8b9bb9ccfb7f4a5daa9f1e4e77cd33ec2a70dd798d29c4e",
+    "docs/ops/dsh-native-market-rc1-20261105.json": null,
+    "docs/ops/dsh-native-market-rc1-20261105.json": null,
+    "package.json": "b354c3def7a70d00ba748fccff28066f55d8760c7f2734fb3ae94e0d2940baff",
+    "test/catalog.test.mjs": "31d8b211553d7a2710fa47a618f584045324db47036c735974808a6c1e94627e",
+    "test/contracts.test.mjs": "5cec00a3a3c6ae5f88f581c0fb27989202bfc1aaee9e141da6e51e45004827b8",
+    "test/upgrade-matrix.test.mjs": "c60da457b16a4f95df21808bd702cb9107c8191c23ae962dd96e3f2c4e2b3ac1"
+  },
+  "postconditions": {
+    ".github/workflows/upgrade-matrix.yml": "243feb54f4b5fc0e87726704b2ebfc8b268f03a00960ea491e9b30087ef25723",
+    "README.md": "b0171930ae531680574e01d0dc3a5c3090c3b45e7f8cd114d15ac91588854d86",
+    "package.json": "e4c5e191a54856999ffce7228b3a4428e38d05464272ea6b1de49f0949f9b566",
+    "test/catalog.test.mjs": "50674913804c701dd75ce32c93046031d75129aad9fc9badc5de3f646b9c1fad",
+    "test/contracts.test.mjs": "d0925e961b3aba6820bd93726ad52bdbc25e206b67a3e84c03a44c05c26b3731",
+    "test/upgrade-matrix.test.mjs": "2439b976aa0af55014802ae1a3d30dd2bce1a7d9d5c54d2e7e16246a0af6b612"
+  },
+  "postconditions": {
+    ".github/workflows/upgrade-matrix.yml": "243feb54f4b5fc0e87726704b2ebfc8b268f03a00960ea491e9b30087ef25723",
+    "README.md": "b0171930ae531680574e01d0dc3a5c3090c3b45e7f8cd114d15ac91588854d86",
+    "package.json": "e4c5e191a54856999ffce7228b3a4428e38d05464272ea6b1de49f0949f9b566",
+    "test/catalog.test.mjs": "50674913804c701dd75ce32c93046031d75129aad9fc9badc5de3f646b9c1fad",
+    "test/contracts.test.mjs": "d0925e961b3aba6820bd93726ad52bdbc25e206b67a3e84c03a44c05c26b3731",
+    "test/upgrade-matrix.test.mjs": "2439b976aa0af55014802ae1a3d30dd2bce1a7d9d5c54d2e7e16246a0af6b612"
+  },
+  "authorization": {
+    "source": "direct-user-request",
+    "request": "修复安装兼容问题并更新 GitHub PR；用户同意按安全流程精准支持官方 DSH 0.2.2-rc.1，不使用 allow-version 豁免。",
+    "githubWriteCredential": "short-lived-token-required",
+    "publication": "auditable-pull-request-only"
+  },
+  "official": {
+    "runtime": "0.2.2-rc.1",
+    "latestThree": ["0.2.2-alpha.2", "0.2.2-alpha.3", "0.2.2-rc.1"],
+    "clientRuntimePackage": "0.1.1-rc.2 (no 0.2.2-rc.1 package published; peer range intentionally unchanged)",
+    "uiPeers": {
+      "versions": [
+        "@deepseek-ai/dsh-client-ui-primitives@0.2.2-rc.1",
+        "@deepseek-ai/dsh-client-ui-settings@0.2.2-rc.1",
+        "@deepseek-ai/dsh-client-ui-layout@0.2.2-rc.1",
+        "@deepseek-ai/dsh-client-ui-sidebar@0.2.2-rc.1",
+        "@deepseek-ai/dsh-client-ui-slots@0.2.2-rc.1"
+      ],
+      "evidence": "official npm published tarballs; exports and compiled files match 0.2.2-alpha.3 except metadata and the sidebar build-version banner"
+    }
+  },
+  "change": {
+    "packageVersion": "0.9.40",
+    "compatibility": "Add exact 0.2.2-rc.1 to host and five published injected UI peers; do not widen the absent standalone dsh-client-runtime peer. Exact operation evidence is based on a disposable official-CLI E3 run.",
+    "sourceCode": "No DSH source or @deepseek-ai package is modified. Prior cache/UI work in PR #1758 remains unchanged."
+  },
+  "verification": {
+    "e3": {
+      "dshVersion": "0.2.2-rc.1",
+      "sourceCommit": "89dcbf2e015a0631e39de0d64b5cfe7e4e0bf400",
+      "commands": ["official CLI plugin add", "dump-config", "dsh web start", "authenticated runtime and inventory APIs", "unauthenticated 401", "cross-origin 403", "uninstall"],
+      "result": "passed",
+      "realProfile": "unchanged",
+      "versionExemptionsUsed": false,
+      "rollback": "unknown"
+    },
+    "ui": "Published UI exports verified; real DSH Desktop visual acceptance remains unverified."
+  },
+  "gates": [
+    "Run npm run check and git diff --check.",
+    "Verify plan against exact base, scope and postcondition hashes.",
+    "Pass latest-three official CLI runtime matrix on Linux/macOS/Windows and pnpm 10/11/12 at final PR head.",
+    "Pass Registry validation and CodeQL; merge only after all required checks pass.",
+    "After source merge, make a separate first-party Store Catalog release plan and verify public surfaces."
+  ],
+  "rollback": "If source CI or post-merge health fails, revert the source PR or restore the previous Catalog pin through a checked PR. No real Profile changes.",
+  "healthCheck": "Local full check, exact-source official CLI matrix, then merged main readback.",
+  "verdict": {"status": "prepared-for-ci", "realProfileChanged": false, "catalogChanged": false, "desktopUiVerified": false}
+}
