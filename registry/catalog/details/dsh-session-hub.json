@@ -23,7 +23,7 @@
   "manifestPath": "plugin/package.json",
   "installPath": "plugin",
   "updatePolicy": "external-only",
-  "commit": "95ea42f43945b59d41d3840de91745be3c99ebd7",
+  "commit": "8fe277f4c6a628fad179083b40eac2f33f654e9d",
   "version": "0.1.0",
   "categories": [
     "experimental"
@@ -31,16 +31,16 @@
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-14T03:59:43.000Z",
-    "observedAt": "2026-10-14T11:34:43.000Z",
+    "updatedAt": "2026-11-05T07:10:52.000Z",
+    "observedAt": "2026-11-05T15:03:10.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-10-14T11:34:43.000Z",
-      "evidenceUrl": "https://github.com/zyf2492313716-cloud/dsh-session-hub/commit/95ea42f43945b59d41d3840de91745be3c99ebd7",
+      "method": "automated-fixed-source-update-v3",
+      "checkedAt": "2026-11-05T15:03:10.000Z",
+      "evidenceUrl": "https://github.com/zyf2492313716-cloud/dsh-session-hub/commit/8fe277f4c6a628fad179083b40eac2f33f654e9d",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -80,10 +80,11 @@
   "entryIds": [
     "dsh-session-hub"
   ],
+  "configOverrides": [],
   "status": "blocked",
   "statusReason": "Automatic policy blocked installation: the current fixed source 95ea42f43945 has no common ancestor with the prior Catalog pin e7594ab1a6d5; independent source history remains external-only. manifest repository does not match the canonical GitHub repository DSH compatibility is not explicitly declared Node.js compatibility is not explicitly declared runtime source contains the files permission signal runtime source contains the network permission signal runtime source contains the credentials permission signal",
   "compatibility": {
-    "dsh": null,
+    "dsh": ">=0.2.0",
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
@@ -103,8 +104,10 @@
       "0.2.1-rc.2": "unknown",
       "0.2.1-rc.3": "unknown",
       "0.2.1-rc.4": "unknown",
-      "0.2.2-alpha.2": "unknown",
-      "0.2.1-rc.5": "unknown"
+      "0.2.2-alpha.2": "compatible",
+      "0.2.1-rc.5": "compatible",
+      "0.2.2-alpha.3": "compatible",
+      "0.2.2-rc.1": "compatible"
     },
     "dshOperations": {
       "rc.7": {
@@ -226,9 +229,21 @@
         "start": "unknown",
         "uninstall": "unknown",
         "rollback": "unknown"
+      },
+      "0.2.2-alpha.3": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.2.2-rc.1": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
       }
     },
-    "node": null,
+    "node": ">=22.15",
     "systems": [],
     "profiles": [
       "web"

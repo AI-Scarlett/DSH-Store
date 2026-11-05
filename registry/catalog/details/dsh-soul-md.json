@@ -26,8 +26,8 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "649a96c256d563b93f5bb1d03ac60d49c46e063d",
-  "version": "0.11.0",
+  "commit": "0de8445b4941315da18138d5b5f1fc19fa5cc7d2",
+  "version": "0.12.1",
   "categories": [
     "tools",
     "memory"
@@ -35,16 +35,16 @@
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-11-01T00:50:22.000Z",
-    "observedAt": "2026-11-01T04:50:46.000Z",
+    "updatedAt": "2026-11-05T07:17:07.000Z",
+    "observedAt": "2026-11-05T15:03:10.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-11-01T04:50:46.000Z",
-      "evidenceUrl": "https://github.com/Scorp1o117/dsh-soul-md/commit/649a96c256d563b93f5bb1d03ac60d49c46e063d",
+      "checkedAt": "2026-11-05T15:03:10.000Z",
+      "evidenceUrl": "https://github.com/Scorp1o117/dsh-soul-md/commit/0de8445b4941315da18138d5b5f1fc19fa5cc7d2",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -83,14 +83,14 @@
   },
   "admission": {
     "engine": "bounded-source-v3",
-    "binding": "e9fbacac34fdf0a47a027d2a9a178b909c558eadc14c9204ba8b87c1569c274f",
+    "binding": "97b0c242b6867a7c6bfedbdca2c8521f8e6281fb940c37cc7126a405c5feaab5",
     "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
     "state": "review-required",
     "sourceContract": "verified",
     "coverage": "complete",
     "capabilities": "review-required",
     "compatibility": "per-version-declaration",
-    "reviewRegistryDigest": "3ee824a897b999908d49e4102dc999a725cb096fc7b70eca0db7022561e73c07"
+    "reviewRegistryDigest": "f40e4a10a2ae7f8d8dadbbde3a7a03e9f7d967caf114a14d6a7bbfe46a93efbf"
   },
   "entryIds": [
     "soul-md"
@@ -99,7 +99,7 @@
   "status": "blocked",
   "statusReason": "Automatic policy blocked installation: runtime or optional dependencies require a separate supply-chain review; runtime source contains the files permission signal",
   "compatibility": {
-    "dsh": ">=0.2.0-rc.2 <0.3.0 || 0.2.1-rc.1 || 0.2.1-rc.2 || 0.2.1-rc.3 || 0.2.1-rc.4 || 0.2.1-rc.5",
+    "dsh": ">=0.2.0-rc.2 <0.3.0 || 0.2.1-rc.1 || 0.2.1-rc.2 || 0.2.1-rc.3 || 0.2.1-rc.4 || 0.2.1-rc.5 || 0.2.2-rc.1",
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
@@ -123,7 +123,9 @@
       "0.2.1-rc.3": "compatible",
       "0.2.1-rc.4": "compatible",
       "0.2.1-rc.5": "compatible",
-      "0.2.2-alpha.2": "unknown"
+      "0.2.2-rc.1": "compatible",
+      "0.2.2-alpha.2": "unknown",
+      "0.2.2-alpha.3": "unknown"
     },
     "dshOperations": {
       "rc.7": {
@@ -258,7 +260,19 @@
         "uninstall": "unknown",
         "rollback": "unknown"
       },
+      "0.2.2-rc.1": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
       "0.2.2-alpha.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.2.2-alpha.3": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",
