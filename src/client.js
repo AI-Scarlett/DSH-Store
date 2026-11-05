@@ -586,7 +586,7 @@ window.__ModuleLoader__.load({
       },
       specBox: {
         fontFamily: 'ui-monospace, SFMono-Regular, Menlo, monospace',
-        fontSize: '11.5px', lineHeight: '1.45', wordBreak: 'break-all',
+        fontSize: '10px', lineHeight: '1.4', wordBreak: 'break-all', overflowWrap: 'anywhere',
         color: 'var(--dsw-alias-label-primary)',
         padding: '8px 10px', borderRadius: '7px',
         background: 'var(--dsw-alias-bg-layer-1)',
@@ -615,26 +615,27 @@ window.__ModuleLoader__.load({
       actionConfirmLabel: {
         display: 'flex', flexDirection: 'column', gap: '8px',
         width: '100%', maxWidth: '100%', minWidth: 0,
+        fontSize: '10px', lineHeight: '14px',
       },
       actionConfirmCode: {
         boxSizing: 'border-box', width: '100%', maxWidth: '100%', minWidth: 0,
         fontFamily: 'ui-monospace, SFMono-Regular, Menlo, monospace',
-        fontSize: '11.5px', lineHeight: '1.45', fontWeight: 650,
-        padding: '7px 9px', borderRadius: '7px',
+        fontSize: '10px', lineHeight: '14px', fontWeight: 600,
+        height: '44px', padding: '6px 8px', borderRadius: '7px',
         background: 'var(--dsw-alias-bg-layer-1)',
         border: '1px solid var(--dsw-alias-border-l2)',
         color: 'var(--dsw-alias-label-primary)',
         wordBreak: 'break-all',
         overflowWrap: 'anywhere',
-        userSelect: 'all',
+        whiteSpace: 'pre-wrap', resize: 'none', userSelect: 'text',
         cursor: 'text',
       },
       actionConfirmInput: {
         boxSizing: 'border-box', width: '100%', maxWidth: '100%', minWidth: 0,
         fontFamily: 'ui-monospace, SFMono-Regular, Menlo, monospace',
-        fontSize: '11.5px', lineHeight: '20px',
-        height: '34px',
-        padding: '0 9px',
+        fontSize: '10px', lineHeight: '16px',
+        height: '32px',
+        padding: '0 8px',
         borderRadius: '7px',
         border: '1px solid var(--dsw-alias-border-l2)',
         background: 'var(--dsw-alias-bg-layer-1)',
@@ -3620,6 +3621,15 @@ window.__ModuleLoader__.load({
           ? '当前 Desktop 安装版本：' + (typeof actionBundle.version === 'string' && DESKTOP_VERSION.test(actionBundle.version) ? actionBundle.version : '未知')
             + ' · ' + (actionBundle.enabled === true ? '已启动' : actionBundle.enabled === false ? '已关闭' : '状态未知')
           : '当前 Desktop 尚未安装'
+      const selectActionConfirmCommand = event => {
+        const element = event.currentTarget
+        const selectionDocument = element.ownerDocument
+        const range = selectionDocument.createRange()
+        range.selectNodeContents(element)
+        const selection = selectionDocument.getSelection()
+        selection?.removeAllRanges()
+        selection?.addRange(range)
+      }
       const operationFooter = actionPlan ? React.createElement('div', { style: styles.actions },
         actionState.status === 'success' ? React.createElement(Button, { primary: true, onClick: closeActionPlan }, '完成')
           : actionState.status === 'unknown' ? React.createElement(Button, { onClick: closeActionPlan }, '关闭并刷新核对')
@@ -4104,17 +4114,19 @@ window.__ModuleLoader__.load({
             '操作结果暂时无法确认。商城已刷新 Desktop Profile；请核对当前状态后再决定下一步，不会自动重试。') : null,
           !['success', 'error', 'unknown'].includes(actionState.status) ? React.createElement('div', { style: styles.actionConfirmCard },
             React.createElement('label', { style: styles.actionConfirmLabel },
-              React.createElement('span', { style: { fontSize: '12px', lineHeight: '18px', color: 'var(--dsw-alias-label-secondary)' } },
+              React.createElement('span', { style: { fontSize: '10px', lineHeight: '14px', color: 'var(--dsw-alias-label-secondary)' } },
                 '确认在当前 Desktop Profile 执行'
                 + (['install', 'update'].includes(actionPlan.action) && actionPlan.entry.status === 'blocked'
-                  ? 'DSH 检查与' + actionLabel(actionPlan.action) : actionLabel(actionPlan.action)) + '，请输入以下命令：'),
+                  ? 'DSH 检查与' + actionLabel(actionPlan.action) : actionLabel(actionPlan.action)) + '；请复制上方命令并粘贴到下方。'),
               React.createElement('div', {
                 style: styles.actionConfirmCode,
-                title: '确认命令（可双击或拖选复制）',
+                role: 'textbox', 'aria-readonly': true, 'aria-label': '可复制的完整操作命令', tabIndex: 0,
+                onFocus: selectActionConfirmCommand, onClick: selectActionConfirmCommand,
+                title: '点击命令框后可全选复制',
               }, actionPlan.confirmation),
               React.createElement('input', {
                 value: confirmation, onChange: event => { setConfirmation(event.target.value) },
-                style: styles.actionConfirmInput, placeholder: actionPlan.confirmation, disabled: actionState.status === 'running',
+                style: styles.actionConfirmInput, placeholder: '粘贴上方完整命令', disabled: actionState.status === 'running',
                 autoComplete: 'off', spellCheck: false, 'aria-label': '操作确认短语',
                 title: actionPlan.confirmation,
               }))) : null)) : null) : null)
