@@ -22,24 +22,24 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "c6fcbd1cfea316e3feb475d13ff6c63d77cc0d90",
-  "version": "0.4.19",
+  "commit": "1d363b5ff4b25e4c5737204530fe9f08c70b1fbe",
+  "version": "0.4.21",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-11-02T15:10:30.000Z",
-    "observedAt": "2026-11-03T07:18:33.000Z",
+    "updatedAt": "2026-11-04T22:05:37.000Z",
+    "observedAt": "2026-11-05T16:14:13.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-11-03T07:18:33.000Z",
-      "evidenceUrl": "https://github.com/GooDAnDReaDY/dsh-russian-lang/commit/c6fcbd1cfea316e3feb475d13ff6c63d77cc0d90",
+      "checkedAt": "2026-11-05T16:14:13.000Z",
+      "evidenceUrl": "https://github.com/GooDAnDReaDY/dsh-russian-lang/commit/1d363b5ff4b25e4c5737204530fe9f08c70b1fbe",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -78,14 +78,14 @@
   },
   "admission": {
     "engine": "bounded-source-v3",
-    "binding": "cba60174699b788b90b4a1f0d2375d596f52734f7892059e66fd2dc2a03bc3f5",
+    "binding": "339000081e6571d3172c5f6a6fe255b274876bd10ba31690d388d317c141840a",
     "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
     "state": "rejected",
     "sourceContract": "verified",
     "coverage": "incomplete",
     "capabilities": "prohibited",
     "compatibility": "per-version-declaration",
-    "reviewRegistryDigest": "3ee824a897b999908d49e4102dc999a725cb096fc7b70eca0db7022561e73c07"
+    "reviewRegistryDigest": "f40e4a10a2ae7f8d8dadbbde3a7a03e9f7d967caf114a14d6a7bbfe46a93efbf"
   },
   "entryIds": [
     "dsh-russian-lang"
@@ -94,7 +94,7 @@
   "status": "blocked",
   "statusReason": "Automatic policy blocked installation: manifest files selectors are unsupported or ambiguous; whole-package fallback requires review; package ignore rules require artifact review; package contains unsupported artifacts requiring review: .gitignore; fixed-source scan is incomplete; unobserved capability signals are unknown; fixed-source security findings require quarantine; fixed-source security warnings require review; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime sourc",
   "compatibility": {
-    "dsh": "0.2.0-rc.2 || >=0.2.1-rc.2 <0.2.2-0",
+    "dsh": "0.2.0-rc.2 || >=0.2.1-rc.2 <0.2.2-0 || >=0.2.2-0 <0.2.3-0",
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
@@ -109,7 +109,9 @@
       "0.2.1-rc.3": "compatible",
       "0.2.1-rc.4": "compatible",
       "0.2.1-rc.5": "compatible",
-      "0.2.2-alpha.2": "unknown"
+      "0.2.2-rc.1": "compatible",
+      "0.2.2-alpha.2": "unknown",
+      "0.2.2-alpha.3": "unknown"
     },
     "dshOperations": {
       "rc.7": {
@@ -190,7 +192,19 @@
         "uninstall": "unknown",
         "rollback": "unknown"
       },
+      "0.2.2-rc.1": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
       "0.2.2-alpha.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.2.2-alpha.3": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",
