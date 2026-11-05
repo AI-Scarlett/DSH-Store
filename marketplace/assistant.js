@@ -1,3 +1,5 @@
+import { searchCatalogCandidates } from './lib/recommendation-search.mjs?v=20261105a';
+
 (function() {
   'use strict';
 
@@ -29,72 +31,25 @@
   }
 
   function localSearchCandidates(query, catalog, limit = 4) {
-    if (!catalog || !catalog.length) return [];
-    const q = query.toLowerCase().trim();
-    const tokens = q.replace(/[^\w\u4e00-\u9fa5]/g, ' ').split(/\s+/).filter(t => t.length >= 2);
-    // Add 2-character ngrams for Chinese
-    const tokenSet = new Set(tokens);
-    for (const token of tokens) {
-      if (/[\u4e00-\u9fa5]/.test(token) && token.length >= 2) {
-        for (let i = 0; i <= token.length - 2; i++) {
-          tokenSet.add(token.slice(i, i + 2));
-        }
-      }
-    }
-
-    const scored = catalog.map(entry => {
-      let score = 0;
-      const pkg = (entry.packageName || entry.name || entry.id || '').toLowerCase();
-      const name = (entry.name || entry.nameZh || pkg).toLowerCase();
-      const alias = (entry.alias || entry.nameEn || '').toLowerCase();
-      const terms = (entry.searchTerms || []).join(' ').toLowerCase();
-      const desc = (entry.description || terms).toLowerCase();
-      const cats = (entry.categories || []).join(' ').toLowerCase();
-
-      if (desc.includes(q)) score += 35;
-      if (name.includes(q) || alias.includes(q) || pkg.includes(q)) score += 40;
-      if (terms.includes(q)) score += 30;
-
-      for (const t of tokenSet) {
-        if (pkg.includes(t)) score += 15;
-        if (name.includes(t)) score += 16;
-        if (alias.includes(t)) score += 12;
-        if (desc.includes(t)) score += 10;
-        if (terms.includes(t)) score += 12;
-        if (cats.includes(t)) score += 8;
-      }
-
-      if (score > 0) {
-        if (entry.stars > 0) score += Math.min(10, Math.log2(entry.stars + 1));
-        if (entry.clientAdaptation) score += 2;
-        if (entry.status === 'approved') score += 5;
-      }
-      return { entry, score };
+    return searchCatalogCandidates(query, catalog, limit).map(entry => {
+      const pkgName = entry.packageName || entry.name || entry.id;
+      const displayName = entry.name || entry.nameZh || entry.nameEn || pkgName;
+      const desc = entry.description || (Array.isArray(entry.searchTerms) ? entry.searchTerms.slice(0, 6).join(' · ') : '');
+      return {
+        name: pkgName,
+        displayName: displayName,
+        alias: entry.alias || displayName,
+        description: desc,
+        reason: '功能匹配：' + (desc ? desc.slice(0, 120) + '...' : '与目录功能标签相符'),
+        installCommand: 'dsh plugin add ' + pkgName,
+        categories: entry.categories || [],
+        stars: entry.stars || 0,
+        version: entry.version || '',
+        commit: entry.commit || '',
+        repositoryUrl: entry.repositoryUrl || null,
+        clientAdaptation: Boolean(entry.clientAdaptation)
+      };
     });
-
-    return scored
-      .filter(item => item.score > 0)
-      .sort((a, b) => b.score - a.score)
-      .slice(0, limit)
-      .map(item => {
-        const pkgName = item.entry.packageName || item.entry.name || item.entry.id;
-        const displayName = item.entry.name || item.entry.nameZh || pkgName;
-        const desc = item.entry.description || (Array.isArray(item.entry.searchTerms) ? item.entry.searchTerms.slice(0, 6).join(' · ') : '');
-        return {
-          name: pkgName,
-          displayName: displayName,
-          alias: item.entry.alias || displayName,
-          description: desc,
-          reason: '功能匹配：' + (desc ? desc.slice(0, 80) + '...' : '与关键词相符'),
-          installCommand: 'dsh plugin add ' + pkgName,
-          categories: item.entry.categories || [],
-          stars: item.entry.stars || 0,
-          version: item.entry.version || '',
-          commit: item.entry.commit || '',
-          repositoryUrl: item.entry.repositoryUrl || null,
-          clientAdaptation: Boolean(item.entry.clientAdaptation)
-        };
-      });
   }
 
   async function queryRecommendation(query) {
@@ -119,14 +74,12 @@
       modelName: null,
       summary: plugins.length
         ? '已通过 DSH 插件目录规则引擎为你匹配到 ' + plugins.length + ' 个相关插件。DSH Store 所有条目均经过固定 Commit 审核，请在终端中执行命令安装：'
-        : '未在当前目录中检索到与「' + query.slice(0, 30) + '」完全匹配的插件，建议在完整插件目录中按分类浏览。',
+        : '推荐服务暂不可用，静态目录索引不含完整固定 Commit 信息，暂时无法安全给出安装建议。请稍后重试。',
       plugins,
-      suggestions: [
-        '知网论文精读',
-        '微信 / QQ 接入 DSH',
-        '大模型 API 余额监控',
-        '会话长期记忆与检索'
-      ]
+      suggestions: plugins.length ? [
+        '这些插件需要哪些权限？',
+        '如何查看插件支持的 DSH 版本？'
+      ] : []
     };
   }
 
