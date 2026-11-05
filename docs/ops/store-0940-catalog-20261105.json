@@ -1,0 +1,211 @@
+{
+  "schemaVersion": 1,
+  "type": "first-party-store-catalog-release",
+  "planId": "store-0940-catalog-20261105",
+  "planPath": "docs/ops/store-0940-catalog-20261105.json",
+  "sourceReviewPath": "docs/reviews/store-0940-source-review-20261105.json",
+  "version": "0.9.40",
+  "targetDshRelease": "0.2.2-rc.1",
+  "latestDshWindow": [
+    "0.2.2-alpha.2",
+    "0.2.2-alpha.3",
+    "0.2.2-rc.1"
+  ],
+  "reviewMode": "first-party-owner-reviewed",
+  "createdAt": "2026-11-05T13:50:00+08:00",
+  "baseCommit": "ac1e0c87f2c7ade4db4572b780ea70746cc546f6",
+  "sourceCommit": "ac1e0c87f2c7ade4db4572b780ea70746cc546f6",
+  "sourceTree": "39b59d6cef568f369979e2dce538be4202f3a8f2",
+  "sourceHead": "071e8e1ca6357c1da53a8eb22e1d983172d64f70",
+  "scope": [
+    ".github/workflows/registry.yml",
+    "README.md",
+    "docs/ops/dsh-native-market-rc1-20261105.json",
+    "docs/ops/store-0940-catalog-20261105.json",
+    "docs/reviews/store-0940-release-20261105.md",
+    "docs/reviews/store-0940-source-review-20261105.json",
+    "registry/catalog-index.json",
+    "registry/catalog.json",
+    "registry/catalog/details/dsh-safe-plugin-manager.json",
+    "test/catalog.test.mjs"
+  ],
+  "preconditions": {
+    ".github/workflows/registry.yml": "4a746fe4a39c1270501e00cdb7ee08ddb3cc95e6afa022b19f67c27213697198",
+    "README.md": "b0171930ae531680574e01d0dc3a5c3090c3b45e7f8cd114d15ac91588854d86",
+    "docs/ops/dsh-native-market-rc1-20261105.json": "45190702b847d8c2a2214920a8eca2ed1dc5953efbd09ba90d53383b14ac41b1",
+    "docs/ops/store-0940-catalog-20261105.json": null,
+    "docs/reviews/store-0940-release-20261105.md": null,
+    "docs/reviews/store-0940-source-review-20261105.json": null,
+    "registry/catalog-index.json": "3a3892d6bc861dda6b6cb16c116b260048167e273927579a0f357e3e226c54b1",
+    "registry/catalog.json": "5a904ecf2d956f967ebc433a1c18e2d63a21caf76afc81ac5e5e24e6aec334b6",
+    "registry/catalog/details/dsh-safe-plugin-manager.json": "a9f0bba6dad8603b7355f7f307a72b436dc6991c094c311df2d8ee8a2581001e",
+    "test/catalog.test.mjs": "50674913804c701dd75ce32c93046031d75129aad9fc9badc5de3f646b9c1fad"
+  },
+  "postconditions": {
+    ".github/workflows/registry.yml": "4a746fe4a39c1270501e00cdb7ee08ddb3cc95e6afa022b19f67c27213697198",
+    "README.md": "2d2a7a34cac27e731badbc282d8a46846edd23481b5a8db9c65780d0cb9078e1",
+    "docs/ops/dsh-native-market-rc1-20261105.json": "45190702b847d8c2a2214920a8eca2ed1dc5953efbd09ba90d53383b14ac41b1",
+    "docs/reviews/store-0940-release-20261105.md": "182705108709221d69fca9596b5e48bed6d84235a0f3e7de130d8d725e1eaa87",
+    "docs/reviews/store-0940-source-review-20261105.json": "c4df3925f35ee0d9308352c5bb12b00c7cef7fb84c61d31ba7d66f13aa0da6ed",
+    "registry/catalog-index.json": "409e25d8bd67e86ba1c3a6f640382a014ce3b4e0b7a191788a9e220a3340cce6",
+    "registry/catalog.json": "de72c060cac5c47d00d3c220fa1c65918d8c21f9ecee6607f8d3c780417ef10e",
+    "registry/catalog/details/dsh-safe-plugin-manager.json": "f5780930ad16cb056c998eb160cf4b5e0c9dccff1f141e359462439364410a3a",
+    "test/catalog.test.mjs": "081075e2369843c748a8fc814897a294ecf626c6db2cbb1c1430addd17641f1f"
+  },
+  "authorization": {
+    "source": "direct-user-request",
+    "request": "用户要求继续解决 0.9.40 Catalog 发布问题并核验商城上线。",
+    "githubWriteCredential": "short-lived-token-required",
+    "mutationRoute": "auditable-ci-checked-pull-request",
+    "deterministicPolicyVerdictRequired": true
+  },
+  "sourceEvidence": {
+    "canonicalRepository": "https://github.com/AI-Scarlett/DSH-Store",
+    "mergedSourcePullRequest": 1758,
+    "sourceHead": "071e8e1ca6357c1da53a8eb22e1d983172d64f70",
+    "mergeCommit": "ac1e0c87f2c7ade4db4572b780ea70746cc546f6",
+    "sourceTree": "39b59d6cef568f369979e2dce538be4202f3a8f2",
+    "sourceChecks": [
+      {
+        "name": "Registry validation",
+        "state": "SUCCESS",
+        "runId": 41962025678,
+        "headRevision": "071e8e1ca6357c1da53a8eb22e1d983172d64f70",
+        "url": "https://github.com/AI-Scarlett/DSH-Store/actions/runs/41962025678"
+      },
+      {
+        "name": "DSH upgrade matrix",
+        "state": "SUCCESS",
+        "runId": 41962025690,
+        "headRevision": "071e8e1ca6357c1da53a8eb22e1d983172d64f70",
+        "url": "https://github.com/AI-Scarlett/DSH-Store/actions/runs/41962025690"
+      },
+      {
+        "name": "PR #1758",
+        "state": "SUCCESS",
+        "runId": 41962021261,
+        "headRevision": "071e8e1ca6357c1da53a8eb22e1d983172d64f70",
+        "url": "https://github.com/AI-Scarlett/DSH-Store/actions/runs/41962021261"
+      },
+      {
+        "name": "Registry validation",
+        "state": "SUCCESS",
+        "runId": 41962341659,
+        "headRevision": "ac1e0c87f2c7ade4db4572b780ea70746cc546f6",
+        "url": "https://github.com/AI-Scarlett/DSH-Store/actions/runs/41962341659"
+      },
+      {
+        "name": "Publish plugin marketplace",
+        "state": "SUCCESS",
+        "runId": 41962341347,
+        "headRevision": "ac1e0c87f2c7ade4db4572b780ea70746cc546f6",
+        "url": "https://github.com/AI-Scarlett/DSH-Store/actions/runs/41962341347"
+      },
+      {
+        "name": "Push on main",
+        "state": "SUCCESS",
+        "runId": 41962340177,
+        "headRevision": "ac1e0c87f2c7ade4db4572b780ea70746cc546f6",
+        "url": "https://github.com/AI-Scarlett/DSH-Store/actions/runs/41962340177"
+      }
+    ],
+    "officialDshWindow": {
+      "authority": "official-GitHub-releases-and-npm-published-versions-via-exact-head-matrix-resolver",
+      "latestVersion": "0.2.2-rc.1",
+      "releases": [
+        "0.2.2-alpha.2",
+        "0.2.2-alpha.3",
+        "0.2.2-rc.1"
+      ],
+      "evidenceUrl": "https://github.com/AI-Scarlett/DSH-Store/actions/runs/41962025690"
+    },
+    "registryValidation": {
+      "state": "SUCCESS",
+      "runId": 41962025678,
+      "headRevision": "071e8e1ca6357c1da53a8eb22e1d983172d64f70",
+      "url": "https://github.com/AI-Scarlett/DSH-Store/actions/runs/41962025678"
+    }
+  },
+  "objective": "将现有首方 DSH Store Catalog 条目更新至 0.9.40 固定源码 ac1e0c87，发布 Catalog 缓存/筛选优化并补全最新 DSH 0.2.2-rc.1 精确兼容证据。",
+  "change": {
+    "packageVersion": "0.9.40",
+    "cache": "Bounded persistent Catalog cache with offline stale-snapshot fallback and split-v2 index/detail reuse.",
+    "desktopStyles": "Improve search/filter text sizing and select height; preserve previous market snapshot while refreshing.",
+    "compatibility": "Official latest-three exact window; 0.2.2-rc.1 disposable official CLI E3 install/start/uninstall passed, rollback unknown.",
+    "catalog": "Update only the existing first-party Store entry, its index/detail, README and release evidence; preserve 874 third-party entries, permissions and web-only Profile declaration."
+  },
+  "commands": [
+    {
+      "argv": [
+        "node",
+        "scripts/verify-store-release-plan.mjs",
+        "docs/ops/store-0940-catalog-20261105.json"
+      ],
+      "expected": "STORE_RELEASE_PLAN_OK"
+    },
+    {
+      "argv": [
+        "npm",
+        "run",
+        "validate:registry"
+      ],
+      "expected": "REGISTRY_OK"
+    },
+    {
+      "argv": [
+        "npm",
+        "run",
+        "verify:registry-sources"
+      ],
+      "expected": "all fixed catalog sources verify"
+    },
+    {
+      "argv": [
+        "npm",
+        "run",
+        "check"
+      ],
+      "expected": "all repository checks pass"
+    },
+    {
+      "argv": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "expected": "exit 0"
+    }
+  ],
+  "gates": [
+    "Typed release plan binds merged source commit ac1e0c87, exact Catalog scope and base SHA-256 preconditions.",
+    "Source PR #1758 exact-head tests and merge Registry/Pages/CodeQL workflows pass.",
+    "Complete bounded fixed-source evidence: 169 runtime files; exact hashes and prior findings; existing elevated permissions retained; no independent security audit claimed.",
+    "Pin only first-party Store entry to 0.9.40 and exact source commit; preserve every third-party record.",
+    "Registry validation, fixed source verification and full repository tests pass before Catalog PR submission.",
+    "After merge, independently verify GitHub Raw, Pages, dsh.store and dsh-store.cn.",
+    "Real Desktop visual/Profile acceptance remains separate and unverified; no real Profile mutation."
+  ],
+  "rollback": {
+    "catalog": "If listing health fails, restore previous 0.9.39 pin through CI-checked Catalog PR; immutable source remains unchanged.",
+    "runtime": "No real Profile, package or restart mutation."
+  },
+  "healthCheck": "Require typed fixed-source release plan, complete bounded review, Registry/index validation, full repo checks, exact-head PR CI and public four-surface readback.",
+  "execution": {
+    "status": "prepared-awaiting-catalog-pr",
+    "sourceBase": "ac1e0c87f2c7ade4db4572b780ea70746cc546f6",
+    "packageVersion": "0.9.40",
+    "catalogVersion": "pending Catalog PR merge",
+    "exactHeadCi": "Source exact-head and merged main checks passed; Catalog PR pending.",
+    "publicReadback": "pending after Catalog merge",
+    "realDesktop": "unverified",
+    "pullRequest": null,
+    "localChecks": {
+      "storePlan": "pending",
+      "registry": "pending",
+      "npmRunCheck": "pending",
+      "registrySources": "pending",
+      "fixedSourceReview": "complete: 169 files; 2167034 bytes; 13 reviewed findings",
+      "diffCheck": "pending"
+    }
+  }
+}
