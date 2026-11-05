@@ -89,8 +89,10 @@ export function formatPluginCard(entry, customReason) {
   }
 }
 
-export function fallbackRecommend(queryText, catalog) {
-  const candidates = searchCatalogCandidates(queryText, catalog, 4)
+export function fallbackRecommend(queryText, catalog, candidateSet) {
+  const candidates = Array.isArray(candidateSet)
+    ? candidateSet.slice(0, 4)
+    : searchCatalogCandidates(queryText, catalog, 4)
   if (candidates.length === 0) {
     return {
       ok: true,
@@ -237,8 +239,8 @@ export function parseLlmRecommendation(rawText, candidates) {
   }
 }
 
-export async function recommendPlugins({ query, settings, catalog, customKeyPath }) {
-  const cat = catalog || await loadCatalogIndex()
+export async function recommendPlugins({ query, settings, catalog, candidates: candidateSet, customKeyPath }) {
+  const cat = catalog || (Array.isArray(candidateSet) ? [] : await loadCatalogIndex())
   const q = (query || "").trim()
   if (!q) {
     return {
@@ -253,17 +255,19 @@ export async function recommendPlugins({ query, settings, catalog, customKeyPath
     settings?.primary?.model
 
   const isModelFirst = settings?.mode !== "rules-first"
+  const candidates = Array.isArray(candidateSet)
+    ? candidateSet.slice(0, 8)
+    : searchCatalogCandidates(q, cat, 8)
+  const ruleResult = fallbackRecommend(q, cat, candidates)
 
   if (!hasPrimary || !isModelFirst) {
-    const ruleResult = fallbackRecommend(q, cat)
     if (ruleResult.plugins.length > 0 || !hasPrimary) {
       return ruleResult
     }
   }
 
-  const candidates = searchCatalogCandidates(q, cat, 8)
   if (candidates.length === 0) {
-    return fallbackRecommend(q, cat)
+    return ruleResult
   }
 
   const contextJson = JSON.stringify(candidates.map(c => ({
@@ -330,7 +334,7 @@ export async function recommendPlugins({ query, settings, catalog, customKeyPath
     }
   }
 
-  const fallback = fallbackRecommend(q, cat)
+  const fallback = fallbackRecommend(q, cat, candidates)
   fallback.notice = "已自动为您切换为智能规则选型引擎"
   return fallback
 }

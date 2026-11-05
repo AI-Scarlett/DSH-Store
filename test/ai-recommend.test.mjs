@@ -189,3 +189,20 @@ test('recommendPlugins falls back gracefully when LLM is not configured', async 
   assert.equal(res.plugins[0].name, '@yunfengnobug/dsh-qq-bot')
   assert.equal(res.plugins[0].installCommand, 'dsh plugin add @yunfengnobug/dsh-qq-bot')
 })
+
+test('recommendPlugins trusts the server index candidate set, including an intentionally empty result', async () => {
+  const empty = await recommendPlugins({
+    query: 'QQ 机器人',
+    settings: { enabled: false },
+    catalog: sampleCatalog,
+    candidates: [],
+  })
+  assert.deepEqual(empty.plugins, [])
+
+  const selected = await recommendPlugins({
+    query: 'QQ 机器人',
+    settings: { enabled: false },
+    candidates: [sampleCatalog[1]],
+  })
+  assert.deepEqual(selected.plugins.map(plugin => plugin.name), ['@yunfengnobug/dsh-qq-bot'])
+})

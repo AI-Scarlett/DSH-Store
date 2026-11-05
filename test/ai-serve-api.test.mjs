@@ -18,6 +18,8 @@ test('serve-marketplace API endpoints handle recommendations, admin settings, an
       DSH_MARKETPLACE_PORT: String(testPort),
       MODEL_SETTINGS_CONFIG_PATH: join(dir, 'settings.json'),
       MODEL_SETTINGS_KEY_PATH: join(dir, 'test.key'),
+      PLUGIN_CATALOG_DB_PATH: join(dir, 'plugin-catalog.sqlite3'),
+      PLUGIN_CATALOG_SYNC_INTERVAL_MS: '0',
       DSH_ADMIN_USERNAME: 'admin',
       DSH_ADMIN_PASSWORD: 'dsh2026admin',
     },
@@ -67,7 +69,16 @@ test('serve-marketplace API endpoints handle recommendations, admin settings, an
     assert.ok(recData.plugins.length > 0)
     assert.ok(recData.plugins[0].installCommand.startsWith('dsh plugin add '))
 
-    // 4. Public AI Config API
+    // 4. The recommendation index is server-side SQLite and records its Catalog source.
+    const catalogStatusRes = await fetch(`${baseUrl}/api/ai/catalog-status`)
+    assert.equal(catalogStatusRes.status, 200)
+    const catalogStatus = await catalogStatusRes.json()
+    assert.equal(catalogStatus.ok, true)
+    assert.equal(catalogStatus.backend, 'sqlite-fts5')
+    assert.ok(catalogStatus.entryCount > 0)
+    assert.match(catalogStatus.catalogSha256, /^[a-f0-9]{64}$/)
+
+    // 5. Public AI Config API
     const pubConfigRes = await fetch(`${baseUrl}/api/ai/public-config`)
     assert.equal(pubConfigRes.status, 200)
     const pubConfigData = await pubConfigRes.json()

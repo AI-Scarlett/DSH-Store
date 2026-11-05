@@ -1,0 +1,112 @@
+{
+  "schemaVersion": 1,
+  "planId": "ai-recommendation-sqlite-index-20261105",
+  "operation": "deploy-server-side-sqlite-plugin-search-and-catalog-sync",
+  "createdAt": "2026-11-05",
+  "status": "prepared",
+  "repository": "AI-Scarlett/DSH-Store",
+  "baseCommit": "8899e9a53ac4db42af37e74b2ea7e888fd38e97a",
+  "dependsOnPlanId": "ai-recommendation-relevance-20261105",
+  "authorization": "The user explicitly requested the approved server-database recommendation plan be implemented and put online.",
+  "objective": "Search plugin purpose and keywords in a private server-side SQLite FTS5 index, enrich selected rows from a locally verified versioned Store Catalog, and periodically synchronize the index from the newest valid local Pages release without GitHub requests during user searches.",
+  "fileScope": {
+    "modify": [
+      "src/ai-recommend.mjs",
+      "scripts/serve-marketplace.mjs",
+      "test/ai-recommend.test.mjs",
+      "test/ai-serve-api.test.mjs"
+    ],
+    "add": [
+      "src/plugin-catalog-index.mjs",
+      "scripts/plugin-catalog-sqlite-worker.py",
+      "test/plugin-catalog-index.test.mjs",
+      "docs/ops/ai-recommendation-sqlite-index-plan-20261105.json"
+    ]
+  },
+  "preconditions": {
+    "sha256": {
+      "src/ai-recommend.mjs": "c77ab60c55d084fe99d20947c5033d5d9464aee1b656292a390f2c95a9b0cdee",
+      "scripts/serve-marketplace.mjs": "7b63af260832c733e14dd8331be18ba548d3c4d73e6d18fdcd8ec5773c96f416",
+      "test/ai-recommend.test.mjs": "71b01a169a6418faf2cb50a600e1829af0ee934dc76020151c7038233f08e901",
+      "test/ai-serve-api.test.mjs": "e12bb23dd38460c5bbf2f4905fc0380732dac2dc588f9252b2cad2fbf878c3d6"
+    },
+    "absent": [
+      "src/plugin-catalog-index.mjs",
+      "scripts/plugin-catalog-sqlite-worker.py",
+      "test/plugin-catalog-index.test.mjs",
+      "docs/ops/ai-recommendation-sqlite-index-plan-20261105.json"
+    ],
+    "production": [
+      {
+        "serverId": "dsh-store-cn-814823065",
+        "host": "100.75.186.28",
+        "service": "dsh-model-service",
+        "currentRelease": "/opt/dsh-model-service/releases/2ca8a4fc",
+        "currentReleaseSha256": {
+          "package.json": "b354c3def7a70d00ba748fccff28066f55d8760c7f2734fb3ae94e0d2940baff",
+          "src/ai-model-settings.mjs": "8c2d358712de0c960d94e3228ca23c56238b0c2aa0dc1b8e0f715c4a112a08e4",
+          "src/ai-recommend.mjs": "cea581e26b716f9f83a031ec4e468e4381218d806082bc23f621e154c8bcea62",
+          "scripts/serve-marketplace.mjs": "7b63af260832c733e14dd8331be18ba548d3c4d73e6d18fdcd8ec5773c96f416"
+        },
+        "serviceUnitSha256": "d563b3c195b28d36f336ba3da5168a0a701d4d648d8974ff2dd5fad04a4ce228",
+        "catalogSource": {
+          "release": "/opt/dsh-store-cn/releases/20261104T233352Z-pages-641908ebbe53",
+          "sourceCommit": "641908ebbe536de8f25b654f008b94cc54c6152b",
+          "catalogSha256": "5a904ecf2d956f967ebc433a1c18e2d63a21caf76afc81ac5e5e24e6aec334b6",
+          "entryCount": 875
+        },
+        "targetDatabase": "/var/lib/dsh-model-service/plugin-catalog.sqlite3",
+        "targetDatabaseState": "absent"
+      },
+      {
+        "serverId": "dsh-store-intl",
+        "host": "100.119.62.98",
+        "service": "dsh-model-service",
+        "currentRelease": "/opt/dsh-model-service/releases/2ca8a4fc",
+        "currentReleaseSha256": {
+          "package.json": "b354c3def7a70d00ba748fccff28066f55d8760c7f2734fb3ae94e0d2940baff",
+          "src/ai-model-settings.mjs": "8c2d358712de0c960d94e3228ca23c56238b0c2aa0dc1b8e0f715c4a112a08e4",
+          "src/ai-recommend.mjs": "cea581e26b716f9f83a031ec4e468e4381218d806082bc23f621e154c8bcea62",
+          "scripts/serve-marketplace.mjs": "7b63af260832c733e14dd8331be18ba548d3c4d73e6d18fdcd8ec5773c96f416"
+        },
+        "serviceUnitSha256": "d563b3c195b28d36f336ba3da5168a0a701d4d648d8974ff2dd5fad04a4ce228",
+        "catalogSource": {
+          "release": "/opt/dsh-store/releases/20261104T233128Z-pages-641908ebbe53",
+          "sourceCommit": "641908ebbe536de8f25b654f008b94cc54c6152b",
+          "catalogSha256": "5a904ecf2d956f967ebc433a1c18e2d63a21caf76afc81ac5e5e24e6aec334b6",
+          "entryCount": 875
+        },
+        "targetDatabase": "/var/lib/dsh-model-service/plugin-catalog.sqlite3",
+        "targetDatabaseState": "absent"
+      }
+    ]
+  },
+  "implementation": {
+    "index": "Use SQLite FTS5 with the server Python standard library through a persistent JSON-lines worker; add no npm SQLite dependency. Index only package names, display names, aliases, short purpose text, search terms, categories, status, and pinned Commit.",
+    "enrichment": "After SQL retrieval, enrich only the bounded candidate set from the in-memory Catalog snapshot verified against its versioned release manifest. Do not request GitHub on recommendation requests.",
+    "sourceSelection": "Inspect local /opt/dsh-store/current and /opt/dsh-store-cn/current releases, validate both manifests and their build-manifest.json and registry/catalog.json size/SHA-256 entries, and select the newest valid generatedAt. Keep the last valid database if a source fails validation.",
+    "synchronization": "Build a replacement index in one SQLite transaction at process start and poll local release manifests every five minutes. Refresh only when the verified Catalog SHA changes.",
+    "storage": "Use /var/lib/dsh-model-service/plugin-catalog.sqlite3 in production with owner-only database and directory permissions. Do not store model credentials, plugin source code, or full user requests.",
+    "recommendationBoundary": "SQLite returns a bounded shortlist; the shared semantic matcher still filters to approved entries pinned to a full Commit; the configured LLM may explain only those candidates."
+  },
+  "deterministicGates": [
+    "Disposable SQLite fixtures prove FTS retrieval, Chinese bigram search, approved/full-Commit filtering, transactional replacement, and status metadata.",
+    "A release fixture with mismatched Catalog hash or build/source Commit is rejected and leaves the last valid index usable.",
+    "The exact image-reading request returns only relevant approved fixed-Commit candidates through the SQLite shortlist.",
+    "The recommendation API and public catalog-status endpoint report the SQLite index; API-key and encrypted model settings are unchanged.",
+    "Recommendation requests use only SQLite and the verified local release snapshot; no GitHub request is made per user query.",
+    "npm run check and both static marketplace builds pass; changes are published through the existing CI-checked PR.",
+    "Each server deployment verifies current release and service-unit precondition hashes, writes a versioned service release, keeps the previous release for rollback, restarts the service, and reads back health, SQLite metadata, and a relevant sample query."
+  ],
+  "externalEffects": {
+    "catalogMutation": false,
+    "modelConfigurationOrCredentialMutation": false,
+    "dshProfileMutation": false,
+    "authorOutreach": false,
+    "githubCatalogFetchPerRecommendation": false,
+    "serverDeployment": true,
+    "deploymentTargets": ["dsh-store-cn-814823065", "dsh-store-intl"],
+    "databasePath": "/var/lib/dsh-model-service/plugin-catalog.sqlite3"
+  },
+  "rollback": "Keep the previous service release and atomically restore the current symlink if restart or health/readback fails. SQLite source replacement is transactional; on application rollback, retain the database file and model configuration unchanged."
+}
