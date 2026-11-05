@@ -114,7 +114,7 @@
     "browserAcceptance": "not performed",
     "submission": "Authorized by the user; PR and exact-head CI pending.",
     "deployment": "Not performed; requires PR merge, Pages success, independent public readback, and verified backend deployment on both registered production targets.",
-    "backendDeploymentPreflight": "Strict Tailscale SSH host verification is required. No host-key bypass or production mutation is allowed if that verification fails."
+    "backendDeploymentPreflight": "Read-only preflight passed on both registered production hosts. The same active release and seven-file SHA-256 snapshot were read back; the service is active, the curation state is absent, and public-config is 200 while the new curation/admin routes are 404. The registered Tailscale SSH wrapper had no trusted entry, so connection used the pre-registered root SSH route over the same Tailscale address with StrictHostKeyChecking=yes; the presented host keys matched existing local pins. No server files were changed."
   },
   "branch": "codex/admin-managed-rankings-20261105",
   "deployment": {
@@ -150,7 +150,62 @@
         "src/author-exclusions.mjs"
       ],
       "method": "Capture live service state and SHA-256 preconditions first; back up only these files; install each with same-directory temporary files and atomic rename; restart the existing service once; verify health; restore the exact backups and restart if health fails.",
-      "preserve": "Do not change systemd, Nginx, model-settings, API keys, /var/lib/dsh-store/ranking-curation.json, Catalog, or DSH state."
+      "preserve": "Do not change systemd, Nginx, model-settings, API keys, /var/lib/dsh-store/ranking-curation.json, Catalog, or DSH state.",
+      "releaseLayout": "Each host serves /opt/dsh-model-service/current as a symlink into /opt/dsh-model-service/releases/<commit>; stage a new release directory and atomically switch only the current symlink after validation.",
+      "runtimePreconditions": {
+        "bothHosts": {
+          "service": "dsh-model-service is active; User=dsh-model-service; WorkingDirectory=/opt/dsh-model-service/current; ExecStart=/usr/bin/node scripts/serve-marketplace.mjs",
+          "currentRelease": "6ee964f862a3ffaf5f454992e03d183516976e03",
+          "currentSymlink": "/opt/dsh-model-service/releases/6ee964f862a3ffaf5f454992e03d183516976e03",
+          "releaseDirectory": {
+            "owner": "root:root",
+            "mode": "0755"
+          },
+          "existingReleaseFileSha256": {
+            "marketplace/lib/recommendation-search.mjs": "d4f21767832d6106960f791f389f915f09cdc8f6abb32f5f2958f587cf70627d",
+            "package.json": "b354c3def7a70d00ba748fccff28066f55d8760c7f2734fb3ae94e0d2940baff",
+            "scripts/plugin-catalog-sqlite-worker.py": "580a90368b6e92822af79ec1a4040f71e3640d83d55dccf2327825cc236f7680",
+            "scripts/serve-marketplace.mjs": "2f27a02aad57997c3112b57071b1e397df4e1a2b811f7411877ae3c58e5f2146",
+            "src/ai-model-settings.mjs": "8c2d358712de0c960d94e3228ca23c56238b0c2aa0dc1b8e0f715c4a112a08e4",
+            "src/ai-recommend.mjs": "5be481a7229059cfea566b523be8928d53317be04fb70a6e77e6d6821470a448",
+            "src/plugin-catalog-index.mjs": "4b7b1bddfadf17b8dfffee61e0f8cab44228791cbae9fd82198a243fc5341c9f"
+          },
+          "newReleaseFilesMustBeAbsent": [
+            "marketplace/rankings/model.js",
+            "marketplace/lib/community-recommendations.js",
+            "src/author-exclusions.mjs"
+          ],
+          "rankingCurationState": "absent at /var/lib/dsh-store/ranking-curation.json; preserve this state and never copy or modify it."
+        },
+        "nodeVersions": {
+          "international": "18.19.1",
+          "domestic": "20.20.1"
+        },
+        "connection": "Use the existing SecureOps registered SSH credential routes over the recorded Tailscale addresses with StrictHostKeyChecking=yes; never accept a new or changed host key."
+      },
+      "releaseContents": {
+        "copyUnchangedFromActiveRelease": [
+          "marketplace/lib/recommendation-search.mjs",
+          "package.json",
+          "scripts/plugin-catalog-sqlite-worker.py",
+          "src/ai-model-settings.mjs",
+          "src/ai-recommend.mjs",
+          "src/plugin-catalog-index.mjs"
+        ],
+        "addOrReplaceFromMergedCommit": [
+          "scripts/serve-marketplace.mjs",
+          "marketplace/rankings/model.js",
+          "marketplace/lib/community-recommendations.js",
+          "src/author-exclusions.mjs"
+        ],
+        "ownerAndModes": "root:root release directory 0755; release files 0644."
+      },
+      "healthChecks": [
+        "systemctl is-active dsh-model-service reports active.",
+        "GET http://127.0.0.1:4173/api/ai/public-config returns 200.",
+        "GET http://127.0.0.1:4173/api/rankings/curation returns 200 with public fields only.",
+        "Unauthenticated GET http://127.0.0.1:4173/api/admin/rankings is rejected."
+      ]
     },
     "rollback": "Revert the source through an audited CI-checked PR. On each backend host restore the exact four predeployment file backups, restart the existing service, and verify the prior health endpoints. Pages-refresh releases retain their existing atomic rollback."
   }
