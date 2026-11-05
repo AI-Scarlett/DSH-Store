@@ -3,7 +3,7 @@
   "planId": "ai-recommendation-sqlite-intl-redeploy-20261105",
   "operation": "redeploy-verified-sqlite-recommendation-service-to-international-server",
   "createdAt": "2026-11-05",
-  "status": "prepared",
+  "status": "completed",
   "repository": "AI-Scarlett/DSH-Store",
   "baseCommit": "6ee964f862a3ffaf5f454992e03d183516976e03",
   "sourceCommit": "6ee964f862a3ffaf5f454992e03d183516976e03",
@@ -94,6 +94,25 @@
     "A direct no-model PluginCatalogIndex.search for the image-reading request returns exactly dsh-auto-image and dsh-auto-vision.",
     "The public-config SHA-256 remains abecdb7640270efc139612bda876680ba8dc750d3f6e81e5ac583190caa64b77."
   ],
+  "execution": {
+    "completedOn": "2026-11-05",
+    "activatedRelease": "/opt/dsh-model-service/releases/6ee964f862a3ffaf5f454992e03d183516976e03",
+    "serviceState": "active",
+    "localApiStatus": "verified",
+    "publicApiStatus": "verified at https://dsh.store/api/ai/catalog-status",
+    "catalogSnapshot": {
+      "sourceCommit": "ac1e0c87f2c7ade4db4572b780ea70746cc546f6",
+      "catalogSha256": "5a904ecf2d956f967ebc433a1c18e2d63a21caf76afc81ac5e5e24e6aec334b6",
+      "entryCount": 875,
+      "lastRefreshStatus": "current"
+    },
+    "verifiedQuery": ["dsh-auto-image", "dsh-auto-vision"],
+    "queryUsedConfiguredLlm": false,
+    "databaseMode": "0600",
+    "databaseDirectoryMode": "0700",
+    "publicConfigSha256": "abecdb7640270efc139612bda876680ba8dc750d3f6e81e5ac583190caa64b77",
+    "automaticRollbackOnInitialStaleExpectation": "completed; retained database and release were reused"
+  },
   "externalEffects": {
     "serverDeployment": true,
     "deploymentTargets": ["dsh-store-intl"],
