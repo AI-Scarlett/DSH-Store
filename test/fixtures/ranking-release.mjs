@@ -56,7 +56,7 @@ export async function writeRankingReleaseFixture(directory, { sourceCommit = 'a'
   const snapshot = createRankingReleaseSnapshot(sourceCommit)
   const rankingBytes = Buffer.from(`${JSON.stringify(snapshot)}\n`)
   const rankingDigest = hash(rankingBytes)
-  const htmlBytes = Buffer.from(`<!doctype html><meta name="dsh-rankings-sha256" content="${rankingDigest}">`)
+  const htmlBytes = Buffer.from(`<!doctype html><meta name="dsh-rankings-sha256" content="${rankingDigest}"><!-- DSH_SERVER_ARTICLES_NAV -->`)
   const rankingPath = 'marketplace/rankings/data.json'
   const htmlPath = 'marketplace/rankings/index.html'
   await writeFile(join(directory, rankingPath), rankingBytes, { mode: 0o600 })

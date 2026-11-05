@@ -1,0 +1,94 @@
+{
+  "schemaVersion": 1,
+  "planId": "rankings-html-binding-fix-20261106",
+  "operation": "allow-only-the-pinned-server-article-navigation-transform-for-ranking-html",
+  "status": "authorized-awaiting-github-pr",
+  "repository": "AI-Scarlett/DSH-Store",
+  "baseCommit": "a9c3712078e8609f842f6027e9a9911d4af773f4",
+  "authorization": {
+    "source": "direct-user-request",
+    "request": "The user asked to put the official site live first and publish the GitHub changes as well. This is the smallest required integrity fix for the already merged admin-managed ranking feature and its authorized production deployment.",
+    "priorReleasePlan": "docs/ops/admin-managed-rankings-plan-20261105.json"
+  },
+  "objective": "Keep ranking API release verification strict while accepting the exact deterministic DSH server-article navigation substitution applied after the Pages manifest is verified.",
+  "fileScope": {
+    "modify": [
+      "deploy/setup-model-service.sh",
+      "scripts/serve-marketplace.mjs",
+      "test/fixtures/ranking-release.mjs",
+      "test/ranking-curation-api.test.mjs"
+    ],
+    "add": [
+      "docs/ops/rankings-html-binding-fix-20261106.json"
+    ]
+  },
+  "preconditions": {
+    "sha256AtBaseCommit": {
+      "deploy/setup-model-service.sh": "cc883217b273ccc8cb43c569f089081ce30a6f9a448f1cdd3ddabd888ce1cf4d",
+      "scripts/serve-marketplace.mjs": "f79cdbe25f4c401aaf7768a85fa658b292c60a54753c4218b62b0249044fe1b5",
+      "test/fixtures/ranking-release.mjs": "c0a58ad959c0b1dec6bae751921e9f0f614b3ea0c414b7dc88b1bbc289ce3e79",
+      "test/ranking-curation-api.test.mjs": "f3779fedfff805180fedefb8a78793a4e58f321824e07a3a88e7b2d8e9062c49"
+    },
+    "absentAtBaseCommit": [
+      "docs/ops/rankings-html-binding-fix-20261106.json"
+    ]
+  },
+  "postconditions": {
+    "sha256": {
+      "deploy/setup-model-service.sh": "bcf054e11c7f8dd4cb3af4b12a33ed216a97fb207e289d148882ccdbc2c32f89",
+      "scripts/serve-marketplace.mjs": "9d54263b76fa4b4791a6948229e719acddc93dd98f9a1ce9a0fdf3e668372084",
+      "test/fixtures/ranking-release.mjs": "f65183c2ea41c8879e12ed4f14f925d2192815183d698401f2bb44ca5550e409",
+      "test/ranking-curation-api.test.mjs": "f01b7d3ee573e9a3e70f922eeadfebbc65a749af332a97a2b4e4d2e4b875bd82"
+    }
+  },
+  "verification": {
+    "predeploymentEvidence": {
+      "international": {
+        "sourceCommit": "706b1437e83d9aa7ef4128de3ad8e2dbed753354",
+        "rankingHtmlManifestSha256": "a8e3d18dafda8765b73c3fbe67b7c3a8ac603a9f2d1dfb0e9898b7f4eb98ee51",
+        "rankingHtmlManifestSize": 52888,
+        "serverRenderedHtmlSha256": "82245e927b91227d5241f8945fee64de26f3fad586d22046ef92da6663f7c9d1",
+        "serverRenderedHtmlSize": 52923,
+        "canonicalizedHtmlMatchesManifest": true
+      },
+      "domestic": {
+        "sourceCommit": "706b1437e83d9aa7ef4128de3ad8e2dbed753354",
+        "rankingHtmlManifestSha256": "a8e3d18dafda8765b73c3fbe67b7c3a8ac603a9f2d1dfb0e9898b7f4eb98ee51",
+        "rankingHtmlManifestSize": 52888,
+        "serverRenderedHtmlSha256": "82245e927b91227d5241f8945fee64de26f3fad586d22046ef92da6663f7c9d1",
+        "serverRenderedHtmlSize": 52923,
+        "canonicalizedHtmlMatchesManifest": true
+      }
+    },
+    "deterministicGates": [
+      "Only one exact ../articles/ navigation anchor with the official Chinese or English label may be normalized; all other HTML changes must still fail the manifest hash check.",
+      "The ranking data file must continue to match its exact size and SHA-256 in release-manifest.json.",
+      "The HTML-pinned ranking digest must still match the verified data-file SHA-256.",
+      "The ranking snapshot sourceCommit must still match release-manifest.json.",
+      "The embedded setup archive must contain the exact updated server script bytes and must pass its archive integrity checks.",
+      "The API fixture covers the deterministic server transformation and retains the tamper rejection case.",
+      "Required CI checks pass on the exact pull-request head before merge.",
+      "After merge, deploy the exact merged backend source to both registered hosts and verify public config, ranking API, and unauthenticated admin rejection."
+    ]
+  },
+  "externalEffects": {
+    "repositoryChangeThroughAuditablePullRequest": true,
+    "serverDeploymentAfterMerge": true,
+    "catalogMutation": false,
+    "modelConfigurationOrCredentialMutation": false,
+    "rankingCurationStateMutation": false,
+    "nginxOrSystemdMutation": false,
+    "dshProfileMutation": false
+  },
+  "deployment": {
+    "backendTargets": [
+      "dsh-store-intl",
+      "dsh-store-cn-814823065"
+    ],
+    "activeReleasePrecondition": "6ee964f862a3ffaf5f454992e03d183516976e03 on both hosts",
+    "storeReleasePrecondition": "706b1437e83d9aa7ef4128de3ad8e2dbed753354 on both hosts",
+    "method": "Stage the exact merged backend package in a new release directory, verify fixed-file hashes and imports, atomically switch only the existing current symlink, restart dsh-model-service once per host, and roll back to the recorded prior symlink if any health gate fails.",
+    "preserve": "Do not create /var/lib/dsh-store/ranking-curation.json until an administrator saves ranking choices. Do not alter API keys, model settings, Catalog, systemd, Nginx, or DSH state."
+  },
+  "rollback": "Restore only /opt/dsh-model-service/current to /opt/dsh-model-service/releases/6ee964f862a3ffaf5f454992e03d183516976e03 on the affected host, restart the existing service, and confirm the original public-config health check."
+}

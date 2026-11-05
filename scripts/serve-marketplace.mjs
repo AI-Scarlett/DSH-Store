@@ -122,6 +122,8 @@ const RANKING_BOARDS = ['recommended', 'essential']
 const ownKeys = (value, expected) => value && typeof value === 'object' && !Array.isArray(value)
   && Object.keys(value).sort().join(',') === [...expected].sort().join(',')
 const sha256 = bytes => createHash('sha256').update(bytes).digest('hex')
+const serverArticleNavigationMarker = '<!-- DSH_SERVER_ARTICLES_NAV -->'
+const serverArticleNavigationPattern = /<a href="\.\.\/articles\/" data-i18n="nav\.articles">(?:DSH Field Notes|DSH 实战与观察)<\/a>/g
 
 async function readReleaseFile(releaseRoot, relativePath, maxBytes) {
   if (typeof relativePath !== 'string' || relativePath.startsWith('/') || relativePath.split('/').some(part => !part || part === '.' || part === '..')) {
@@ -136,6 +138,17 @@ async function readReleaseFile(releaseRoot, relativePath, maxBytes) {
     if (index === parts.length - 1 && (!info.isFile() || info.size > maxBytes)) throw new Error('Invalid release artifact size')
   }
   return readFile(target)
+}
+
+function matchesReleaseRecord(bytes, record) {
+  return bytes.length === record.size && sha256(bytes) === record.sha256
+}
+
+function restoreServerArticleNavigation(bytes) {
+  const html = bytes.toString('utf8')
+  const matches = [...html.matchAll(serverArticleNavigationPattern)]
+  if (matches.length !== 1) return null
+  return Buffer.from(html.replace(matches[0][0], serverArticleNavigationMarker))
 }
 
 async function loadVerifiedRankingSnapshot() {
@@ -159,8 +172,10 @@ async function loadVerifiedRankingSnapshot() {
     readReleaseFile(releaseRoot, dataPath, MAX_RANKING_SNAPSHOT_BYTES),
     readReleaseFile(releaseRoot, htmlPath, 512 * 1024),
   ])
-  if (dataBytes.length !== dataRecord.size || sha256(dataBytes) !== dataRecord.sha256
-    || htmlBytes.length !== htmlRecord.size || sha256(htmlBytes) !== htmlRecord.sha256) throw new Error('Ranking artifact hash mismatch')
+  const canonicalHtmlBytes = matchesReleaseRecord(htmlBytes, htmlRecord) ? htmlBytes : restoreServerArticleNavigation(htmlBytes)
+  if (!matchesReleaseRecord(dataBytes, dataRecord) || !canonicalHtmlBytes || !matchesReleaseRecord(canonicalHtmlBytes, htmlRecord)) {
+    throw new Error('Ranking artifact hash mismatch')
+  }
   const html = htmlBytes.toString('utf8')
   const pinnedDigest = html.match(/<meta\s+name=["']dsh-rankings-sha256["']\s+content=["']([a-f0-9]{64})["']/i)?.[1]
   if (!pinnedDigest || pinnedDigest !== dataRecord.sha256) throw new Error('Ranking snapshot digest mismatch')
