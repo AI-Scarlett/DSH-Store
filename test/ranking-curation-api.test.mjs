@@ -105,6 +105,14 @@ test('ranking curation APIs authenticate admins, verify local releases, and pers
     assert.equal(publicData.sourceCommit, sourceCommit)
     assert.deepEqual(publicData.boards, boards)
     assert.equal(JSON.stringify(publicData).includes('candidate'), false)
+    const serverRenderedHtml = fixture.htmlBytes.toString('utf8').replace(
+      '<!-- DSH_SERVER_ARTICLES_NAV -->',
+      '<a href="../articles/" data-i18n="nav.articles">DSH Field Notes</a>',
+    )
+    await writeFile(join(releaseDirectory, 'marketplace/rankings/index.html'), serverRenderedHtml)
+    assert.equal((await fetch(`${baseUrl}/api/rankings/curation`)).status, 200)
+    assert.equal((await fetch(`${baseUrl}/api/admin/rankings`, { headers })).status, 200)
+    await writeFile(join(releaseDirectory, 'marketplace/rankings/index.html'), fixture.htmlBytes)
     for (const type of ['recommended', 'essential']) {
       const result = curatedRankingEntries(fixture.snapshot, type, publicData)
       const official = initial.choices[type].officialSlots
