@@ -494,6 +494,10 @@ function desktopNodes(tree) {
   return result
 }
 
+function desktopConfirmationInput(tree) {
+  return desktopNodes(tree).find(node => node.type === 'input' && node.props['aria-label'] === '操作确认短语')
+}
+
 function desktopText(tree) {
   const output = []
   const visit = value => {
@@ -934,7 +938,7 @@ test('Desktop lets DSH decide a rejected candidate after exact GitHub source con
   assert.equal(harness.calls.installBundle.length, 0)
 
   const confirmation = 'INSTALL GITHUB acme/candidate-only DEFAULT'
-  desktopNodes(tree).find(node => node.type === 'input' && node.props.placeholder === confirmation)
+  desktopConfirmationInput(tree)
     .props.onChange({ target: { value: confirmation } })
   tree = await harness.render()
   const confirm = desktopNodes(tree).find(node => node.type === 'button' && node.children?.includes('确认并安装'))
@@ -1017,7 +1021,7 @@ test('blocked fixed-source entries use DSH inspect and install only after explic
   assert.equal(harness.calls.installBundle.length, 0)
 
   const confirmation = `INSTALL dsh-build-plugin ${commit}`
-  const input = desktopNodes(tree).find(node => node.type === 'input' && node.props.placeholder === confirmation)
+  const input = desktopConfirmationInput(tree)
   assert.ok(input)
   input.props.onChange({ target: { value: confirmation } })
   tree = await harness.render()
@@ -1050,7 +1054,7 @@ test('DSH inspection warning is shown while the confirmed request reaches instal
   install.props.onClick()
   tree = await harness.render()
   const phrase = `INSTALL ${entry.packageName} ${commit}`
-  desktopNodes(tree).find(node => node.type === 'input' && node.props.placeholder === phrase)
+  desktopConfirmationInput(tree)
     .props.onChange({ target: { value: phrase } })
   tree = await harness.render()
   const confirm = desktopNodes(tree).find(node => node.type === 'button' && node.children?.includes('确认并安装'))
@@ -1092,7 +1096,7 @@ test('blocked entries with safe Unicode install paths are handed to DSH as pinne
   install.props.onClick()
   tree = await harness.render()
   const confirmation = `INSTALL ${entry.packageName} ${commit}`
-  desktopNodes(tree).find(node => node.type === 'input' && node.props.placeholder === confirmation)
+  desktopConfirmationInput(tree)
     .props.onChange({ target: { value: confirmation } })
   tree = await harness.render()
   const confirm = desktopNodes(tree).find(node => node.type === 'button' && node.children?.includes('确认并安装'))
@@ -1134,7 +1138,7 @@ test('Desktop rechecks the confirmed source identity before calling the official
   desktopNodes(tree).find(node => node.type === 'button' && node.children?.includes('交由 DSH 检查安装')).props.onClick()
   tree = await harness.render()
   const phrase = `INSTALL ${entry.packageName} ${commit}`
-  desktopNodes(tree).find(node => node.type === 'input' && node.props.placeholder === phrase)
+  desktopConfirmationInput(tree)
     .props.onChange({ target: { value: phrase } })
   tree = await harness.render()
   const confirm = desktopNodes(tree).find(node => node.type === 'button' && node.children?.includes('确认并安装'))
@@ -1305,7 +1309,7 @@ test('official Desktop requires the full package and Commit confirmation before 
   tree = await harness.render()
   const expected = `INSTALL @acme/dsh-installable ${desktopCommit}`
   assert.ok(desktopText(tree).includes(expected))
-  let confirmationInput = desktopNodes(tree).find(node => node.type === 'input' && node.props.placeholder === expected)
+  let confirmationInput = desktopConfirmationInput(tree)
   assert.ok(confirmationInput)
   let confirmButton = desktopNodes(tree).find(node => node.type === 'button' && node.children?.includes('确认并安装'))
   assert.equal(confirmButton.props.disabled, true)
@@ -1315,7 +1319,7 @@ test('official Desktop requires the full package and Commit confirmation before 
   assert.equal(confirmButton.props.disabled, true)
   assert.equal(harness.calls.installBundle.length, 0)
 
-  confirmationInput = desktopNodes(tree).find(node => node.type === 'input' && node.props.placeholder === expected)
+  confirmationInput = desktopConfirmationInput(tree)
   confirmationInput.props.onChange({ target: { value: expected } })
   tree = await harness.render()
   confirmButton = desktopNodes(tree).find(node => node.type === 'button' && node.children?.includes('确认并安装'))
@@ -1365,7 +1369,7 @@ test('official Desktop receives unadapted unknown entries and displays DSH compa
   detailInstall.props.onClick()
   tree = await harness.render()
   const confirmation = `INSTALL ${entry.packageName} ${entry.commit}`
-  const input = desktopNodes(tree).find(node => node.type === 'input' && node.props.placeholder === confirmation)
+  const input = desktopConfirmationInput(tree)
   assert.ok(input)
   input.props.onChange({ target: { value: confirmation } })
   tree = await harness.render()
@@ -1398,7 +1402,7 @@ test('official Desktop inspection refusal is advisory and installBundle determin
   install.props.onClick()
   tree = await harness.render()
   const confirmation = `INSTALL ${entry.packageName} ${entry.commit}`
-  const input = desktopNodes(tree).find(node => node.type === 'input' && node.props.placeholder === confirmation)
+  const input = desktopConfirmationInput(tree)
   input.props.onChange({ target: { value: confirmation } })
   tree = await harness.render()
   const confirm = desktopNodes(tree).find(node => node.type === 'button' && node.children?.includes('确认并安装'))
@@ -1423,7 +1427,7 @@ test('official Desktop install result can succeed after its inspection advisory'
   install.props.onClick()
   tree = await harness.render()
   const confirmation = `INSTALL ${entry.packageName} ${desktopCommit}`
-  desktopNodes(tree).find(node => node.type === 'input' && node.props.placeholder === confirmation)
+  desktopConfirmationInput(tree)
     .props.onChange({ target: { value: confirmation } })
   tree = await harness.render()
   await desktopNodes(tree).find(node => node.type === 'button' && node.children?.includes('确认并安装')).props.onClick()
@@ -1449,7 +1453,7 @@ test('an already installed exact package reported by Desktop reconciles a no-cha
   install.props.onClick()
   tree = await harness.render()
   const confirmation = `INSTALL ${entry.packageName} ${desktopCommit}`
-  desktopNodes(tree).find(node => node.type === 'input' && node.props.placeholder === confirmation)
+  desktopConfirmationInput(tree)
     .props.onChange({ target: { value: confirmation } })
   tree = await harness.render()
   await desktopNodes(tree).find(node => node.type === 'button' && node.children?.includes('确认并安装')).props.onClick()
@@ -1482,7 +1486,22 @@ test('Desktop updates an older fixed GitHub revision through DSH remove and inst
   tree = await harness.render()
   const confirmation = `UPDATE ${entry.packageName} ${desktopCommit}`
   assert.match(desktopText(tree), new RegExp(`更新 spec：git\\+${entry.repositoryUrl}\\.git#${desktopCommit}`))
-  desktopNodes(tree).find(node => node.type === 'input' && node.props.placeholder === confirmation)
+  const commandDisplay = desktopNodes(tree).find(node => node.props?.['aria-label'] === '可复制的完整操作命令')
+  assert.equal(desktopText(commandDisplay), confirmation)
+  assert.equal(commandDisplay.props.tabIndex, 0)
+  const selectedElements = []
+  const selectionEvents = []
+  const range = { selectNodeContents: element => selectedElements.push(element) }
+  const selection = {
+    removeAllRanges: () => selectionEvents.push('clear'),
+    addRange: selectedRange => selectionEvents.push(selectedRange),
+  }
+  const commandElement = { ownerDocument: { createRange: () => range, getSelection: () => selection } }
+  commandDisplay.props.onClick({ currentTarget: commandElement })
+  assert.deepEqual(selectedElements, [commandElement])
+  assert.deepEqual(selectionEvents, ['clear', range])
+  assert.equal(desktopConfirmationInput(tree).props.placeholder, '粘贴上方完整命令')
+  desktopConfirmationInput(tree)
     .props.onChange({ target: { value: confirmation } })
   tree = await harness.render()
   await desktopNodes(tree).find(node => node.type === 'button' && node.children?.includes('确认并更新')).props.onClick()
@@ -1517,7 +1536,7 @@ test('DSH Store can update its own installed package through the official Deskto
   update.props.onClick()
   tree = await harness.render()
   const confirmation = `UPDATE ${entry.packageName} ${desktopCommit}`
-  desktopNodes(tree).find(node => node.type === 'input' && node.props.placeholder === confirmation)
+  desktopConfirmationInput(tree)
     .props.onChange({ target: { value: confirmation } })
   tree = await harness.render()
   await desktopNodes(tree).find(node => node.type === 'button' && node.children?.includes('确认并更新')).props.onClick()
@@ -1550,7 +1569,7 @@ test('Store self-update accepts a legacy install with no full source Commit and 
   update.props.onClick()
   tree = await harness.render()
   const confirmation = `UPDATE ${entry.packageName} ${desktopCommit}`
-  desktopNodes(tree).find(node => node.type === 'input' && node.props.placeholder === confirmation)
+  desktopConfirmationInput(tree)
     .props.onChange({ target: { value: confirmation } })
   tree = await harness.render()
   await desktopNodes(tree).find(node => node.type === 'button' && node.children?.includes('确认并更新')).props.onClick()
@@ -1579,7 +1598,7 @@ test('Store self-update preserves a DSH rejection for an unpinned old source and
   desktopNodes(card).find(node => node.type === 'button' && node.children?.includes('更新')).props.onClick()
   tree = await harness.render()
   const confirmation = `UPDATE ${entry.packageName} ${desktopCommit}`
-  desktopNodes(tree).find(node => node.type === 'input' && node.props.placeholder === confirmation)
+  desktopConfirmationInput(tree)
     .props.onChange({ target: { value: confirmation } })
   tree = await harness.render()
   await desktopNodes(tree).find(node => node.type === 'button' && node.children?.includes('确认并更新')).props.onClick()
@@ -1629,7 +1648,7 @@ test('DSH stop-profile removal outcome follows the official update path and stil
   desktopNodes(tree).find(node => node.type === 'button' && node.children?.includes('更新')).props.onClick()
   tree = await harness.render()
   const confirmation = `UPDATE ${entry.packageName} ${desktopCommit}`
-  desktopNodes(tree).find(node => node.type === 'input' && node.props.placeholder === confirmation)
+  desktopConfirmationInput(tree)
     .props.onChange({ target: { value: confirmation } })
   tree = await harness.render()
   await desktopNodes(tree).find(node => node.type === 'button' && node.children?.includes('确认并更新')).props.onClick()
@@ -1656,7 +1675,7 @@ test('an update with no dependency changes is reconciled only when Desktop confi
   desktopNodes(tree).find(node => node.type === 'button' && node.children?.includes('更新')).props.onClick()
   tree = await harness.render()
   const confirmation = `UPDATE ${entry.packageName} ${desktopCommit}`
-  desktopNodes(tree).find(node => node.type === 'input' && node.props.placeholder === confirmation)
+  desktopConfirmationInput(tree)
     .props.onChange({ target: { value: confirmation } })
   tree = await harness.render()
   await desktopNodes(tree).find(node => node.type === 'button' && node.children?.includes('确认并更新')).props.onClick()
@@ -1683,7 +1702,7 @@ test('Desktop update preserves the official rejection and never resubmits the re
   desktopNodes(tree).find(node => node.type === 'button' && node.children?.includes('更新')).props.onClick()
   tree = await harness.render()
   const confirmation = `UPDATE ${entry.packageName} ${desktopCommit}`
-  desktopNodes(tree).find(node => node.type === 'input' && node.props.placeholder === confirmation)
+  desktopConfirmationInput(tree)
     .props.onChange({ target: { value: confirmation } })
   tree = await harness.render()
   await desktopNodes(tree).find(node => node.type === 'button' && node.children?.includes('确认并更新')).props.onClick()
@@ -1713,7 +1732,7 @@ test('a definite target failure restores the prior fixed source through DSH and 
   desktopNodes(tree).find(node => node.type === 'button' && node.children?.includes('更新')).props.onClick()
   tree = await harness.render()
   const confirmation = `UPDATE ${entry.packageName} ${desktopCommit}`
-  desktopNodes(tree).find(node => node.type === 'input' && node.props.placeholder === confirmation)
+  desktopConfirmationInput(tree)
     .props.onChange({ target: { value: confirmation } })
   tree = await harness.render()
   await desktopNodes(tree).find(node => node.type === 'button' && node.children?.includes('确认并更新')).props.onClick()
@@ -1737,7 +1756,7 @@ test('an uncertain update result is reconciled once and never resubmitted or rol
   desktopNodes(tree).find(node => node.type === 'button' && node.children?.includes('更新')).props.onClick()
   tree = await harness.render()
   const confirmation = `UPDATE ${entry.packageName} ${desktopCommit}`
-  desktopNodes(tree).find(node => node.type === 'input' && node.props.placeholder === confirmation)
+  desktopConfirmationInput(tree)
     .props.onChange({ target: { value: confirmation } })
   tree = await harness.render()
   await desktopNodes(tree).find(node => node.type === 'button' && node.children?.includes('确认并更新')).props.onClick()
@@ -1764,7 +1783,7 @@ test('DSH restart-required update result is accepted while its installed invento
   desktopNodes(tree).find(node => node.type === 'button' && node.children?.includes('更新')).props.onClick()
   tree = await harness.render()
   const confirmation = `UPDATE ${entry.packageName} ${desktopCommit}`
-  desktopNodes(tree).find(node => node.type === 'input' && node.props.placeholder === confirmation)
+  desktopConfirmationInput(tree)
     .props.onChange({ target: { value: confirmation } })
   tree = await harness.render()
   await desktopNodes(tree).find(node => node.type === 'button' && node.children?.includes('确认并更新')).props.onClick()
@@ -1789,7 +1808,7 @@ test('DSH refusal to remove an installed bundle prevents the update install requ
   desktopNodes(tree).find(node => node.type === 'button' && node.children?.includes('更新')).props.onClick()
   tree = await harness.render()
   const confirmation = `UPDATE ${entry.packageName} ${desktopCommit}`
-  desktopNodes(tree).find(node => node.type === 'input' && node.props.placeholder === confirmation)
+  desktopConfirmationInput(tree)
     .props.onChange({ target: { value: confirmation } })
   tree = await harness.render()
   await desktopNodes(tree).find(node => node.type === 'button' && node.children?.includes('确认并更新')).props.onClick()
@@ -1829,7 +1848,7 @@ test('a changed Desktop installation invalidates the update confirmation before 
   desktopNodes(tree).find(node => node.type === 'button' && node.children?.includes('更新')).props.onClick()
   tree = await harness.render()
   const confirmation = `UPDATE ${entry.packageName} ${desktopCommit}`
-  desktopNodes(tree).find(node => node.type === 'input' && node.props.placeholder === confirmation)
+  desktopConfirmationInput(tree)
     .props.onChange({ target: { value: confirmation } })
   tree = await harness.render()
   harness.setInstalledBundles([alreadyUpdated])
@@ -1848,7 +1867,7 @@ test('Desktop installBundle remains available when the optional inspect method i
   desktopNodes(tree).find(node => node.type === 'button' && node.children?.includes('安装')).props.onClick()
   tree = await harness.render()
   const confirmation = `INSTALL ${entry.packageName} ${desktopCommit}`
-  desktopNodes(tree).find(node => node.type === 'input' && node.props.placeholder === confirmation)
+  desktopConfirmationInput(tree)
     .props.onChange({ target: { value: confirmation } })
   tree = await harness.render()
   await desktopNodes(tree).find(node => node.type === 'button' && node.children?.includes('确认并安装')).props.onClick()
@@ -1874,7 +1893,7 @@ test('official Desktop installs an approved plugin without Desktop adaptation wh
   install.props.onClick()
   tree = await harness.render()
   const confirmation = `INSTALL ${entry.packageName} ${entry.commit}`
-  const input = desktopNodes(tree).find(node => node.type === 'input' && node.props.placeholder === confirmation)
+  const input = desktopConfirmationInput(tree)
   assert.ok(input)
   input.props.onChange({ target: { value: confirmation } })
   tree = await harness.render()
@@ -1913,7 +1932,7 @@ test('official Desktop starts, closes, and uninstalls only the matching Catalog 
     button.props.onClick()
     tree = await harness.render()
     assert.match(desktopText(tree), new RegExp(token.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')))
-    const input = desktopNodes(tree).find(node => node.type === 'input' && node.props.placeholder === token)
+    const input = desktopConfirmationInput(tree)
     assert.ok(input)
     input.props.onChange({ target: { value: token } })
     tree = await harness.render()

@@ -1,0 +1,58 @@
+{
+  "schemaVersion": 1,
+  "type": "dsh-native-market-upgrade",
+  "planId": "dsh-native-market-desktop-confirm-command-font-20261105",
+  "planFile": "docs/ops/dsh-native-market-desktop-confirm-command-font-20261105.json",
+  "createdAt": "2026-11-05T09:20:40.000Z",
+  "baseCommit": "548e639db359f629d5c817ae40c765c0e98ddf2e",
+  "scope": [
+    "docs/ops/dsh-native-market-desktop-confirm-command-font-20261105.json",
+    "docs/reviews/dsh-native-market-desktop-confirm-command-font-20261105.md",
+    "package.json",
+    "src/client.js",
+    "test/catalog.test.mjs",
+    "test/contracts.test.mjs",
+    "test/desktop-compat.test.mjs",
+    "test/upgrade-matrix.test.mjs"
+  ],
+  "preconditions": {
+    "docs/ops/dsh-native-market-desktop-confirm-command-font-20261105.json": null,
+    "docs/reviews/dsh-native-market-desktop-confirm-command-font-20261105.md": null,
+    "package.json": "e4c5e191a54856999ffce7228b3a4428e38d05464272ea6b1de49f0949f9b566",
+    "src/client.js": "44edbaee5903f9fa69b629d86f330606eb99f411390a83d74d3511578e76cc1f",
+    "test/catalog.test.mjs": "081075e2369843c748a8fc814897a294ecf626c6db2cbb1c1430addd17641f1f",
+    "test/contracts.test.mjs": "d0925e961b3aba6820bd93726ad52bdbc25e206b67a3e84c03a44c05c26b3731",
+    "test/desktop-compat.test.mjs": "2e13f94cd645ff2865307a9dffb1cad95a0a6ead7bf151b0e4d133a77f69d8c2",
+    "test/upgrade-matrix.test.mjs": "2439b976aa0af55014802ae1a3d30dd2bce1a7d9d5c54d2e7e16246a0af6b612"
+  },
+  "postconditions": {
+    "docs/reviews/dsh-native-market-desktop-confirm-command-font-20261105.md": "4381742faee3768ea9c083bd6ddf7d38f394fd0b1c697d4fee8058bc6b8bdc76",
+    "package.json": "3bc3197c30fd25cbd2bbb74a3fcee0b0ab9d866bcc7a6e47c888ae71a458494a",
+    "src/client.js": "a4d722a0ee9780bbb827f2034dba1f221dce5ee5f5b23330d13ee646cd8a2a1d",
+    "test/catalog.test.mjs": "a1edb73e608f7e691c5b9899d6dc0522c303947f2f55153b8565ed861b88c763",
+    "test/contracts.test.mjs": "74510b3e711d2996a11c6cc8df388d78dd43e784ae608dd1b8e5ae828f52549d",
+    "test/desktop-compat.test.mjs": "4bbd3cddc538598349d4e6177bc1e48c5bab286d20996a09ab4a178576e3124e",
+    "test/upgrade-matrix.test.mjs": "a1118f0e074dc6441aca66ec22e8e3f6b2123c7818d9341aa3ff883a75041727"
+  },
+  "authorization": {
+    "source": "direct-user-request",
+    "request": "用户要求缩小 Desktop 更新确认命令字号，修复溢出并确保命令可复制；此前已授权通过 GitHub PR 更新商城。",
+    "githubWriteCredential": "short-lived-token-required",
+    "publication": "auditable-source-pull-request; separate Catalog policy release after source merge"
+  },
+  "objective": "改进 Desktop 更新确认弹窗：缩小命令与提示字号，提供可换行、点击即全选的只读命令框，并用短占位提示替代输入框中裁切的长命令；将修复作为 DSH Store 0.9.41 源码 PR 提交。",
+  "change": {
+    "packageVersion": "0.9.41",
+    "confirmationCommand": "10px monospace wrapping text container with click/focus select-all behavior",
+    "confirmationInput": "10px monospace input with short localized placeholder",
+    "instructionAndSpec": "Reduce prompt and install-spec text to 10px and keep arbitrary wrapping"
+  },
+  "gates": [
+    "Bind changes to the exact base Commit and precondition hashes; validate with scripts/verify-dsh-upgrade-plan.mjs",
+    "Run npm run check, node --check src/client.js, and git diff --check before source commit",
+    "Submit source changes through an auditable PR and preserve CI results as a separate gate",
+    "Create any Catalog pin only after the source Commit is fixed and the Catalog policy gate passes"
+  ],
+  "rollback": "Revert the source through a CI-checked pull request; the existing 0.9.40 Catalog pin remains authoritative until a separate policy release merges.",
+  "healthCheck": "Plan verification, source syntax check, diff check, and source PR CI"
+}
