@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "id": "dsh-native-market-desktop-client-contract-20261105",
+  "dshVersion": "0.2.2-rc.1",
+  "bundleVersion": "0.9.42",
+  "recordedAt": "2026-11-05",
+  "dumpConfig": {
+    "verified": true,
+    "evidence": "Official DSH CLI 0.2.2-rc.1 in a disposable DSH home: `dsh plugin --profile web add` composed the Profile and `dsh --profile web --dump-config` listed the dsh-safe-plugin-manager bundle row, and the uninstall readback returned the byte-identical pre-install configuration."
+  },
+  "isolatedRuntime": {
+    "verified": true,
+    "evidence": "Official DSH CLI 0.2.2-rc.1 in a disposable DSH home: `dsh web` started, the authenticated runtime, inventory and activation APIs answered 200, an unauthenticated request answered 401 and a cross-origin request answered 403; the composed client boot graph contained @deepseek-ai/dsh-api-remotes and the three injected UI slot packages, and the real Profile was never written."
+  },
+  "realProfile": {
+    "verified": false,
+    "evidence": "Not attempted. No real DSH Profile, package or restart mutation was performed, so no real Profile readback exists for this change."
+  },
+  "externalReadback": {
+    "verified": false,
+    "evidence": "Not applicable yet. The Catalog pins 0.9.41, so 0.9.42 has no public listing, no merged Catalog entry and no public marketplace readback. A Catalog pin is a separate plan."
+  },
+  "desktop": {
+    "verified": false,
+    "evidence": "Real DSH Desktop acceptance is unverified. The Desktop contract was verified from the published 0.2.2-rc.1 dependency tree and the installed DeepSeek Harness 0.2.2-rc.1 application bundle, not from a packaged Desktop Profile that loaded the Store panel."
+  }
+}
