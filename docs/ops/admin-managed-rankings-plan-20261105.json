@@ -132,7 +132,33 @@
         "https://dsh.store",
         "https://dsh-store.cn"
       ],
-      "refreshPath": "Existing validated Pages-refresh service/timer; verify each origin independently."
+      "refreshPath": "Existing validated Pages-refresh service/timer; verify each origin independently.",
+      "refreshUnits": {
+        "international": {
+          "server": "registered international production server",
+          "service": "dsh-store-refresh@intl-public.service",
+          "timer": "dsh-store-refresh@intl-public.timer",
+          "environmentFile": "/etc/dsh-store/refresh-intl-public.env",
+          "precondition": {
+            "currentRelease": "/opt/dsh-store/releases/20261105T124902Z-pages-3703229dc284",
+            "sourceCommit": "3703229dc2847ab3eba2a89dff0207556d3bfa58",
+            "timerActive": true
+          }
+        },
+        "domestic": {
+          "server": "registered domestic production server",
+          "service": "dsh-store-refresh@domestic.service",
+          "timer": "dsh-store-refresh@domestic.timer",
+          "environmentFile": "/etc/dsh-store/refresh-domestic.env",
+          "precondition": {
+            "currentRelease": "/opt/dsh-store/releases/20261028T215024Z-pages-9372139075a3",
+            "sourceCommit": "9372139075a37300c5ca608653dfd693addb19b1",
+            "timerActive": true
+          }
+        }
+      },
+      "refreshScriptSha256OnBothHosts": "06deab3c3c99e71b46413c2948d62e9267cf90df12469a963a50c23ca8f70ee3",
+      "execution": "After the Pages workflow succeeds, start only the existing one-shot unit on each host serially. The script validates the fixed Pages manifest and every file hash before its atomic current-symlink switch; keep the previous release untouched and require unit success plus independent HTTPS readback."
     },
     "backend": {
       "required": true,
