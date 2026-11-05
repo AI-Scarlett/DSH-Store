@@ -1,0 +1,60 @@
+{
+  "schemaVersion": 1,
+  "planId": "ai-recommendation-relevance-20261105",
+  "operation": "repair-semantic-plugin-recommendations",
+  "createdAt": "2026-11-05",
+  "status": "prepared",
+  "repository": "AI-Scarlett/DSH-Store",
+  "baseCommit": "641908ebbe536de8f25b654f008b94cc54c6152b",
+  "authorization": "The user reported that plugin-assistant results are unrelated to the request and expects the recommendation behavior corrected.",
+  "objective": "For image-reading requests, return only semantically relevant, approved, fixed-Commit DSH plugins; never rank generic DSH/plugin words or unrelated experimental features as matches.",
+  "fileScope": {
+    "modify": [
+      "src/ai-recommend.mjs",
+      "marketplace/assistant.js",
+      "marketplace/index.html",
+      "test/ai-recommend.test.mjs",
+      "test/marketplace-static-build.test.mjs"
+    ],
+    "add": [
+      "marketplace/lib/recommendation-search.mjs",
+      "docs/ops/ai-recommendation-relevance-plan-20261105.json"
+    ]
+  },
+  "preconditions": {
+    "sha256": {
+      "src/ai-recommend.mjs": "cea581e26b716f9f83a031ec4e468e4381218d806082bc23f621e154c8bcea62",
+      "marketplace/assistant.js": "9dd79f0b29b2d181ea00b73d4bdd05f4924abd8f34606f6cbce74dfc41d70ef7",
+      "marketplace/index.html": "13c7d5b01609b72dc3e93d2801cf85ba4ebf26333e1e3e8288b8569bcd2daf6a",
+      "test/ai-recommend.test.mjs": "cd97f69c0f30cb1198a5c0b9f9a3cb89549bb8420629d11390313c1a46dc604f",
+      "test/marketplace-static-build.test.mjs": "50b7fcab8d294269003df8e92593d48288ed3ea898846601d16f472bce53413b"
+    },
+    "absent": [
+      "marketplace/lib/recommendation-search.mjs",
+      "docs/ops/ai-recommendation-relevance-plan-20261105.json"
+    ]
+  },
+  "implementation": {
+    "sharedMatcher": "Use one browser-safe matcher from the server recommender and the static-page fallback. Remove DSH/plugin/filler terms, require meaningful catalog evidence, and return no plugins when no relevant match exists.",
+    "admissionBoundary": "Only status=approved entries pinned to a full 40-character Commit can produce install commands. Blocked, unlisted, malformed, and unpinned entries are excluded.",
+    "imageIntent": "Treat image reading/recognition as vision understanding and exclude entries whose only image capability is image generation.",
+    "catalogBoundary": "No Catalog admission, recommendation ranking, metadata, model settings, API keys, or DSH Profile changes."
+  },
+  "deterministicGates": [
+    "The exact screenshot query returns the relevant approved image-reading candidates and excludes DSH Tun Proxy, DSH Plan Switch, and image-generation-only entries.",
+    "Queries containing only DSH/plugin/filler terms return no recommendations instead of popular or generic entries.",
+    "Blocked, unlisted, missing-Commit, and malformed-Commit entries never produce install commands.",
+    "The browser fallback imports the same tested matcher used by the Node API and the static build includes that module.",
+    "npm run check passes and both marketplace static builds include the shared matcher module.",
+    "Changes are committed through a CI-checked PR; production verification distinguishes static asset publication from server API deployment."
+  ],
+  "externalEffects": {
+    "catalogMutation": false,
+    "modelServiceOrConfigurationMutation": false,
+    "credentialsIncluded": false,
+    "authorOutreach": false,
+    "profileOrDshMutation": false,
+    "productionDeployment": false
+  },
+  "rollback": "Revert only the scoped matcher, imports, browser script mode, regression tests, and plan through an audited PR. No Catalog or model configuration rollback is required."
+}

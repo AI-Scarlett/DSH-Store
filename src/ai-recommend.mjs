@@ -2,6 +2,9 @@ import { readFile } from "node:fs/promises"
 import { resolve } from "node:path"
 import { fileURLToPath } from "node:url"
 import { decryptKey, DEFAULT_KEY_PATH } from "./ai-model-settings.mjs"
+import { searchCatalogCandidates, tokenize } from "../marketplace/lib/recommendation-search.mjs"
+
+export { searchCatalogCandidates, tokenize }
 
 const projectRoot = resolve(fileURLToPath(new URL("..", import.meta.url)))
 const CATALOG_FULL_PATH = resolve(projectRoot, "registry/catalog.json")
@@ -65,71 +68,6 @@ export async function loadCatalogIndex(customPath) {
   }
 }
 
-export function tokenize(text) {
-  if (!text || typeof text !== "string") return []
-  const clean = text.toLowerCase().replace(/[^\w一-龥]/g, " ")
-  const words = clean.split(/\s+/).filter(t => t.length >= 2)
-  const tokens = new Set()
-  const stopWords = new Set(["我想", "可以", "如何", "怎么", "怎样", "请问", "一下", "这个", "那个", "满足", "需求", "需要"])
-  for (const w of words) {
-    if (!stopWords.has(w)) tokens.add(w)
-    if (/[一-龥]/.test(w) && w.length >= 2) {
-      for (let i = 0; i <= w.length - 2; i++) {
-        const gram = w.slice(i, i + 2).trim()
-        if (gram.length === 2 && !stopWords.has(gram)) tokens.add(gram)
-      }
-    }
-  }
-  return Array.from(tokens)
-}
-
-export function searchCatalogCandidates(queryText, catalog, limit = 8) {
-  if (!Array.isArray(catalog) || catalog.length === 0) return []
-  const qTokens = tokenize(queryText)
-  if (qTokens.length === 0) {
-    return [...catalog].sort((a, b) => (b.stars || 0) - (a.stars || 0)).slice(0, limit)
-  }
-
-  const queryLower = queryText.toLowerCase()
-
-  const scored = catalog.map(entry => {
-    let score = 0
-    const name = (entry.name || "").toLowerCase()
-    const displayName = (entry.displayName || "").toLowerCase()
-    const alias = (entry.alias || "").toLowerCase()
-    const desc = (entry.description || "").toLowerCase()
-    const terms = (entry.searchTerms || []).map(t => String(t).toLowerCase()).join(" ")
-    const cats = (entry.categories || []).map(c => c.toLowerCase()).join(" ")
-
-    if (desc.includes(queryLower)) score += 35
-    if (displayName.includes(queryLower) || name.includes(queryLower) || alias.includes(queryLower)) score += 40
-    if (terms.includes(queryLower)) score += 30
-
-    for (const token of qTokens) {
-      if (name.includes(token)) score += 15
-      if (displayName.includes(token)) score += 16
-      if (alias.includes(token)) score += 12
-      if (desc.includes(token)) score += 10
-      if (terms.includes(token)) score += 12
-      if (cats.includes(token)) score += 8
-    }
-
-    if (score > 0) {
-      if (entry.stars > 0) score += Math.min(10, Math.log2(entry.stars + 1))
-      if (entry.clientAdaptation) score += 2
-      if (entry.status === "approved") score += 5
-    }
-
-    return { entry, score }
-  })
-
-  return scored
-    .filter(item => item.score > 0)
-    .sort((a, b) => b.score - a.score)
-    .slice(0, limit)
-    .map(item => item.entry)
-}
-
 export function formatPluginCard(entry, customReason) {
   const pkgName = entry.packageName || entry.name || entry.id
   const title = entry.displayName || entry.name || entry.nameZh || pkgName
@@ -151,8 +89,10 @@ export function formatPluginCard(entry, customReason) {
   }
 }
 
-export function fallbackRecommend(queryText, catalog) {
-  const candidates = searchCatalogCandidates(queryText, catalog, 4)
+export function fallbackRecommend(queryText, catalog, candidateSet) {
+  const candidates = Array.isArray(candidateSet)
+    ? candidateSet.slice(0, 4)
+    : searchCatalogCandidates(queryText, catalog, 4)
   if (candidates.length === 0) {
     return {
       ok: true,
@@ -160,12 +100,7 @@ export function fallbackRecommend(queryText, catalog) {
       modelName: null,
       summary: "未在当前 DSH Store 目录中检索到与「" + queryText.slice(0, 30) + "」直接匹配的插件。建议换用更通用的关键词（如“微信”、“QQ”、“余额”、“记忆”、“设置”、“自动化”），或在完整插件目录中按分类浏览。",
       plugins: [],
-      suggestions: [
-        "微信 / QQ 接入 DSH",
-        "大模型 API 余额监控",
-        "会话长期记忆与知识库",
-        "任务与工作流自动化",
-      ],
+      suggestions: [],
     }
   }
 
@@ -304,8 +239,8 @@ export function parseLlmRecommendation(rawText, candidates) {
   }
 }
 
-export async function recommendPlugins({ query, settings, catalog, customKeyPath }) {
-  const cat = catalog || await loadCatalogIndex()
+export async function recommendPlugins({ query, settings, catalog, candidates: candidateSet, customKeyPath }) {
+  const cat = catalog || (Array.isArray(candidateSet) ? [] : await loadCatalogIndex())
   const q = (query || "").trim()
   if (!q) {
     return {
@@ -320,17 +255,19 @@ export async function recommendPlugins({ query, settings, catalog, customKeyPath
     settings?.primary?.model
 
   const isModelFirst = settings?.mode !== "rules-first"
+  const candidates = Array.isArray(candidateSet)
+    ? candidateSet.slice(0, 8)
+    : searchCatalogCandidates(q, cat, 8)
+  const ruleResult = fallbackRecommend(q, cat, candidates)
 
   if (!hasPrimary || !isModelFirst) {
-    const ruleResult = fallbackRecommend(q, cat)
     if (ruleResult.plugins.length > 0 || !hasPrimary) {
       return ruleResult
     }
   }
 
-  const candidates = searchCatalogCandidates(q, cat, 8)
   if (candidates.length === 0) {
-    return fallbackRecommend(q, cat)
+    return ruleResult
   }
 
   const contextJson = JSON.stringify(candidates.map(c => ({
@@ -397,7 +334,7 @@ export async function recommendPlugins({ query, settings, catalog, customKeyPath
     }
   }
 
-  const fallback = fallbackRecommend(q, cat)
+  const fallback = fallbackRecommend(q, cat, candidates)
   fallback.notice = "已自动为您切换为智能规则选型引擎"
   return fallback
 }

@@ -136,10 +136,15 @@ test('static marketplace derives manager identity and catalog cards without muta
     assert.equal(sha256(catalogIndexAfter), sha256(catalogIndexBefore))
 
     const home = await readFile(join(output, 'marketplace/index.html'), 'utf8')
+    const assistantRuntime = await readFile(join(output, 'marketplace/assistant.js'), 'utf8')
+    const recommendationMatcher = await readFile(join(output, 'marketplace/lib/recommendation-search.mjs'), 'utf8')
     const plugins = await readFile(join(output, 'marketplace/plugins/index.html'), 'utf8')
     const runtimeApp = await readFile(join(output, 'marketplace/app.js'), 'utf8')
     const trafficRuntime = await readFile(join(output, 'marketplace/traffic.js'), 'utf8')
     const trafficModel = await readFile(join(output, 'marketplace/traffic-model.js'), 'utf8')
+    assert.match(home, /<script type="module" src="\.\/assistant\.js\?v=20261105a"><\/script>/)
+    assert.match(assistantRuntime, /from '\.\/lib\/recommendation-search\.mjs\?v=20261105a'/)
+    assert.match(recommendationMatcher, /export function searchCatalogCandidates/)
     const runtimeVersion = await runtimeAssetDigest(join(rootPath, 'marketplace'))
     const standards = await readFile(join(output, 'marketplace/standards/index.html'), 'utf8')
     const article = await readFile(join(output, 'marketplace/about/deepseek-harness-guide/index.html'), 'utf8')
@@ -588,6 +593,13 @@ test('static marketplace accepts a domestic origin and renders the ICP record', 
       '--icp', icp,
       '--baidu-verification', 'codeva-gZjUUScijx',
     ], { cwd: rootPath })
+
+    const domesticHome = await readFile(join(output, 'marketplace/index.html'), 'utf8')
+    const domesticAssistant = await readFile(join(output, 'marketplace/assistant.js'), 'utf8')
+    const domesticMatcher = await readFile(join(output, 'marketplace/lib/recommendation-search.mjs'), 'utf8')
+    assert.match(domesticHome, /<script type="module" src="\.\/assistant\.js\?v=20261105a"><\/script>/)
+    assert.match(domesticAssistant, /from '\.\/lib\/recommendation-search\.mjs\?v=20261105a'/)
+    assert.match(domesticMatcher, /export function searchCatalogCandidates/)
 
     const pagePaths = [
       'marketplace/index.html',

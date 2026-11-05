@@ -16,7 +16,8 @@ import {
   verifyPassword,
   verifySessionToken,
 } from '../src/ai-model-settings.mjs'
-import { loadCatalogIndex, recommendPlugins } from '../src/ai-recommend.mjs'
+import { recommendPlugins } from '../src/ai-recommend.mjs'
+import { closePluginCatalogIndex, getPluginCatalogIndex } from '../src/plugin-catalog-index.mjs'
 
 const root = resolve(fileURLToPath(new URL('..', import.meta.url)))
 const requestedPort = Number.parseInt(process.env.DSH_MARKETPLACE_PORT || '4173', 10)
@@ -149,11 +150,34 @@ const server = createServer(async (request, response) => {
         return
       }
       const settings = await loadModelSettings()
-      const catalog = await loadCatalogIndex()
-      const result = await recommendPlugins({ query, settings, catalog })
+      const candidates = await getPluginCatalogIndex().search(query, 8)
+      const result = await recommendPlugins({ query, settings, candidates })
       sendJson(response, 200, result)
     } catch (err) {
-      sendJson(response, 500, { ok: false, error: err.message })
+      const catalogUnavailable = String(err?.message || '').startsWith('catalog-')
+      sendJson(response, catalogUnavailable ? 503 : 500, {
+        ok: false,
+        error: catalogUnavailable ? '插件目录索引暂不可用，请稍后重试' : '推荐服务暂时不可用，请稍后重试',
+        code: catalogUnavailable ? 'PLUGIN_CATALOG_UNAVAILABLE' : 'RECOMMENDATION_UNAVAILABLE',
+      })
+    }
+    return
+  }
+
+  if (pathname === '/api/ai/catalog-status') {
+    if (request.method !== 'GET') {
+      sendJson(response, 405, { error: 'Method Not Allowed' })
+      return
+    }
+    try {
+      const status = await getPluginCatalogIndex().status()
+      sendJson(response, 200, { ok: true, ...status })
+    } catch {
+      sendJson(response, 503, {
+        ok: false,
+        code: 'PLUGIN_CATALOG_UNAVAILABLE',
+        error: '插件目录索引暂不可用，请稍后重试',
+      })
     }
     return
   }
@@ -333,4 +357,18 @@ server.listen(port, host, () => {
   console.log(`DSH plugin marketplace: http://${host}:${port}/marketplace/`)
   console.log(`DSH model admin portal: http://${host}:${port}/marketplace/admin/`)
   console.log('Press Ctrl+C to stop.')
+  void getPluginCatalogIndex().start().catch(() => {})
 })
+
+for (const signal of ['SIGINT', 'SIGTERM']) {
+  process.once(signal, () => {
+    const timeout = setTimeout(() => process.exit(1), 5000)
+    timeout.unref?.()
+    server.close(() => {
+      void closePluginCatalogIndex().finally(() => {
+        clearTimeout(timeout)
+        process.exit(0)
+      })
+    })
+  })
+}
