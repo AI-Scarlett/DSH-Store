@@ -1,0 +1,107 @@
+{
+  "schemaVersion": 1,
+  "planId": "ai-recommendation-sqlite-intl-redeploy-20261105",
+  "operation": "redeploy-verified-sqlite-recommendation-service-to-international-server",
+  "createdAt": "2026-11-05",
+  "status": "prepared",
+  "repository": "AI-Scarlett/DSH-Store",
+  "baseCommit": "6ee964f862a3ffaf5f454992e03d183516976e03",
+  "sourceCommit": "6ee964f862a3ffaf5f454992e03d183516976e03",
+  "dependsOnPlanId": "ai-recommendation-sqlite-token-expansion-20261105",
+  "authorization": "The user explicitly requested production deployment. This retry corrects the international host's sourceCommit health expectation using its verified local Catalog manifest. Preserve the existing database and retained versioned release.",
+  "objective": "Activate the already verified international service release, validate the SQLite-backed recommendation index and image-reading query, and preserve the configured model settings.",
+  "repositoryFileScope": {
+    "add": [
+      "docs/ops/ai-recommendation-sqlite-intl-redeploy-plan-20261105.json"
+    ],
+    "modify": [
+      "docs/ops/ai-recommendation-sqlite-token-expansion-plan-20261105.json"
+    ]
+  },
+  "deploymentFileScope": {
+    "release": "/opt/dsh-model-service/releases/6ee964f862a3ffaf5f454992e03d183516976e03",
+    "currentSymlink": "/opt/dsh-model-service/current",
+    "service": "dsh-model-service",
+    "database": "/var/lib/dsh-model-service/plugin-catalog.sqlite3",
+    "modelSettings": "read-only; no configuration or credential mutation"
+  },
+  "preconditions": {
+    "sha256": {
+      "package.json": "b354c3def7a70d00ba748fccff28066f55d8760c7f2734fb3ae94e0d2940baff",
+      "src/ai-model-settings.mjs": "8c2d358712de0c960d94e3228ca23c56238b0c2aa0dc1b8e0f715c4a112a08e4",
+      "src/ai-recommend.mjs": "5be481a7229059cfea566b523be8928d53317be04fb70a6e77e6d6821470a448",
+      "src/plugin-catalog-index.mjs": "4b7b1bddfadf17b8dfffee61e0f8cab44228791cbae9fd82198a243fc5341c9f",
+      "scripts/serve-marketplace.mjs": "2f27a02aad57997c3112b57071b1e397df4e1a2b811f7411877ae3c58e5f2146",
+      "scripts/plugin-catalog-sqlite-worker.py": "580a90368b6e92822af79ec1a4040f71e3640d83d55dccf2327825cc236f7680",
+      "marketplace/lib/recommendation-search.mjs": "d4f21767832d6106960f791f389f915f09cdc8f6abb32f5f2958f587cf70627d"
+    },
+    "production": {
+      "serverId": "dsh-store-intl",
+      "host": "100.119.62.98",
+      "service": "dsh-model-service",
+      "serviceUnitSha256": "d563b3c195b28d36f336ba3da5168a0a701d4d648d8974ff2dd5fad04a4ce228",
+      "serviceState": "active",
+      "currentRelease": "/opt/dsh-model-service/releases/2ca8a4fc",
+      "currentReleaseMustRemainCurrentUntilChecksPass": true,
+      "targetRelease": {
+        "path": "/opt/dsh-model-service/releases/6ee964f862a3ffaf5f454992e03d183516976e03",
+        "state": "retained-from-automatically-rolled-back-attempt",
+        "archiveSha256": "9d18ac476d087464da6cd49c9ec2ac47cdf03f77461240e6a83b918f60e53dbb",
+        "fileHashesMustMatch": "preconditions.sha256"
+      },
+      "catalogDatabase": {
+        "path": "/var/lib/dsh-model-service/plugin-catalog.sqlite3",
+        "state": "initialized-and-retained-after-automatic-rollback",
+        "sha256AtPlanCreation": "9f650b5ca4582dfb64f47afdd33b566dc9faa8d4b68888c8119a2e25c0a60766",
+        "mode": "0600",
+        "directoryMode": "0700",
+        "snapshotSourceCommit": "ac1e0c87f2c7ade4db4572b780ea70746cc546f6",
+        "catalogSha256": "5a904ecf2d956f967ebc433a1c18e2d63a21caf76afc81ac5e5e24e6aec334b6",
+        "entryCount": 875,
+        "action": "preserve; do not reset, replace, or delete"
+      },
+      "verifiedCatalogSource": {
+        "sourceRoot": "/opt/dsh-store/current",
+        "generatedAt": "2026-11-04T01:58:52.000Z",
+        "sourceCommit": "ac1e0c87f2c7ade4db4572b780ea70746cc546f6",
+        "catalogSha256": "5a904ecf2d956f967ebc433a1c18e2d63a21caf76afc81ac5e5e24e6aec334b6",
+        "entryCount": 875,
+        "manifestStatus": "verified-by-loadVerifiedCatalogRelease",
+        "alternateSourceRoot": "/opt/dsh-store-cn/current",
+        "alternateSourceStatus": "invalid-or-unavailable-on-international-host"
+      },
+      "publicConfigSha256": "abecdb7640270efc139612bda876680ba8dc750d3f6e81e5ac583190caa64b77",
+      "previousAttempt": {
+        "result": "automatic rollback after the health check compared against an obsolete sourceCommit expectation",
+        "expectedSourceCommit": "641908ebbe536de8f25b654f008b94cc54c6152b",
+        "actualVerifiedSourceCommit": "ac1e0c87f2c7ade4db4572b780ea70746cc546f6",
+        "catalogBytesMatchExpectedSha256": true,
+        "databaseAndReleaseRetained": true
+      }
+    }
+  },
+  "implementation": {
+    "activation": "Verify the retained release file hashes and service preconditions, atomically switch only the current symlink, then restart the service. Do not rewrite the existing versioned release.",
+    "queryVerification": "Call PluginCatalogIndex.search directly for the exact image-reading request and verify dsh-auto-image and dsh-auto-vision. This does not call the configured LLM.",
+    "catalogBoundary": "Require 875 entries and the verified Catalog SHA-256. The sourceCommit must match the host's verified SQLite snapshot; do not require identical sourceCommit values across hosts when the Catalog bytes match.",
+    "configurationBoundary": "The encrypted model settings and key files are outside the deployment scope. Public-config response SHA-256 must remain unchanged."
+  },
+  "deterministicGates": [
+    "The current symlink, active service, service-unit SHA-256, and public-config SHA-256 match the production preconditions.",
+    "All seven runtime file hashes in the retained 6ee964f862a3ffaf5f454992e03d183516976e03 release match preconditions.sha256.",
+    "The retained SQLite database remains mode 0600 in a mode 0700 directory and has snapshot sourceCommit ac1e0c87f2c7ade4db4572b780ea70746cc546f6, Catalog SHA-256 5a904ecf2d956f967ebc433a1c18e2d63a21caf76afc81ac5e5e24e6aec334b6, and 875 entries.",
+    "The local and public /api/ai/catalog-status endpoints report sqlite-fts5, the verified Catalog SHA-256, 875 entries, and the host-specific snapshot sourceCommit.",
+    "A direct no-model PluginCatalogIndex.search for the image-reading request returns exactly dsh-auto-image and dsh-auto-vision.",
+    "The public-config SHA-256 remains abecdb7640270efc139612bda876680ba8dc750d3f6e81e5ac583190caa64b77."
+  ],
+  "externalEffects": {
+    "serverDeployment": true,
+    "deploymentTargets": ["dsh-store-intl"],
+    "databaseReset": false,
+    "modelConfigurationOrCredentialMutation": false,
+    "catalogMutation": false,
+    "githubPagesDeployment": false,
+    "dshProfileMutation": false
+  },
+  "rollback": "If restart, local/public status, permissions, public-config hash, or direct search fails, atomically restore /opt/dsh-model-service/current to /opt/dsh-model-service/releases/2ca8a4fc and restart dsh-model-service. Preserve the existing database and both versioned service releases."
+}

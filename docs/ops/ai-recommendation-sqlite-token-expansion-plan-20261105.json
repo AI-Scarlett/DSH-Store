@@ -3,10 +3,11 @@
   "planId": "ai-recommendation-sqlite-token-expansion-20261105",
   "operation": "preserve-semantic-query-synonyms-in-sqlite-retrieval-and-redeploy",
   "createdAt": "2026-11-05",
-  "status": "prepared",
+  "status": "partial",
   "repository": "AI-Scarlett/DSH-Store",
   "baseCommit": "1598941beecdd6b70783fdce5c707a48f3a55be3",
   "dependsOnPlanId": "ai-recommendation-sqlite-index-20261105",
+  "supersededByPlanId": "ai-recommendation-sqlite-intl-redeploy-20261105",
   "authorization": "The user explicitly requested implementation and production deployment. The first planned deployment rolled back after the live query exposed a missing SQLite synonym term; this plan authorizes the focused correction and retry.",
   "objective": "Use the same semantic query-token expansion for SQLite FTS retrieval as the final matcher so translated or English-only plugin descriptions are not discarded before candidate ranking.",
   "fileScope": {
@@ -81,7 +82,7 @@
     "The exact Chinese image-reading request returns both dsh-auto-image and dsh-auto-vision from the SQLite-backed index; blocked and unpinned entries remain excluded.",
     "A disposable release fixture proves the query synonym token set reaches FTS before final semantic ranking.",
     "npm run check and the CI checks relevant to the website service pass; DSH latest-version compatibility remains an independent gate and is not rewritten or bypassed.",
-    "On both production servers, /api/ai/catalog-status reports sqlite-fts5, 875 entries, source Commit 641908ebbe536de8f25b654f008b94cc54c6152b, and Catalog SHA-256 5a904ecf2d956f967ebc433a1c18e2d63a21caf76afc81ac5e5e24e6aec334b6.",
+    "On each production server, /api/ai/catalog-status reports sqlite-fts5, 875 entries, and Catalog SHA-256 5a904ecf2d956f967ebc433a1c18e2d63a21caf76afc81ac5e5e24e6aec334b6; sourceCommit matches that server's verified SQLite snapshot, and may differ across hosts when the Catalog bytes are identical.",
     "A direct database-index query on each host returns dsh-auto-image and dsh-auto-vision without making a paid model request; /api/ai/public-config retains its pre-deployment SHA-256."
   ],
   "previousAttempt": {
@@ -90,6 +91,45 @@
     "currentServiceReleaseAfterRollback": "/opt/dsh-model-service/releases/2ca8a4fc",
     "databaseRetained": true,
     "internationalServerChanged": false
+  },
+  "latestExecution": {
+    "sourceCommit": "6ee964f862a3ffaf5f454992e03d183516976e03",
+    "validation": {
+      "npmRunCheck": "passed: 875 registry entries and 608 tests",
+      "internationalStaticBuild": "passed",
+      "domesticStaticBuild": "passed",
+      "pr1764RegistryValidation": "passed",
+      "pr1764DshUpgradeMatrix": "in-progress; compatibility declaration unchanged",
+      "prMerged": false
+    },
+    "deployments": {
+      "dsh-store-cn-814823065": {
+        "status": "verified",
+        "currentRelease": "/opt/dsh-model-service/releases/6ee964f862a3ffaf5f454992e03d183516976e03",
+        "catalogDatabase": {
+          "mode": "0600",
+          "sourceCommit": "641908ebbe536de8f25b654f008b94cc54c6152b",
+          "catalogSha256": "5a904ecf2d956f967ebc433a1c18e2d63a21caf76afc81ac5e5e24e6aec334b6",
+          "entryCount": 875
+        },
+        "verifiedQuery": ["dsh-auto-image", "dsh-auto-vision"],
+        "publicConfigSha256": "abecdb7640270efc139612bda876680ba8dc750d3f6e81e5ac583190caa64b77"
+      },
+      "dsh-store-intl": {
+        "status": "rolled-back",
+        "currentRelease": "/opt/dsh-model-service/releases/2ca8a4fc",
+        "reason": "The first retry health assertion expected sourceCommit 641908ebbe536de8f25b654f008b94cc54c6152b. The verified newest local Catalog source is ac1e0c87f2c7ade4db4572b780ea70746cc546f6 with the same Catalog SHA and 875 entries. The service rollback was automatic; the initialized database and versioned release were retained.",
+        "catalogDatabase": {
+          "mode": "0600",
+          "sourceCommit": "ac1e0c87f2c7ade4db4572b780ea70746cc546f6",
+          "catalogSha256": "5a904ecf2d956f967ebc433a1c18e2d63a21caf76afc81ac5e5e24e6aec334b6",
+          "entryCount": 875,
+          "sha256AfterReadOnlySearch": "9f650b5ca4582dfb64f47afdd33b566dc9faa8d4b68888c8119a2e25c0a60766"
+        },
+        "verifiedQueryUsingPreservedRelease": ["dsh-auto-image", "dsh-auto-vision"],
+        "publicConfigSha256": "abecdb7640270efc139612bda876680ba8dc750d3f6e81e5ac583190caa64b77"
+      }
+    }
   },
   "externalEffects": {
     "catalogMutation": false,
