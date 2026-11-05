@@ -4,17 +4,17 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="robots" content="noindex,nofollow">
-  <title>DSH STORE · 大模型配置管理后台</title>
+  <title>DSH STORE · 管理后台</title>
   <link rel="icon" type="image/png" sizes="1254x1254" href="../dsh-store-icon.png">
-  <link rel="stylesheet" href="./admin.css">
+  <link rel="stylesheet" href="./admin.css?v=20261105-ranking-curation">
 </head>
 <body>
   <header class="admin-header">
     <div class="admin-brand">
       <img class="admin-logo" src="../dsh-store-icon.png" alt="DSH Store">
       <div class="admin-title-group">
-        <h1>DSH STORE · 大模型配置管理后台 <span class="admin-badge">LLM Admin Hub</span></h1>
-        <p class="admin-desc">配置主备大模型解析端点、安全密钥与 RAG 检索参数</p>
+        <h1>DSH STORE · 大模型配置管理后台 · 榜单管理 <span class="admin-badge">ADMIN HUB</span></h1>
+        <p class="admin-desc">管理大模型配置、推荐榜和必装榜</p>
       </div>
     </div>
     <div class="admin-header-actions">
@@ -34,7 +34,7 @@
       <div class="login-header">
         <img src="../dsh-store-icon.png" alt="DSH Store" width="56" height="56" style="border-radius: 12px; margin-bottom: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.25);">
         <h2>管理员安全登录</h2>
-        <p>请输入管理员账号与密码以解锁大模型配置后台</p>
+        <p>请输入管理员账号与密码以解锁管理后台</p>
       </div>
       <div id="login-error-banner" class="login-error-banner" style="display: none;" role="alert"></div>
       <form id="admin-login-form" class="login-form">
@@ -143,6 +143,57 @@
           <div id="suggestions-list-container" class="suggestions-list-wrap"></div>
           <span class="form-hint">配置首页输入框下方的快捷示例标签。左侧为按钮展示名称，右侧为点击后填入的完整需求 query。</span>
         </div>
+      </div>
+    </section>
+
+    <!-- 推荐榜与必装榜管理 -->
+    <section class="admin-card ranking-curation-card" aria-labelledby="ranking-curation-title">
+      <div class="admin-card-header">
+        <div>
+          <h2 id="ranking-curation-title"><span>🏆</span> 推荐榜与必装榜管理</h2>
+          <p class="ranking-curation-intro">设置自动规则或手动选择、排序榜单条目。手动设置保存在服务器独立文件中，不会改变 Catalog 收录状态、兼容性或安装资格。</p>
+        </div>
+        <span id="ranking-curation-revision" class="key-status">读取中</span>
+      </div>
+      <div id="ranking-curation-error" class="ranking-curation-error" role="alert" hidden></div>
+      <div class="ranking-curation-grid">
+        <section class="ranking-board" data-ranking-board="recommended" aria-labelledby="recommended-board-title">
+          <div class="ranking-board-heading">
+            <div>
+              <h3 id="recommended-board-title">推荐榜</h3>
+              <p>基于公开交流与每周星标推荐规则生成候选</p>
+            </div>
+            <label class="ranking-mode-label" for="recommended-board-mode">管理方式
+              <select class="form-select" id="recommended-board-mode" data-board-mode="recommended">
+                <option value="auto">自动规则</option>
+                <option value="manual">手动管理</option>
+              </select>
+            </label>
+          </div>
+          <p class="ranking-board-status" id="recommended-board-status" aria-live="polite"></p>
+          <ol class="ranking-curation-list" id="recommended-board-list"></ol>
+        </section>
+        <section class="ranking-board" data-ranking-board="essential" aria-labelledby="essential-board-title">
+          <div class="ranking-board-heading">
+            <div>
+              <h3 id="essential-board-title">必装榜</h3>
+              <p>基于每周分类星标第一与分类补位规则生成候选</p>
+            </div>
+            <label class="ranking-mode-label" for="essential-board-mode">管理方式
+              <select class="form-select" id="essential-board-mode" data-board-mode="essential">
+                <option value="auto">自动规则</option>
+                <option value="manual">手动管理</option>
+              </select>
+            </label>
+          </div>
+          <p class="ranking-board-status" id="essential-board-status" aria-live="polite"></p>
+          <ol class="ranking-curation-list" id="essential-board-list"></ol>
+        </section>
+      </div>
+      <div class="card-actions ranking-curation-actions">
+        <span id="ranking-curation-save-status" role="status" aria-live="polite"></span>
+        <button type="button" class="btn btn-secondary" id="ranking-curation-reset-btn">恢复自动规则并保存</button>
+        <button type="button" class="btn btn-primary" id="ranking-curation-save-btn">保存榜单设置</button>
       </div>
     </section>
 
@@ -285,6 +336,6 @@
     </div>
   </main>
 
-  <script src="./admin.js?v=20261104d"></script>
+  <script src="./admin.js?v=20261105-ranking-curation"></script>
 </body>
 </html>

@@ -350,8 +350,46 @@ export function rankingEntries(data, type) {
   return withOfficialDshToolSlots(result, data, type)
 }
 
-export function rankingPage(data, type, requestedPage = 1) {
-  const entries = rankingEntries(data, type)
+export function rankingCurationChoices(data, type) {
+  if (!['recommended', 'essential'].includes(type)) throw new Error('Ranking curation is limited to managed boards')
+  const automatic = rankingEntries(data, type)
+  const eligible = automatic.filter(entry => !['blocked', 'rejected'].includes(entry.reviewStatus))
+  const officialSlots = eligible.flatMap((entry, index) => entry.officialToolPick ? [{ id: entry.id, index }] : [])
+  const lockedIds = new Set(officialSlots.map(slot => slot.id))
+  const selectable = eligible.filter(entry => !lockedIds.has(entry.id))
+  const minimumManualEntries = officialSlots.reduce((minimum, slot) => {
+    const officialAtOrBefore = officialSlots.filter(candidate => candidate.index <= slot.index).length
+    return Math.max(minimum, slot.index + 1 - officialAtOrBefore)
+  }, 0)
+  return { automatic, eligible, selectable, officialSlots, minimumManualEntries }
+}
+
+export function curatedRankingEntries(data, type, curation = null) {
+  const automatic = rankingEntries(data, type)
+  if (!['recommended', 'essential'].includes(type) || !curation || curation.sourceCommit !== data.sourceCommit) return automatic
+  const board = curation.boards?.[type]
+  if (!board || board.mode === 'auto') return automatic
+  if (board.mode !== 'manual' || !Array.isArray(board.ids) || board.ids.length > 30
+    || board.ids.some(id => typeof id !== 'string') || new Set(board.ids).size !== board.ids.length) return automatic
+
+  const choices = rankingCurationChoices(data, type)
+  const selectableIds = new Set(choices.selectable.map(entry => entry.id))
+  if (board.ids.some(id => !selectableIds.has(id)) || board.ids.length < choices.minimumManualEntries) return automatic
+
+  const byId = new Map(choices.selectable.map(entry => [entry.id, entry]))
+  const outputLength = board.ids.length + choices.officialSlots.length
+  if (choices.officialSlots.some(slot => slot.index >= outputLength)) return automatic
+  const output = new Array(outputLength)
+  for (const slot of choices.officialSlots) output[slot.index] = choices.eligible.find(entry => entry.id === slot.id)
+  let next = 0
+  for (let index = 0; index < output.length; index++) {
+    if (!output[index]) output[index] = byId.get(board.ids[next++])
+  }
+  return output.every(Boolean) ? output : automatic
+}
+
+export function rankingPage(data, type, requestedPage = 1, curation = null) {
+  const entries = curatedRankingEntries(data, type, curation)
   const pageCount = Math.max(1, Math.ceil(entries.length / PAGE_SIZE))
   const page = Math.min(pageCount, Math.max(1, Number.isSafeInteger(requestedPage) ? requestedPage : 1))
   return { entries: entries.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE), total: entries.length, page, pageCount }
