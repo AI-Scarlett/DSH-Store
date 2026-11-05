@@ -5,7 +5,7 @@ import { constants as fsConstants } from 'node:fs'
 import { dirname, isAbsolute, join, relative, resolve, sep } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { normalizeCatalogEntry } from './ai-recommend.mjs'
-import { searchCatalogCandidates, tokenize } from '../marketplace/lib/recommendation-search.mjs'
+import { searchCatalogCandidates, searchTokens, tokenize } from '../marketplace/lib/recommendation-search.mjs'
 
 const projectRoot = resolve(fileURLToPath(new URL('..', import.meta.url)))
 const defaultSourceRoots = ['/opt/dsh-store-cn/current', '/opt/dsh-store/current']
@@ -358,7 +358,7 @@ export class PluginCatalogIndex {
 
   async search(query, limit = 8) {
     await this.start()
-    const tokens = tokenize(query)
+    const tokens = searchTokens(query)
     const result = await this.#worker.request({ action: 'search', tokens, limit: 512 })
     const rows = result.ids.map(id => this.#entriesById.get(id)).filter(Boolean)
     return searchCatalogCandidates(query, rows, limit)

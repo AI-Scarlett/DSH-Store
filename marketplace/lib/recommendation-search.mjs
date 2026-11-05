@@ -72,6 +72,10 @@ function queryTokens(queryText) {
   return tokens
 }
 
+export function searchTokens(queryText) {
+  return [...queryTokens(queryText)]
+}
+
 function imageIntentAllowsEntry(queryText, fields) {
   const normalized = String(queryText || "").toLowerCase()
   const isImageRequest = IMAGE_QUERY.test(normalized) || IMAGE_GENERATE_QUERY.test(normalized)

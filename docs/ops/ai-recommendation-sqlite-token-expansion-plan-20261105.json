@@ -1,0 +1,103 @@
+{
+  "schemaVersion": 1,
+  "planId": "ai-recommendation-sqlite-token-expansion-20261105",
+  "operation": "preserve-semantic-query-synonyms-in-sqlite-retrieval-and-redeploy",
+  "createdAt": "2026-11-05",
+  "status": "prepared",
+  "repository": "AI-Scarlett/DSH-Store",
+  "baseCommit": "1598941beecdd6b70783fdce5c707a48f3a55be3",
+  "dependsOnPlanId": "ai-recommendation-sqlite-index-20261105",
+  "authorization": "The user explicitly requested implementation and production deployment. The first planned deployment rolled back after the live query exposed a missing SQLite synonym term; this plan authorizes the focused correction and retry.",
+  "objective": "Use the same semantic query-token expansion for SQLite FTS retrieval as the final matcher so translated or English-only plugin descriptions are not discarded before candidate ranking.",
+  "fileScope": {
+    "modify": [
+      "marketplace/lib/recommendation-search.mjs",
+      "src/plugin-catalog-index.mjs",
+      "test/plugin-catalog-index.test.mjs"
+    ],
+    "add": [
+      "docs/ops/ai-recommendation-sqlite-token-expansion-plan-20261105.json"
+    ]
+  },
+  "preconditions": {
+    "sha256": {
+      "marketplace/lib/recommendation-search.mjs": "6c90e6e09c4b105e937143772db8a4e14ea781c4c2390d8e9d4b9fb72a961e97",
+      "src/plugin-catalog-index.mjs": "4eb19fed63f075e518f94fa99231b349a8b210909ef01d82047664b0be9ece85",
+      "test/plugin-catalog-index.test.mjs": "29334be0c8f0907d68de16ea1b31c51293f669ffbc9cff9ea5929860f9b403cb"
+    },
+    "absent": [
+      "docs/ops/ai-recommendation-sqlite-token-expansion-plan-20261105.json"
+    ],
+    "production": [
+      {
+        "serverId": "dsh-store-cn-814823065",
+        "host": "100.75.186.28",
+        "service": "dsh-model-service",
+        "currentRelease": "/opt/dsh-model-service/releases/2ca8a4fc",
+        "serviceUnitSha256": "d563b3c195b28d36f336ba3da5168a0a701d4d648d8974ff2dd5fad04a4ce228",
+        "catalogDatabase": {
+          "path": "/var/lib/dsh-model-service/plugin-catalog.sqlite3",
+          "state": "retained-from-automatically-rolled-back-attempt",
+          "sha256": "433f98be901be250be8b824467f44a5a56bc7269bae56ba7c47e13a752fa6625",
+          "mode": "0600",
+          "sourceCommit": "641908ebbe536de8f25b654f008b94cc54c6152b",
+          "catalogSha256": "5a904ecf2d956f967ebc433a1c18e2d63a21caf76afc81ac5e5e24e6aec334b6",
+          "entryCount": 875
+        },
+        "retainedFailedRelease": "/opt/dsh-model-service/releases/1598941beecdd6b70783fdce5c707a48f3a55be3",
+        "retainedBackup": "/opt/dsh-model-service/backups/ai-recommendation-sqlite-1598941b",
+        "catalogSource": {
+          "release": "/opt/dsh-store-cn/releases/20261104T233352Z-pages-641908ebbe53",
+          "sourceCommit": "641908ebbe536de8f25b654f008b94cc54c6152b",
+          "catalogSha256": "5a904ecf2d956f967ebc433a1c18e2d63a21caf76afc81ac5e5e24e6aec334b6",
+          "entryCount": 875
+        }
+      },
+      {
+        "serverId": "dsh-store-intl",
+        "host": "100.119.62.98",
+        "service": "dsh-model-service",
+        "currentRelease": "/opt/dsh-model-service/releases/2ca8a4fc",
+        "serviceUnitSha256": "d563b3c195b28d36f336ba3da5168a0a701d4d648d8974ff2dd5fad04a4ce228",
+        "catalogDatabase": {
+          "path": "/var/lib/dsh-model-service/plugin-catalog.sqlite3",
+          "state": "absent"
+        },
+        "catalogSource": {
+          "release": "/opt/dsh-store/releases/20261104T233128Z-pages-641908ebbe53",
+          "sourceCommit": "641908ebbe536de8f25b654f008b94cc54c6152b",
+          "catalogSha256": "5a904ecf2d956f967ebc433a1c18e2d63a21caf76afc81ac5e5e24e6aec334b6",
+          "entryCount": 875
+        }
+      }
+    ]
+  },
+  "implementation": {
+    "queryTokens": "Export the shared semantic query-token set, including image-reading synonyms, and use it for the SQLite FTS query. Keep field indexing on normalized literal terms and preserve the final semantic matcher as the authoritative rank/filter stage.",
+    "dataBoundary": "The retained SQLite database contains only catalog search metadata. Do not change model settings, credentials, Catalog records, DSH Profiles, or source metadata.",
+    "deployment": "Build a new versioned service release from the corrected commit. Preserve the old service release, first failed release, backup record, and existing domestic SQLite database. Initialize the international SQLite database at the existing private data path. Switch and health-check each server independently; automatically restore its current symlink if health or sample-query readback fails."
+  },
+  "deterministicGates": [
+    "The exact Chinese image-reading request returns both dsh-auto-image and dsh-auto-vision from the SQLite-backed index; blocked and unpinned entries remain excluded.",
+    "A disposable release fixture proves the query synonym token set reaches FTS before final semantic ranking.",
+    "npm run check and the CI checks relevant to the website service pass; DSH latest-version compatibility remains an independent gate and is not rewritten or bypassed.",
+    "On both production servers, /api/ai/catalog-status reports sqlite-fts5, 875 entries, source Commit 641908ebbe536de8f25b654f008b94cc54c6152b, and Catalog SHA-256 5a904ecf2d956f967ebc433a1c18e2d63a21caf76afc81ac5e5e24e6aec334b6.",
+    "A direct database-index query on each host returns dsh-auto-image and dsh-auto-vision without making a paid model request; /api/ai/public-config retains its pre-deployment SHA-256."
+  ],
+  "previousAttempt": {
+    "sourceCommit": "1598941beecdd6b70783fdce5c707a48f3a55be3",
+    "result": "domestic service automatically rolled back after sample query returned only dsh-auto-vision",
+    "currentServiceReleaseAfterRollback": "/opt/dsh-model-service/releases/2ca8a4fc",
+    "databaseRetained": true,
+    "internationalServerChanged": false
+  },
+  "externalEffects": {
+    "catalogMutation": false,
+    "modelConfigurationOrCredentialMutation": false,
+    "dshProfileMutation": false,
+    "authorOutreach": false,
+    "serverDeployment": true,
+    "deploymentTargets": ["dsh-store-cn-814823065", "dsh-store-intl"]
+  },
+  "rollback": "Atomically restore the per-server current symlink to /opt/dsh-model-service/releases/2ca8a4fc and restart the service. Keep both existing SQLite data and all versioned releases for recovery; do not delete or reset the retained database."
+}

@@ -64,9 +64,12 @@ test('SQLite FTS5 sync verifies local release hashes and preserves the last good
   const goodVision = entry('vision-reader', 'dsh-auto-vision', '将图片和截图转换为文字描述，支持视觉理解。', {
     searchTerms: ['读取图片', '识图', 'vision'],
   })
+  const englishOnlyVision = entry('image-reader', 'dsh-auto-image', 'Bridges images into text for DeepSeek Harness; a configured vision model describes images.', {
+    searchTerms: ['image', 'images', 'vision'],
+  })
   const blockedVision = entry('blocked-vision', 'blocked-vision', '图片识别插件', { status: 'blocked' })
   const unpinnedVision = entry('unpinned-vision', 'unpinned-vision', '图片识别插件', { commit: 'main' })
-  const first = await writeRelease(storeRoot, 'first', firstGeneratedAt, firstCommit, [goodVision, blockedVision, unpinnedVision])
+  const first = await writeRelease(storeRoot, 'first', firstGeneratedAt, firstCommit, [goodVision, englishOnlyVision, blockedVision, unpinnedVision])
   const current = join(storeRoot, 'current')
   await setCurrent(storeRoot, first.releaseRoot)
   await loadVerifiedCatalogRelease(current)
@@ -81,10 +84,10 @@ test('SQLite FTS5 sync verifies local release hashes and preserves the last good
 
   try {
     const initial = await index.search('我需要dsh能读取图片 要用什么插件')
-    assert.deepEqual(initial.map(item => item.packageName), ['dsh-auto-vision'])
+    assert.deepEqual(initial.map(item => item.packageName).sort(), ['dsh-auto-image', 'dsh-auto-vision'])
     const firstStatus = await index.status()
     assert.equal(firstStatus.backend, 'sqlite-fts5')
-    assert.equal(firstStatus.entryCount, 3)
+    assert.equal(firstStatus.entryCount, 4)
     assert.equal(firstStatus.sourceCommit, firstCommit)
     assert.equal(firstStatus.catalogSha256, first.catalogSha256)
 
@@ -105,14 +108,14 @@ test('SQLite FTS5 sync verifies local release hashes and preserves the last good
     const afterInvalidSource = await index.status()
     assert.equal(afterInvalidSource.lastRefreshStatus, 'failed')
     assert.equal(afterInvalidSource.catalogSha256, first.catalogSha256)
-    assert.deepEqual((await index.search('读取图片')).map(item => item.packageName), ['dsh-auto-vision'])
+    assert.deepEqual((await index.search('我需要dsh能读取图片 要用什么插件')).map(item => item.packageName).sort(), ['dsh-auto-image', 'dsh-auto-vision'])
 
     const secondGeneratedAt = '2026-11-05T02:00:00.000Z'
     const secondCommit = '2'.repeat(40)
     const newVision = entry('vision-reader-v2', 'dsh-vision-caption', '从截图读取文字并描述图片内容。', {
       searchTerms: ['图片读取', '截图识别', 'vision'],
     })
-    const second = await writeRelease(storeRoot, 'second', secondGeneratedAt, secondCommit, [goodVision, newVision])
+    const second = await writeRelease(storeRoot, 'second', secondGeneratedAt, secondCommit, [goodVision, englishOnlyVision, newVision])
     await setCurrent(storeRoot, second.releaseRoot)
     for (let attempt = 0; attempt < 30; attempt += 1) {
       if ((await index.status()).sourceCommit === secondCommit) break
@@ -122,7 +125,7 @@ test('SQLite FTS5 sync verifies local release hashes and preserves the last good
     assert.equal(secondStatus.lastRefreshStatus, 'synced')
     assert.equal(secondStatus.sourceCommit, secondCommit)
     assert.equal(secondStatus.catalogSha256, second.catalogSha256)
-    assert.deepEqual((await index.search('截图读取图片')).map(item => item.packageName).sort(), ['dsh-auto-vision', 'dsh-vision-caption'])
+    assert.deepEqual((await index.search('截图读取图片')).map(item => item.packageName).sort(), ['dsh-auto-image', 'dsh-auto-vision', 'dsh-vision-caption'])
   } finally {
     await index.close()
     await rm(root, { recursive: true, force: true })
