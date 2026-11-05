@@ -7,7 +7,7 @@ const project = new URL('../', import.meta.url)
 test('package exposes a standard DSH bundle and client', async () => {
   const pkg = JSON.parse(await readFile(new URL('package.json', project), 'utf8'))
   assert.equal(pkg.name, 'dsh-safe-plugin-manager')
-  assert.equal(pkg.version, '0.9.41')
+  assert.equal(pkg.version, '0.9.42')
   assert.equal(pkg.engines.dsh, pkg.dsh.compatibility.dsh)
   for (const release of ['0.1.7-alpha.1', '0.1.7-alpha.2', '0.1.7-rc.1', '0.1.7-rc.2']) {
     assert.equal(pkg.dsh.compatibility.dshReleases[release], 'compatible')
@@ -65,7 +65,7 @@ test('package exposes a standard DSH bundle and client', async () => {
   const nextClientRange = `${rcClientRange} || 0.2.0-rc.1`
   const currentClientRange = `${nextClientRange} || 0.2.0-rc.2 || 0.2.1-alpha.1 || 0.2.1-alpha.2 || 0.2.1-alpha.3 || 0.2.1-alpha.4 || 0.2.1-alpha.5 || 0.2.1-rc.1 || 0.2.1-rc.2 || 0.2.1-rc.3 || 0.2.1-rc.4 || 0.2.1-rc.5 || 0.2.2-alpha.2 || 0.2.2-alpha.3 || 0.2.2-rc.1`
   const desktopClientRange = [...currentClientRange.split(' || '), '0.1.5-rc.2'].sort()
-  assert.equal(pkg.peerDependencies['@deepseek-ai/dsh-client-runtime'], `${legacyClientRange} || 0.2.1-alpha.1 || 0.2.1-alpha.2 || 0.2.1-alpha.3 || 0.2.1-alpha.4 || 0.2.1-alpha.5 || 0.2.1-rc.1 || 0.2.1-rc.2 || 0.2.1-rc.3`)
+  assert.equal(pkg.peerDependencies['@deepseek-ai/dsh-api-remotes'], currentClientRange)
   for (const dependency of [
     '@deepseek-ai/dsh-client-ui-primitives',
     '@deepseek-ai/dsh-client-ui-settings',
@@ -75,7 +75,10 @@ test('package exposes a standard DSH bundle and client', async () => {
     '@deepseek-ai/dsh-client-ui-layout',
     '@deepseek-ai/dsh-client-ui-sidebar',
   ]) assert.deepEqual(pkg.peerDependencies[dependency].split(' || ').sort(), desktopClientRange)
+  assert.equal(pkg.peerDependencies['@deepseek-ai/dsh-client-runtime'], undefined,
+    'the standalone dsh-client-runtime line stopped publishing after 0.1.1-rc.2 and cannot be a declared dependency')
   for (const dependency of [
+    '@deepseek-ai/dsh-api-remotes',
     '@deepseek-ai/dsh-client-ui-primitives',
     '@deepseek-ai/dsh-client-ui-settings',
     '@deepseek-ai/dsh-client-ui-layout',
@@ -516,7 +519,7 @@ test('public rc.7 through 0.1.2-alpha.5 client contract stays on official Module
   ])
   const manifest = JSON.parse(pkg)
   assert.deepEqual(manifest.dsh.client.inject, [
-    '@deepseek-ai/dsh-client-runtime',
+    '@deepseek-ai/dsh-api-remotes',
     '@deepseek-ai/dsh-client-ui-primitives',
     '@deepseek-ai/dsh-client-ui-slots',
     '@deepseek-ai/dsh-client-ui-settings',

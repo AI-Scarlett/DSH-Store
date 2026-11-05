@@ -1,0 +1,113 @@
+{
+  "schemaVersion": 1,
+  "type": "dsh-native-market-upgrade",
+  "planId": "dsh-native-market-desktop-client-contract-20261105",
+  "planFile": "docs/ops/dsh-native-market-desktop-client-contract-20261105.json",
+  "createdAt": "2026-11-05T12:30:00Z",
+  "baseCommit": "0fb65296a24a2c2d99f39c921421276213f7c245",
+  "scope": [
+    ".github/workflows/registry.yml",
+    "README.md",
+    "docs/ops/dsh-native-market-desktop-client-contract-20261105.json",
+    "docs/ops/dsh-native-market-desktop-client-contract-20261105.evidence.json",
+    "docs/reviews/dsh-native-market-desktop-client-contract-20261105.md",
+    "package.json",
+    "test/client-host-contract.test.mjs",
+    "test/contracts.test.mjs",
+    "test/fixtures/official-client-packages.json",
+    "test/upgrade-matrix.test.mjs"
+  ],
+  "preconditions": {
+    ".github/workflows/registry.yml": "7c2c8f9828512e6c7c771fe1c06e154e052f5b4bc3f2c891f1fd7daf8f70a5af",
+    "README.md": "62a7df320dc51940429914c5f13c2bd731e98ad6b419019fda37a9d9eb35fed5",
+    "docs/ops/dsh-native-market-desktop-client-contract-20261105.json": null,
+    "docs/ops/dsh-native-market-desktop-client-contract-20261105.evidence.json": null,
+    "docs/reviews/dsh-native-market-desktop-client-contract-20261105.md": null,
+    "package.json": "3bc3197c30fd25cbd2bbb74a3fcee0b0ab9d866bcc7a6e47c888ae71a458494a",
+    "test/client-host-contract.test.mjs": null,
+    "test/contracts.test.mjs": "74510b3e711d2996a11c6cc8df388d78dd43e784ae608dd1b8e5ae828f52549d",
+    "test/fixtures/official-client-packages.json": null,
+    "test/upgrade-matrix.test.mjs": "a1118f0e074dc6441aca66ec22e8e3f6b2123c7818d9341aa3ff883a75041727"
+  },
+  "postconditions": {
+    ".github/workflows/registry.yml": "19a874f19c784a248681aa28a8d158fbb1c7f30b3bd352d1f304e10b7103e46e",
+    "README.md": "7770d8c9fca4c19ee061adbe33f6d91ae9bfeb45ff9300e52f2dc979667d8ed9",
+    "docs/ops/dsh-native-market-desktop-client-contract-20261105.evidence.json": "7776c2a0a2c6b58d5c4e58487c85247e8d717cca472e2cc56c47ce8c7ed1efd5",
+    "docs/reviews/dsh-native-market-desktop-client-contract-20261105.md": "242c3847970760817e56522feeb2b5d44cca509cd003e5f636438f2992484995",
+    "package.json": "a821d24309ee85b577edbf3dadf7e359506bbd0734bf5935c7eaca52b8af71b2",
+    "test/client-host-contract.test.mjs": "5025733533648a33e2b5cb3d85d1841fbbe4940a643a6584b992a603ca14821e",
+    "test/contracts.test.mjs": "ede1c71fdea8fdddf7ced85576ee542121e569e4b7b10a8774b004b54f36ee35",
+    "test/fixtures/official-client-packages.json": "f13834069bdc823d9e27a3c267013374f750fc7b8734825f150a7f24aaabc6ca",
+    "test/upgrade-matrix.test.mjs": "3fa8a16aadbc7e626c089372749cd67449a5a6dcd1a628a411d9609fc4956b42"
+  },
+  "authorization": {
+    "source": "direct-user-request",
+    "request": "Build DSH Plugin 这个插件 要适配最新版的DSH，同步要适配 DSH desktop 和 DSH cli；随后用户要求解决剩余的 Desktop 实机验收与 Catalog 固定。",
+    "githubWriteCredential": "short-lived-token-required",
+    "mutationRoute": "typed-fixed-source-plan-and-ci-checked-pull-request",
+    "confirmationPhrase": "确认提交 DSH Store 0.9.42 源码 PR",
+    "confirmationScope": "提交本计划绑定的源码 PR；计划单次使用，base 或任一前置哈希变化即失效。"
+  },
+  "official": {
+    "runtime": "0.2.2-rc.1",
+    "latestThree": [
+      "0.2.2-alpha.2",
+      "0.2.2-alpha.3",
+      "0.2.2-rc.1"
+    ],
+    "releaseAuthority": "official-github-releases-and-npm-published-versions",
+    "desktopApplication": "DeepSeek Harness 0.2.2-rc.1",
+    "clientDependencyFacts": [
+      "@deepseek-ai/dsh-api-remotes ships lib/client.js in the official 0.2.2-rc.1 dependency tree and in the Desktop application bundle; it provides the remote service and mounts the pluginManager Remote namespace.",
+      "@deepseek-ai/dsh-client-runtime stopped publishing after 0.1.1-rc.2 and exists in neither the CLI/Web runtime nor the Desktop application bundle.",
+      "@deepseek-ai/dsh-client-ui-plugin-manager@0.2.2-rc.1, the official client that uses the plugin manager, declares @deepseek-ai/dsh-api-remotes in dsh.client.inject.",
+      "@deepseek-ai/dsh-client-ui-primitives and @deepseek-ai/dsh-client-ui-slots are platform seed modules published by the shared web frontend build, not host packages."
+    ]
+  },
+  "change": {
+    "packageVersion": "0.9.42",
+    "compatibility": "Replace the dropped @deepseek-ai/dsh-client-runtime client declaration with @deepseek-ai/dsh-api-remotes, and replace its peer range with an @deepseek-ai/dsh-api-remotes range naming only published versions across the live latest-three window.",
+    "classification": "contract-accuracy correction; the stale declaration was skipped by the official browser module loader and did not break loading",
+    "sourceCode": "No DSH source and no @deepseek-ai package is modified. Host, Catalog and public surfaces are unchanged."
+  },
+  "verification": {
+    "e2": {
+      "result": "passed",
+      "command": "npm run check"
+    },
+    "e3": {
+      "dshVersion": "0.2.2-rc.1",
+      "commands": [
+        "official CLI plugin add",
+        "dump-config",
+        "dsh web start",
+        "authenticated runtime, inventory and activation APIs",
+        "unauthenticated 401",
+        "cross-origin 403",
+        "uninstall",
+        "exact Profile restoration"
+      ],
+      "result": "passed",
+      "realProfile": "unchanged",
+      "versionExemptionsUsed": false,
+      "rollback": "unknown"
+    },
+    "desktop": "Official Desktop contract verified from the published 0.2.2-rc.1 dependency tree and the installed Desktop application bundle. Real Desktop UI acceptance remains unverified.",
+    "catalog": "unchanged; the Catalog pins 0.9.41 and a new pin is a separate plan"
+  },
+  "gates": [
+    "Run npm run check and git diff --check.",
+    "Verify this plan against the exact base, scope and postcondition hashes.",
+    "Pass the latest-three official CLI runtime matrix on Linux, macOS and Windows with pnpm 10, 11 and 12 at the final PR head.",
+    "Merge only after every required check passes, through an auditable pull request.",
+    "After the source merge, make a separate first-party Store Catalog plan and verify the public surfaces."
+  ],
+  "rollback": "Revert only the exact source pull request through a CI-checked commit. No real Profile, Catalog entry or public surface is changed, so reverting the source restores the previous declaration set.",
+  "healthCheck": "Local npm run check, exact-source official CLI matrix, then merged main readback.",
+  "verdict": {
+    "status": "prepared-for-ci",
+    "realProfileChanged": false,
+    "catalogChanged": false,
+    "desktopUiVerified": false
+  }
+}
