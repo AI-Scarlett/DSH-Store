@@ -499,12 +499,13 @@ window.__ModuleLoader__.load({
       subtitle: { margin: '3px 0 0', color: 'var(--dsw-alias-label-tertiary)', fontSize: '12px', lineHeight: '18px' },
       input: {
         width: '100%', boxSizing: 'border-box', border: '1px solid var(--dsw-alias-border-l2)', borderRadius: '9px',
-        padding: '9px 11px', background: 'var(--dsw-alias-bg-layer-2)', color: 'var(--dsw-alias-label-primary)',
+        padding: '11px 12px', minHeight: '44px', fontSize: '14px', lineHeight: '20px',
+        background: 'var(--dsw-alias-bg-layer-2)', color: 'var(--dsw-alias-label-primary)',
       },
       select: {
         boxSizing: 'border-box', border: '1px solid var(--dsw-alias-border-l2)', borderRadius: '8px',
-        padding: '0 26px 0 10px', background: 'var(--dsw-alias-bg-layer-2)', color: 'var(--dsw-alias-label-primary)',
-        fontSize: '12px', lineHeight: 'normal', height: '34px', minWidth: '160px',
+        padding: '10px 34px 10px 12px', background: 'var(--dsw-alias-bg-layer-2)', color: 'var(--dsw-alias-label-primary)',
+        fontSize: '14px', lineHeight: '20px', minHeight: '44px', minWidth: '200px',
       },
       button: {
         border: '1px solid var(--dsw-alias-border-l2)', borderRadius: '8px', padding: '7px 11px',
@@ -711,8 +712,9 @@ window.__ModuleLoader__.load({
     }
 
     const DETAIL_MODAL_CSS = `
-      .dsh-safe-plugin-detail-modal { width: min(680px, 100%) !important; max-height: min(760px, calc(100vh - 48px)); }
-      .dsh-safe-plugin-detail-content { min-height: 0; overflow-y: auto; overflow-x: hidden; }
+      .dsh-safe-plugin-detail-modal { width: min(720px, calc(100vw - 32px)) !important; max-height: min(820px, calc(100vh - 40px)); }
+      .dsh-safe-plugin-detail-content { min-height: 0; overflow-y: auto; overflow-x: hidden; line-height: 1.55; }
+      .dsh-safe-plugin-detail-modal [role="dialog"] { max-height: calc(100vh - 40px); }
     `
 
     const DETAIL_LABELS = {
@@ -928,7 +930,7 @@ window.__ModuleLoader__.load({
       return React.createElement('div', { style: styles.toolbar },
         React.createElement('input', {
           type: 'search', value: query, onChange: event => onQueryChange(event.target.value),
-          style: { ...styles.input, flex: '1 1 360px' }, placeholder: '搜索名称、包名、分类、权限或 GitHub 仓库',
+          style: { ...styles.input, flex: '1 1 360px', minWidth: 'min(100%, 280px)' }, placeholder: '搜索名称、包名、分类、权限或 GitHub 仓库',
         }),
         React.createElement('select', {
           value: category, onChange: event => onCategoryChange(event.target.value),
@@ -4135,6 +4137,7 @@ window.__ModuleLoader__.load({
       const [featuredOnly, setFeaturedOnly] = useState(false)
       const [page, setPage] = useState(1)
       const [state, setState] = useState({ status: OFFICIAL_DESKTOP_RENDERER ? 'desktop-readonly' : 'loading' })
+      const [lastMarketSnapshot, setLastMarketSnapshot] = useState(null)
       const [activations, setActivations] = useState({})
       const [compatibleWith, setCompatibleWith] = useState('')
       const [marketLoading, setMarketLoading] = useState(false)
@@ -4179,6 +4182,7 @@ window.__ModuleLoader__.load({
               supported: false, available: false, errorCode: error?.code || 'GUARDIAN_UNAVAILABLE', message: String(error?.message || error),
             })),
           ])
+          setLastMarketSnapshot(market)
           setState({ status: 'ready', inventory, market, health, runtime, guardian, dshVersion: { status: 'checking' } })
           void post(ROUTES.dshVersion, { refresh: force }).then(async dshVersion => {
             const updatedMarket = await post(ROUTES.market, { ...marketBody, refresh: false }).catch(() => market)
@@ -4549,7 +4553,20 @@ window.__ModuleLoader__.load({
         : React.createElement('div', { style: styles.pageStatus, role: 'status' }, '正在读取当前视图…')
       const pageError = marketError ? React.createElement('div', { style: styles.error, role: 'alert' }, `目录分页加载失败：${marketError}`) : null
       let content
-      if (state.status === 'loading') content = React.createElement('p', { style: styles.muted }, '正在读取 Profile 与 GitHub 目录…')
+      if (state.status === 'loading') content = lastMarketSnapshot && view === 'market'
+        ? React.createElement(React.Fragment, null,
+          React.createElement(CatalogFilters, {
+            query, category, categoryIds, categoryLabels, featuredOnly, showFeatured: true,
+            onQueryChange: value => { setQuery(value); setPage(1) }, onCategoryChange: value => { setCategory(value); setPage(1) },
+            onFeaturedChange: value => { setFeaturedOnly(value); setPage(1) }, compatibleWith, currentVersion: null,
+            onCompatibilityChange: setCompatibleWith,
+          }),
+          React.createElement('div', { style: styles.notice }, `正在更新目录；先显示上次加载的 ${lastMarketSnapshot.entries?.length || 0} 个条目${lastMarketSnapshot.source?.fetchedAt ? ` · ${new Date(lastMarketSnapshot.source.fetchedAt).toLocaleString()}` : ''}`),
+          React.createElement('div', { style: styles.marketGrid, role: 'list', 'aria-label': '缓存的插件商城目录' }, lastMarketSnapshot.entries.map(rawEntry => {
+            const entry = normalizeMarketEntry(rawEntry)
+            return React.createElement(MarketCard, { key: entry.id, entry, health: null, beginPlan, checkSource, openDetails: setDetailEntry, categoryLabels: lastMarketSnapshot.registry?.categories || {}, readOnly: desktopReadOnly })
+          })))
+        : state.status === 'loading' ? React.createElement('p', { style: styles.muted }, '正在读取 Profile 与 GitHub 目录…') : null
       else if (state.status === 'error') content = React.createElement('p', { style: styles.error }, state.message)
       else if (view === 'health') content = React.createElement(HealthPanel, {
         health: state.health, permissionDecisions, setPermissionDecision, rerun: rerunHealth,
@@ -4591,7 +4608,9 @@ window.__ModuleLoader__.load({
           filters,
           React.createElement('div', { style: styles.notice },
             featuredOnly ? `作者互动推荐 · 当前页 ${state.market.recommendations?.length || 0} / ${pagination?.total || 0} 项 · 推荐展示不改变审核、兼容性或安装资格`
-              : `${state.market.source.kind === 'github' ? 'GitHub 可信安装目录' : '内置可信目录回退'} · 当前页 ${entries.length} / ${pagination?.total || 0} 个在架条目 · 未知不等于已验证`,
+              : `${state.market.source.kind === 'github' ? 'GitHub 可信安装目录' : state.market.source.kind === 'github-cache' || state.market.source.stale ? '本机缓存目录' : '内置可信目录回退'} · 当前页 ${entries.length} / ${pagination?.total || 0} 个在架条目 · 未知不等于已验证`,
+            state.market.source.fetchedAt ? ` · 更新于 ${new Date(state.market.source.fetchedAt).toLocaleString()}` : '',
+            state.market.source.stale ? ' · 离线缓存（当前无法连接目录）' : '',
             state.market.source.errorCode ? ` · ${state.market.source.errorCode}` : ''),
           pageError,
           React.createElement('div', { style: styles.grid, role: 'list', 'aria-label': '插件市场目录' }, featuredOnly && state.market.recommendations

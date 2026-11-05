@@ -714,6 +714,32 @@ test('catalog service falls back to bundled snapshot when GitHub is unavailable'
   assert.ok(catalog.entries.length >= 2)
 })
 
+test('catalog service persists and validates a complete GitHub v2 snapshot across instances', async () => {
+  const root = await mkdtemp(join(tmpdir(), 'dsh-catalog-cache-v2-'))
+  const cachePath = join(root, 'catalog-cache.json')
+  try {
+    const remote = await readFile(new URL('../registry/catalog.json', import.meta.url), 'utf8')
+    const localRegistryRoot = new URL('../registry/', import.meta.url)
+    const options = {
+      catalogUrl: 'https://catalog.test/registry/catalog.json', cachePath, retryDelaysMs: [],
+      fetch: async url => {
+        const requested = new URL(url)
+        const relativePath = requested.pathname.slice('/registry/'.length)
+        return new Response(await readFile(new URL(relativePath, localRegistryRoot), 'utf8'))
+      },
+    }
+    const first = await createCatalogService(options).load()
+    assert.equal(first.source.kind, 'github')
+    const service = createCatalogService({ ...options, fetch: async () => { throw new TypeError('offline') } })
+    const restored = await service.load({ force: true })
+    assert.equal(restored.source.kind, 'github-cache')
+    assert.equal(restored.entries.length, first.entries.length)
+    assert.equal(restored.entries[0].id, first.entries[0].id)
+  } finally {
+    await rm(root, { recursive: true, force: true })
+  }
+})
+
 test('catalog service retries a transient GitHub transport failure before using the bundle', async () => {
   let calls = 0
   const service = createCatalogService({

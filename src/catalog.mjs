@@ -1,6 +1,7 @@
 import { bundlePatchContract, patchPackageExports } from './bundle-patch-contract.mjs'
 import { createHash } from 'node:crypto'
-import { readFile } from 'node:fs/promises'
+import { mkdir, readFile, rename, stat, writeFile } from 'node:fs/promises'
+import { dirname, join } from 'node:path'
 
 const PACKAGE_NAME = /^(?:@[A-Za-z0-9._-]+\/)?[A-Za-z0-9._-]+$/
 const SIMPLE_ID = /^[A-Za-z0-9][A-Za-z0-9._-]{0,95}$/
@@ -12,6 +13,7 @@ export const MAX_CATALOG_INDEX_RESPONSE_BYTES = 2 * 1024 * 1024
 export const MAX_CATALOG_DETAIL_RESPONSE_BYTES = 512 * 1024
 export const MAX_CATALOG_BRIDGE_RESPONSE_BYTES = 2 * 1024 * 1024
 export const MAX_CATALOG_RESPONSE_BYTES = 4 * 1024 * 1024
+const MAX_CATALOG_CACHE_BYTES = 16 * 1024 * 1024
 const DEFAULT_TIMEOUT_MS = 10_000
 const DEFAULT_CACHE_TTL_MS = 5 * 60_000
 const DEFAULT_RETRY_DELAYS_MS = [300, 900, 1_800]
@@ -1546,8 +1548,10 @@ export function createCatalogService(options = {}) {
   const timeoutMs = options.timeoutMs ?? DEFAULT_TIMEOUT_MS
   const retryDelaysMs = options.retryDelaysMs ?? DEFAULT_RETRY_DELAYS_MS
   const cacheTtlMs = options.cacheTtlMs ?? DEFAULT_CACHE_TTL_MS
+  const persistentCachePath = typeof options.cachePath === 'string' && options.cachePath.trim() !== '' ? options.cachePath : null
   let cached = null
   let cachedAt = 0
+  let persistentCacheRead = false
   let indexCached = null
   let indexCachedAt = 0
   const detailCache = new Map()
@@ -1629,6 +1633,10 @@ export function createCatalogService(options = {}) {
         : Number.isInteger(error?.status) ? 'CATALOG_HTTP_ERROR'
           : error?.catalogInvalid === true ? 'CATALOG_INVALID'
             : 'CATALOG_UNAVAILABLE'
+      if (indexCached && isTransientCatalogError(code)) {
+        indexCached = { ...indexCached, source: { ...indexCached.source, stale: true, errorCode: code } }
+        return indexCached
+      }
       return bundledIndex(code)
     }
   }
@@ -1660,7 +1668,7 @@ export function createCatalogService(options = {}) {
       const indexEntry = entriesById.get(id)
       const sourceIdentity = `${catalog.source?.kind ?? 'unknown'}:${catalog.source?.indexUrl ?? catalog.source?.url ?? 'unknown'}:${catalog.registry.updatedAt}`
       const cacheKey = `${sourceIdentity}:${id}`
-      if (!force && detailCache.has(cacheKey)) return detailCache.get(cacheKey)
+      if (detailCache.has(cacheKey)) return detailCache.get(cacheKey)
       if (!force && detailPromises.has(cacheKey)) return detailPromises.get(cacheKey)
       const promise = (async () => {
         let raw
@@ -1709,8 +1717,62 @@ export function createCatalogService(options = {}) {
     return { ...value, entries, installCounts }
   }
 
+  function isTransientCatalogError(errorCode) {
+    return ['CATALOG_TIMEOUT', 'CATALOG_HTTP_ERROR', 'CATALOG_UNAVAILABLE', 'FETCH_UNAVAILABLE', 'CATALOG_DETAILS_UNAVAILABLE'].includes(errorCode)
+  }
+
+  async function readPersistentCache() {
+    if (persistentCacheRead || persistentCachePath === null) return
+    persistentCacheRead = true
+    try {
+      const metadata = await stat(persistentCachePath)
+      if (!metadata.isFile() || metadata.size > MAX_CATALOG_CACHE_BYTES) return
+      const record = JSON.parse(await readFile(persistentCachePath, 'utf8'))
+      if (record?.schemaVersion !== 1 || !Number.isFinite(record.cachedAt) || !record.catalog) return
+      const catalog = record.catalog
+      const index = validateCatalog(catalog)
+      let restored
+      if (index.schemaVersion === 1) {
+        if (!Array.isArray(catalog.entries) || catalog.entries.length !== index.entries.length) return
+        restored = index
+      } else {
+        if (!Array.isArray(catalog.entries) || catalog.entries.length !== index.entries.length) return
+        const entriesById = new Map(catalog.entries.map(entry => [entry.id, entry]))
+        const entries = index.entries.map(indexEntry => {
+          const detail = entriesById.get(indexEntry.id)
+          if (!detail) throw new TypeError('cached catalog detail is missing')
+          return validateCatalogDetail(detail, indexEntry, index.registry)
+        })
+        restored = hydrateCatalog(index, entries)
+      }
+      restored.source = { ...(catalog.source || {}), kind: 'github-cache', fetchedAt: new Date(record.cachedAt).toISOString(), errorCode: null }
+      if (restored.schemaVersion === 2) {
+        indexCached = { ...index, source: restored.source }
+        indexCachedAt = record.cachedAt
+        for (const entry of restored.entries) detailCache.set(`${restored.source.kind}:${restored.source.indexUrl ?? restored.source.url}:${restored.registry.updatedAt}:${entry.id}`, entry)
+      }
+      cached = restored
+      cachedAt = record.cachedAt
+    } catch {}
+  }
+
+  async function persistCache(value) {
+    if (persistentCachePath === null || value.source?.kind !== 'github' || value.entries.length === 0) return
+    if (value.schemaVersion !== 1 || value.sourceFormat !== 'split-v2') return
+    try {
+      await mkdir(dirname(persistentCachePath), { recursive: true, mode: 0o700 })
+      const temporary = join(dirname(persistentCachePath), `.catalog-${process.pid}-${Date.now()}.tmp`)
+      const content = JSON.stringify({ schemaVersion: 1, cachedAt: Date.now(), catalog: value })
+      if (Buffer.byteLength(content) > MAX_CATALOG_CACHE_BYTES) return
+      await writeFile(temporary, content, { mode: 0o600 })
+      await rename(temporary, persistentCachePath)
+    } catch {}
+  }
+
   async function load({ force = false } = {}) {
+    await readPersistentCache()
     if (!force && cached && Date.now() - cachedAt < cacheTtlMs) return cached
+    const staleCache = cached
     const index = await loadIndex({ force })
     let value
     if (index.schemaVersion === 1) {
@@ -1723,18 +1785,31 @@ export function createCatalogService(options = {}) {
       } catch {
         // Never mix a remote index with local detail files. Use the complete
         // bundled snapshot as one atomic fallback instead.
-        const fallback = await bundledIndex('CATALOG_DETAILS_UNAVAILABLE')
-        if (fallback.schemaVersion === 1) value = fallback
-        else {
-          const details = await loadDetails(fallback.entries.map(entry => entry.id), { index: fallback })
-          value = hydrateCatalog(fallback, details)
-          value.source = fallback.source
+        if (staleCache && isTransientCatalogError(index.source?.errorCode)) {
+          value = { ...staleCache, source: { ...staleCache.source, stale: true, errorCode: index.source.errorCode } }
+        } else {
+          const fallback = await bundledIndex('CATALOG_DETAILS_UNAVAILABLE')
+          if (fallback.schemaVersion === 1) value = fallback
+          else {
+            const details = await loadDetails(fallback.entries.map(entry => entry.id), { index: fallback })
+            value = hydrateCatalog(fallback, details)
+            value.source = fallback.source
+          }
         }
       }
     }
     value = await overlayInstallCounts(value)
-    cached = value
-    cachedAt = Date.now()
+    if (value.source?.kind === 'github') {
+      cached = value
+      cachedAt = Date.now()
+      await persistCache(value)
+    } else if (staleCache && value.source?.kind === 'bundled' && value.source.errorCode !== null) {
+      cached = { ...staleCache, source: { ...staleCache.source, stale: true, errorCode: value.source.errorCode } }
+      value = { ...cached, installCounts: value.installCounts }
+    } else {
+      cached = value
+      cachedAt = Date.now()
+    }
     return value
   }
 

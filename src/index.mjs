@@ -11,7 +11,7 @@ import { createGuardianService } from './guardian.mjs'
 import { createTelemetryClient } from './telemetry.mjs'
 import { createSourceUpdateService } from './source-update.mjs'
 import { createDshVersionService } from './dsh-version.mjs'
-import { isAbsolute } from 'node:path'
+import { isAbsolute, join } from 'node:path'
 
 export const name = 'dsh-safe-plugin-manager'
 export const inject = []
@@ -48,7 +48,11 @@ export function resolveHostOptions(ctx, config = {}) {
 
 export function apply(ctx, config = {}) {
   const options = resolveHostOptions(ctx, config)
-  const catalogService = createCatalogService({ catalogUrl: options.catalogUrl, installCountsUrl: options.installCountsUrl })
+  const catalogService = createCatalogService({
+    catalogUrl: options.catalogUrl,
+    installCountsUrl: options.installCountsUrl,
+    cachePath: join(options.dshHome, 'dsh-safe-plugin-manager', 'catalog-cache.json'),
+  })
   const candidateService = createCandidateService({ candidateUrl: options.candidateUrl })
   const runner = options.desktopMode ? null : createDshRunner({ cliPath: options.dshCliPath, environment: { ...process.env, DSH_HOME: options.dshHome } })
   const launchSpec = runner?.restartSpec(options.defaultProfile)
