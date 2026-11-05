@@ -54,6 +54,10 @@ test('serve-marketplace API endpoints handle recommendations, admin settings, an
     assert.ok(adminHtml.includes('admin-login-view'))
     assert.ok(adminHtml.includes('prompt-placeholder-input'))
     assert.ok(adminHtml.includes('suggestions-list-container'))
+    assert.ok(adminHtml.includes('推荐榜与必装榜管理'))
+    assert.ok(adminHtml.includes('recommended-board-mode'))
+    assert.ok(adminHtml.includes('essential-board-mode'))
+    assert.ok(adminHtml.includes('ranking-curation-save-btn'))
 
     // 3. AI Recommend API
     const recRes = await fetch(`${baseUrl}/api/ai/recommend`, {

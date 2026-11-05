@@ -47,6 +47,7 @@
   ];
 
   let currentSettings = null;
+  let currentRankingCuration = null;
 
   function $(id) { return document.getElementById(id); }
 
@@ -277,6 +278,177 @@
     }
   }
 
+  function renderRankingCurationBoard(type) {
+    if (!currentRankingCuration) return;
+    const board = currentRankingCuration.boards[type];
+    const choices = currentRankingCuration.choices[type];
+    const modeSelect = document.querySelector(`[data-board-mode="${type}"]`);
+    const container = $(type + '-board-list');
+    const status = $(type + '-board-status');
+    if (!board || !choices || !modeSelect || !container || !status) return;
+    modeSelect.value = board.mode;
+    container.replaceChildren();
+    const available = choices.entries.filter(entry => !entry.officialToolPick);
+    const availableById = new Map(available.map(entry => [entry.id, entry]));
+    board.ids = board.ids.filter(id => availableById.has(id));
+    const selected = new Set(board.mode === 'auto' ? available.map(entry => entry.id) : board.ids);
+    const entries = [
+      ...board.ids.map(id => availableById.get(id)),
+      ...available.filter(entry => !selected.has(entry.id)),
+    ];
+    for (const entry of entries) {
+      const row = document.createElement('li');
+      row.className = 'ranking-curation-entry' + (selected.has(entry.id) ? ' is-selected' : '');
+
+      const label = document.createElement('label');
+      label.className = 'ranking-curation-entry-label';
+      const checkbox = document.createElement('input');
+      checkbox.type = 'checkbox';
+      checkbox.checked = selected.has(entry.id);
+      checkbox.disabled = board.mode !== 'manual';
+      checkbox.addEventListener('change', () => {
+        if (checkbox.checked) board.ids.push(entry.id);
+        else board.ids = board.ids.filter(id => id !== entry.id);
+        renderRankingCurationBoard(type);
+      });
+
+      const copy = document.createElement('span');
+      copy.className = 'ranking-curation-entry-copy';
+      const name = document.createElement('strong');
+      name.textContent = entry.nameZh || entry.id;
+      const detail = document.createElement('small');
+      detail.textContent = `${entry.listingStatus === 'listed' ? '已收录' : '未收录'} · ${entry.stars === null ? '星标未获取' : `GitHub ${entry.stars.toLocaleString()} 星`} · 自动榜第 ${entry.rank} 位`;
+      copy.append(name, detail);
+      label.append(checkbox, copy);
+      row.append(label);
+
+      const controls = document.createElement('div');
+      controls.className = 'ranking-curation-entry-controls';
+      if (selected.has(entry.id) && board.mode === 'manual') {
+        const index = board.ids.indexOf(entry.id);
+        for (const [direction, delta, text] of [['up', -1, '↑'], ['down', 1, '↓']]) {
+          const button = document.createElement('button');
+          button.type = 'button';
+          button.className = 'btn btn-secondary btn-sm ranking-move-button';
+          button.textContent = text;
+          button.setAttribute('aria-label', `${direction === 'up' ? '上移' : '下移'} ${entry.nameZh || entry.id}`);
+          button.disabled = index + delta < 0 || index + delta >= board.ids.length;
+          button.addEventListener('click', () => {
+            const next = index + delta;
+            [board.ids[index], board.ids[next]] = [board.ids[next], board.ids[index]];
+            renderRankingCurationBoard(type);
+          });
+          controls.appendChild(button);
+        }
+      }
+      row.appendChild(controls);
+      container.appendChild(row);
+    }
+
+    const official = choices.officialSlots.map(slot => {
+      const entry = choices.entries.find(item => item.id === slot.id);
+      return `${entry?.nameZh || slot.id}（第 ${slot.index + 1} 位固定）`;
+    });
+    if (board.mode === 'auto') {
+      status.textContent = `自动规则 · 当前候选 ${choices.entries.length} 项${official.length ? ` · ${official.join('、')}` : ''}`;
+    } else {
+      const tooFew = board.ids.length < choices.minimumManualEntries;
+      status.textContent = `手动模式 · 已选 ${board.ids.length} 项 · 至少保留 ${choices.minimumManualEntries} 项以保持官方工具位${tooFew ? ' · 请继续勾选条目' : ''}${official.length ? ` · ${official.join('、')}` : ''}`;
+    }
+    const invalid = ['recommended', 'essential'].some(boardType => {
+      const current = currentRankingCuration.boards[boardType];
+      return current.mode === 'manual' && current.ids.length < currentRankingCuration.choices[boardType].minimumManualEntries;
+    });
+    $('ranking-curation-save-btn').disabled = invalid;
+  }
+
+  function renderRankingCuration(data) {
+    currentRankingCuration = data;
+    $('ranking-curation-save-btn').disabled = false;
+    $('ranking-curation-reset-btn').disabled = false;
+    $('ranking-curation-error').hidden = true;
+    $('ranking-curation-revision').textContent = data.stale ? '榜单快照已更新' : `配置版本 ${data.revision}`;
+    $('ranking-curation-revision').className = data.stale ? 'key-status none' : 'key-status';
+    if (data.stale) {
+      $('ranking-curation-save-status').textContent = '榜单来源已更新，旧的手动名单暂停生效；请选择当前榜单条目后保存。';
+    } else {
+      $('ranking-curation-save-status').textContent = data.updatedAt ? `上次保存：${new Date(data.updatedAt).toLocaleString()}` : '当前使用自动规则';
+    }
+    for (const type of ['recommended', 'essential']) renderRankingCurationBoard(type);
+  }
+
+  async function loadRankingCuration() {
+    const token = getStoredAdminToken();
+    if (!token) return;
+    try {
+      const res = await fetch('/api/admin/rankings', { headers: { 'x-admin-token': token } });
+      if (res.status === 401) {
+        setStoredAdminToken('');
+        showLogin('登录已失效或凭证过期，请重新登录');
+        return;
+      }
+      const data = await safeJson(res, '读取榜单配置失败');
+      if (!res.ok || !data.ok) throw new Error(data.error || '读取榜单配置失败');
+      if (data.stale) {
+        data.boards = { recommended: { mode: 'auto', ids: [] }, essential: { mode: 'auto', ids: [] } };
+      }
+      renderRankingCuration(data);
+    } catch (err) {
+      $('ranking-curation-error').textContent = '榜单管理暂时不可用：' + (err.message || '服务器未提供已校验的榜单快照');
+      $('ranking-curation-error').hidden = false;
+      $('ranking-curation-revision').textContent = '暂不可用';
+      $('ranking-curation-revision').className = 'key-status none';
+      $('ranking-curation-save-btn').disabled = true;
+      $('ranking-curation-reset-btn').disabled = true;
+    }
+  }
+
+  async function saveRankingCuration() {
+    const token = getStoredAdminToken();
+    if (!token || !currentRankingCuration) {
+      showNotification('error', '请先登录并读取榜单候选');
+      return;
+    }
+    const payload = {
+      revision: currentRankingCuration.revision,
+      sourceCommit: currentRankingCuration.sourceCommit,
+      boards: Object.fromEntries(['recommended', 'essential'].map(type => {
+        const board = currentRankingCuration.boards[type];
+        return [type, { mode: board.mode, ids: board.mode === 'manual' ? [...board.ids] : [] }];
+      })),
+    };
+    const saveButton = $('ranking-curation-save-btn');
+    saveButton.disabled = true;
+    $('ranking-curation-reset-btn').disabled = true;
+    $('ranking-curation-save-status').textContent = '正在安全保存…';
+    try {
+      const res = await fetch('/api/admin/rankings', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-admin-token': token },
+        body: JSON.stringify(payload),
+      });
+      const data = await safeJson(res, '保存榜单设置失败');
+      if (!res.ok || !data.ok) {
+        if (res.status === 401) {
+          setStoredAdminToken('');
+          showLogin('登录已失效，请重新登录');
+          return;
+        }
+        if (res.status === 409) await loadRankingCuration();
+        throw new Error(data.error || '保存榜单设置失败');
+      }
+      renderRankingCuration(data);
+      $('ranking-curation-save-status').textContent = `已保存 · 配置版本 ${data.revision}`;
+      showNotification('success', '推荐榜与必装榜设置已保存并生效');
+    } catch (err) {
+      $('ranking-curation-save-status').textContent = '保存失败：' + (err.message || '服务器或网络异常');
+      showNotification('error', $('ranking-curation-save-status').textContent);
+    } finally {
+      saveButton.disabled = false;
+      $('ranking-curation-reset-btn').disabled = false;
+    }
+  }
+
   function updateBackupKeyVisibility() {
     const usePrimary = $('backup-use-primary-key').checked;
     const container = $('backup-api-key-container');
@@ -311,6 +483,7 @@
       if (res.ok && data.settings) {
         showDashboard();
         renderView(data.settings);
+        await loadRankingCuration();
         return;
       }
     } catch (err) {
@@ -482,6 +655,29 @@
   });
   $('reset-suggestions-btn').addEventListener('click', () => {
     renderSuggestionsList(DEFAULT_PROMPT_SUGGESTIONS);
+  });
+  document.querySelectorAll('[data-board-mode]').forEach(select => {
+    select.addEventListener('change', () => {
+      if (!currentRankingCuration) return;
+      const type = select.dataset.boardMode;
+      const board = currentRankingCuration.boards[type];
+      if (select.value === 'auto') {
+        board.mode = 'auto';
+        board.ids = [];
+      } else if (board.mode !== 'manual') {
+        board.mode = 'manual';
+        board.ids = currentRankingCuration.choices[type].entries
+          .filter(entry => !entry.officialToolPick).map(entry => entry.id);
+      }
+      renderRankingCurationBoard(type);
+    });
+  });
+  $('ranking-curation-save-btn').addEventListener('click', saveRankingCuration);
+  $('ranking-curation-reset-btn').addEventListener('click', () => {
+    if (!currentRankingCuration) return;
+    for (const type of ['recommended', 'essential']) currentRankingCuration.boards[type] = { mode: 'auto', ids: [] };
+    for (const type of ['recommended', 'essential']) renderRankingCurationBoard(type);
+    saveRankingCuration();
   });
 
   // Login Form Submission

@@ -472,3 +472,32 @@ body {
 .login-form .form-group {
   margin-bottom: 18px;
 }
+
+.ranking-curation-card { max-width: none; }
+.ranking-curation-intro { margin-top: 9px; max-width: 720px; color: var(--admin-muted); font-size: .82rem; line-height: 1.65; }
+.ranking-curation-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+.ranking-board { min-width: 0; padding: 18px; border: 1px solid rgba(94, 137, 246, .2); border-radius: 12px; background: rgba(10, 16, 36, .5); }
+.ranking-board-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: 14px; }
+.ranking-board-heading h3 { color: #fff; font-size: 1rem; }
+.ranking-board-heading p { margin-top: 4px; color: var(--admin-muted); font-size: .75rem; }
+.ranking-mode-label { display: grid; gap: 5px; min-width: 120px; color: #cbd5e1; font-size: .75rem; }
+.ranking-mode-label .form-select { padding: 7px 9px; font-size: .8rem; }
+.ranking-board-status { min-height: 38px; margin: 14px 0 8px; color: #8fc9ff; font-size: .75rem; line-height: 1.55; }
+.ranking-curation-list { display: flex; flex-direction: column; gap: 7px; max-height: 430px; overflow: auto; padding: 2px; list-style: none; }
+.ranking-curation-entry { display: flex; align-items: center; justify-content: space-between; gap: 10px; min-height: 58px; padding: 8px 10px; border: 1px solid rgba(255, 255, 255, .08); border-radius: 9px; background: rgba(255, 255, 255, .025); }
+.ranking-curation-entry.is-selected { border-color: rgba(23, 191, 227, .32); background: rgba(23, 191, 227, .07); }
+.ranking-curation-entry-label { display: flex; align-items: flex-start; gap: 10px; min-width: 0; flex: 1; cursor: pointer; }
+.ranking-curation-entry-label input { width: 16px; height: 16px; flex: 0 0 auto; margin-top: 3px; accent-color: var(--admin-cyan); }
+.ranking-curation-entry-copy { display: grid; min-width: 0; gap: 3px; }
+.ranking-curation-entry-copy strong { overflow: hidden; color: var(--admin-text); font-size: .8rem; text-overflow: ellipsis; white-space: nowrap; }
+.ranking-curation-entry-copy small { color: var(--admin-muted); font-size: .68rem; line-height: 1.4; }
+.ranking-curation-entry-controls { display: flex; flex: 0 0 auto; gap: 5px; }
+.ranking-move-button { width: 29px; height: 29px; justify-content: center; padding: 0; font-size: .9rem; }
+.ranking-curation-actions { flex-wrap: wrap; }
+.ranking-curation-actions #ranking-curation-save-status { flex: 1; min-width: 200px; color: var(--admin-muted); font-size: .76rem; }
+.ranking-curation-error { padding: 12px 14px; border: 1px solid rgba(239, 68, 68, .3); border-radius: 8px; background: rgba(239, 68, 68, .1); color: #fca5a5; font-size: .84rem; }
+
+@media (max-width: 780px) {
+  .ranking-curation-grid { grid-template-columns: 1fr; }
+  .ranking-board-heading { flex-wrap: wrap; }
+}

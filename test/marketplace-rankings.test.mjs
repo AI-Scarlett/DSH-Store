@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
 import { readFile } from 'node:fs/promises'
-import { POPULAR_LIMIT, applyRankingRefreshState, createRankingSnapshot, validateRankingSnapshot, rankingEntries, rankingPage, renderRankingRows } from '../marketplace/rankings/model.js'
+import { POPULAR_LIMIT, applyRankingRefreshState, createRankingSnapshot, validateRankingSnapshot, rankingCurationChoices, curatedRankingEntries, rankingEntries, rankingPage, renderRankingRows } from '../marketplace/rankings/model.js'
 const observed = '2026-10-03T05:00:00.000Z'
 const item = (id, stars, categories = ['tools'], extra = {}) => ({
   id, name: id, description: `About ${id}`, version: '1.0.0', repositoryUrl: `https://github.com/example/${id}`,
@@ -427,4 +427,54 @@ test('official placements appear once when community interaction and weekly star
   assert.equal(rows.length, 3)
   assert.equal(new Set(rows.map(entry => entry.id)).size, 3)
   assert.equal(rows.filter(entry => entry.officialToolPick).length, 2)
+})
+
+test('manual chart curation orders eligible entries, hides unchecked rows, and locks official slots', () => {
+  const data = snapshot([
+    item('store', 2000, ['tools'], { repositoryUrl: 'https://github.com/AI-Scarlett/DSH-Store' }),
+    item('build-dsh-plugin', 1900, ['tools'], { repositoryUrl: 'https://github.com/AI-Scarlett/build-dsh-plugin' }),
+    ...Array.from({ length: 14 }, (_, index) => item(`curated-${String(index).padStart(2, '0')}`, 1800 - index)),
+    item('blocked-curation', 50000, ['tools'], { status: 'blocked' }),
+  ], {
+    candidates: {
+      registry: { updatedAt: observed },
+      entries: [{ id: 'rejected-curation', name: 'Rejected', repositoryUrl: 'https://github.com/example/rejected-curation', topics: ['dsh-plugin'], status: 'rejected', description: '' }],
+    },
+  })
+  for (const type of ['recommended', 'essential']) {
+    const choices = rankingCurationChoices(data, type)
+    assert.equal(choices.officialSlots.length, 2)
+    assert.equal(choices.selectable.some(entry => ['blocked-curation', 'candidate:rejected-curation'].includes(entry.id)), false)
+    const chosenCount = Math.max(choices.minimumManualEntries, Math.min(4, choices.selectable.length))
+    const ids = choices.selectable.slice(0, chosenCount).map(entry => entry.id).reverse()
+    const curation = { sourceCommit: data.sourceCommit, boards: { [type]: { mode: 'manual', ids } } }
+    const curated = curatedRankingEntries(data, type, curation)
+    for (const slot of choices.officialSlots) assert.equal(curated[slot.index].id, slot.id)
+    assert.deepEqual(curated.filter(entry => !entry.officialToolPick).map(entry => entry.id), ids)
+    assert.ok(curated.length < choices.automatic.length)
+    assert.deepEqual(rankingPage(data, type, 1, curation).entries, curated)
+  }
+})
+
+test('invalid or stale curation fails closed and leaves Popular and Listed unchanged', () => {
+  const data = snapshot([
+    item('store', 2000, ['tools'], { repositoryUrl: 'https://github.com/AI-Scarlett/DSH-Store' }),
+    item('build-dsh-plugin', 1900, ['tools'], { repositoryUrl: 'https://github.com/AI-Scarlett/build-dsh-plugin' }),
+    ...Array.from({ length: 10 }, (_, index) => item(`safe-${index}`, 1000 - index)),
+  ])
+  const automatic = rankingEntries(data, 'recommended')
+  const choices = rankingCurationChoices(data, 'recommended')
+  const ids = choices.selectable.slice(0, Math.max(choices.minimumManualEntries, 2)).map(entry => entry.id)
+  const invalid = [
+    { sourceCommit: data.sourceCommit, boards: { recommended: { mode: 'manual', ids: ['unknown-id'] } } },
+    { sourceCommit: data.sourceCommit, boards: { recommended: { mode: 'manual', ids: [...ids, ids[0]] } } },
+    { sourceCommit: 'f'.repeat(40), boards: { recommended: { mode: 'manual', ids } } },
+  ]
+  for (const curation of invalid) assert.deepEqual(curatedRankingEntries(data, 'recommended', curation), automatic)
+  assert.deepEqual(curatedRankingEntries(data, 'popular', invalid[0]), rankingEntries(data, 'popular'))
+  assert.deepEqual(curatedRankingEntries(data, 'listed', invalid[0]), rankingEntries(data, 'listed'))
+  assert.deepEqual(curatedRankingEntries(data, 'recommended', {
+    sourceCommit: data.sourceCommit,
+    boards: { recommended: { mode: 'auto', ids: [] } },
+  }), automatic)
 })

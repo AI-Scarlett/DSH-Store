@@ -1,8 +1,8 @@
-import { timingSafeEqual } from 'node:crypto'
+import { createHash, randomBytes, timingSafeEqual } from 'node:crypto'
 import { createReadStream } from 'node:fs'
-import { stat } from 'node:fs/promises'
+import { lstat, mkdir, open, readFile, realpath, rename, stat, unlink } from 'node:fs/promises'
 import { createServer } from 'node:http'
-import { extname, isAbsolute, relative, resolve } from 'node:path'
+import { dirname, extname, isAbsolute, join, relative, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import {
   DEFAULT_ADMIN_PASSWORD,
@@ -17,6 +17,7 @@ import {
   verifySessionToken,
 } from '../src/ai-model-settings.mjs'
 import { loadCatalogIndex, recommendPlugins } from '../src/ai-recommend.mjs'
+import { MAX_RANKING_SNAPSHOT_BYTES, rankingCurationChoices, validateRankingSnapshot } from '../marketplace/rankings/model.js'
 
 const root = resolve(fileURLToPath(new URL('..', import.meta.url)))
 const requestedPort = Number.parseInt(process.env.DSH_MARKETPLACE_PORT || '4173', 10)
@@ -25,6 +26,8 @@ const host = '127.0.0.1'
 const marketplaceRoot = resolve(root, 'marketplace')
 const marketplaceIndex = resolve(marketplaceRoot, 'index.html')
 const registryRoot = resolve(root, 'registry')
+const rankingCurationPath = resolve(process.env.DSH_RANKING_CURATION_PATH || '/var/lib/dsh-store/ranking-curation.json')
+const rankingReleasePath = resolve(process.env.DSH_STORE_RELEASE_DIR || '/opt/dsh-store/current')
 const mimeTypes = new Map([
   ['.css', 'text/css; charset=utf-8'],
   ['.html', 'text/html; charset=utf-8'],
@@ -106,6 +109,234 @@ async function authenticateAdmin(request, settings) {
     return true
   }
   return false
+}
+
+class RankingCurationError extends Error {
+  constructor(statusCode, message) {
+    super(message)
+    this.statusCode = statusCode
+  }
+}
+
+const RANKING_BOARDS = ['recommended', 'essential']
+const ownKeys = (value, expected) => value && typeof value === 'object' && !Array.isArray(value)
+  && Object.keys(value).sort().join(',') === [...expected].sort().join(',')
+const sha256 = bytes => createHash('sha256').update(bytes).digest('hex')
+
+async function readReleaseFile(releaseRoot, relativePath, maxBytes) {
+  if (typeof relativePath !== 'string' || relativePath.startsWith('/') || relativePath.split('/').some(part => !part || part === '.' || part === '..')) {
+    throw new Error('Unsafe release path')
+  }
+  let target = releaseRoot
+  const parts = relativePath.split('/')
+  for (let index = 0; index < parts.length; index++) {
+    target = join(target, parts[index])
+    const info = await lstat(target)
+    if (info.isSymbolicLink() || (index < parts.length - 1 && !info.isDirectory())) throw new Error('Unsafe release artifact')
+    if (index === parts.length - 1 && (!info.isFile() || info.size > maxBytes)) throw new Error('Invalid release artifact size')
+  }
+  return readFile(target)
+}
+
+async function loadVerifiedRankingSnapshot() {
+  const releaseRoot = await realpath(rankingReleasePath)
+  const manifestBytes = await readReleaseFile(releaseRoot, 'release-manifest.json', 4 * 1024 * 1024)
+  const manifest = JSON.parse(manifestBytes.toString('utf8'))
+  if (manifest?.schemaVersion !== 1 || !/^[a-f0-9]{40}$/.test(manifest.sourceCommit || '')
+    || !manifest.files || typeof manifest.files !== 'object' || Array.isArray(manifest.files)) throw new Error('Invalid storefront release manifest')
+
+  const dataPath = 'marketplace/rankings/data.json'
+  const htmlPath = 'marketplace/rankings/index.html'
+  const dataRecord = manifest.files[dataPath]
+  const htmlRecord = manifest.files[htmlPath]
+  for (const record of [dataRecord, htmlRecord]) {
+    if (!record || !/^[a-f0-9]{64}$/.test(record.sha256 || '') || !Number.isSafeInteger(record.size) || record.size < 0) {
+      throw new Error('Ranking artifacts are missing from the release manifest')
+    }
+  }
+  if (dataRecord.size > MAX_RANKING_SNAPSHOT_BYTES || htmlRecord.size > 512 * 1024) throw new Error('Ranking artifact exceeds its bound')
+  const [dataBytes, htmlBytes] = await Promise.all([
+    readReleaseFile(releaseRoot, dataPath, MAX_RANKING_SNAPSHOT_BYTES),
+    readReleaseFile(releaseRoot, htmlPath, 512 * 1024),
+  ])
+  if (dataBytes.length !== dataRecord.size || sha256(dataBytes) !== dataRecord.sha256
+    || htmlBytes.length !== htmlRecord.size || sha256(htmlBytes) !== htmlRecord.sha256) throw new Error('Ranking artifact hash mismatch')
+  const html = htmlBytes.toString('utf8')
+  const pinnedDigest = html.match(/<meta\s+name=["']dsh-rankings-sha256["']\s+content=["']([a-f0-9]{64})["']/i)?.[1]
+  if (!pinnedDigest || pinnedDigest !== dataRecord.sha256) throw new Error('Ranking snapshot digest mismatch')
+  const snapshot = validateRankingSnapshot(JSON.parse(dataBytes.toString('utf8')))
+  if (snapshot.sourceCommit !== manifest.sourceCommit) throw new Error('Ranking source Commit mismatch')
+  return snapshot
+}
+
+function validateStoredCuration(value) {
+  if (!ownKeys(value, ['schemaVersion', 'revision', 'updatedAt', 'sourceCommit', 'boards'])
+    || value.schemaVersion !== 1 || !Number.isSafeInteger(value.revision) || value.revision < 1
+    || typeof value.updatedAt !== 'string' || !Number.isFinite(Date.parse(value.updatedAt))
+    || !/^[a-f0-9]{40}$/.test(value.sourceCommit || '') || !ownKeys(value.boards, RANKING_BOARDS)) throw new Error('Invalid ranking curation state')
+  for (const type of RANKING_BOARDS) {
+    const board = value.boards[type]
+    if (!ownKeys(board, ['mode', 'ids']) || !['auto', 'manual'].includes(board.mode)
+      || !Array.isArray(board.ids) || board.ids.length > 30
+      || board.ids.some(id => typeof id !== 'string' || !/^[A-Za-z0-9][A-Za-z0-9._:-]{0,119}$/.test(id))
+      || new Set(board.ids).size !== board.ids.length || (board.mode === 'auto' && board.ids.length !== 0)) {
+      throw new Error('Invalid ranking curation board')
+    }
+  }
+  return value
+}
+
+async function ensureRankingCurationDirectory() {
+  const directory = dirname(rankingCurationPath)
+  await mkdir(directory, { recursive: true, mode: 0o700 })
+  const info = await lstat(directory)
+  if (!info.isDirectory() || info.isSymbolicLink() || (info.mode & 0o077) !== 0
+    || (typeof process.getuid === 'function' && info.uid !== process.getuid())) throw new Error('Ranking curation directory is not private')
+  return directory
+}
+
+async function readRankingCuration() {
+  await ensureRankingCurationDirectory()
+  let info
+  try { info = await lstat(rankingCurationPath) } catch (error) {
+    if (error.code === 'ENOENT') return { schemaVersion: 1, revision: 0, updatedAt: null, sourceCommit: null,
+      boards: { recommended: { mode: 'auto', ids: [] }, essential: { mode: 'auto', ids: [] } } }
+    throw error
+  }
+  if (!info.isFile() || info.isSymbolicLink() || (info.mode & 0o077) !== 0
+    || (typeof process.getuid === 'function' && info.uid !== process.getuid()) || info.size > 16 * 1024) throw new Error('Ranking curation state is not a private regular file')
+  return validateStoredCuration(JSON.parse((await readFile(rankingCurationPath, 'utf8'))))
+}
+
+async function writeRankingFileAtomic(path, bytes) {
+  const directory = dirname(path)
+  const tempPath = join(directory, `.${path.split('/').at(-1)}.${process.pid}.${randomBytes(8).toString('hex')}.tmp`)
+  let handle
+  try {
+    handle = await open(tempPath, 'wx', 0o600)
+    await handle.writeFile(bytes)
+    await handle.sync()
+    await handle.close()
+    handle = null
+    await rename(tempPath, path)
+    const directoryHandle = await open(directory, 'r')
+    try { await directoryHandle.sync() } finally { await directoryHandle.close() }
+  } catch (error) {
+    if (handle) await handle.close().catch(() => {})
+    await unlink(tempPath).catch(() => {})
+    throw error
+  }
+}
+
+async function withRankingCurationLock(callback) {
+  await ensureRankingCurationDirectory()
+  const lockPath = `${rankingCurationPath}.lock`
+  let lock
+  try { lock = await open(lockPath, 'wx', 0o600) } catch (error) {
+    if (error.code === 'EEXIST') throw new RankingCurationError(409, '榜单配置正在被其他请求保存，请稍后重试')
+    throw error
+  }
+  try {
+    await lock.writeFile(JSON.stringify({ pid: process.pid, startedAt: new Date().toISOString() }))
+    await lock.sync()
+    return await callback()
+  } finally {
+    await lock.close().catch(() => {})
+    await unlink(lockPath).catch(() => {})
+  }
+}
+
+function curationChoicesView(snapshot, type) {
+  const choices = rankingCurationChoices(snapshot, type)
+  return {
+    minimumManualEntries: choices.minimumManualEntries,
+    officialSlots: choices.officialSlots,
+    entries: choices.eligible.map((entry, index) => ({
+      id: entry.id,
+      nameZh: entry.nameZh,
+      nameEn: entry.nameEn,
+      repositoryUrl: entry.repositoryUrl,
+      stars: Number.isSafeInteger(entry.stars) ? entry.stars : null,
+      listingStatus: entry.listingStatus,
+      reviewStatus: entry.reviewStatus,
+      officialToolPick: Boolean(entry.officialToolPick),
+      rank: index + 1,
+    })),
+  }
+}
+
+function adminCurationView(snapshot, stored) {
+  return {
+    ok: true,
+    sourceCommit: snapshot.sourceCommit,
+    revision: stored.revision,
+    updatedAt: stored.updatedAt,
+    stale: Boolean(stored.sourceCommit && stored.sourceCommit !== snapshot.sourceCommit),
+    boards: stored.boards,
+    choices: Object.fromEntries(RANKING_BOARDS.map(type => [type, curationChoicesView(snapshot, type)])),
+  }
+}
+
+function publicCurationView(snapshot, stored) {
+  const sameSource = stored.sourceCommit === snapshot.sourceCommit
+  const boards = Object.fromEntries(RANKING_BOARDS.map(type => {
+    const board = sameSource ? stored.boards[type] : { mode: 'auto', ids: [] }
+    const choices = rankingCurationChoices(snapshot, type)
+    const selectableIds = new Set(choices.selectable.map(entry => entry.id))
+    const valid = board.mode === 'auto' || (board.mode === 'manual' && board.ids.length >= choices.minimumManualEntries
+      && board.ids.every(id => selectableIds.has(id)))
+    return [type, valid ? board : { mode: 'auto', ids: [] }]
+  }))
+  return { ok: true, sourceCommit: snapshot.sourceCommit, boards }
+}
+
+function normalizeCurationSubmission(body, snapshot) {
+  if (!ownKeys(body, ['revision', 'sourceCommit', 'boards']) || !Number.isSafeInteger(body.revision) || body.revision < 0
+    || !ownKeys(body.boards, RANKING_BOARDS)) {
+    throw new RankingCurationError(400, '榜单配置格式无效，请检查后重试')
+  }
+  if (body.sourceCommit !== snapshot.sourceCommit) throw new RankingCurationError(409, '榜单快照已更新，请重新读取后再保存')
+  const boards = {}
+  for (const type of RANKING_BOARDS) {
+    const board = body.boards[type]
+    if (!ownKeys(board, ['mode', 'ids']) || !['auto', 'manual'].includes(board.mode) || !Array.isArray(board.ids)
+      || board.ids.length > 30 || board.ids.some(id => typeof id !== 'string') || new Set(board.ids).size !== board.ids.length) {
+      throw new RankingCurationError(400, `${type} 榜单配置格式无效`)
+    }
+    if (board.mode === 'auto') {
+      if (board.ids.length) throw new RankingCurationError(400, `${type} 自动模式不接受手动条目`)
+      boards[type] = { mode: 'auto', ids: [] }
+      continue
+    }
+    const choices = rankingCurationChoices(snapshot, type)
+    const eligibleIds = new Set(choices.selectable.map(entry => entry.id))
+    if (board.ids.some(id => !eligibleIds.has(id))) throw new RankingCurationError(400, `${type} 榜单包含当前不可选或受保护的条目`)
+    if (board.ids.length < choices.minimumManualEntries) throw new RankingCurationError(400, `${type} 榜单至少需要保留 ${choices.minimumManualEntries} 个普通条目，以保持官方展示位不变`)
+    boards[type] = { mode: 'manual', ids: [...board.ids] }
+  }
+  return boards
+}
+
+async function saveRankingCuration(body, snapshot) {
+  return withRankingCurationLock(async () => {
+    const previous = await readRankingCuration()
+    if (body?.revision !== previous.revision) throw new RankingCurationError(409, '榜单配置已被其他管理员更新，请重新读取后再保存')
+    const boards = normalizeCurationSubmission(body, snapshot)
+    const next = validateStoredCuration({
+      schemaVersion: 1,
+      revision: previous.revision + 1,
+      updatedAt: new Date().toISOString(),
+      sourceCommit: snapshot.sourceCommit,
+      boards,
+    })
+    const nextBytes = Buffer.from(`${JSON.stringify(next, null, 2)}\n`)
+    if (previous.revision > 0) {
+      const previousBytes = await readFile(rankingCurationPath)
+      await writeRankingFileAtomic(`${rankingCurationPath}.bak`, previousBytes)
+    }
+    await writeRankingFileAtomic(rankingCurationPath, nextBytes)
+    return next
+  })
 }
 
 const server = createServer(async (request, response) => {
@@ -202,6 +433,53 @@ const server = createServer(async (request, response) => {
       sendJson(response, 200, { ok: true, token, username: expectedUser })
     } catch (err) {
       sendJson(response, 500, { ok: false, error: err.message })
+    }
+    return
+  }
+
+  if (pathname === '/api/rankings/curation') {
+    if (request.method !== 'GET') {
+      sendJson(response, 405, { error: 'Method Not Allowed' })
+      return
+    }
+    try {
+      const snapshot = await loadVerifiedRankingSnapshot()
+      const stored = await readRankingCuration()
+      sendJson(response, 200, publicCurationView(snapshot, stored))
+    } catch {
+      sendJson(response, 503, { ok: false, error: '榜单配置暂时不可用' })
+    }
+    return
+  }
+
+  if (pathname === '/api/admin/rankings') {
+    let settings
+    try { settings = await loadModelSettings() } catch {
+      sendJson(response, 503, { ok: false, error: '管理服务暂时不可用' })
+      return
+    }
+    if (!await authenticateAdmin(request, settings)) {
+      sendJson(response, 401, { ok: false, error: '管理员未登录或登录已过期，请先登录' })
+      return
+    }
+    if (request.method !== 'GET' && request.method !== 'POST') {
+      sendJson(response, 405, { error: 'Method Not Allowed' })
+      return
+    }
+    try {
+      const snapshot = await loadVerifiedRankingSnapshot()
+      if (request.method === 'GET') {
+        const stored = await readRankingCuration()
+        sendJson(response, 200, adminCurationView(snapshot, stored))
+        return
+      }
+      const body = await readJsonBody(request, 16 * 1024)
+      const updated = await saveRankingCuration(body, snapshot)
+      sendJson(response, 200, adminCurationView(snapshot, updated))
+    } catch (error) {
+      const statusCode = error instanceof RankingCurationError ? error.statusCode : 503
+      const message = error instanceof RankingCurationError ? error.message : '榜单快照或服务器配置校验失败，无法保存'
+      sendJson(response, statusCode, { ok: false, error: message })
     }
     return
   }

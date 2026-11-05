@@ -1,0 +1,157 @@
+{
+  "schemaVersion": 1,
+  "planId": "admin-managed-rankings-20261105",
+  "operation": "add-admin-curation-for-recommended-and-essential-rankings",
+  "createdAt": "2026-11-05",
+  "status": "release-authorized-pending-pull-request",
+  "repository": "AI-Scarlett/DSH-Store",
+  "baseCommit": "3703229dc2847ab3eba2a89dff0207556d3bfa58",
+  "authorization": "On 2026-11-05 the user explicitly requested: “官网的先上线啊，github的该上线也上线”. This authorizes publishing this exact feature through an auditable pull request, merging only after required exact-head CI passes, deploying the resulting GitHub Pages build and both public storefronts, and updating the existing ranking API service on the registered production servers after strict host verification and live precondition capture. It does not authorize Catalog changes, model configuration or API-key changes, DSH Profile changes, plugin installation, or unrelated server changes.",
+  "objective": "Allow authenticated admins to include, exclude, and reorder eligible Recommended and Essential board entries, persist the choices separately on the model service, and reflect them on the public rankings page without changing Catalog status, compatibility, or installability.",
+  "fileScope": {
+    "modify": [
+      "package.json",
+      "deploy/setup-model-service.sh",
+      "marketplace/admin/admin.css",
+      "marketplace/admin/admin.js",
+      "marketplace/admin/index.html",
+      "marketplace/rankings/index.html",
+      "marketplace/rankings/model.js",
+      "marketplace/rankings/rankings.js",
+      "scripts/serve-marketplace.mjs",
+      "test/marketplace-rankings.test.mjs",
+      "test/ai-serve-api.test.mjs"
+    ],
+    "add": [
+      "test/ranking-curation-api.test.mjs",
+      "test/ranking-curation-deployment.test.mjs",
+      "test/fixtures/ranking-release.mjs",
+      "docs/ops/admin-managed-rankings-plan-20261105.json"
+    ]
+  },
+  "preconditions": {
+    "sha256": {
+      "deploy/setup-model-service.sh": "7960bd3310f487e74c304a08fe2bbddffa4b91b3d6bcc8d00cbdecabec0a4679",
+      "package.json": "a821d24309ee85b577edbf3dadf7e359506bbd0734bf5935c7eaca52b8af71b2",
+      "marketplace/admin/admin.css": "97b105ca0af0034e9ff93626a1567c3855713d51f07809434173f30508e418da",
+      "marketplace/admin/admin.js": "4fe489c7d1662d69ad063349f1f0254c835f3a37e5f3158bb56209a63dcf0274",
+      "marketplace/admin/index.html": "1055e4704098e95fe8d2ff471b2a2e1a71143b036eb36af76df995d43f92406c",
+      "marketplace/rankings/index.html": "94976a66f8d8829e3f3d6d7ae82c79a63ff6d8e2144834aa85b020cda24dea50",
+      "marketplace/rankings/model.js": "76af131b6d12c2e6d2c6d4691b0b8e931b70a896b079b6a8ce612e01e4cd5c6f",
+      "marketplace/rankings/rankings.js": "dabc1dca7c70c784f87011caf8ef4bf03395c4eb0b3b1ba6f7ab5fe95e2a95f5",
+      "scripts/serve-marketplace.mjs": "7b63af260832c733e14dd8331be18ba548d3c4d73e6d18fdcd8ec5773c96f416",
+      "test/marketplace-rankings.test.mjs": "9935b082173b9a8f346003d292c6d6eff14a212bd5e89a73b5c56d09897362f5",
+      "test/ai-serve-api.test.mjs": "e12bb23dd38460c5bbf2f4905fc0380732dac2dc588f9252b2cad2fbf878c3d6"
+    },
+    "absent": [
+      "test/ranking-curation-api.test.mjs",
+      "test/ranking-curation-deployment.test.mjs",
+      "test/fixtures/ranking-release.mjs",
+      "docs/ops/admin-managed-rankings-plan-20261105.json"
+    ]
+  },
+  "postconditions": {
+    "sha256": {
+      "deploy/setup-model-service.sh": "cc883217b273ccc8cb43c569f089081ce30a6f9a448f1cdd3ddabd888ce1cf4d",
+      "marketplace/admin/admin.css": "30c67583606c40bf1b058e153d5b9f955d27e996889115ddab4c047745f5cbd6",
+      "marketplace/admin/admin.js": "f5925787a5f0405806490f6e136b5f15060180b403777aa4e7fd98b0b2a57a51",
+      "marketplace/admin/index.html": "4a07165bb61c20e1880b625f35f9a10e9f6e019a70eda545a2eed8b5dd2213f1",
+      "marketplace/rankings/index.html": "63fae559b91d96072a11f2394dcd59c18fde1fcc8d50f516d68ecfa1b9711868",
+      "marketplace/rankings/model.js": "7cfd463263ef8c2ac2f9ffd261fd04d24c1c9dbf0d1768d47b985ccfcd185921",
+      "marketplace/rankings/rankings.js": "18b2b4c63b1f834aa543b2a05e484ac30024c230bc2c62fcebb23cecd4990477",
+      "package.json": "2dd32963b2de2b6e5cefb3f90cfff4c53095d30c1d37d14d5e9f23941eafaaff",
+      "scripts/serve-marketplace.mjs": "f79cdbe25f4c401aaf7768a85fa658b292c60a54753c4218b62b0249044fe1b5",
+      "test/ai-serve-api.test.mjs": "e297a4f5bf363c424c608894b9ee969f5b18ffe1ffb9ff205a17b420d57e0a0f",
+      "test/fixtures/ranking-release.mjs": "c0a58ad959c0b1dec6bae751921e9f0f614b3ea0c414b7dc88b1bbc289ce3e79",
+      "test/marketplace-rankings.test.mjs": "e8c0590a084c8d75dd4910583359118564f5b9a6bd7414f04023266d176e06b9",
+      "test/ranking-curation-api.test.mjs": "f3779fedfff805180fedefb8a78793a4e58f321824e07a3a88e7b2d8e9062c49",
+      "test/ranking-curation-deployment.test.mjs": "f8817bdf6fa9d58912e73fd270afdc6e5fea343de9d2c1bdc9c04a3d53e68e20"
+    }
+  },
+  "design": {
+    "boards": "Keep existing computed algorithms as Auto mode. Manual mode stores an ordered allow-list for Recommended and Essential; the admin can toggle visibility and move eligible rows up/down. A reset action restores Auto mode.",
+    "eligibility": "The backend derives selectable IDs from the current verified ranking snapshot and existing rankingEntries rules. Blocked/rejected entries are never selectable. Official DSH tools remain present in their existing protected top-ten slots and cannot be removed or manually moved.",
+    "persistence": "Store only schema version, revision, update timestamp, source Commit, board modes, and entry IDs in a separate owner-only JSON file at /var/lib/dsh-store/ranking-curation.json. Do not store state in encrypted model settings or Catalog files.",
+    "releaseSource": "Read the current locally refreshed storefront release at /opt/dsh-store/current (overridable by DSH_STORE_RELEASE_DIR for isolated deployments/tests). Verify release-manifest hashes, ranking snapshot structure, source Commit, and the HTML-pinned ranking digest before using it. Do not query GitHub from ranking page views or admin list reads.",
+    "concurrency": "Serialize writes, require baseRevision compare-and-swap, write a same-directory temporary file atomically, and retain a recoverable prior copy. Malformed state or source evidence fails closed.",
+    "publicView": "Expose only public board modes, source Commit, and validated IDs at GET /api/rankings/curation. The rankings page verifies its existing static snapshot digest first, then applies the overlay only to IDs in the matching computed board; an unavailable or invalid overlay leaves the verified automatic board intact.",
+    "adminView": "Use the existing admin session authentication for GET/POST /api/admin/rankings. Never accept admin credentials in the body beyond the existing login route, and never return model credentials."
+  },
+  "deterministicGates": [
+    "Pure fixture tests cover ranking eligibility, manual ordering, visibility toggles, locked official slots, blocked/rejected exclusion, unknown IDs, duplicate IDs, size limits, invalid overlay fallback, and automatic-mode reset.",
+    "API fixture tests cover local release-manifest and HTML-digest verification, owner-only persistence, atomic backup, authenticated admin access, public response minimization, and revision conflicts.",
+    "Disposable-store tests cover initial state, malformed state fail-closed behavior, owner-only file/directory permissions, atomic persistence, backup preservation, and concurrent revision conflicts.",
+    "API tests prove unauthenticated admin access is rejected, authenticated reads and writes work, stale revisions return conflict, and public responses contain no private state.",
+    "Disposable backend installation tests prove all new ranking module dependencies are present in both repository-copy and embedded-bundle setup paths.",
+    "Ranking model tests prove Popular and Listed remain unchanged, manual overlays affect only Recommended and Essential, invalid overlays fail closed, and snapshot digest verification remains required.",
+    "npm run check, focused ranking/admin tests, both static marketplace builds, and git diff --check pass before the CI-checked PR is submitted.",
+    "No test writes to ~/.dsh or a real Profile. No Catalog, model settings, API keys, plugin installation, or real DSH state is modified.",
+    "Recheck the exact base Commit, every source precondition hash, every postcondition hash, the absent-file set, and the complete changed-path scope before GitHub submission.",
+    "All required CI checks must pass on the exact pull-request head before merge.",
+    "The Pages workflow must succeed for the merge commit before public acceptance is claimed.",
+    "Read back GitHub Pages, https://dsh.store, and https://dsh-store.cn independently; verify the rankings page and admin ranking controls are present.",
+    "Before backend mutation, verify the registered host with strict SSH host-key checking, confirm the active service and working directory, capture SHA-256 preconditions for all four target files, and record the curation-state hash without changing it.",
+    "After backend deployment, verify GET /api/rankings/curation returns only public ranking state and unauthenticated GET /api/admin/rankings is rejected; verify the authenticated admin page can load both boards without exposing model credentials."
+  ],
+  "externalEffects": {
+    "repositoryChangeThroughPr": true,
+    "catalogMutation": false,
+    "modelConfigurationOrCredentialMutation": false,
+    "serverDeployment": true,
+    "githubPagesDeployment": true,
+    "dshProfileMutation": false,
+    "pluginInstallation": false
+  },
+  "rollback": "Revert this feature through a new CI-checked PR. On the server, restore only the prior ranking-curation JSON backup or remove the newly introduced curation file to return both boards to Auto mode; never alter Catalog or model-settings files.",
+  "validationResults": {
+    "focusedTests": "32/32 passed across ranking API, deployment packaging, ranking model, and marketplace API tests",
+    "repositoryCheck": "npm run check passed; registry validation reported 875 entries and the full suite passed 616/616 tests",
+    "staticBuilds": {
+      "international": "passed; 875 entries; GitHub enrichment disabled",
+      "domestic": "passed; 875 entries; GitHub enrichment disabled"
+    },
+    "diffCheck": "git diff --check passed",
+    "browserAcceptance": "not performed",
+    "submission": "Authorized by the user; PR and exact-head CI pending.",
+    "deployment": "Not performed; requires PR merge, Pages success, independent public readback, and verified backend deployment on both registered production targets.",
+    "backendDeploymentPreflight": "Strict Tailscale SSH host verification is required. No host-key bypass or production mutation is allowed if that verification fails."
+  },
+  "branch": "codex/admin-managed-rankings-20261105",
+  "deployment": {
+    "repository": {
+      "baseCommit": "3703229dc2847ab3eba2a89dff0207556d3bfa58",
+      "branch": "codex/admin-managed-rankings-20261105",
+      "path": "Create an auditable pull request through the connected GitHub integration; merge the exact tested head only after all required checks pass."
+    },
+    "pages": {
+      "workflow": ".github/workflows/pages.yml on main push",
+      "requiredEvidence": "Successful Pages workflow for the merge commit and public readback of the rankings page and admin page."
+    },
+    "storefronts": {
+      "origins": [
+        "https://dsh.store",
+        "https://dsh-store.cn"
+      ],
+      "refreshPath": "Existing validated Pages-refresh service/timer; verify each origin independently."
+    },
+    "backend": {
+      "required": true,
+      "targets": [
+        "registered international production server",
+        "registered domestic production server"
+      ],
+      "workingDirectory": "/opt/dsh-model-service",
+      "service": "dsh-model-service",
+      "sourceCommit": "the exact merged pull-request commit",
+      "files": [
+        "scripts/serve-marketplace.mjs",
+        "marketplace/rankings/model.js",
+        "marketplace/lib/community-recommendations.js",
+        "src/author-exclusions.mjs"
+      ],
+      "method": "Capture live service state and SHA-256 preconditions first; back up only these files; install each with same-directory temporary files and atomic rename; restart the existing service once; verify health; restore the exact backups and restart if health fails.",
+      "preserve": "Do not change systemd, Nginx, model-settings, API keys, /var/lib/dsh-store/ranking-curation.json, Catalog, or DSH state."
+    },
+    "rollback": "Revert the source through an audited CI-checked PR. On each backend host restore the exact four predeployment file backups, restart the existing service, and verify the prior health endpoints. Pages-refresh releases retain their existing atomic rollback."
+  }
+}
