@@ -3,7 +3,7 @@
   "planId": "admin-ranking-domestic-backend-reconcile-20261106",
   "operation": "deploy-fixed-ranking-curation-api-to-domestic-service",
   "createdAt": "2026-11-06",
-  "status": "preflight-verified-awaiting-plan-ci",
+  "status": "partial-public-api-deployed-admin-auth-live-unverified",
   "repository": "AI-Scarlett/DSH-Store",
   "baseCommit": "3f5b329b8e9488e182b586b8ff1d9b7da3601a36",
   "sourceCommit": "8e51ce905767338a1e7606926ad09b749fc308db",
@@ -186,10 +186,112 @@
     }
   },
   "verification": {
-    "githubPlanPullRequest": "pending",
-    "localNpmRunCheck": "pending",
-    "exactHeadCi": "pending",
-    "deployment": "pending",
-    "publicAdminAuthentication": "unverified without an existing authenticated session; no credential will be read or exposed"
+    "planPullRequest": "merged as e28c3ed841bc7769acb52312b8b6369b2ae20dbb after exact-head checks passed",
+    "localNpmRunCheck": "passed: registry validation (881 entries) and 616 tests; 0 failures",
+    "exactHeadCi": "passed: PR #1787 dynamic run and DSH upgrade matrix; 16 successful checks, 1 skipped, 0 failed",
+    "deployment": "domestic backend deployed at fixed commit 8e51ce905767338a1e7606926ad09b749fc308db; all 12 file hashes and service/API health passed",
+    "publicReadback": "GitHub Pages, dsh.store, and dsh-store.cn ranking/admin pages and public/protected API responses verified",
+    "internationalBackend": "already at target release; no change",
+    "publicAdminAuthentication": "unverified without an existing authenticated session; no credentials were read or exposed"
+  },
+  "executionRecord": {
+    "recordedAt": "2026-11-06",
+    "statusUpdateBaseCommit": "e28c3ed841bc7769acb52312b8b6369b2ae20dbb",
+    "statusUpdatePreconditionBlobSha": "3cd5f6c917b3e0a13ac2f595ae95ddcb713ffe7c",
+    "planPullRequest": 1787,
+    "planPullRequestHead": "6ccfe1dda6a7bdf7a5ca3b766b3c8e67aea7d83a",
+    "planPullRequestMergeCommit": "e28c3ed841bc7769acb52312b8b6369b2ae20dbb",
+    "exactHeadActions": {
+      "prDynamicRun": 42198773353,
+      "upgradeMatrixRun": 42198780278,
+      "checks": 17,
+      "successful": 16,
+      "skipped": 1,
+      "failed": 0
+    },
+    "localCheck": {
+      "status": "passed",
+      "registryEntries": 881,
+      "tests": 616,
+      "failures": 0,
+      "gitDiffCheck": "passed"
+    },
+    "deployment": {
+      "targetServerRecord": "dsh-store-cn-814823065",
+      "release": "8e51ce905767338a1e7606926ad09b749fc308db",
+      "currentSymlinkTarget": "/opt/dsh-model-service/releases/8e51ce905767338a1e7606926ad09b749fc308db",
+      "releaseFileCount": 12,
+      "releaseFileSha256": "all 12 matched the hashes in releaseContents",
+      "releaseOwnerAndModes": {
+        "directory": "root:root 0755",
+        "files": "root:root 0644"
+      },
+      "service": {
+        "active": true,
+        "user": "dsh-model-service",
+        "workingDirectory": "/opt/dsh-model-service/current",
+        "execStart": "/usr/bin/node scripts/serve-marketplace.mjs"
+      },
+      "health": {
+        "publicConfig": 200,
+        "publicRankingCuration": 200,
+        "publicCurationFields": [
+          "ok",
+          "sourceCommit",
+          "boards"
+        ],
+        "unauthenticatedAdminRankings": 401
+      },
+      "rankingCurationState": "absent before and after; unchanged",
+      "rollback": "not needed; health checks passed",
+      "internationalServer": "already at target release; unchanged"
+    },
+    "publicReadback": {
+      "githubPages": {
+        "workflowRun": 42195106174,
+        "commit": "3f5b329b8e9488e182b586b8ff1d9b7da3601a36",
+        "conclusion": "success"
+      },
+      "storefronts": {
+        "https://dsh.store": {
+          "rankings": 200,
+          "admin": 200,
+          "adminJs": 200,
+          "pickerMarkers": true,
+          "curationApi": 200,
+          "unauthenticatedAdminApi": 401
+        },
+        "https://dsh-store.cn": {
+          "rankings": 200,
+          "admin": 200,
+          "adminJs": 200,
+          "pickerMarkers": true,
+          "curationApi": 200,
+          "unauthenticatedAdminApi": 401
+        }
+      }
+    },
+    "authenticatedAdminSession": "unverified; no existing authenticated session or admin credential was used",
+    "executionNotes": [
+      "The first exact file-set check caught a misplaced package.json inside the isolated staging directory before the current symlink changed. It was corrected within staging; all 12 paths, hashes, ownership, and modes then passed before cutover.",
+      "The current symlink stayed on e10d539 until the release directory passed all deterministic checks. The service switched atomically and passed post-restart health checks."
+    ]
+  },
+  "productionPostconditions": {
+    "domesticCurrentRelease": "8e51ce905767338a1e7606926ad09b749fc308db",
+    "serviceActive": true,
+    "expectedFileCount": 12,
+    "allReleaseHashesMatch": true,
+    "releaseDirectory": "root:root 0755",
+    "releaseFiles": "root:root 0644",
+    "publicConfigHttp": 200,
+    "publicCurationHttp": 200,
+    "publicCurationFields": [
+      "ok",
+      "sourceCommit",
+      "boards"
+    ],
+    "unauthenticatedAdminHttp": 401,
+    "rankingCurationState": "absent; preserved"
   }
 }
