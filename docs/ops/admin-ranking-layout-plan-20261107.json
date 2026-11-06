@@ -1,0 +1,71 @@
+{
+  "schemaVersion": 1,
+  "planId": "admin-ranking-layout-20261107",
+  "operation": "improve-admin-ranking-board-readability",
+  "status": "verified-ready-for-exact-head-ci",
+  "repository": "AI-Scarlett/DSH-Store",
+  "baseCommit": "2410b8f249455447cb8bf666c409970ecbaab659",
+  "authorization": {
+    "source": "direct-user-request",
+    "request": "管理后台这里要优化 都挤一起了 根本看不清楚",
+    "publicationAuthorization": "The user previously explicitly authorized publishing DSH Store website changes and GitHub changes; use an auditable CI-checked PR and the existing static-site release path."
+  },
+  "objective": "Make the recommended and essential ranking boards readable at ordinary and zoomed desktop widths, prevent long plugin metadata from overlapping adjacent entries, and preserve all ranking behavior.",
+  "fileScope": {
+    "modify": [
+      "marketplace/admin/admin.css",
+      "marketplace/admin/index.html"
+    ],
+    "add": [
+      "docs/ops/admin-ranking-layout-plan-20261107.json"
+    ],
+    "allOtherFiles": "must remain unchanged"
+  },
+  "preconditions": {
+    "baseBranch": "main",
+    "sha256AtBaseCommit": {
+      "marketplace/admin/admin.css": "3cbef38b8710d670f96b29320b4759bf032fa90fdc10886780972738a44c9930",
+      "marketplace/admin/index.html": "2fb31d44011a46d7819f2af1488a47d6b2cb7d391896e94b3f9063d8eff22610"
+    },
+    "existingUntrackedArtifact": "Preserve docs/ops/admin-ranking-picker-deployment-plan-20261106.json; do not stage or modify it."
+  },
+  "postconditions": {
+    "sha256": {
+      "marketplace/admin/admin.css": "bd7e97314463b9591d9012171a50613c9cfa6b959d91535585af9e9ede897900",
+      "marketplace/admin/index.html": "40892380c2c11dc9daa8268c9a4454813e52ffd7581e16f124d81f7f80eba527"
+    }
+  },
+  "design": {
+    "boardLayout": "Stack Recommended and Essential board panels vertically so each receives the full admin content width.",
+    "entryLayout": "Give plugin identity and metadata the full row width; render reordering, add/remove, and protected-position controls on a separate row.",
+    "overflow": "Prevent flex list items from shrinking below their content height so long names, descriptions, repository paths, and status text wrap without overlapping neighboring entries.",
+    "preservation": "Keep existing search, board limits, ordering, official fixed positions, save/reset behavior, APIs, and data unchanged."
+  },
+  "deterministicGates": [
+    "The ranking boards render in one column and each entry's controls occupy a separate row below its metadata.",
+    "Scrollable ranking lists keep entries at their natural content height; long metadata wraps and does not overlap adjacent entries.",
+    "Only the two listed frontend files and this plan file change.",
+    "The admin HTML references a new cache-busting asset version for the updated CSS.",
+    "npm run check passes; no third-party plugin code is executed and no DSH Profile or package state is changed.",
+    "The final PR is checked at its exact head before merge; static public assets are read back after publication."
+  ],
+  "externalEffects": {
+    "auditablePullRequest": true,
+    "githubPagesDeployment": true,
+    "internationalStorefrontRefresh": true,
+    "domesticStorefrontDeployment": "Only if the registered production route is reachable with strict host-key verification; no route bypass.",
+    "backendDeployment": false,
+    "catalogOrRankingDataMutation": false,
+    "modelConfigurationOrCredentialMutation": false,
+    "dshProfileOrPackageMutation": false
+  },
+  "rollback": "Revert the scoped frontend change through a CI-checked PR and refresh the existing static storefront path. No API, saved ranking state, Catalog, model settings, or DSH state is changed.",
+  "verification": {
+    "baseCommit": "2410b8f249455447cb8bf666c409970ecbaab659",
+    "npmRunCheck": "passed: registry validation and 616 tests; 0 failures",
+    "diffAndScope": "passed: only marketplace/admin/admin.css and marketplace/admin/index.html are modified outside this plan; git diff --check passed",
+    "exactHeadCi": "required before merge",
+    "pagesAndStorefrontReadback": "pending",
+    "authenticatedAdminBrowserAcceptance": "pending"
+  }
+}
