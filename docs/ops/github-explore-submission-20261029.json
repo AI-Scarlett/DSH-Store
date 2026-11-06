@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "type": "author-submission-evidence",
+  "baseCommit": "9372139075a37300c5ca608653dfd693addb19b1",
+  "scope": [
+    "docs/ops/github-explore-submission-20261029.json",
+    "docs/reviews/github-explore-submission-20261029.md"
+  ],
+  "preconditions": {
+    "docs/ops/github-explore-submission-20261029.json": null,
+    "docs/reviews/github-explore-submission-20261029.md": null
+  },
+  "sourceCommit": "6ee754470c23f71204f26ebbd6b8bb1d36915d5f",
+  "intent": "Submit author evidence for a fixed-source admission review; do not alter Catalog or grant installability.",
+  "validation": ["npm run check", "git diff --check"],
+  "rollback": "Revert the submission commit through a reviewed pull request."
+}
