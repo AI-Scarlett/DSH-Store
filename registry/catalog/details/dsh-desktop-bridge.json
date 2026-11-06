@@ -21,7 +21,7 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "28400c5ed28c71b44f68b6a74f781d266c83d61b",
+  "commit": "ca0d9334efee7cc25003da72301c59ec55f4b89c",
   "version": "0.4.0",
   "categories": [
     "experimental"
@@ -29,20 +29,20 @@
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-11-06T07:35:41.000Z",
-    "observedAt": "2026-11-06T07:27:01.000Z",
+    "updatedAt": "2026-11-06T08:30:56.000Z",
+    "observedAt": "2026-11-06T15:43:43.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-policy-v1",
-      "checkedAt": "2026-11-06T07:27:01.000Z",
-      "evidenceUrl": "https://github.com/advance-lion/dsh-computer-use-bridge/commit/28400c5ed28c71b44f68b6a74f781d266c83d61b",
+      "method": "automated-fixed-source-recheck-v1",
+      "checkedAt": "2026-11-06T15:43:43.000Z",
+      "evidenceUrl": "https://github.com/advance-lion/dsh-computer-use-bridge/commit/ca0d9334efee7cc25003da72301c59ec55f4b89c",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
+      "summary": "The external-only or non-installable listing metadata was refreshed from a fixed Commit; no installability was inferred."
     },
     "installability": {
       "status": "unknown",
@@ -52,7 +52,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No third-party installation or build code was executed by the automation."
+      "summary": "The updated fixed Commit was not installed or built by Catalog automation."
     },
     "runtime": {
       "status": "unknown",
@@ -62,7 +62,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No DSH runtime acceptance was inferred from static automation."
+      "summary": "No DSH runtime acceptance was carried forward after the source changed."
     },
     "securityReview": {
       "status": "unknown",
@@ -72,12 +72,12 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Automated source policy is not an independent security audit."
+      "summary": "Automated fixed-source review is not an independent security audit."
     }
   },
   "admission": {
     "engine": "bounded-source-v3",
-    "binding": "4a11e9a31b1db1d948bd14a26f1b53bf13a87c5851586433e930b0a9eba6a86f",
+    "binding": "071f7adcd62b125cdc86e9874d8d8fdfed5c9139122d65ea98cac4714a5f3675",
     "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
     "state": "review-required",
     "sourceContract": "unverified",
@@ -89,6 +89,7 @@
   "entryIds": [
     "desktop-bridge"
   ],
+  "configOverrides": [],
   "status": "blocked",
   "statusReason": "Automatic policy blocked installation: manifest repository does not match the canonical GitHub repository; DSH compatibility is not explicitly declared; Node.js compatibility is not explicitly declared; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the credentials permission signal",
   "compatibility": {

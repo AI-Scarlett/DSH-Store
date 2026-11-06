@@ -17,28 +17,28 @@
     "gate"
   ],
   "repositoryUrl": "https://github.com/ventisyn/dsh-approval-gate",
-  "defaultBranch": "0.2.1-rc.5-v1.2.3",
+  "defaultBranch": "0.2.2-rc.1-v1.2.4",
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "048205b6702bc59b2e8dbafa5c87915d17e5d768",
-  "version": "0.2.1-rc.5-v1.2.3",
+  "commit": "39577b0697216af80b27ed67ea982442619fd68d",
+  "version": "0.2.2-rc.1-v1.2.4",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-31T17:29:52.000Z",
-    "observedAt": "2026-10-31T19:45:17.000Z",
+    "updatedAt": "2026-11-06T10:27:37.000Z",
+    "observedAt": "2026-11-06T15:43:43.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-10-31T19:45:17.000Z",
-      "evidenceUrl": "https://github.com/ventisyn/dsh-approval-gate/commit/048205b6702bc59b2e8dbafa5c87915d17e5d768",
+      "method": "automated-fixed-source-update-v3",
+      "checkedAt": "2026-11-06T15:43:43.000Z",
+      "evidenceUrl": "https://github.com/ventisyn/dsh-approval-gate/commit/39577b0697216af80b27ed67ea982442619fd68d",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -93,7 +93,7 @@
   "status": "blocked",
   "statusReason": "Automatic policy blocked installation: the current fixed source 048205b6702b has no common ancestor with the prior Catalog pin df25aad12db4; independent source history remains external-only. manifest repository does not match the canonical GitHub repository DSH compatibility is not explicitly declared Node.js compatibility is not explicitly declared runtime source contains the files permission signal runtime source contains the network permission signal",
   "compatibility": {
-    "dsh": null,
+    "dsh": ">=0.2.2-rc.1",
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
