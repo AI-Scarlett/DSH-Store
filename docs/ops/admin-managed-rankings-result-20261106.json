@@ -1,0 +1,74 @@
+{
+  "schemaVersion": 1,
+  "planId": "admin-managed-rankings-result-20261106",
+  "status": "verified-ready-for-exact-head-ci",
+  "createdAt": "2026-11-06",
+  "repository": "AI-Scarlett/DSH-Store",
+  "operation": "record-current-managed-ranking-deployment-and-public-readback",
+  "objective": "Bring the original managed-ranking operation record in line with merged source, current backend release, and independently read-back public surfaces while preserving the live-authentication limitation.",
+  "authorization": {
+    "source": "User request in this session to inspect workspace changes and update GitHub and the official website.",
+    "scope": "Documentation-only GitHub PR; public surfaces and backend have already been updated and verified."
+  },
+  "baseCommit": "46442c140678a6c4c8359a0a32abe5e0cbc1e721",
+  "branch": "codex/admin-managed-rankings-result-20261106",
+  "fileScope": [
+    "docs/ops/admin-managed-rankings-plan-20261105.json",
+    "docs/ops/admin-managed-rankings-result-20261106.json"
+  ],
+  "preconditions": {
+    "sha256": {
+      "docs/ops/admin-managed-rankings-plan-20261105.json": "956a3523c6aa2bc9edfe5dfba763b3e447963404438030b59e9f2a606aa97639"
+    },
+    "absent": [
+      "docs/ops/admin-managed-rankings-result-20261106.json"
+    ]
+  },
+  "evidence": {
+    "sourcePr": {
+      "number": 1780,
+      "mergeCommit": "8e51ce905767338a1e7606926ad09b749fc308db"
+    },
+    "backendPlanPr": {
+      "number": 1787,
+      "mergeCommit": "e28c3ed841bc7769acb52312b8b6369b2ae20dbb"
+    },
+    "backendResultPr": {
+      "number": 1788,
+      "mergeCommit": "46442c140678a6c4c8359a0a32abe5e0cbc1e721"
+    },
+    "authoritativeBackendRecord": "docs/ops/admin-ranking-backend-reconcile-20261106.json"
+  },
+  "deterministicGates": [
+    "Verify the base Commit and SHA-256 precondition before editing.",
+    "Parse both JSON files and validate exact changed-path scope.",
+    "Run npm run check and git diff --check before creating the commit.",
+    "Require exact-head GitHub checks to pass before merge.",
+    "After merge, read the final record from main and check the two public storefronts and API status codes."
+  ],
+  "externalEffects": {
+    "repositoryChangeThroughPr": true,
+    "catalogMutation": false,
+    "serverDeployment": false,
+    "storefrontDeployment": false,
+    "dshProfileMutation": false,
+    "pluginInstallation": false,
+    "credentialOrModelSettingsMutation": false
+  },
+  "postconditions": {
+    "recordStatus": "partial-public-api-deployed-admin-auth-live-unverified",
+    "sourceCommit": "8e51ce905767338a1e7606926ad09b749fc308db",
+    "authenticatedAdminInteraction": "unverified",
+    "publicReadback": "GitHub Pages and both official storefronts are current; curation APIs return 200 and anonymous admin APIs return 401."
+  },
+  "rollback": "Revert the dedicated documentation commit through a new CI-checked PR. Git preserves the prior record; no production rollback is required for this documentation-only change.",
+  "healthCheck": "After merge, verify main contains the updated status and the Pages, dsh.store, and dsh-store.cn endpoints retain their expected readback results.",
+  "localVerification": {
+    "baseCommit": "46442c140678a6c4c8359a0a32abe5e0cbc1e721",
+    "targetPreconditionSha256": "956a3523c6aa2bc9edfe5dfba763b3e447963404438030b59e9f2a606aa97639",
+    "jsonParse": "passed for both scoped files",
+    "npmRunCheck": "passed; registry validation reported 881 entries; 616/616 tests passed",
+    "gitDiffCheck": "passed",
+    "exactHeadCI": "required before merge"
+  }
+}

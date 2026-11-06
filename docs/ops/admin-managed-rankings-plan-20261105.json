@@ -3,7 +3,7 @@
   "planId": "admin-managed-rankings-20261105",
   "operation": "add-admin-curation-for-recommended-and-essential-rankings",
   "createdAt": "2026-11-05",
-  "status": "release-authorized-pending-pull-request",
+  "status": "partial-public-api-deployed-admin-auth-live-unverified",
   "repository": "AI-Scarlett/DSH-Store",
   "baseCommit": "3703229dc2847ab3eba2a89dff0207556d3bfa58",
   "authorization": "On 2026-11-05 the user explicitly requested: “官网的先上线啊，github的该上线也上线”. This authorizes publishing this exact feature through an auditable pull request, merging only after required exact-head CI passes, deploying the resulting GitHub Pages build and both public storefronts, and updating the existing ranking API service on the registered production servers after strict host verification and live precondition capture. It does not authorize Catalog changes, model configuration or API-key changes, DSH Profile changes, plugin installation, or unrelated server changes.",
@@ -105,16 +105,47 @@
   "rollback": "Revert this feature through a new CI-checked PR. On the server, restore only the prior ranking-curation JSON backup or remove the newly introduced curation file to return both boards to Auto mode; never alter Catalog or model-settings files.",
   "validationResults": {
     "focusedTests": "32/32 passed across ranking API, deployment packaging, ranking model, and marketplace API tests",
-    "repositoryCheck": "npm run check passed; registry validation reported 875 entries and the full suite passed 616/616 tests",
+    "repositoryCheck": "npm run check passed after the final backend reconciliation; registry validation reported 881 entries and all 616 tests passed.",
     "staticBuilds": {
       "international": "passed; 875 entries; GitHub enrichment disabled",
       "domestic": "passed; 875 entries; GitHub enrichment disabled"
     },
     "diffCheck": "git diff --check passed",
-    "browserAcceptance": "not performed",
-    "submission": "Authorized by the user; PR and exact-head CI pending.",
-    "deployment": "Not performed; requires PR merge, Pages success, independent public readback, and verified backend deployment on both registered production targets.",
-    "backendDeploymentPreflight": "Read-only preflight passed on both registered production hosts. The same active release and seven-file SHA-256 snapshot were read back; the service is active, the curation state is absent, and public-config is 200 while the new curation/admin routes are 404. The registered Tailscale SSH wrapper had no trusted entry, so connection used the pre-registered root SSH route over the same Tailscale address with StrictHostKeyChecking=yes; the presented host keys matched existing local pins. No server files were changed."
+    "browserAcceptance": "Authenticated live admin interaction was not performed; static pages, assets, public API, and anonymous access control were independently read back.",
+    "submission": "PR #1770 merged as 706b1437e83d9aa7ef4128de3ad8e2dbed753354; exact-head CI passed.",
+    "deployment": "Initial managed-ranking backend release was deployed under PR #1775. Ranking-picker source PR #1780 merged at 8e51ce905767338a1e7606926ad09b749fc308db. The international backend was already on that fixed source; the domestic backend was reconciled to the same source under PR #1787 and verified under PR #1788.",
+    "rankingPickerSource": "PR #1780 merged; its exact-head CI and GitHub Pages deployment passed. Both official storefronts serve the updated ranking/admin assets.",
+    "publicReadback": {
+      "githubPages": {
+        "status": 200,
+        "rankingAdminPickerMarkersPresent": true
+      },
+      "internationalStorefront": {
+        "origin": "https://dsh.store",
+        "rankingsPage": 200,
+        "adminPage": 200,
+        "adminAssetsContainPicker": true,
+        "curationApi": 200,
+        "unauthAdminApi": 401
+      },
+      "domesticStorefront": {
+        "origin": "https://dsh-store.cn",
+        "rankingsPage": 200,
+        "adminPage": 200,
+        "adminAssetsContainPicker": true,
+        "curationApi": 200,
+        "unauthAdminApi": 401
+      }
+    },
+    "backendRelease": {
+      "sourceCommit": "8e51ce905767338a1e7606926ad09b749fc308db",
+      "international": "already running the fixed source before reconciliation",
+      "domestic": "deployed with 12 release files matching planned SHA-256 hashes; service health passed",
+      "publicState": "saved ranking curation state remains absent and unchanged",
+      "record": "docs/ops/admin-ranking-backend-reconcile-20261106.json"
+    },
+    "authenticatedAdminInteraction": "Unverified: no authenticated live admin session or credential was used; anonymous admin API access returns 401.",
+    "backendPredeploymentReadOnlyPreflight": "Read-only preflight passed on both registered production hosts. The same active release and seven-file SHA-256 snapshot were read back; the service is active, the curation state is absent, and public-config is 200 while the new curation/admin routes are 404. The registered Tailscale SSH wrapper had no trusted entry, so connection used the pre-registered root SSH route over the same Tailscale address with StrictHostKeyChecking=yes; the presented host keys matched existing local pins. No server files were changed."
   },
   "branch": "codex/admin-managed-rankings-20261105",
   "deployment": {
