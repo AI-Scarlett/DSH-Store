@@ -3,7 +3,7 @@
   "registry": {
     "name": "DSH STORE Candidate Discovery Registry",
     "repositoryUrl": "https://github.com/AI-Scarlett/DSH-Store",
-    "updatedAt": "2026-11-06T05:31:34.000Z",
+    "updatedAt": "2026-11-06T07:27:01.000Z",
     "trustBoundary": {
       "installActionsDisabled": true,
       "catalogPromotionRequired": true,
@@ -18624,6 +18624,128 @@
       "discoveredAt": "2026-11-06T05:31:34.000Z",
       "discoverySources": [
         "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@51d50de9c8243deba503e3e074d670666731c13c:data/plugins/STARDUSTLC666__dsh-code-security.yml:sha256=4da225ed9a2513c2976c1812c76551a97f0f983ae0ae6491e81411110d82cf21:at=2026-11-06T05:40:01.819Z:owner=291677282"
+      ],
+      "topics": [
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "rangow4562-threadforge",
+      "name": "Rangow4562/ThreadForge",
+      "description": "Local-first agent memory, task continuity, calibrated typed decisions, and regularized harness evolution across 25+ AI coding harnesses (Go + SQLite + MCP + OTLP + Python + TypeScript).",
+      "repositoryUrl": "https://github.com/Rangow4562/ThreadForge",
+      "defaultBranch": "main",
+      "latestCommit": "1d1a19bdad51f1a735b675d7e59732e1ee1d1564",
+      "sourceUpdatedAt": "2026-11-06T07:35:49.000Z",
+      "discoveredAt": "2026-11-06T07:27:01.000Z",
+      "discoverySources": [
+        "github-automatic-radar-v1"
+      ],
+      "topics": [
+        "agent-memory",
+        "ai-agents",
+        "coding-agents",
+        "golang",
+        "local-first",
+        "mcp",
+        "opentelemetry",
+        "sqlite",
+        "automatic-radar"
+      ],
+      "status": "rejected",
+      "route": "adapter-required",
+      "statusReason": "SUBMISSION_BUNDLE_MISSING: No package.json declaring dsh.bundle.patch was found"
+    },
+    {
+      "id": "stardustlc666-dsh-suite",
+      "name": "STARDUSTLC666/dsh-suite",
+      "description": "Discovered GitHub repository awaiting a compatible DSH Bundle.",
+      "repositoryUrl": "https://github.com/STARDUSTLC666/dsh-suite",
+      "defaultBranch": "master",
+      "latestCommit": "f909ca0dc762d6a1e686fa725bcf2486be58ff6b",
+      "sourceUpdatedAt": "2026-11-05T03:00:17.000Z",
+      "discoveredAt": "2026-11-06T07:27:01.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@51d50de9c8243deba503e3e074d670666731c13c:data/plugins/STARDUSTLC666__dsh-suite.yml:sha256=70c54b992df46755f13a62fd4d61fb3639d40230053a8b857408c925680f9c5a:at=2026-11-06T07:36:11.192Z:owner=291677282"
+      ],
+      "topics": [
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "farion1231-cc-switch",
+      "name": "farion1231/cc-switch",
+      "description": "A cross-platform desktop All-in-One assistant for Claude Code, Codex, OpenCode,DeepSeek Harness and more. Only official website: ccswitch.io",
+      "repositoryUrl": "https://github.com/farion1231/cc-switch",
+      "defaultBranch": "main",
+      "latestCommit": "1d6efa6440499caec0c3355896f138bb8d4f4153",
+      "sourceUpdatedAt": "2026-11-06T07:33:38.000Z",
+      "discoveredAt": "2026-11-06T07:27:01.000Z",
+      "discoverySources": [
+        "github-automatic-radar-v1"
+      ],
+      "topics": [
+        "ai-tools",
+        "claude-code",
+        "codex",
+        "deepseek-harness",
+        "desktop-app",
+        "grok",
+        "grokbuild",
+        "hermes",
+        "kimi-code",
+        "mcp",
+        "open-source",
+        "opencode",
+        "pi",
+        "provider-management",
+        "rust",
+        "skills",
+        "skills-management",
+        "tauri",
+        "wsl-support",
+        "automatic-radar"
+      ],
+      "status": "rejected",
+      "route": "adapter-required",
+      "statusReason": "SUBMISSION_BUNDLE_MISSING: No package.json declaring dsh.bundle.patch was found"
+    },
+    {
+      "id": "stardustlc666-dsh-review",
+      "name": "STARDUSTLC666/dsh-review",
+      "description": "Discovered GitHub repository awaiting a compatible DSH Bundle.",
+      "repositoryUrl": "https://github.com/STARDUSTLC666/dsh-review",
+      "defaultBranch": "main",
+      "latestCommit": "592ac53c82263b18e6d6324bc66f46b26660063a",
+      "sourceUpdatedAt": "2026-11-04T13:08:53.000Z",
+      "discoveredAt": "2026-11-06T07:27:01.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@51d50de9c8243deba503e3e074d670666731c13c:data/plugins/STARDUSTLC666__dsh-review.yml:sha256=f0381ea60171998c71dd2163592684adcaee23921795ada4d6c1f6d68e6dbbcb:at=2026-11-06T07:36:11.192Z:owner=291677282"
+      ],
+      "topics": [
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "starefinger-dsh-llm-qwen-local",
+      "name": "starefinger/dsh-llm-qwen-local",
+      "description": "Discovered GitHub repository awaiting a compatible DSH Bundle.",
+      "repositoryUrl": "https://github.com/starefinger/dsh-llm-qwen-local",
+      "defaultBranch": "main",
+      "latestCommit": "b3d5d22325acd642f760c9503c96cfca098a566d",
+      "sourceUpdatedAt": "2026-09-24T08:19:56.000Z",
+      "discoveredAt": "2026-11-06T07:27:01.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@51d50de9c8243deba503e3e074d670666731c13c:data/plugins/starefinger__dsh-llm-qwen-local.yml:sha256=0f8d7aed046a8d3bf7192f2522b0e7a2e78588afd463a1dcdf10bf4bf244d165:at=2026-11-06T07:36:11.192Z:owner=2224716"
       ],
       "topics": [
         "automatic-radar"
