@@ -21,24 +21,24 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "04e277232067bb9a4577739b10af0614bf447658",
-  "version": "0.1.12",
+  "commit": "c3cea59317545fde51230a2f05ed3dcb3612279e",
+  "version": "0.1.13",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-11-04T02:22:32.000Z",
-    "observedAt": "2026-11-05T16:14:13.000Z",
+    "updatedAt": "2026-11-06T09:39:58.000Z",
+    "observedAt": "2026-11-06T15:43:43.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-11-05T16:14:13.000Z",
-      "evidenceUrl": "https://github.com/Moraxyc/dsh-cpa/commit/04e277232067bb9a4577739b10af0614bf447658",
+      "checkedAt": "2026-11-06T15:43:43.000Z",
+      "evidenceUrl": "https://github.com/Moraxyc/dsh-cpa/commit/c3cea59317545fde51230a2f05ed3dcb3612279e",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -77,7 +77,7 @@
   },
   "admission": {
     "engine": "bounded-source-v3",
-    "binding": "d82ac4d41d30e8cf1e26cdbcef2c43a20b93e31ea22e8dd1f3a21551598dc4f2",
+    "binding": "7668197739b94bb6ff1cde40b7a8afb621ce0b19ca279c6fc365c44dcc404e63",
     "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
     "state": "incomplete",
     "sourceContract": "verified",
@@ -91,9 +91,9 @@
   ],
   "configOverrides": [],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: runtime or optional dependencies require a separate supply-chain review; runtime artifact pattern has targets outside the distributable surface: ./src/*; fixed-source scan is incomplete; unobserved capability signals are unknown; fixed-source security warnings require review; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal",
+  "statusReason": "Automatic policy blocked installation: runtime or optional dependencies require a separate supply-chain review; runtime artifact is missing from the distributable surface: ./lib/index.js; runtime artifact is missing from the distributable surface: ./lib/client.js; runtime artifact is missing from the distributable surface: ./lib/index.d.ts; fixed-source scan is incomplete; unobserved capability signals are unknown",
   "compatibility": {
-    "dsh": "0.2.1-rc.5",
+    "dsh": "0.2.2-rc.1",
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",

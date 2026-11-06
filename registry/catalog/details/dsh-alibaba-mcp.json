@@ -18,24 +18,24 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "41d703174af09ba4eb0e15381caf000ec1a61d5d",
-  "version": "0.3.1",
+  "commit": "b11881f39a1ba1af1fbe0a2f5388a232fce0bf7b",
+  "version": "0.3.2",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-11-04T16:32:44.000Z",
-    "observedAt": "2026-11-05T16:14:13.000Z",
+    "updatedAt": "2026-11-06T13:46:48.000Z",
+    "observedAt": "2026-11-06T15:43:43.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-11-05T16:14:13.000Z",
-      "evidenceUrl": "https://github.com/NingYuanLee/dsh-alibaba-mcp/commit/41d703174af09ba4eb0e15381caf000ec1a61d5d",
+      "checkedAt": "2026-11-06T15:43:43.000Z",
+      "evidenceUrl": "https://github.com/NingYuanLee/dsh-alibaba-mcp/commit/b11881f39a1ba1af1fbe0a2f5388a232fce0bf7b",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -74,10 +74,10 @@
   },
   "admission": {
     "engine": "bounded-source-v3",
-    "binding": "c70c82600e614c60e1f53233af213516aa0da232c30aafc23a6e21944b289d71",
+    "binding": "623c9352d023a6f60427f75d90339eb189f193b82dbf215dcdb6e9eb07b55dfc",
     "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
     "state": "review-required",
-    "sourceContract": "unverified",
+    "sourceContract": "verified",
     "coverage": "complete",
     "capabilities": "review-required",
     "compatibility": "per-version-declaration",
@@ -88,9 +88,9 @@
   ],
   "configOverrides": [],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: manifest repository does not match the canonical GitHub repository; runtime source contains the files permission signal; runtime source contains the credentials permission signal",
+  "statusReason": "Automatic policy blocked installation: runtime source contains the files permission signal; runtime source contains the credentials permission signal",
   "compatibility": {
-    "dsh": ">=0.2.1-rc.2 <0.3.0-0",
+    "dsh": ">=0.2.1-rc.2 <0.3.0-0 || >=0.2.2-0 <0.3.0-0",
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
