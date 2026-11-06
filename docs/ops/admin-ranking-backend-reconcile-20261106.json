@@ -1,0 +1,195 @@
+{
+  "schemaVersion": 1,
+  "planId": "admin-ranking-domestic-backend-reconcile-20261106",
+  "operation": "deploy-fixed-ranking-curation-api-to-domestic-service",
+  "createdAt": "2026-11-06",
+  "status": "preflight-verified-awaiting-plan-ci",
+  "repository": "AI-Scarlett/DSH-Store",
+  "baseCommit": "3f5b329b8e9488e182b586b8ff1d9b7da3601a36",
+  "sourceCommit": "8e51ce905767338a1e7606926ad09b749fc308db",
+  "authorization": {
+    "source": "direct-user-request",
+    "request": "2026-11-06: ‘你看看工作去 还有哪些没有更新到github 还有哪些 没更新到官网 都一起更新了吧’",
+    "scope": "Reconcile the domestic ranking API backend with the already-merged and publicly deployed ranking picker. The international backend is already at the fixed source commit and will not be changed.",
+    "priorReleasePlan": "docs/ops/admin-ranking-picker-plan-20261106.json",
+    "excluded": "No Catalog, model settings, API keys, saved ranking state, DSH Profile, plugin, or unrelated service changes."
+  },
+  "objective": "Bring the domestic ranking API backend to the exact merged ranking-picker source already running internationally, while preserving the current ranking curation state and providing an atomic rollback.",
+  "fileScope": {
+    "repository": {
+      "add": [
+        "docs/ops/admin-ranking-backend-reconcile-20261106.json"
+      ],
+      "modify": [],
+      "delete": []
+    },
+    "production": {
+      "serverRecordId": "dsh-store-cn-814823065",
+      "currentSymlink": "/opt/dsh-model-service/current",
+      "newReleaseDirectory": "/opt/dsh-model-service/releases/8e51ce905767338a1e7606926ad09b749fc308db",
+      "stagingDirectory": "/opt/dsh-model-service/releases/.staging-admin-ranking-backend-reconcile-20261106",
+      "service": "dsh-model-service",
+      "releaseFiles": [
+        "marketplace/lib/recommendation-search.mjs",
+        "package.json",
+        "scripts/plugin-catalog-sqlite-worker.py",
+        "src/ai-model-settings.mjs",
+        "src/ai-recommend.mjs",
+        "src/plugin-catalog-index.mjs",
+        "scripts/serve-marketplace.mjs",
+        "marketplace/rankings/model.js",
+        "marketplace/lib/community-recommendations.js",
+        "src/author-exclusions.mjs",
+        "src/catalog.mjs",
+        "src/bundle-patch-contract.mjs"
+      ],
+      "allowedMutations": [
+        "create the absent fixed release directory from the exact 12-file set",
+        "atomically switch current symlink",
+        "restart dsh-model-service once"
+      ],
+      "excludedMutations": [
+        "edit existing release files",
+        "change /var/lib/dsh-store/ranking-curation.json",
+        "change systemd, Nginx, model settings, API keys, Catalog, or DSH state"
+      ]
+    }
+  },
+  "preconditions": {
+    "repository": {
+      "baseCommit": "3f5b329b8e9488e182b586b8ff1d9b7da3601a36",
+      "planFileAbsent": true
+    },
+    "fixedSourceFileSha256": {
+      "scripts/serve-marketplace.mjs": "dd46f6f744612b6578985d8ca102386e35dc368a24cedafec1700c382990f0a1",
+      "marketplace/rankings/model.js": "baef066bd95e340ebec1fa8a2efb3122efe93f468c8543a2e5557f9edbfa1fc4",
+      "marketplace/lib/community-recommendations.js": "24a6e47c03fc636b7d1b4b6527c869fb0b79c6b9af762e9e7f8362b181de8065",
+      "src/author-exclusions.mjs": "db9793e909ba3c2a3a950137808b7c8e184400a74d768ddb32a43991e77da216",
+      "src/catalog.mjs": "3103892ce1fe62bbdde5ccbbfb7806421fd65bd09c907982ed3d4c8cff05d4c8",
+      "src/bundle-patch-contract.mjs": "c73629569511470127160b0ae4527a55a84d3d8377a577a4da7785c95820ec44"
+    },
+    "domesticProduction": {
+      "target": "registered SecureOps server dsh-store-cn-814823065; SSH over its registered overlay address",
+      "hostKeyCheck": "StrictHostKeyChecking=yes; strict preflight SSH succeeded against the existing local known_hosts entry",
+      "service": {
+        "active": true,
+        "user": "dsh-model-service",
+        "workingDirectory": "/opt/dsh-model-service/current",
+        "execStart": "/usr/bin/node scripts/serve-marketplace.mjs"
+      },
+      "currentRelease": "/opt/dsh-model-service/releases/e10d53957239bb6d048f889700076732247569e8",
+      "currentSymlinkTarget": "e10d53957239bb6d048f889700076732247569e8",
+      "currentReleaseDirectoryOwnerAndMode": "root:root 0755",
+      "newReleaseDirectoryAbsent": true,
+      "stagingDirectoryAbsent": true,
+      "rankingCurationState": {
+        "path": "/var/lib/dsh-store/ranking-curation.json",
+        "state": "absent; preserve absence"
+      },
+      "currentReleaseFileSha256": {
+        "marketplace/lib/recommendation-search.mjs": "d4f21767832d6106960f791f389f915f09cdc8f6abb32f5f2958f587cf70627d",
+        "package.json": "b354c3def7a70d00ba748fccff28066f55d8760c7f2734fb3ae94e0d2940baff",
+        "scripts/plugin-catalog-sqlite-worker.py": "580a90368b6e92822af79ec1a4040f71e3640d83d55dccf2327825cc236f7680",
+        "src/ai-model-settings.mjs": "8c2d358712de0c960d94e3228ca23c56238b0c2aa0dc1b8e0f715c4a112a08e4",
+        "src/ai-recommend.mjs": "5be481a7229059cfea566b523be8928d53317be04fb70a6e77e6d6821470a448",
+        "src/plugin-catalog-index.mjs": "4b7b1bddfadf17b8dfffee61e0f8cab44228791cbae9fd82198a243fc5341c9f",
+        "scripts/serve-marketplace.mjs": "9d54263b76fa4b4791a6948229e719acddc93dd98f9a1ce9a0fdf3e668372084",
+        "marketplace/rankings/model.js": "7cfd463263ef8c2ac2f9ffd261fd04d24c1c9dbf0d1768d47b985ccfcd185921",
+        "marketplace/lib/community-recommendations.js": "24a6e47c03fc636b7d1b4b6527c869fb0b79c6b9af762e9e7f8362b181de8065",
+        "src/author-exclusions.mjs": "db9793e909ba3c2a3a950137808b7c8e184400a74d768ddb32a43991e77da216",
+        "src/catalog.mjs": "3103892ce1fe62bbdde5ccbbfb7806421fd65bd09c907982ed3d4c8cff05d4c8",
+        "src/bundle-patch-contract.mjs": "c73629569511470127160b0ae4527a55a84d3d8377a577a4da7785c95820ec44"
+      },
+      "preDeploymentHealth": {
+        "publicConfig": 200,
+        "publicRankingCuration": 200,
+        "unauthenticatedAdminRankings": 401
+      }
+    },
+    "internationalProduction": {
+      "serverRecordId": "dsh-store-intl",
+      "currentRelease": "8e51ce905767338a1e7606926ad09b749fc308db",
+      "rankingServerSha256": {
+        "scripts/serve-marketplace.mjs": "dd46f6f744612b6578985d8ca102386e35dc368a24cedafec1700c382990f0a1",
+        "marketplace/rankings/model.js": "baef066bd95e340ebec1fa8a2efb3122efe93f468c8543a2e5557f9edbfa1fc4"
+      },
+      "action": "no change; already at target"
+    }
+  },
+  "releaseContents": {
+    "fixedCommitFiles": [
+      "scripts/serve-marketplace.mjs",
+      "marketplace/rankings/model.js",
+      "marketplace/lib/community-recommendations.js",
+      "src/author-exclusions.mjs",
+      "src/catalog.mjs",
+      "src/bundle-patch-contract.mjs"
+    ],
+    "copiedUnchangedFiles": [
+      "marketplace/lib/recommendation-search.mjs",
+      "package.json",
+      "scripts/plugin-catalog-sqlite-worker.py",
+      "src/ai-model-settings.mjs",
+      "src/ai-recommend.mjs",
+      "src/plugin-catalog-index.mjs"
+    ],
+    "fixedFilesArchiveSha256": "e0f46a0192d1b31af00087c5cad0a3c948265d24f52fb6221fbeb702741e8c61",
+    "expectedFileCount": 12,
+    "ownerAndModes": {
+      "releaseDirectory": "root:root 0755",
+      "files": "root:root 0644"
+    }
+  },
+  "publicReadback": {
+    "github": {
+      "mergedSourcePr": 1780,
+      "sourceMergeCommit": "8e51ce905767338a1e7606926ad09b749fc308db",
+      "validateCheck": "passed",
+      "pagesWorkflow": "passed"
+    },
+    "githubPages": {
+      "status": 200,
+      "rankingAdminPickerMarkersPresent": true
+    },
+    "internationalStorefront": {
+      "origin": "https://dsh.store",
+      "rankingsPage": 200,
+      "adminPage": 200,
+      "adminAssetsContainPicker": true,
+      "curationApi": 200,
+      "unauthAdminApi": 401
+    },
+    "domesticStorefront": {
+      "origin": "https://dsh-store.cn",
+      "rankingsPage": 200,
+      "adminPage": 200,
+      "adminAssetsContainPicker": true,
+      "curationApi": 200,
+      "unauthAdminApi": 401
+    }
+  },
+  "deterministicGates": [
+    "Plan base commit is the current origin/main SHA and the plan path is absent at that base.",
+    "The fixed source file hashes and release archive hash match commit 8e51ce905767338a1e7606926ad09b749fc308db.",
+    "The deployed domestic precondition hashes, current symlink, curation-state absence, active service properties, and new/staging path absence are rechecked immediately before writing; any mismatch aborts without switching current.",
+    "Stage exactly the six fixed-commit files and six copied unchanged files, verify all 12 SHA-256 values and the exact file set, then atomically rename the staged release and atomically switch current.",
+    "Restart only dsh-model-service once after the symlink switch; on failed health check, atomically restore the captured e10d539 symlink and restart the service.",
+    "Post-deployment health: service active, public-config returns 200, public curation returns only ok/sourceCommit/boards with 200, unauthenticated admin rankings returns 401, and the curation state remains absent.",
+    "The pull request changes only this machine-readable plan; npm run check, JSON parsing, git diff --check, and required exact-head GitHub CI pass before merging the plan record."
+  ],
+  "deployment": {
+    "method": "Extract the fixed-commit six-file archive into the unique staging directory, copy the six unchanged files from the captured active domestic release, normalize only the new release to root:root 0755/0644, verify exact file set and hashes, rename to the absent 8e51 release path, atomically replace current, restart, and run health checks.",
+    "rollback": {
+      "previousCurrentTarget": "e10d53957239bb6d048f889700076732247569e8",
+      "procedure": "Atomically restore current to the captured prior release and restart dsh-model-service; keep both release directories intact.",
+      "preserve": "Do not edit or remove the existing release, curation state, model settings, API keys, Catalog, or DSH data."
+    }
+  },
+  "verification": {
+    "githubPlanPullRequest": "pending",
+    "localNpmRunCheck": "pending",
+    "exactHeadCi": "pending",
+    "deployment": "pending",
+    "publicAdminAuthentication": "unverified without an existing authenticated session; no credential will be read or exposed"
+  }
+}
