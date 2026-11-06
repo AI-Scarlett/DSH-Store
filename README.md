@@ -23,7 +23,7 @@ DSH STORE 是一个运行在 DeepSeek Harness（DSH）设置页中的第三方
 > [GitHub Pages](https://ai-scarlett.github.io/DSH-Store/marketplace/repair/)
 > 查看官方修复/升级方案；修复页只有在 Catalog 固定到包含修复器的完整 Commit 后才会生成命令。
 
-> **DSH Store 0.9.43 源码候选：**修复 Desktop 目录请求中止异常被显示成通用错误，并在 GitHub Raw 超时、网络失败或 HTTP 错误时尝试同仓库 GitHub Pages 目录镜像。镜像数据仍经过同一 Catalog 校验；实际 Desktop Profile 更新和 UI 验收尚未完成，Catalog 固定版本仍为 0.9.42，需另走新鲜 Catalog 计划。
+> **DSH Store 0.9.43：**已修复 Desktop 目录请求中止异常显示通用错误的问题；GitHub Raw 网络、HTTP 或超时失败时回退到同仓库 Pages 镜像，并执行相同的 Catalog 校验。Catalog 固定源码为 Commit `7b27e57814a1247c1077a6fac6d2be76a92afde1`；真实 Desktop Profile 更新和 UI 验收尚未完成。
 
 > **DSH Store 0.9.42 兼容记录：**已用官方 DSH 0.2.2-rc.1 和一次性 Profile 完成 CLI 安装、配置检查、启动/API 冒烟与卸载还原；安装/启动/卸载通过，回滚未验证。DSH Desktop 实际 UI 仍未实机验收。`0.9.42` 把客户端静态依赖从已停止发布的 `@deepseek-ai/dsh-client-runtime` 改为官方实际提供 `remote` / `remote.pluginManager` 的 `@deepseek-ai/dsh-api-remotes`；这是依赖声明纠正，不是崩溃修复，旧声明曾被加载器跳过而不影响加载。
 
@@ -55,16 +55,16 @@ DSH 从此版本优先读取插件的 `engines.dsh`，缺少它时才检查所�
 ### 使用固定 GitHub Commit 安装
 
 优先使用上方的原生索引，或从[当前修复入口](https://dsh.store/repair/)核对受审的固定源码。
-Catalog 当前固定 DSH Store 0.9.42、Commit 8e51ce905767338a1e7606926ad09b749fc308db。此版本更正官方 Client Remote 依赖声明，并加入推荐榜后台手动管理；延续 0.9.41 的 Desktop 更新确认排版优化。官方 DSH 0.2.2-rc.1 的一次性 Web Profile 安装、启动/API 和卸载还原通过，回滚仍未验证。Catalog 只声明 `web` Profile；真实 Desktop UI 尚未验收。
+Catalog 当前固定 DSH Store 0.9.43、Commit `7b27e57814a1247c1077a6fac6d2be76a92afde1`。此版本修复 Desktop 目录读取故障，并保留 0.9.42 的 Client Remote 依赖更正与推荐榜后台管理。官方 DSH 0.2.2-rc.1 的一次性 Profile 矩阵安装、启动和卸载通过，回滚仍未验证。Catalog 只声明 `web` Profile；真实 Desktop UI 尚未验收。
 - 源码 `0.9.31` 修复推荐榜和必装榜切换时两个标签共用当前榜单数量的问题；榜单计数分别绑定各自榜单，商城主内容增加响应式左右留白并略微扩大卡片间距。
 - 源码 `0.9.32` 已由 PR [#1727](https://github.com/AI-Scarlett/DSH-Store/pull/1727) 合并，修复完整目录搜索误命中审核原因和其他内部说明的问题：两字及更短的查询只匹配插件标识、GitHub 仓库和搜索词；较长查询再匹配用途描述；结果按名称、包名、仓库和关键词相关度排序。该修复包含在本次固定到 Catalog 的 `0.9.35` 中。
 - 源码 `0.9.33` 已由 PR [#1728](https://github.com/AI-Scarlett/DSH-Store/pull/1728) 合并：响应式铺开商城导航，提供 DSH 官方组件与已安装插件只读视图；审核建议改为白话说明、技术原因可展开查看，最终安装结果仍以 DSH Desktop 官方管理器为准；必装榜补位项显示类别、可核对星标顺序和未知星标提示。源码 `0.9.34` 将官方插件与已安装插件收纳到“本机插件”下的两个子 Tab，并进一步拉开主导航间距。源码 `0.9.34` 已由 PR [#1729](https://github.com/AI-Scarlett/DSH-Store/pull/1729) 合并并于此前固定到 Catalog；源码 `0.9.35` 已由 PR [#1731](https://github.com/AI-Scarlett/DSH-Store/pull/1731) 合并，本次 Catalog 固定该版本。真实 Desktop 的新界面仍需加载后单独验收。
 - 源码 `0.9.35` 修正 `0.9.34` 导航在宽屏被等分拉伸、入口散开的布局；标签改为固定间距并按屏幕宽度换行。“本机插件”中的官方插件与已安装插件使用单独的二级 Tab。完整目录、推荐榜与必装榜恢复 DSH Desktop 适配声明筛选，明确区分“已声明适配”与“未声明”，未声明不表示不兼容。该版本已固定到 Catalog；真实 Desktop 中的筛选和导航仍需回归验收。
-源码 `0.9.28` 修复旧版商城无法提交自身更新的问题：只要 DSH 清单确认安装的是同一 Store 仓库且当前版本低于 Catalog 固定版本，更新入口就会把目标固定 Commit 直接交给 DSH `installBundle()`，不要求旧安装来源可解析为完整 Commit，也不调用 `removeBundle()`。DSH 明确拒绝时保留其错误；不确定结果只核对一次，不会重试。该修复包含在源码 `0.9.29` 中，并已通过独立 Catalog 发布；截至本次发布，Catalog 固定至 `0.9.42`。
-通过 DSH 官方 CLI 安装 Catalog 当前固定的 `0.9.42` Commit：
+源码 `0.9.28` 修复旧版商城无法提交自身更新的问题：只要 DSH 清单确认安装的是同一 Store 仓库且当前版本低于 Catalog 固定版本，更新入口就会把目标固定 Commit 直接交给 DSH `installBundle()`，不要求旧安装来源可解析为完整 Commit，也不调用 `removeBundle()`。DSH 明确拒绝时保留其错误；不确定结果只核对一次，不会重试。该修复包含在源码 `0.9.29` 中，并已通过独立 Catalog 发布；截至本次发布，Catalog 固定至 `0.9.43`。
+通过 DSH 官方 CLI 安装 Catalog 当前固定的 `0.9.43` Commit：
 
 ```bash
-dsh plugin --profile web add --ignore-scripts --config.auto-install-peers=false 'git+https://github.com/AI-Scarlett/DSH-Store.git#8e51ce905767338a1e7606926ad09b749fc308db'
+dsh plugin --profile web add --ignore-scripts --config.auto-install-peers=false 'git+https://github.com/AI-Scarlett/DSH-Store.git#7b27e57814a1247c1077a6fac6d2be76a92afde1'
 ```
 
 这条命令会修改目标 Profile 的依赖、锁文件、工作区文件、`node_modules` 和 Bundle 列表。
@@ -108,7 +108,7 @@ Bundle 启停通过 DSH 官方 `inspect`、`installBundle`、`removeBundle`、`s
 
 | 项目 | 当前状态 |
 | --- | --- |
-| Catalog 固定版本 | `0.9.42`（修正官方 Client Remote 依赖并加入推荐榜后台手动管理；官方 DSH 0.2.2-rc.1 一次性 Web Profile 验收通过，真实 Desktop UI 未验收） |
+| Catalog 固定版本 | `0.9.43`（修复 Desktop 目录 Raw 请求超时回退；官方 DSH 0.2.2-rc.1 一次性 Profile 矩阵通过，真实 Desktop UI 未验收） |
 | 收录条目 | 以 GitHub `registry/catalog-index.json` 的实时 `entries.length` 为准 |
 | Catalog 审核通过 | 以实时 Catalog 中 `status: approved` 的条目数为准 |
 | Desktop 可交由 DSH 检查 | Catalog 项使用固定 Commit；公开 DSH 插件目录项使用规范 GitHub 仓库；每次操作经明确确认，Store 审核状态与兼容建议不决定 DSH 的最终结果 |
@@ -125,7 +125,7 @@ Bundle 启停通过 DSH 官方 `inspect`、`installBundle`、`removeBundle`、`s
 
 `0.9.42` 纠正客户端静态依赖声明。经官方 `0.2.2-rc.1` 依赖树与本机 DSH Desktop `0.2.2-rc.1` 应用包核对：`@deepseek-ai/dsh-client-runtime` 在 `0.1.1-rc.2` 之后停止发布，且在 CLI/Web 运行时与 Desktop 应用包中都不存在；而真正提供 `remote` 服务并挂载 `pluginManager` Remote 命名空间的 `@deepseek-ai/dsh-api-remotes` 两个宿主都存在，官方 `@deepseek-ai/dsh-client-ui-plugin-manager@0.2.2-rc.1` 也正是声明它。商城原声明的 `dsh-client-runtime` 只留下一条无法解析的依赖边，加载器会跳过它，因此这是依赖声明纠正而非崩溃修复；真实 Desktop 界面验收仍单独进行。官方 `pluginManager` Remote 的 `listBundles`、`inspect`、`installBundle`、`waitForInstall`、`removeBundle`、`setBundleEnabled` 在 `0.2.2-rc.1` 全部保持原样，`settings.section`、`sidebar.panellist`、`main` 三个槽位契约也未变。
 
-`0.9.43` 修复 Desktop Catalog 请求中止时将浏览器 `AbortError.code` 数值误当字符串错误码、最终退化为 `DESKTOP_OPERATION_FAILED` 的问题。目录先请求 GitHub Raw；网络失败、HTTP 错误或超时时再尝试字节已核对一致的 GitHub Pages 镜像，并对镜像响应执行相同的大小、URL 和 Catalog 结构校验。界面会标明当前使用 Pages 镜像。Catalog pin 与真实 Desktop Profile 不由本 Source PR 修改。
+`0.9.43` 修复 Desktop Catalog 请求中止时将浏览器 `AbortError.code` 数值误当字符串错误码、最终退化为 `DESKTOP_OPERATION_FAILED` 的问题。目录先请求 GitHub Raw；网络失败、HTTP 错误或超时时再尝试 GitHub Pages 镜像，并对镜像响应执行相同的大小、URL 和 Catalog 结构校验。界面会标明当前使用 Pages 镜像。Catalog 固定在 Commit `7b27e57814a1247c1077a6fac6d2be76a92afde1`；真实 Desktop Profile 尚未更新，UI 仍未验收。
 
 `0.9.37` 优化 Desktop 插件商城与安装确认弹窗界面视觉协调感；
 - `0.9.38` 修复多维筛选下拉选择框（分类、客户端适配、审核状态）在固定高度下文字垂直基线被下半部截断只露出一半的视觉缺陷，规范 `styles.select` 上下 padding 为 0 并保证充足右侧下拉图标安全间距。
