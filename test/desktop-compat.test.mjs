@@ -105,6 +105,7 @@ test('Desktop Guardian status reports official ownership without probing launchd
 })
 
 const desktopCatalogUrl = 'https://raw.githubusercontent.com/AI-Scarlett/DSH-Store/main/registry/catalog.json'
+const desktopCatalogPagesUrl = 'https://ai-scarlett.github.io/DSH-Store/registry/catalog.json'
 const desktopCatalogIndexUrl = 'https://raw.githubusercontent.com/AI-Scarlett/DSH-Store/main/registry/catalog-index.json'
 const desktopDiscoveryUrl = 'https://raw.githubusercontent.com/AI-Scarlett/DSH-Store/main/registry/discovery-index.json'
 const desktopCandidatesUrl = 'https://raw.githubusercontent.com/AI-Scarlett/DSH-Store/main/registry/candidates.json'
@@ -399,9 +400,9 @@ function createDesktopHarness({ catalog, installed = [], responseFactory, deskto
     }
   }
   const fetch = async (url, options) => {
-    if (url === desktopCatalogUrl) {
+    if (url === desktopCatalogUrl || url === desktopCatalogPagesUrl) {
       requests.push({ url, options })
-      if (responseFactory) return responseFactory()
+      if (url === desktopCatalogUrl && responseFactory) return responseFactory(url)
       return jsonResponse(url, catalog)
     }
     directoryRequests.push({ url, options })
@@ -2031,6 +2032,19 @@ test('official Desktop fails closed for malformed Catalog data and oversized res
   assert.match(desktopText(oversizedTree), /DESKTOP_CATALOG_TOO_LARGE/)
   assert.equal(oversizedHarness.calls.listBundles, 1)
   assert.equal(desktopNodes(oversizedTree).some(node => node.type === 'button' && node.children?.includes('安装')), false)
+})
+
+test('Desktop falls back to the GitHub Pages Catalog mirror after a native abort', async () => {
+  const entry = desktopEntry({ id: 'catalog-mirror-fallback', packageName: '@acme/catalog-mirror-fallback', commit: desktopCommit })
+  const harness = createDesktopHarness({ catalog: desktopCatalog([entry]),
+    responseFactory: async () => { throw new DOMException('The operation was aborted', 'AbortError') } })
+  await harness.ready
+  await harness.render()
+  await harness.runEffects(harness.getComponent('DesktopStorePanel'))
+  const tree = await waitForDesktopTree(harness, value => desktopText(value).includes('GitHub Pages 目录镜像提供数据'))
+  assert.deepEqual(harness.requests.map(request => request.url), [desktopCatalogUrl, desktopCatalogPagesUrl])
+  assert.match(desktopText(tree), /GitHub Raw 暂不可用，当前由同仓库 GitHub Pages 目录镜像提供数据/)
+  assert.doesNotMatch(desktopText(tree), /DESKTOP_OPERATION_FAILED/)
 })
 
 test('Desktop does not label a mismatched website index as the complete directory', async () => {

@@ -1566,6 +1566,11 @@ window.__ModuleLoader__.load({
     }
 
     const DESKTOP_CATALOG_URL = 'https://raw.githubusercontent.com/AI-Scarlett/DSH-Store/main/registry/catalog.json'
+    const DESKTOP_CATALOG_PAGES_URL = 'https://ai-scarlett.github.io/DSH-Store/registry/catalog.json'
+    const DESKTOP_CATALOG_SOURCES = [
+      { id: 'github-raw', url: DESKTOP_CATALOG_URL },
+      { id: 'github-pages', url: DESKTOP_CATALOG_PAGES_URL },
+    ]
     const DESKTOP_CATALOG_MAX_BYTES = 4 * 1024 * 1024
     const DESKTOP_CATALOG_MAX_ENTRIES = 2_000
     const DESKTOP_CATALOG_TIMEOUT_MS = 12_000
@@ -1947,19 +1952,17 @@ window.__ModuleLoader__.load({
       })
     }
 
-    async function fetchDesktopCatalogDocument() {
-      const controller = new AbortController()
-      const timeout = window.setTimeout(() => controller.abort(), DESKTOP_CATALOG_TIMEOUT_MS)
+    async function fetchDesktopCatalogSource(source) {
+      let controller = null
+      let timeout = null
       try {
-        const response = await fetch(DESKTOP_CATALOG_URL, {
+        controller = new AbortController()
+        timeout = window.setTimeout(() => controller.abort(), DESKTOP_CATALOG_TIMEOUT_MS)
+        const response = await fetch(source.url, {
           cache: 'no-store', redirect: 'error', headers: { accept: 'application/json' }, signal: controller.signal,
         })
         if (!response.ok) throw desktopFailure('DESKTOP_CATALOG_HTTP_FAILED')
-        if (response.url) {
-          const finalUrl = new URL(response.url)
-          if (finalUrl.protocol !== 'https:' || finalUrl.hostname !== 'raw.githubusercontent.com'
-            || finalUrl.pathname !== '/AI-Scarlett/DSH-Store/main/registry/catalog.json') throw desktopFailure('DESKTOP_CATALOG_REDIRECT_REFUSED')
-        }
+        if (response.url && response.url !== source.url) throw desktopFailure('DESKTOP_CATALOG_REDIRECT_REFUSED')
         const lengthHeader = response.headers?.get?.('content-length')
         if (typeof lengthHeader === 'string' && /^\d+$/.test(lengthHeader)
           && Number(lengthHeader) > DESKTOP_CATALOG_MAX_BYTES) throw desktopFailure('DESKTOP_CATALOG_TOO_LARGE')
@@ -1970,7 +1973,12 @@ window.__ModuleLoader__.load({
         let raw = ''
         try {
           while (true) {
-            const chunk = await reader.read()
+            let chunk
+            try { chunk = await reader.read() } catch (error) {
+              if (controller.signal.aborted || error?.name === 'AbortError') throw desktopFailure('DESKTOP_CATALOG_TIMEOUT')
+              if (typeof error?.code === 'string') throw error
+              throw desktopFailure('DESKTOP_CATALOG_FETCH_FAILED')
+            }
             if (chunk.done) break
             if (!(chunk.value instanceof Uint8Array)) throw desktopFailure('DESKTOP_CATALOG_STREAM_INVALID')
             byteLength += chunk.value.byteLength
@@ -1978,25 +1986,39 @@ window.__ModuleLoader__.load({
               try { await reader.cancel() } catch {}
               throw desktopFailure('DESKTOP_CATALOG_TOO_LARGE')
             }
-            raw += decoder.decode(chunk.value, { stream: true })
+            try { raw += decoder.decode(chunk.value, { stream: true }) }
+            catch { throw desktopFailure('DESKTOP_CATALOG_ENCODING_INVALID') }
           }
-          raw += decoder.decode()
+          try { raw += decoder.decode() } catch { throw desktopFailure('DESKTOP_CATALOG_ENCODING_INVALID') }
         } catch (error) {
-          if (error?.code) throw error
-          if (controller.signal.aborted) throw desktopFailure('DESKTOP_CATALOG_TIMEOUT')
-          throw desktopFailure('DESKTOP_CATALOG_ENCODING_INVALID')
+          if (typeof error?.code === 'string') throw error
+          if (controller.signal.aborted || error?.name === 'AbortError') throw desktopFailure('DESKTOP_CATALOG_TIMEOUT')
+          throw desktopFailure('DESKTOP_CATALOG_FETCH_FAILED')
         } finally {
           reader.releaseLock?.()
         }
         if (byteLength === 0) throw desktopFailure('DESKTOP_CATALOG_EMPTY')
         try { return JSON.parse(raw) } catch { throw desktopFailure('DESKTOP_CATALOG_JSON_INVALID') }
       } catch (error) {
-        if (error?.code) throw error
-        if (controller.signal.aborted) throw desktopFailure('DESKTOP_CATALOG_TIMEOUT')
+        if (typeof error?.code === 'string' && /^[A-Za-z0-9][A-Za-z0-9._/-]{0,79}$/.test(error.code)) throw error
+        if (controller?.signal?.aborted || error?.name === 'AbortError') throw desktopFailure('DESKTOP_CATALOG_TIMEOUT')
         throw desktopFailure('DESKTOP_CATALOG_FETCH_FAILED')
       } finally {
-        window.clearTimeout(timeout)
+        if (timeout !== null) window.clearTimeout(timeout)
       }
+    }
+
+    async function fetchDesktopCatalogDocument() {
+      let lastError = null
+      for (const source of DESKTOP_CATALOG_SOURCES) {
+        try {
+          return { document: await fetchDesktopCatalogSource(source), deliverySource: source.id }
+        } catch (error) {
+          lastError = error
+          if (!['DESKTOP_CATALOG_TIMEOUT', 'DESKTOP_CATALOG_FETCH_FAILED', 'DESKTOP_CATALOG_HTTP_FAILED'].includes(error?.code)) throw error
+        }
+      }
+      throw lastError || desktopFailure('DESKTOP_CATALOG_FETCH_FAILED')
     }
 
     function desktopExactObjectKeys(value, expected) {
@@ -2624,7 +2646,8 @@ window.__ModuleLoader__.load({
     }
 
     async function readDesktopCatalogSnapshot() {
-      return validateDesktopCatalog(await fetchDesktopCatalogDocument())
+      const result = await fetchDesktopCatalogDocument()
+      return { ...validateDesktopCatalog(result.document), deliverySource: result.deliverySource }
     }
 
     async function readDesktopInventorySnapshot() {
@@ -2858,8 +2881,9 @@ window.__ModuleLoader__.load({
     }
 
     function desktopErrorCode(error) {
-      const value = error?.code || error?.problem || error?.error?.code || error?.message
-      return typeof value === 'string' && /^[A-Za-z0-9][A-Za-z0-9._/-]{0,79}$/.test(value) ? value : 'DESKTOP_OPERATION_FAILED'
+      const value = [error?.code, error?.problem, error?.error?.code, error?.message]
+        .find(candidate => typeof candidate === 'string' && /^[A-Za-z0-9][A-Za-z0-9._/-]{0,79}$/.test(candidate))
+      return value || 'DESKTOP_OPERATION_FAILED'
     }
 
     function DesktopStorePanel() {
@@ -3966,6 +3990,8 @@ window.__ModuleLoader__.load({
                 React.createElement('span', { style: styles.marketStatLabel }, label)))) : null),
         React.createElement('div', { style: styles.marketNotice, role: 'status' },
           '商城分开提供完整目录、Catalog 审核记录、官网推荐榜和必装榜。收录、审核、推荐和榜单位置是不同信息；完整目录中的 DSH 插件来源可在确认后交给 DSH Desktop 检查，候选与未上架状态仅作建议，最终安装结果只按 DSH 官方管理器返回判断。生态应用、官方受保护组件和格式无效的仓库不提供插件安装动作。',
+          loadState.status === 'ready' && loadState.catalog.deliverySource === 'github-pages'
+            ? React.createElement('div', { style: styles.muted }, 'GitHub Raw 暂不可用，当前由同仓库 GitHub Pages 目录镜像提供数据。') : null,
           loadState.status === 'ready' && !loadState.runtimeVersion
             ? React.createElement('div', { style: styles.muted }, '商城无法读取用于显示的 DSH 版本；安装仍会交由 Desktop 官方插件管理器按当前运行环境校验。') : null,
           inventoryState.status === 'error'
