@@ -6,7 +6,7 @@
   <meta name="robots" content="noindex,nofollow">
   <title>DSH STORE · 管理后台</title>
   <link rel="icon" type="image/png" sizes="1254x1254" href="../dsh-store-icon.png">
-  <link rel="stylesheet" href="./admin.css?v=20261105-ranking-curation">
+  <link rel="stylesheet" href="./admin.css?v=20261106-ranking-picker">
 </head>
 <body>
   <header class="admin-header">
@@ -151,7 +151,7 @@
       <div class="admin-card-header">
         <div>
           <h2 id="ranking-curation-title"><span>🏆</span> 推荐榜与必装榜管理</h2>
-          <p class="ranking-curation-intro">设置自动规则或手动选择、排序榜单条目。手动设置保存在服务器独立文件中，不会改变 Catalog 收录状态、兼容性或安装资格。</p>
+          <p class="ranking-curation-intro">手动模式可按包名、目录 ID、插件名称或 GitHub 仓库搜索完整快照，添加、删除并排序。只有保存后才生效；不会改变 Catalog 收录状态、兼容性或安装资格。</p>
         </div>
         <span id="ranking-curation-revision" class="key-status">读取中</span>
       </div>
@@ -171,7 +171,19 @@
             </label>
           </div>
           <p class="ranking-board-status" id="recommended-board-status" aria-live="polite"></p>
-          <ol class="ranking-curation-list" id="recommended-board-list"></ol>
+          <div class="ranking-board-picker">
+            <section class="ranking-board-selected" aria-labelledby="recommended-selected-title">
+              <h4 id="recommended-selected-title">当前榜单顺序</h4>
+              <ol class="ranking-curation-list" id="recommended-board-list"></ol>
+            </section>
+            <section class="ranking-board-add" aria-labelledby="recommended-add-title">
+              <h4 id="recommended-add-title">搜索并添加插件</h4>
+              <label class="ranking-search-label" for="recommended-board-search">按包名、目录 ID、名称或 GitHub 仓库搜索</label>
+              <input class="form-input ranking-search-input" id="recommended-board-search" type="search" maxlength="200" autocomplete="off" placeholder="例如：@scope/package、插件名或 org/repo">
+              <p class="ranking-search-status" id="recommended-search-status" aria-live="polite"></p>
+              <ul class="ranking-picker-results" id="recommended-search-results"></ul>
+            </section>
+          </div>
         </section>
         <section class="ranking-board" data-ranking-board="essential" aria-labelledby="essential-board-title">
           <div class="ranking-board-heading">
@@ -187,7 +199,19 @@
             </label>
           </div>
           <p class="ranking-board-status" id="essential-board-status" aria-live="polite"></p>
-          <ol class="ranking-curation-list" id="essential-board-list"></ol>
+          <div class="ranking-board-picker">
+            <section class="ranking-board-selected" aria-labelledby="essential-selected-title">
+              <h4 id="essential-selected-title">当前榜单顺序</h4>
+              <ol class="ranking-curation-list" id="essential-board-list"></ol>
+            </section>
+            <section class="ranking-board-add" aria-labelledby="essential-add-title">
+              <h4 id="essential-add-title">搜索并添加插件</h4>
+              <label class="ranking-search-label" for="essential-board-search">按包名、目录 ID、名称或 GitHub 仓库搜索</label>
+              <input class="form-input ranking-search-input" id="essential-board-search" type="search" maxlength="200" autocomplete="off" placeholder="例如：@scope/package、插件名或 org/repo">
+              <p class="ranking-search-status" id="essential-search-status" aria-live="polite"></p>
+              <ul class="ranking-picker-results" id="essential-search-results"></ul>
+            </section>
+          </div>
         </section>
       </div>
       <div class="card-actions ranking-curation-actions">
@@ -336,6 +360,6 @@
     </div>
   </main>
 
-  <script src="./admin.js?v=20261105-ranking-curation"></script>
+  <script src="./admin.js?v=20261106-ranking-picker"></script>
 </body>
 </html>

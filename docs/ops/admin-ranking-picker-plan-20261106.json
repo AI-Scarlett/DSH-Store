@@ -1,0 +1,92 @@
+{
+  "schemaVersion": 1,
+  "planId": "admin-ranking-picker-20261106",
+  "operation": "make-manual-ranking-curation-identifiable-searchable-and-addable",
+  "status": "verified-ready-for-exact-head-ci",
+  "repository": "AI-Scarlett/DSH-Store",
+  "baseCommit": "9481295c997f5e4fc05662a978c52ee7b27c69c8",
+  "authorization": {
+    "source": "direct-user-request",
+    "request": "The user reports the admin ranking manager shows only plugin names, omits package identity, and cannot add plugins; improve identification and make manual curation convenient.",
+    "publicationAuthorization": "The user previously authorized putting the DSH Store website and GitHub changes live. Publish this scoped follow-up through an exact-head CI-checked PR and the existing Pages and backend release paths."
+  },
+  "objective": "Show package name, catalog ID, repository, and useful description in ranking management; let an admin search the complete bounded ranking snapshot and explicitly add eligible entries to either managed board, while keeping official DSH slots protected and blocked/rejected entries unavailable.",
+  "fileScope": {
+    "modify": [
+      "deploy/setup-model-service.sh",
+      "marketplace/admin/admin.css",
+      "marketplace/admin/admin.js",
+      "marketplace/admin/index.html",
+      "marketplace/rankings/model.js",
+      "scripts/serve-marketplace.mjs"
+    ],
+    "add": [
+      "docs/ops/admin-ranking-picker-plan-20261106.json"
+    ]
+  },
+  "preconditions": {
+    "sha256AtBaseCommit": {
+      "marketplace/admin/index.html": "4a07165bb61c20e1880b625f35f9a10e9f6e019a70eda545a2eed8b5dd2213f1",
+      "marketplace/admin/admin.js": "f5925787a5f0405806490f6e136b5f15060180b403777aa4e7fd98b0b2a57a51",
+      "marketplace/admin/admin.css": "30c67583606c40bf1b058e153d5b9f955d27e996889115ddab4c047745f5cbd6",
+      "marketplace/rankings/model.js": "7cfd463263ef8c2ac2f9ffd261fd04d24c1c9dbf0d1768d47b985ccfcd185921",
+      "scripts/serve-marketplace.mjs": "9d54263b76fa4b4791a6948229e719acddc93dd98f9a1ce9a0fdf3e668372084",
+      "deploy/setup-model-service.sh": "bcf054e11c7f8dd4cb3af4b12a33ed216a97fb207e289d148882ccdbc2c32f89"
+    },
+    "absentAtBaseCommit": [
+      "docs/ops/admin-ranking-picker-plan-20261106.json"
+    ]
+  },
+  "postconditions": {
+    "sha256": {
+      "marketplace/admin/admin.css": "3cbef38b8710d670f96b29320b4759bf032fa90fdc10886780972738a44c9930",
+      "marketplace/admin/admin.js": "c9fef6ec775a491621372747e5d4607def3c98e5e6bb668ebf8786c1fde6cf08",
+      "marketplace/admin/index.html": "2fb31d44011a46d7819f2af1488a47d6b2cb7d391896e94b3f9063d8eff22610",
+      "marketplace/rankings/model.js": "baef066bd95e340ebec1fa8a2efb3122efe93f468c8543a2e5557f9edbfa1fc4",
+      "scripts/serve-marketplace.mjs": "dd46f6f744612b6578985d8ca102386e35dc368a24cedafec1700c382990f0a1",
+      "deploy/setup-model-service.sh": "76c34913db33cd5444520228ca608f9bd5214ef46fe7ecb4b0dfb8a5fe498b17"
+    }
+  },
+  "design": {
+    "identity": "Add packageName to each Catalog-backed ranking snapshot entry, preserve the separate catalog ID, and return both with repository URL and short description in authenticated admin choices. Older snapshots without packageName remain readable and display a clear fallback.",
+    "candidatePool": "Manual choices come from the complete current verified snapshot, not only entries already selected by the automatic ranking algorithm. Exclude blocked and rejected records. Keep community candidates visibly marked as not listed and do not add install or Catalog state.",
+    "manualControls": "In manual mode, show the ordered selected list with package identity and repository links. Provide a per-board search by package name, catalog ID, Chinese/English name, or GitHub repository; each result has an explicit Add action. Keep auto mode read-only and keep all changes pending until the existing Save action.",
+    "limits": "Keep the existing 30-entry board limit, minimum entries required by protected official positions, revision compare-and-swap, and the existing owner-only curation file format.",
+    "protectedSignals": "Official DSH tools retain their current fixed top-ten positions and cannot be searched into ordinary slots, removed, or reordered. Blocked and rejected entries are never selectable. Ranking edits do not change Catalog admission, compatibility, security review, or installability."
+  },
+  "deterministicGates": [
+    "The UI shows package name, catalog ID, GitHub repository, description, and listing/review state for each selectable entry.",
+    "Manually curated public rows are labeled as admin-curated and do not claim automatic star or category-ranking evidence.",
+    "Search covers package name, ID, Chinese and English names, and repository URL; explicit Add actions update only the selected board and cap at 30 entries.",
+    "Switching Auto to Manual starts from that board's current automatic entries, not the entire candidate inventory.",
+    "Manual ordering and removal keep official DSH positions pinned and enforce the backend minimum-entry rule before save.",
+    "The API candidate pool includes entries outside current automatic results but excludes blocked/rejected records; packageName is optional for old snapshots and validated when present.",
+    "The serialized curation schema and public GET /api/rankings/curation response stay unchanged and reveal no admin choices beyond the existing public board overlay.",
+    "Use only static source checks locally; require the exact-head GitHub CI checks before merge. No test executes third-party plugin code or writes to ~/.dsh or a real Profile.",
+    "After merge, read back Pages, dsh.store and dsh-store.cn, verify admin assets and protected API behavior, then deploy the merged backend modules to both registered servers with strict SSH host-key checks, captured hashes, atomic release switch, health check, and rollback.",
+    "The standalone server setup bundle contains byte-identical scripts/serve-marketplace.mjs and marketplace/rankings/model.js files, so the server deployment path runs the same ranking API and eligibility rules as the repository source."
+  ],
+  "externalEffects": {
+    "auditablePullRequest": true,
+    "githubPagesDeployment": true,
+    "internationalStorefrontRefresh": true,
+    "domesticStorefrontRefresh": true,
+    "backendDeployment": true,
+    "catalogMutation": false,
+    "modelConfigurationOrCredentialMutation": false,
+    "rankingStateInitialization": false,
+    "dshProfileMutation": false,
+    "pluginInstallation": false
+  },
+  "rollback": "Revert the exact source change through a new CI-checked PR, refresh both storefronts through their existing release path, and restore each backend current symlink to its captured prior release if health checks fail. Do not alter Catalog, model settings, API keys, or saved ranking state.",
+  "verification": {
+    "localStatus": "passed",
+    "npmRunCheck": "passed: registry validation and 616 tests; 0 failures",
+    "deploymentBundle": "passed: embedded scripts/serve-marketplace.mjs and marketplace/rankings/model.js byte-match repository source",
+    "gitDiffCheck": "passed",
+    "exactHeadCi": "pending pull request",
+    "publicReadback": "pending merge and deployment",
+    "backendHealthCheck": "pending merge and deployment",
+    "baseCommit": "9481295c997f5e4fc05662a978c52ee7b27c69c8"
+  }
+}

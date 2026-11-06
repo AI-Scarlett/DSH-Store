@@ -120,7 +120,8 @@ export function createRankingSnapshot(catalog, index, { sourceCommit, candidates
     repositories.add(entry.repositoryUrl.toLowerCase())
     const listingStatus = entry.status === 'approved' && /^[a-f0-9]{40}$/.test(entry.commit || '') ? 'listed' : 'not-listed'
     return {
-      id: entry.id, nameZh: light.nameZh || entry.name, nameEn: light.nameEn || entry.name,
+      id: entry.id, packageName: entry.packageName || null,
+      nameZh: light.nameZh || entry.name, nameEn: light.nameEn || entry.name,
       version: entry.version, repositoryUrl: entry.repositoryUrl, description: Array.from(entry.description || '').slice(0, MAX_RANKING_DESCRIPTION_CHARS).join(''),
       categories: [...new Set((entry.categories || []).filter(id => knownCategories.has(id)))],
       listingStatus, listingReason: getListingReason(entry, 'catalog', listingStatus),
@@ -141,7 +142,7 @@ export function createRankingSnapshot(catalog, index, { sourceCommit, candidates
     if (repositories.has(key)) continue
     repositories.add(key)
     entries.push({
-      id: `candidate:${entry.id}`, nameZh: entry.name, nameEn: entry.name, version: '',
+      id: `candidate:${entry.id}`, packageName: null, nameZh: entry.name, nameEn: entry.name, version: '',
       repositoryUrl: entry.repositoryUrl, description: Array.from(entry.description || '').slice(0, MAX_RANKING_DESCRIPTION_CHARS).join(''),
       // Only explicit category IDs are usable evidence. Do not guess from descriptions.
       categories: [...new Set((entry.topics || []).filter(id => knownCategories.has(id)))],
@@ -163,6 +164,7 @@ export function createRankingSnapshot(catalog, index, { sourceCommit, candidates
       if (existing && !existing.communityRecommendation) entries.splice(entries.indexOf(existing), 1)
       entries.push({
         ...(existing || {}), id: record.id, nameZh: record.name, nameEn: record.name,
+        packageName: null,
         repositoryUrl: record.repositoryUrl, version: '', description: '作者互动推荐 · Author interaction',
         categories: record.categories.filter(id => knownCategories.has(id)), listingStatus: 'not-listed',
         listingReason: candidate ? getListingReason(candidate, 'candidate', 'not-listed') : '尚未通过固定 Commit 收录审核；作者互动推荐不授予安装资格。',
@@ -213,6 +215,8 @@ export function validateRankingSnapshot(data) {
       || !Number.isFinite(Date.parse(entry.communityRecommendation.occurredAt)))) throw new Error('Invalid community recommendation')
     if (!entry || typeof entry.id !== 'string' || !entry.id || ids.has(entry.id) || !validRepository(entry.repositoryUrl)
       || !['nameZh', 'nameEn', 'description', 'version'].every(key => typeof entry[key] === 'string')
+      || (entry.packageName !== undefined && entry.packageName !== null
+        && (typeof entry.packageName !== 'string' || entry.packageName.length > 214 || /[\u0000-\u001f\u007f]/.test(entry.packageName)))
       // Older public snapshots may still carry these fields; new snapshots omit
       // them because ranking never uses Catalog presentation order or legacy picks.
       || (entry.featured !== undefined && typeof entry.featured !== 'boolean')
@@ -353,15 +357,19 @@ export function rankingEntries(data, type) {
 export function rankingCurationChoices(data, type) {
   if (!['recommended', 'essential'].includes(type)) throw new Error('Ranking curation is limited to managed boards')
   const automatic = rankingEntries(data, type)
-  const eligible = automatic.filter(entry => !['blocked', 'rejected'].includes(entry.reviewStatus))
-  const officialSlots = eligible.flatMap((entry, index) => entry.officialToolPick ? [{ id: entry.id, index }] : [])
+  const automaticById = new Map(automatic.map((entry, index) => [entry.id, { entry, index }]))
+  const officialSlots = automatic.flatMap((entry, index) => entry.officialToolPick ? [{ id: entry.id, index }] : [])
   const lockedIds = new Set(officialSlots.map(slot => slot.id))
+  const eligible = data.entries
+    .filter(entry => !['blocked', 'rejected'].includes(entry.reviewStatus))
+    .map(entry => ({ ...entry, stars: Number.isSafeInteger(entry.weeklyStars) ? entry.weeklyStars : null,
+      officialToolPick: lockedIds.has(entry.id) }))
   const selectable = eligible.filter(entry => !lockedIds.has(entry.id))
   const minimumManualEntries = officialSlots.reduce((minimum, slot) => {
     const officialAtOrBefore = officialSlots.filter(candidate => candidate.index <= slot.index).length
     return Math.max(minimum, slot.index + 1 - officialAtOrBefore)
   }, 0)
-  return { automatic, eligible, selectable, officialSlots, minimumManualEntries }
+  return { automatic, automaticById, eligible, selectable, officialSlots, minimumManualEntries }
 }
 
 export function curatedRankingEntries(data, type, curation = null) {
@@ -385,7 +393,8 @@ export function curatedRankingEntries(data, type, curation = null) {
   for (let index = 0; index < output.length; index++) {
     if (!output[index]) output[index] = byId.get(board.ids[next++])
   }
-  return output.every(Boolean) ? output : automatic
+  if (!output.every(Boolean)) return automatic
+  return output.map(entry => entry.officialToolPick ? entry : { ...entry, manualCuration: true })
 }
 
 export function rankingPage(data, type, requestedPage = 1, curation = null) {
@@ -404,12 +413,16 @@ export function renderRankingRows(entries, { type = 'popular', locale = 'zh', of
     const sourceName = entry.repositoryUrl.replace('https://github.com/', '')
     const officialToolNote = entry.officialToolPick
       ? `<span class="ranking-pick">${en ? 'Official DSH tool · randomized weekly top-10 placement; not a star rank or Store review' : 'DSH 官方工具展示位 · 周榜随机置入前十，非星标排名或商城评测'}</span>` : ''
-    const reason = type === 'essential' ? `<div class="ranking-wins">${officialToolNote}${entry.categoryPick
+    const reason = type === 'essential' ? `<div class="ranking-wins">${officialToolNote}${entry.manualCuration
+      ? `<span>${en ? 'Manually arranged by the Store admin · not an automatic category rank' : '商城管理员手动编排 · 非自动分类排名'}</span>`
+      : entry.categoryPick
       ? `<span>${en
         ? `${escapeHtml(entry.categoryPick.en)} · Category supplement · observed among known stars #${entry.categoryPick.observedRank}${entry.categoryPick.unknownStars ? ` · ${entry.categoryPick.unknownStars} star counts unknown; category leader unconfirmed` : ''}`
         : `${escapeHtml(entry.categoryPick.zh)} · 分类高星补位 · 当前可核对星标第 ${entry.categoryPick.observedRank} 位${entry.categoryPick.unknownStars ? ` · ${entry.categoryPick.unknownStars} 个插件星标数未知，分类第一未确认` : ''}`}</span>`
       : entry.wins.map(win => `<span>${escapeHtml(en ? win.en : win.zh)}${win.tied ? (en ? ' · tied lead' : ' · 并列最高') : (en ? ' · #1' : ' · 星标第一')}</span>`).join('')}</div>`
-      : type === 'recommended' ? (entry.officialToolPick ? officialToolNote : entry.communityRecommendation
+      : type === 'recommended' ? (entry.officialToolPick ? officialToolNote : entry.manualCuration
+        ? `<span class="ranking-pick">${en ? 'Manually recommended by the Store admin' : '商城管理员手动推荐'}</span>`
+        : entry.communityRecommendation
         ? `<a class="ranking-pick" href="${escapeHtml(entry.communityRecommendation.evidenceUrl)}" target="_blank" rel="noopener noreferrer">${en ? 'Author interaction · View public discussion' : '作者互动推荐 · 查看公开交流'}</a>`
         : `<span class="ranking-pick">${entry.recommendationKind === 'community-stars' && validStars(entry.stars) && entry.stars > 0 && !['rejected', 'blocked'].includes(entry.reviewStatus)
         ? (en ? `Basis: ${entry.stars.toLocaleString('en-US')} GitHub stars · selected by star count, not a Store review` : `入榜依据：GitHub ${entry.stars.toLocaleString('zh-CN')} 星 · 按星标排序，非商城评测推荐`)

@@ -278,6 +278,191 @@
     }
   }
 
+  function createRankingEntryDetails(entry) {
+    const copy = document.createElement('div');
+    copy.className = 'ranking-entry-copy';
+
+    const name = document.createElement('strong');
+    name.className = 'ranking-entry-name';
+    name.textContent = entry.nameZh || entry.nameEn || entry.id;
+    copy.appendChild(name);
+
+    if (entry.nameEn && entry.nameEn !== entry.nameZh) {
+      const englishName = document.createElement('small');
+      englishName.className = 'ranking-entry-secondary-name';
+      englishName.textContent = entry.nameEn;
+      copy.appendChild(englishName);
+    }
+
+    const packageName = document.createElement('code');
+    packageName.className = 'ranking-entry-package';
+    packageName.textContent = entry.packageName ? `包名：${entry.packageName}` : '包名：目录未提供';
+    copy.appendChild(packageName);
+
+    const catalogId = document.createElement('small');
+    catalogId.className = 'ranking-entry-id';
+    catalogId.textContent = `目录 ID：${entry.id}`;
+    copy.appendChild(catalogId);
+
+    if (entry.repositoryUrl) {
+      let repositoryUrl;
+      try { repositoryUrl = new URL(entry.repositoryUrl); } catch {}
+      if (repositoryUrl?.protocol === 'https:' && repositoryUrl.hostname === 'github.com') {
+        const repository = document.createElement('a');
+        repository.className = 'ranking-entry-repository';
+        repository.href = repositoryUrl.href;
+        repository.target = '_blank';
+        repository.rel = 'noopener noreferrer';
+        repository.textContent = `GitHub：${repositoryUrl.pathname.replace(/^\//, '')}`;
+        copy.appendChild(repository);
+      }
+    }
+
+    if (entry.description) {
+      const description = document.createElement('small');
+      description.className = 'ranking-entry-description';
+      description.textContent = entry.description;
+      copy.appendChild(description);
+    }
+
+    const state = document.createElement('small');
+    state.className = 'ranking-entry-state';
+    const listing = entry.listingStatus === 'listed' ? '已收录' : '未收录';
+    const source = entry.source === 'candidate' ? '发现候选' : 'Catalog 插件';
+    const stars = Number.isSafeInteger(entry.stars) ? ` · GitHub ${entry.stars.toLocaleString()} 星` : '';
+    state.textContent = `${listing} · ${source} · ${entry.reviewStatus || '状态未知'}${stars}`;
+    copy.appendChild(state);
+    return copy;
+  }
+
+  function createRankingEntryRow(type, entry, options = {}) {
+    const board = currentRankingCuration.boards[type];
+    const row = document.createElement('li');
+    row.className = 'ranking-curation-entry' + (options.selected ? ' is-selected' : '')
+      + (options.official ? ' is-official' : '');
+
+    const position = document.createElement('span');
+    position.className = 'ranking-entry-position';
+    position.textContent = options.rank ? String(options.rank).padStart(2, '0') : '＋';
+    row.append(position, createRankingEntryDetails(entry));
+
+    const controls = document.createElement('div');
+    controls.className = 'ranking-curation-entry-controls';
+    if (options.official) {
+      const badge = document.createElement('span');
+      badge.className = 'ranking-fixed-badge';
+      badge.textContent = '官方固定位';
+      controls.appendChild(badge);
+    } else if (options.searchResult) {
+      const selected = board.ids.includes(entry.id);
+      const add = document.createElement('button');
+      add.type = 'button';
+      add.className = selected ? 'btn btn-secondary btn-sm' : 'btn btn-primary btn-sm ranking-add-button';
+      add.textContent = selected ? '已加入' : board.ids.length >= 30 ? '已达上限' : '加入榜单';
+      add.disabled = board.mode !== 'manual' || selected || board.ids.length >= 30;
+      add.addEventListener('click', () => {
+        if (board.mode !== 'manual' || board.ids.includes(entry.id) || board.ids.length >= 30) return;
+        board.ids.push(entry.id);
+        renderRankingCurationBoard(type);
+      });
+      controls.appendChild(add);
+    } else if (board.mode === 'manual') {
+      const index = options.boardIndex;
+      for (const [direction, delta, label] of [['up', -1, '上移'], ['down', 1, '下移']]) {
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'btn btn-secondary btn-sm ranking-move-button';
+        button.textContent = direction === 'up' ? '↑' : '↓';
+        button.setAttribute('aria-label', `${label} ${entry.nameZh || entry.id}`);
+        button.disabled = index + delta < 0 || index + delta >= board.ids.length;
+        button.addEventListener('click', () => {
+          const next = index + delta;
+          [board.ids[index], board.ids[next]] = [board.ids[next], board.ids[index]];
+          renderRankingCurationBoard(type);
+        });
+        controls.appendChild(button);
+      }
+
+      const remove = document.createElement('button');
+      remove.type = 'button';
+      remove.className = 'btn btn-secondary btn-sm ranking-remove-button';
+      remove.textContent = '移除';
+      remove.disabled = board.ids.length <= currentRankingCuration.choices[type].minimumManualEntries;
+      remove.setAttribute('aria-label', `从榜单移除 ${entry.nameZh || entry.id}`);
+      remove.addEventListener('click', () => {
+        board.ids = board.ids.filter(id => id !== entry.id);
+        renderRankingCurationBoard(type);
+      });
+      controls.appendChild(remove);
+    }
+    row.appendChild(controls);
+    return row;
+  }
+
+  function getRankingBoardRows(type) {
+    const board = currentRankingCuration.boards[type];
+    const choices = currentRankingCuration.choices[type];
+    const byId = new Map(choices.entries.map(entry => [entry.id, entry]));
+    if (board.mode === 'auto') {
+      return choices.automaticIds.map((id, index) => ({
+        entry: byId.get(id), rank: index + 1, official: choices.officialSlots.some(slot => slot.id === id),
+      })).filter(row => row.entry);
+    }
+
+    const officialByIndex = new Map(choices.officialSlots.map(slot => [slot.index, byId.get(slot.id)]));
+    const highestOfficialIndex = Math.max(-1, ...officialByIndex.keys());
+    const outputLength = Math.max(board.ids.length + officialByIndex.size, highestOfficialIndex + 1);
+    const rows = [];
+    let boardIndex = 0;
+    for (let index = 0; index < outputLength; index++) {
+      if (officialByIndex.has(index)) {
+        const entry = officialByIndex.get(index);
+        if (entry) rows.push({ entry, rank: index + 1, official: true });
+        continue;
+      }
+      const id = board.ids[boardIndex];
+      const entry = byId.get(id);
+      if (entry) rows.push({ entry, rank: index + 1, official: false, boardIndex });
+      boardIndex++;
+    }
+    return rows;
+  }
+
+  function renderRankingSearchResults(type) {
+    const choices = currentRankingCuration.choices[type];
+    const board = currentRankingCuration.boards[type];
+    const input = $(type + '-board-search');
+    const status = $(type + '-search-status');
+    const results = $(type + '-search-results');
+    if (!choices || !board || !input || !status || !results) return;
+    input.disabled = board.mode !== 'manual';
+    results.replaceChildren();
+    if (board.mode !== 'manual') {
+      status.textContent = '切换为“手动管理”后，可以搜索并添加插件。';
+      return;
+    }
+
+    const query = input.value.trim().toLocaleLowerCase();
+    const entries = choices.entries.filter(entry => !entry.officialToolPick);
+    if (!query) {
+      status.textContent = `可搜索 ${entries.length} 个合格条目。输入包名、目录 ID、名称或 GitHub 仓库开始查找。`;
+      return;
+    }
+
+    const matches = entries.filter(entry => [entry.packageName, entry.id, entry.nameZh, entry.nameEn,
+      entry.repositoryUrl, entry.description].some(value => String(value || '').toLocaleLowerCase().includes(query)));
+    const exactMatch = entry => [entry.packageName, entry.id, entry.repositoryUrl, entry.nameZh, entry.nameEn]
+      .some(value => String(value || '').toLocaleLowerCase() === query);
+    matches.sort((a, b) => Number(exactMatch(b)) - Number(exactMatch(a))
+      || (a.packageName || a.id).localeCompare(b.packageName || b.id));
+    status.textContent = matches.length
+      ? `找到 ${matches.length} 个条目${matches.length > 30 ? '，先显示前 30 个' : ''}。点击“加入榜单”后再保存生效。`
+      : '没有找到匹配插件。可尝试包名、目录 ID 或 GitHub 仓库名。';
+    matches.slice(0, 30).forEach(entry => {
+      results.appendChild(createRankingEntryRow(type, entry, { searchResult: true }));
+    });
+  }
+
   function renderRankingCurationBoard(type) {
     if (!currentRankingCuration) return;
     const board = currentRankingCuration.boards[type];
@@ -287,77 +472,30 @@
     const status = $(type + '-board-status');
     if (!board || !choices || !modeSelect || !container || !status) return;
     modeSelect.value = board.mode;
+    const selectableIds = new Set(choices.entries.filter(entry => !entry.officialToolPick).map(entry => entry.id));
+    board.ids = board.ids.filter(id => selectableIds.has(id));
     container.replaceChildren();
-    const available = choices.entries.filter(entry => !entry.officialToolPick);
-    const availableById = new Map(available.map(entry => [entry.id, entry]));
-    board.ids = board.ids.filter(id => availableById.has(id));
-    const selected = new Set(board.mode === 'auto' ? available.map(entry => entry.id) : board.ids);
-    const entries = [
-      ...board.ids.map(id => availableById.get(id)),
-      ...available.filter(entry => !selected.has(entry.id)),
-    ];
-    for (const entry of entries) {
-      const row = document.createElement('li');
-      row.className = 'ranking-curation-entry' + (selected.has(entry.id) ? ' is-selected' : '');
-
-      const label = document.createElement('label');
-      label.className = 'ranking-curation-entry-label';
-      const checkbox = document.createElement('input');
-      checkbox.type = 'checkbox';
-      checkbox.checked = selected.has(entry.id);
-      checkbox.disabled = board.mode !== 'manual';
-      checkbox.addEventListener('change', () => {
-        if (checkbox.checked) board.ids.push(entry.id);
-        else board.ids = board.ids.filter(id => id !== entry.id);
-        renderRankingCurationBoard(type);
-      });
-
-      const copy = document.createElement('span');
-      copy.className = 'ranking-curation-entry-copy';
-      const name = document.createElement('strong');
-      name.textContent = entry.nameZh || entry.id;
-      const detail = document.createElement('small');
-      detail.textContent = `${entry.listingStatus === 'listed' ? '已收录' : '未收录'} · ${entry.stars === null ? '星标未获取' : `GitHub ${entry.stars.toLocaleString()} 星`} · 自动榜第 ${entry.rank} 位`;
-      copy.append(name, detail);
-      label.append(checkbox, copy);
-      row.append(label);
-
-      const controls = document.createElement('div');
-      controls.className = 'ranking-curation-entry-controls';
-      if (selected.has(entry.id) && board.mode === 'manual') {
-        const index = board.ids.indexOf(entry.id);
-        for (const [direction, delta, text] of [['up', -1, '↑'], ['down', 1, '↓']]) {
-          const button = document.createElement('button');
-          button.type = 'button';
-          button.className = 'btn btn-secondary btn-sm ranking-move-button';
-          button.textContent = text;
-          button.setAttribute('aria-label', `${direction === 'up' ? '上移' : '下移'} ${entry.nameZh || entry.id}`);
-          button.disabled = index + delta < 0 || index + delta >= board.ids.length;
-          button.addEventListener('click', () => {
-            const next = index + delta;
-            [board.ids[index], board.ids[next]] = [board.ids[next], board.ids[index]];
-            renderRankingCurationBoard(type);
-          });
-          controls.appendChild(button);
-        }
-      }
-      row.appendChild(controls);
-      container.appendChild(row);
-    }
+    getRankingBoardRows(type).forEach(item => {
+      container.appendChild(createRankingEntryRow(type, item.entry, {
+        rank: item.rank, official: item.official, selected: board.mode === 'manual' && !item.official,
+        boardIndex: item.boardIndex,
+      }));
+    });
 
     const official = choices.officialSlots.map(slot => {
       const entry = choices.entries.find(item => item.id === slot.id);
       return `${entry?.nameZh || slot.id}（第 ${slot.index + 1} 位固定）`;
     });
     if (board.mode === 'auto') {
-      status.textContent = `自动规则 · 当前候选 ${choices.entries.length} 项${official.length ? ` · ${official.join('、')}` : ''}`;
+      status.textContent = `自动规则 · 当前展示 ${choices.automaticIds.length} 项 · 可手动搜索 ${selectableIds.size} 项${official.length ? ` · ${official.join('、')}` : ''}`;
     } else {
       const tooFew = board.ids.length < choices.minimumManualEntries;
-      status.textContent = `手动模式 · 已选 ${board.ids.length} 项 · 至少保留 ${choices.minimumManualEntries} 项以保持官方工具位${tooFew ? ' · 请继续勾选条目' : ''}${official.length ? ` · ${official.join('、')}` : ''}`;
+      status.textContent = `手动模式 · 已选 ${board.ids.length} 项 · 至少保留 ${choices.minimumManualEntries} 项${tooFew ? ' · 请继续添加' : ''}${official.length ? ` · ${official.join('、')}` : ''}`;
     }
+    renderRankingSearchResults(type);
     const invalid = ['recommended', 'essential'].some(boardType => {
       const current = currentRankingCuration.boards[boardType];
-      return current.mode === 'manual' && current.ids.length < currentRankingCuration.choices[boardType].minimumManualEntries;
+      return current.mode === 'manual' && (current.ids.length < currentRankingCuration.choices[boardType].minimumManualEntries || current.ids.length > 30);
     });
     $('ranking-curation-save-btn').disabled = invalid;
   }
@@ -666,11 +804,15 @@
         board.ids = [];
       } else if (board.mode !== 'manual') {
         board.mode = 'manual';
-        board.ids = currentRankingCuration.choices[type].entries
-          .filter(entry => !entry.officialToolPick).map(entry => entry.id);
+        const choices = currentRankingCuration.choices[type];
+        const officialIds = new Set(choices.officialSlots.map(slot => slot.id));
+        board.ids = choices.automaticIds.filter(id => !officialIds.has(id));
       }
       renderRankingCurationBoard(type);
     });
+  });
+  ['recommended', 'essential'].forEach(type => {
+    $(type + '-board-search').addEventListener('input', () => renderRankingSearchResults(type));
   });
   $('ranking-curation-save-btn').addEventListener('click', saveRankingCuration);
   $('ranking-curation-reset-btn').addEventListener('click', () => {
