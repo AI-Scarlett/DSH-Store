@@ -3,7 +3,7 @@
   "registry": {
     "name": "DSH STORE Candidate Discovery Registry",
     "repositoryUrl": "https://github.com/AI-Scarlett/DSH-Store",
-    "updatedAt": "2026-11-06T01:56:53.000Z",
+    "updatedAt": "2026-11-06T05:31:34.000Z",
     "trustBoundary": {
       "installActionsDisabled": true,
       "catalogPromotionRequired": true,
@@ -18574,6 +18574,63 @@
       "status": "reviewing",
       "route": "direct-review",
       "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Installation held because the Catalog has no compatible result for any declared DSH release; the official latest 3 releases need rechecking (0.2.2-alpha.2, 0.2.2-alpha.3, 0.2.2-rc.1). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-prompt-injector."
+    },
+    {
+      "id": "star-cosmo-dsh-model-tidy",
+      "name": "star-Cosmo/dsh-model-tidy",
+      "description": "Discovered GitHub repository awaiting a compatible DSH Bundle.",
+      "repositoryUrl": "https://github.com/star-Cosmo/dsh-model-tidy",
+      "defaultBranch": "main",
+      "latestCommit": "f2858077a6e43253f7c641a813ab3ba37709c066",
+      "sourceUpdatedAt": "2026-10-26T17:07:06.000Z",
+      "discoveredAt": "2026-11-06T05:31:34.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@51d50de9c8243deba503e3e074d670666731c13c:data/plugins/star-Cosmo__dsh-model-tidy.yml:sha256=f951836b0850932946ae3ee48dc0d2fc6c2c0b92edda5276681f28b21bf7200e:at=2026-11-06T05:40:01.819Z:owner=308724067"
+      ],
+      "topics": [
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "stardustlc666-deepseek-computer-use",
+      "name": "STARDUSTLC666/deepseek-computer-use",
+      "description": "Discovered GitHub repository awaiting a compatible DSH Bundle.",
+      "repositoryUrl": "https://github.com/STARDUSTLC666/deepseek-computer-use",
+      "defaultBranch": "main",
+      "latestCommit": "4b421a0dc2a3f103cc6b5a209c4f4fa67799f5eb",
+      "sourceUpdatedAt": "2026-11-04T13:10:05.000Z",
+      "discoveredAt": "2026-11-06T05:31:34.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@51d50de9c8243deba503e3e074d670666731c13c:data/plugins/STARDUSTLC666__deepseek-computer-use.yml:sha256=db6808ce0c55f2776abbdb73f37753b0f181200b90d1b8f7a5206674e5664472:at=2026-11-06T05:40:01.819Z:owner=291677282"
+      ],
+      "topics": [
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "stardustlc666-dsh-code-security",
+      "name": "STARDUSTLC666/dsh-code-security",
+      "description": "Discovered GitHub repository awaiting a compatible DSH Bundle.",
+      "repositoryUrl": "https://github.com/STARDUSTLC666/dsh-code-security",
+      "defaultBranch": "master",
+      "latestCommit": "19e61de18c59b784042e9a0cd1d9125a322c9115",
+      "sourceUpdatedAt": "2026-11-04T13:10:02.000Z",
+      "discoveredAt": "2026-11-06T05:31:34.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@51d50de9c8243deba503e3e074d670666731c13c:data/plugins/STARDUSTLC666__dsh-code-security.yml:sha256=4da225ed9a2513c2976c1812c76551a97f0f983ae0ae6491e81411110d82cf21:at=2026-11-06T05:40:01.819Z:owner=291677282"
+      ],
+      "topics": [
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
     }
   ]
 }
