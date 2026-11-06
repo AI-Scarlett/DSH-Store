@@ -53,16 +53,16 @@ DSH 从此版本优先读取插件的 `engines.dsh`，缺少它时才检查所�
 ### 使用固定 GitHub Commit 安装
 
 优先使用上方的原生索引，或从[当前修复入口](https://dsh.store/repair/)核对受审的固定源码。
-Catalog 当前固定 DSH Store 0.9.41、Commit 88aadd4b096aac62fb7acf7631e84bcc7527cc4d。此版本将 Desktop 更新确认命令和输入框字号调至 10px，命令可换行并可点击全选复制，避免窄弹窗裁切；同时保留 0.9.40 的有界持久 Catalog 缓存、离线陈旧快照回退、split-v2 详情复用及筛选框优化。精确声明官方 DSH 0.2.2-rc.1 兼容，实际安装结果仍由 DSH 官方管理器决定。Catalog 仍只声明 `web` Profile；真实 Desktop 尚未载入 0.9.41，视觉验收仍待单独完成。
+Catalog 当前固定 DSH Store 0.9.42、Commit 8e51ce905767338a1e7606926ad09b749fc308db。此版本更正官方 Client Remote 依赖声明，并加入推荐榜后台手动管理；延续 0.9.41 的 Desktop 更新确认排版优化。官方 DSH 0.2.2-rc.1 的一次性 Web Profile 安装、启动/API 和卸载还原通过，回滚仍未验证。Catalog 只声明 `web` Profile；真实 Desktop UI 尚未验收。
 - 源码 `0.9.31` 修复推荐榜和必装榜切换时两个标签共用当前榜单数量的问题；榜单计数分别绑定各自榜单，商城主内容增加响应式左右留白并略微扩大卡片间距。
 - 源码 `0.9.32` 已由 PR [#1727](https://github.com/AI-Scarlett/DSH-Store/pull/1727) 合并，修复完整目录搜索误命中审核原因和其他内部说明的问题：两字及更短的查询只匹配插件标识、GitHub 仓库和搜索词；较长查询再匹配用途描述；结果按名称、包名、仓库和关键词相关度排序。该修复包含在本次固定到 Catalog 的 `0.9.35` 中。
 - 源码 `0.9.33` 已由 PR [#1728](https://github.com/AI-Scarlett/DSH-Store/pull/1728) 合并：响应式铺开商城导航，提供 DSH 官方组件与已安装插件只读视图；审核建议改为白话说明、技术原因可展开查看，最终安装结果仍以 DSH Desktop 官方管理器为准；必装榜补位项显示类别、可核对星标顺序和未知星标提示。源码 `0.9.34` 将官方插件与已安装插件收纳到“本机插件”下的两个子 Tab，并进一步拉开主导航间距。源码 `0.9.34` 已由 PR [#1729](https://github.com/AI-Scarlett/DSH-Store/pull/1729) 合并并于此前固定到 Catalog；源码 `0.9.35` 已由 PR [#1731](https://github.com/AI-Scarlett/DSH-Store/pull/1731) 合并，本次 Catalog 固定该版本。真实 Desktop 的新界面仍需加载后单独验收。
 - 源码 `0.9.35` 修正 `0.9.34` 导航在宽屏被等分拉伸、入口散开的布局；标签改为固定间距并按屏幕宽度换行。“本机插件”中的官方插件与已安装插件使用单独的二级 Tab。完整目录、推荐榜与必装榜恢复 DSH Desktop 适配声明筛选，明确区分“已声明适配”与“未声明”，未声明不表示不兼容。该版本已固定到 Catalog；真实 Desktop 中的筛选和导航仍需回归验收。
-源码 `0.9.28` 修复旧版商城无法提交自身更新的问题：只要 DSH 清单确认安装的是同一 Store 仓库且当前版本低于 Catalog 固定版本，更新入口就会把目标固定 Commit 直接交给 DSH `installBundle()`，不要求旧安装来源可解析为完整 Commit，也不调用 `removeBundle()`。DSH 明确拒绝时保留其错误；不确定结果只核对一次，不会重试。该修复包含在源码 `0.9.29` 中，并已通过独立 Catalog 发布；截至本次发布，Catalog 固定至 `0.9.41`。
-通过 DSH 官方 CLI 安装 Catalog 当前固定的 `0.9.41` Commit：
+源码 `0.9.28` 修复旧版商城无法提交自身更新的问题：只要 DSH 清单确认安装的是同一 Store 仓库且当前版本低于 Catalog 固定版本，更新入口就会把目标固定 Commit 直接交给 DSH `installBundle()`，不要求旧安装来源可解析为完整 Commit，也不调用 `removeBundle()`。DSH 明确拒绝时保留其错误；不确定结果只核对一次，不会重试。该修复包含在源码 `0.9.29` 中，并已通过独立 Catalog 发布；截至本次发布，Catalog 固定至 `0.9.42`。
+通过 DSH 官方 CLI 安装 Catalog 当前固定的 `0.9.42` Commit：
 
 ```bash
-dsh plugin --profile web add --ignore-scripts --config.auto-install-peers=false 'git+https://github.com/AI-Scarlett/DSH-Store.git#88aadd4b096aac62fb7acf7631e84bcc7527cc4d'
+dsh plugin --profile web add --ignore-scripts --config.auto-install-peers=false 'git+https://github.com/AI-Scarlett/DSH-Store.git#8e51ce905767338a1e7606926ad09b749fc308db'
 ```
 
 这条命令会修改目标 Profile 的依赖、锁文件、工作区文件、`node_modules` 和 Bundle 列表。
@@ -94,7 +94,7 @@ Profile。命令失败时请保留完整错误和安装前备份，不要连续�
 
 ### 官方 Desktop
 
-官方 Desktop 使用独立的 `desktop` Profile 与应用自身的插件管理器。源码 `0.9.27` 将 DSH Store 注册为 root `main` 面板，并在首页左侧 `sidebar.panellist` 添加“插件商城”入口；原设置分区继续保留。页面标题为 `插件商城（DSH-Store）`，保留内部包 ID `dsh-safe-plugin-manager`。商城以官网同源的完整目录展示公开发现索引、Catalog 主索引和候选记录，并通过官方 `pluginManager` Remote 读取 Desktop 已安装清单和当前 DSH 版本。源码 `0.9.29` 将目录数据与 DSH 安装清单独立加载；即使安装清单读取失败，完整目录仍可浏览和搜索，但状态依赖的安装管理动作会明确禁用。搜索预建全量索引；`0.9.32` 排除审核原因等内部说明，并优先显示名称、包名、仓库和关键词命中。搜索和筛选固定在单一可滚动面板顶部，避免嵌套滚动。源码 `0.9.30` 为公开 DSH 插件目录记录提供 GitHub 默认分支直装入口，覆盖未收录与候选记录；每次提交前展示来源并要求确认，Store 审核状态和 DSH `inspect` 只作提示，最终接受或拒绝由 `installBundle()` 返回决定。Catalog 审核条目仍保留固定 Commit 安装/更新流程。源码 `0.9.31` 将推荐榜与必装榜计数分别绑定各自列表，并为商城内容增加响应式左右留白。源码 `0.9.33` 将主视图 Tab 按可用宽度铺开，并把 Desktop 报告的官方组件和用户已安装插件分成只读视图；`0.9.34` 将两者收纳到“本机插件”下的子 Tab。`0.9.35` 修正宽屏导航标签被拉开、换行混乱的问题，并在完整目录与两类榜单中恢复 Desktop 适配声明筛选。商城审核提示提供通俗解释和可展开的技术原文，未知星标数会明确标出，不会拦截已确认的 DSH 安装请求。普通第三方 GitHub 插件更新时，用户逐次确认后由 DSH 官方管理器执行 `removeBundle()`，再提交新的固定 Commit 给 `installBundle()`；若 DSH 返回 `stop-profile`，按官方更新流程继续提交安装。源码 `0.9.28` 修复商城自身更新门禁：仅限精确的 Store 包名和规范仓库，按已安装版本判断是否存在更高 Catalog 版本；旧来源没有完整 Commit 时仍将目标固定 Commit 交给 DSH `installBundle()`，不调用 `removeBundle()`，并以 DSH 返回和一次安装清单回读判断结果。普通第三方更新的旧 Commit 校验、移除、恢复及不重试规则保持不变。Web 管理操作继续执行原准入策略。Catalog 当前固定 `0.9.41` / `88aadd4b096aac62fb7acf7631e84bcc7527cc4d`；新增命令字号、换行和全选复制优化，真实 Desktop 尚未载入 `0.9.41`，新缓存、搜索筛选与视觉调整仍待单独验收。源码 `0.9.36` 将统一左侧“插件商城”标签与 DSH Desktop 插件列表中的品牌图标；Catalog 更新后仍需在真实 Desktop 安装并确认显示。源码 `0.9.37` 优化 Desktop 插件商城与安装确认弹窗界面视觉协调度；源码 `0.9.38` 进一步修复多维筛选下拉框（分类、Desktop 适配、审核状态）文字被下半部裁剪截断的问题，规范 `styles.select` 的垂直内边距与基线高度，消除文字露出一半的缺陷，保持与 DSH 官方安装器及 Desktop Profile 校验语义完全一致。
+官方 Desktop 使用独立的 `desktop` Profile 与应用自身的插件管理器。源码 `0.9.27` 将 DSH Store 注册为 root `main` 面板，并在首页左侧 `sidebar.panellist` 添加“插件商城”入口；原设置分区继续保留。页面标题为 `插件商城（DSH-Store）`，保留内部包 ID `dsh-safe-plugin-manager`。商城以官网同源的完整目录展示公开发现索引、Catalog 主索引和候选记录，并通过官方 `pluginManager` Remote 读取 Desktop 已安装清单和当前 DSH 版本。源码 `0.9.29` 将目录数据与 DSH 安装清单独立加载；即使安装清单读取失败，完整目录仍可浏览和搜索，但状态依赖的安装管理动作会明确禁用。搜索预建全量索引；`0.9.32` 排除审核原因等内部说明，并优先显示名称、包名、仓库和关键词命中。搜索和筛选固定在单一可滚动面板顶部，避免嵌套滚动。源码 `0.9.30` 为公开 DSH 插件目录记录提供 GitHub 默认分支直装入口，覆盖未收录与候选记录；每次提交前展示来源并要求确认，Store 审核状态和 DSH `inspect` 只作提示，最终接受或拒绝由 `installBundle()` 返回决定。Catalog 审核条目仍保留固定 Commit 安装/更新流程。源码 `0.9.31` 将推荐榜与必装榜计数分别绑定各自列表，并为商城内容增加响应式左右留白。源码 `0.9.33` 将主视图 Tab 按可用宽度铺开，并把 Desktop 报告的官方组件和用户已安装插件分成只读视图；`0.9.34` 将两者收纳到“本机插件”下的子 Tab。`0.9.35` 修正宽屏导航标签被拉开、换行混乱的问题，并在完整目录与两类榜单中恢复 Desktop 适配声明筛选。商城审核提示提供通俗解释和可展开的技术原文，未知星标数会明确标出，不会拦截已确认的 DSH 安装请求。普通第三方 GitHub 插件更新时，用户逐次确认后由 DSH 官方管理器执行 `removeBundle()`，再提交新的固定 Commit 给 `installBundle()`；若 DSH 返回 `stop-profile`，按官方更新流程继续提交安装。源码 `0.9.28` 修复商城自身更新门禁：仅限精确的 Store 包名和规范仓库，按已安装版本判断是否存在更高 Catalog 版本；旧来源没有完整 Commit 时仍将目标固定 Commit 交给 DSH `installBundle()`，不调用 `removeBundle()`，并以 DSH 返回和一次安装清单回读判断结果。普通第三方更新的旧 Commit 校验、移除、恢复及不重试规则保持不变。Web 管理操作继续执行原准入策略。Catalog 当前固定 `0.9.42` / `8e51ce905767338a1e7606926ad09b749fc308db`；0.9.42 修正 Client Remote 依赖并增加推荐榜后台手动管理。真实 Desktop UI 尚未验收，Catalog 仍只声明 `web` Profile。源码 `0.9.36` 将统一左侧“插件商城”标签与 DSH Desktop 插件列表中的品牌图标；Catalog 更新后仍需在真实 Desktop 安装并确认显示。源码 `0.9.37` 优化 Desktop 插件商城与安装确认弹窗界面视觉协调度；源码 `0.9.38` 进一步修复多维筛选下拉框（分类、Desktop 适配、审核状态）文字被下半部裁剪截断的问题，规范 `styles.select` 的垂直内边距与基线高度，消除文字露出一半的缺陷，保持与 DSH 官方安装器及 Desktop Profile 校验语义完全一致。
 `0.9.21` 中，客户端适配标识和 Catalog 的 DSH 兼容记录只作参考，不决定第三方插件能否安装；商城自身和 DSH 官方组件仍受保护。可管理的第三方条目交由 DSH Desktop 官方管理器处理；Git 源的 `inspect` 结果作为预检提示，实际包的 DSH 版本/peer 兼容性由 `installBundle` 作最终判断。官方拒绝码和兼容要求会显示在商城中。安装、更新、卸载和
 Bundle 启停通过 DSH 官方 `inspect`、`installBundle`、`removeBundle`、`setBundleEnabled` 执行；每次操作
 都显示 Catalog 包名与完整固定 Commit 并要求确认。卸载还要求 DSH 标记该 Bundle 可移除，且本机已安装
@@ -106,7 +106,7 @@ Bundle 启停通过 DSH 官方 `inspect`、`installBundle`、`removeBundle`、`s
 
 | 项目 | 当前状态 |
 | --- | --- |
-| Catalog 固定版本 | `0.9.41`（更新确认命令缩小字号、换行并可全选复制；保留目录缓存和筛选优化，声明官方 DSH 0.2.2-rc.1 精确兼容。真实 Desktop 加载验收待完成） |
+| Catalog 固定版本 | `0.9.42`（修正官方 Client Remote 依赖并加入推荐榜后台手动管理；官方 DSH 0.2.2-rc.1 一次性 Web Profile 验收通过，真实 Desktop UI 未验收） |
 | 收录条目 | 以 GitHub `registry/catalog-index.json` 的实时 `entries.length` 为准 |
 | Catalog 审核通过 | 以实时 Catalog 中 `status: approved` 的条目数为准 |
 | Desktop 可交由 DSH 检查 | Catalog 项使用固定 Commit；公开 DSH 插件目录项使用规范 GitHub 仓库；每次操作经明确确认，Store 审核状态与兼容建议不决定 DSH 的最终结果 |
