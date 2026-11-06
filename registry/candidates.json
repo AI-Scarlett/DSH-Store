@@ -3,7 +3,7 @@
   "registry": {
     "name": "DSH STORE Candidate Discovery Registry",
     "repositoryUrl": "https://github.com/AI-Scarlett/DSH-Store",
-    "updatedAt": "2026-11-06T15:43:43.000Z",
+    "updatedAt": "2026-11-06T21:20:33.000Z",
     "trustBoundary": {
       "installActionsDisabled": true,
       "catalogPromotionRequired": true,
@@ -915,8 +915,8 @@
       "description": "Reverse engineer anything with agents, from app behavior down to native binaries.",
       "repositoryUrl": "https://github.com/morluto/rea",
       "defaultBranch": "main",
-      "latestCommit": "c363f3e27b485d3f6330c3634d5d9c8f80d98d72",
-      "sourceUpdatedAt": "2026-11-06T02:01:25.000Z",
+      "latestCommit": "a93eb39698e6aa2cec86e26e7e9a4b74d3d7a6c2",
+      "sourceUpdatedAt": "2026-11-06T21:21:56.000Z",
       "discoveredAt": "2026-08-21T02:40:10.936Z",
       "discoverySources": [
         "blue-whale-fixed-ee0f3167f213144680f1b80be8cd30fe6353c8aa",
@@ -18803,6 +18803,63 @@
       "discoveredAt": "2026-11-06T15:43:43.000Z",
       "discoverySources": [
         "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@51d50de9c8243deba503e3e074d670666731c13c:data/plugins/SuCriss__dsh-version-update.yml:sha256=47c3c9cf64882fadab8cb1afbf3b353adb0d47d30f8d79828df5eceb3e554ea0:at=2026-11-06T15:53:20.794Z:owner=37565038"
+      ],
+      "topics": [
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "lrm-lab-coforge",
+      "name": "lrm-lab/coforge",
+      "description": "CoForge",
+      "repositoryUrl": "https://github.com/lrm-lab/coforge",
+      "defaultBranch": "main",
+      "latestCommit": "e863564a8fe92df8550d968fe7ebbc8fb37f8b12",
+      "sourceUpdatedAt": "2026-11-06T21:31:02.000Z",
+      "discoveredAt": "2026-11-06T21:20:33.000Z",
+      "discoverySources": [
+        "github-automatic-radar-v1"
+      ],
+      "topics": [
+        "automatic-radar"
+      ],
+      "status": "rejected",
+      "route": "adapter-required",
+      "statusReason": "SUBMISSION_BUNDLE_MISSING: No package.json declaring dsh.bundle.patch was found"
+    },
+    {
+      "id": "ws1234567891011-dsh-interim-narration",
+      "name": "ws1234567891011/dsh-interim-narration",
+      "description": "Discovered GitHub repository awaiting a compatible DSH Bundle.",
+      "repositoryUrl": "https://github.com/ws1234567891011/dsh-interim-narration",
+      "defaultBranch": "main",
+      "latestCommit": "6e881ade000df9672e38fc4046db8c84519d34d2",
+      "sourceUpdatedAt": "2026-11-05T00:42:00.000Z",
+      "discoveredAt": "2026-11-06T21:20:33.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@7843a1ac2de8332ffad16f54982ac07de564594d:data/plugins/ws1234567891011__dsh-interim-narration.yml:sha256=fa8552e594d295008b454402b1fc641f7b69c6ed59f2418693cc356735562b17:at=2026-11-06T21:31:14.525Z:owner=96276656"
+      ],
+      "topics": [
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "wshdp123-dsh-connect-qoder-pro",
+      "name": "wshdp123/dsh-connect-qoder-pro",
+      "description": "Discovered GitHub repository awaiting a compatible DSH Bundle.",
+      "repositoryUrl": "https://github.com/wshdp123/dsh-connect-qoder-pro",
+      "defaultBranch": "main",
+      "latestCommit": "416b717aafdeb4887938b05b18c2f5abe1f86742",
+      "sourceUpdatedAt": "2026-10-25T06:44:45.000Z",
+      "discoveredAt": "2026-11-06T21:20:33.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@7843a1ac2de8332ffad16f54982ac07de564594d:data/plugins/wshdp123__dsh-connect-qoder-pro.yml:sha256=0b580035d847d1c1b9eed7a05144cd7c66a677bebcd4f6759b4074a7f9717c5d:at=2026-11-06T21:31:14.525Z:owner=216512233"
       ],
       "topics": [
         "automatic-radar"
