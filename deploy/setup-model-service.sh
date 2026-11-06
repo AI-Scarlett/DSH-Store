@@ -51,7 +51,7 @@ if [ -f "$REPO_ROOT/scripts/serve-marketplace.mjs" ] && [ -f "$REPO_ROOT/src/ai-
 else
   echo "[+] 解包内置自包含后端服务模块..."
   cat << 'BUNDLE_EOF' | base64 -d | tar -xz -C "$SERVICE_DIR"
-H4sIAHtN7WoC/+y9a3ccx5EoqHvP2bNnsZ93Pxdxed3dZneh8SAowSIxIAlJGPNlAJLHA8BEobsA
+H4sIAAII7moC/+y9a3ccx5EoqHvP2bNnsZ93Pxdxed3dZneh8SAowSIxIAlJGPNlAJLHA8BEobsA
 lNkvd3WThGHMoWXrZevl8VMP25Jt2Tqea8oeeyRaD/uc/QX7G8YESH7yX9iIjHxEVmV1NyhSondI
 W2RXZmRkZmRkZGRkZKR/vhVULgQbof+VuNl44K78KcOfyYkJ8e+RycPi3/IYfdPP8QdGD48dGR8t
 HxmdGHugDH+NTT7glR/4BP50407QhqZ8bbPZvRwFzXrU2HDBAdj6+gP///vzv/3f//sD//2BB04H
@@ -60,7 +60,7 @@ YSNoVMIH/tt/f6C5d+PJ1vLk//vA/T93748/4o/8w7ng8mNhUA3bd2/+w5+sf8tjk2P6t0gfLY+N
 Hn7Au/xJzv//ouM/NuptVtuVzaAdh52jx+fOzMx/aciZOF726p2oHh4dPfLQ+IMPHnlwYswfGy9P
 PHj4obHRocNHvFNzx2fmTzw298SsfznodNq+a2IfnfnC3MzaobXGRuN45UxnZmjiIW8BCp36Uq9C
 TBoM3Z+zd/LP3V/9+63/42Nj5eT8Hz9yuHx//f8k/mwPed5wI6iHw1PecDXeLMXBelhq1bobUaNU
-DxrAG+3hIgJdDNtx1GwgXNl/yJ8Yo+RqGFfaUasjsx6NOo9110rNRm3LqwftC2GnVQsqoRc0qt5G
+DxrAG+3hIgJdDNtx1GwgXNl/yJ8Yp+RqGFfaUasjsx6NOo9110rNRm3LqwftC2GnVQsqoRc0qt5G
 N2hXw6pXi9bDylalFnqyAm+92fZOhmFrIQwveI8F7UYYxx41IqZq2mGrGUedZnsLasFGQ1pnqyWa
 vRF1BBAkdds1mXJos9NpxVMjI/B7s7uGcmVkZq60UAnatbDTGTm58FhpAfCFPhaH0juins1mPWxB
 mxCLwgBk8WMEHaG2RBXqqz/CejgiiIdQJcwvAV0udJotv9XYoFKtdnQx6CDiTrsbiiTVgXqz2q2F
@@ -1010,7 +1010,7 @@ rwZJTZDR0IPDaTYjPUdyovl9PjoVEPlKnAVUPnd+uEY3kaNs6JpxQlxrFBsqQXw4e7oMJNc9gzAE
 IThqFDc2qApeTTKYQ44VzCEMaD/SXDW0vODh7d2UHIgreGflRYp6VAg7iDhHkjPFP9zFtx3G/tRq
 R3Ex0bNlfUzMdil2MXGWWLhtSF+RKSd0jGkm4DCiGzT+IqYHdRm1Ql24XkhGs7zs4+wDSIkILgz7
 wTWqBtKeoZBgMNMC30NQIVbqkQYFg/iSOnwPzmxd4BVYhxXqOvu1eNMp5kZTaMUMaXzBFg34PHgZ
-qeTLyd0hJ52TrjB15G8PnmiMn/x78u/Jvyf/nvx78s/79/8DDYUiFwDAAwA=
+qeTLyd0hJ52TrjB15G8PnmiMn/x78u/Jvyf/nvx78s/79/8DX5V4mQDAAwA=
 BUNDLE_EOF
 fi
 

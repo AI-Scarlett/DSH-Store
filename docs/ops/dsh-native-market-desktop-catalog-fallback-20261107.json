@@ -1,0 +1,90 @@
+{
+  "schemaVersion": 1,
+  "type": "dsh-native-market-upgrade",
+  "planId": "dsh-native-market-desktop-catalog-fallback-20261107",
+  "planFile": "docs/ops/dsh-native-market-desktop-catalog-fallback-20261107.json",
+  "createdAt": "2026-11-06T16:56:05Z",
+  "baseCommit": "c0b7bb5a75fa02b85d7ddd14a4e8c993df983b59",
+  "scope": [
+    ".github/workflows/registry.yml",
+    "README.md",
+    "deploy/setup-model-service.sh",
+    "docs/ops/dsh-native-market-desktop-catalog-fallback-20261107.json",
+    "package.json",
+    "src/client.js",
+    "test/catalog.test.mjs",
+    "test/contracts.test.mjs",
+    "test/desktop-compat.test.mjs",
+    "test/upgrade-matrix.test.mjs"
+  ],
+  "preconditions": {
+    ".github/workflows/registry.yml": "4c400d375e0fc7193784018327659e0369ec93a3a85f7ef860d05add8a3447fb",
+    "README.md": "de97a67cfc0cd7e7c902a010d32fa544a7a2f74b0c8d2746374c2a0c2842800d",
+    "deploy/setup-model-service.sh": "76c34913db33cd5444520228ca608f9bd5214ef46fe7ecb4b0dfb8a5fe498b17",
+    "docs/ops/dsh-native-market-desktop-catalog-fallback-20261107.json": null,
+    "package.json": "2dd32963b2de2b6e5cefb3f90cfff4c53095d30c1d37d14d5e9f23941eafaaff",
+    "src/client.js": "a4d722a0ee9780bbb827f2034dba1f221dce5ee5f5b23330d13ee646cd8a2a1d",
+    "test/catalog.test.mjs": "081075e2369843c748a8fc814897a294ecf626c6db2cbb1c1430addd17641f1f",
+    "test/contracts.test.mjs": "ede1c71fdea8fdddf7ced85576ee542121e569e4b7b10a8774b004b54f36ee35",
+    "test/desktop-compat.test.mjs": "76e8a47f2c6627f63c2df164e74131a9ce08144ae5ba825fba2b0aefc679f406",
+    "test/upgrade-matrix.test.mjs": "3fa8a16aadbc7e626c089372749cd67449a5a6dcd1a628a411d9609fc4956b42"
+  },
+  "postconditions": {
+    ".github/workflows/registry.yml": "729ce53ccfb52cef3d006c77bfb200da95883a4d0a606f3dafd7ad6d588bc3db",
+    "README.md": "b96ac1dcb33dcaa3ce32036cafd299516a3de33b0752056b98f9dede1b5e8ca3",
+    "deploy/setup-model-service.sh": "a9ec77befbbe9d844d3198853a82a8d15d97216d13052914609d080ec6257e64",
+    "package.json": "2e7f8b0bc6c0b7cf1c61ddefe1d349887c737c1e4873cafdfdaf16f93893a4c6",
+    "src/client.js": "ca036f7d10fccbd35be8386133a1b8c2156f3525080e95513811d8d99b306c35",
+    "test/catalog.test.mjs": "247350a1b23a9fdead277fa487b4ccd71fce768544d793dfec3b8fac1262993d",
+    "test/contracts.test.mjs": "b2ff4f83ff8e329b986c1c6b2502ab5821074df48e8939a0694c5af722aa8ed4",
+    "test/desktop-compat.test.mjs": "8d4420df18736be9534bed5d39e1d3939f72ce3645840bf951262b2a59b04fe1",
+    "test/upgrade-matrix.test.mjs": "e143eb9aafc35297428d197bb3228d06ff0298a20b9db1112efd3d3556447897"
+  },
+  "authorization": {
+    "source": "direct-user-request",
+    "request": "用户报告 DSH Desktop 商城刷新后不显示插件目录，要求处理当前故障。",
+    "githubWriteCredential": "short-lived-token-required",
+    "publication": "auditable-ci-checked-pull-request-only"
+  },
+  "objective": "修复 DSH Desktop 商城因 GitHub Raw 目录请求超时或网络失败而无法显示插件列表的问题，并正确显示请求中止错误。",
+  "change": {
+    "packageVersion": "0.9.43",
+    "rootCause": "Desktop Catalog 请求的 AbortError 带有数值 code；原错误处理把该数值当成有效 code 原样抛出，最终显示 DESKTOP_OPERATION_FAILED。Desktop UI 直接请求 GitHub Raw，不复用 Host 侧 Catalog 缓存。",
+    "catalogDelivery": "继续优先使用 GitHub Raw。仅在网络失败、HTTP 错误或超时时回退到同仓库 GitHub Pages 的 registry/catalog.json。备用响应必须通过相同的精确 URL、4 MiB 大小上限、UTF-8、JSON 和 Catalog 结构校验；界面标示当前使用 Pages。禁止使用比 Raw 落后的 dsh-store.cn Catalog。",
+    "errorHandling": "识别 AbortError 和中止信号，将其映射到 DESKTOP_CATALOG_TIMEOUT；只把符合安全格式的字符串作为 Desktop 错误码，忽略浏览器数值 code。",
+    "scopeExclusions": "不写真实 DSH Profile，不安装或重启 DSH，不修改 @deepseek-ai/*、DSH 源码或 Catalog pin；合并源码后如需更新 Catalog，另建绑定完整 Commit 的新鲜计划。"
+  },
+  "commands": [
+    { "argv": ["node", "--check", "src/client.js"], "expected": "exit 0" },
+    { "argv": ["node", "--test", "test/desktop-compat.test.mjs"], "expected": "all disposable Desktop compatibility cases pass, including native abort fallback" },
+    { "argv": ["node", "--test", "test/catalog.test.mjs", "test/contracts.test.mjs", "test/upgrade-matrix.test.mjs", "test/ranking-curation-deployment.test.mjs"], "expected": "staged self-pin and version mirrors accept 0.9.43 with Catalog 0.9.42" },
+    { "argv": ["npm", "run", "check"], "expected": "REGISTRY_OK and full repository suite passes" },
+    { "argv": ["npm", "pack", "--dry-run", "--json"], "expected": "package dsh-safe-plugin-manager@0.9.43" },
+    { "argv": ["node", "scripts/verify-dsh-upgrade-plan.mjs", "docs/ops/dsh-native-market-desktop-catalog-fallback-20261107.json"], "expected": "DSH_UPGRADE_PLAN_OK" },
+    { "argv": ["git", "diff", "--check"], "expected": "exit 0" }
+  ],
+  "gates": [
+    "The plan base Commit remains an ancestor and every scoped precondition hash matches immediately before commit.",
+    "Only Raw network/HTTP/timeout failures trigger the pinned Pages fallback; malformed or oversized data fails closed.",
+    "Desktop disposable harness proves an AbortError with numeric code falls through to the exact Pages URL, loads the Catalog and shows the mirror notice.",
+    "All repository checks, package dry-run, typed-plan verifier and exact-head PR CI pass before merge.",
+    "After source merge, Catalog pin advancement uses a separate fresh policy plan; real Profile update and visible Desktop acceptance require a separate confirmed operation."
+  ],
+  "rollback": {
+    "source": "Revert only this change through a CI-checked PR; current Catalog stays pinned to 0.9.42 until a separate release plan advances it.",
+    "desktopProfile": "No real Profile, package or process mutation is included."
+  },
+  "healthCheck": "Run focused disposable Desktop compatibility tests, npm run check, npm pack dry-run, typed-plan verification and exact-head PR CI. Independently compare Raw and Pages Catalog hashes. Report real Desktop/Profile acceptance separately.",
+  "verification": {
+    "remoteCatalogs": "Raw and GitHub Pages returned HTTP 200 and identical SHA-256 e27d2a3e0db1f0dcdee6ffab2690b5ff9807f8ef267a9893956f2f88ba13732f with 883 entries and Store 0.9.42 fixed to 8e51ce905767338a1e7606926ad09b749fc308db; dsh-store.cn is stale at 881 entries and is excluded.",
+    "nativeAbortEvidence": "AbortError.code is numeric 20; the previous desktopErrorCode selected it before the message and returned DESKTOP_OPERATION_FAILED.",
+    "focusedDesktopTests": "passed: 48/48 disposable Desktop compatibility cases",
+    "releaseMetadataTests": "passed: 68/68 Catalog, package contract, version matrix and embedded deployment bundle cases",
+    "npmRunCheck": "passed: REGISTRY_OK entries=883; 617/617 tests",
+    "packageDryRun": "passed: dsh-safe-plugin-manager@0.9.43; 1091 files; unpackedSize=29186317 bytes",
+    "typedPlan": "passed: DSH_UPGRADE_PLAN_OK base=c0b7bb5a75fa02b85d7ddd14a4e8c993df983b59 changed=10",
+    "exactHeadCi": "pending",
+    "catalogRelease": "pending separate plan after merge",
+    "realDesktopProfile": "unchanged; update and visible UI acceptance require separate confirmation"
+  }
+}

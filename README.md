@@ -23,6 +23,8 @@ DSH STORE 是一个运行在 DeepSeek Harness（DSH）设置页中的第三方
 > [GitHub Pages](https://ai-scarlett.github.io/DSH-Store/marketplace/repair/)
 > 查看官方修复/升级方案；修复页只有在 Catalog 固定到包含修复器的完整 Commit 后才会生成命令。
 
+> **DSH Store 0.9.43 源码候选：**修复 Desktop 目录请求中止异常被显示成通用错误，并在 GitHub Raw 超时、网络失败或 HTTP 错误时尝试同仓库 GitHub Pages 目录镜像。镜像数据仍经过同一 Catalog 校验；实际 Desktop Profile 更新和 UI 验收尚未完成，Catalog 固定版本仍为 0.9.42，需另走新鲜 Catalog 计划。
+
 > **DSH Store 0.9.42 兼容记录：**已用官方 DSH 0.2.2-rc.1 和一次性 Profile 完成 CLI 安装、配置检查、启动/API 冒烟与卸载还原；安装/启动/卸载通过，回滚未验证。DSH Desktop 实际 UI 仍未实机验收。`0.9.42` 把客户端静态依赖从已停止发布的 `@deepseek-ai/dsh-client-runtime` 改为官方实际提供 `remote` / `remote.pluginManager` 的 `@deepseek-ai/dsh-api-remotes`；这是依赖声明纠正，不是崩溃修复，旧声明曾被加载器跳过而不影响加载。
 
 ## 在 DSH 原生「发现」中添加商城
@@ -122,6 +124,8 @@ Bundle 启停通过 DSH 官方 `inspect`、`installBundle`、`removeBundle`、`s
 `0.9.36` 将 DSH Store 图标加入插件包，并补齐官方 DSH `0.2.2-alpha.3` 的精确安装兼容声明。此次首轮发布矩阵发现新官方版本被 `engines.dsh` 范围拒绝；确认五个注入 UI peer 均已发布 alpha.3 后，更新精确 peer 范围。alpha.3 在一次性 Profile 中已通过安装、启动、认证 API、卸载和 Profile 精确还原；跨平台/pnpm 矩阵由本次源码 PR CI 验收，降级回滚仍为 `unknown`。独立 `@deepseek-ai/dsh-client-runtime` 没有 alpha.3 发行版，因此不增加不存在的 Peer 版本。
 
 `0.9.42` 纠正客户端静态依赖声明。经官方 `0.2.2-rc.1` 依赖树与本机 DSH Desktop `0.2.2-rc.1` 应用包核对：`@deepseek-ai/dsh-client-runtime` 在 `0.1.1-rc.2` 之后停止发布，且在 CLI/Web 运行时与 Desktop 应用包中都不存在；而真正提供 `remote` 服务并挂载 `pluginManager` Remote 命名空间的 `@deepseek-ai/dsh-api-remotes` 两个宿主都存在，官方 `@deepseek-ai/dsh-client-ui-plugin-manager@0.2.2-rc.1` 也正是声明它。商城原声明的 `dsh-client-runtime` 只留下一条无法解析的依赖边，加载器会跳过它，因此这是依赖声明纠正而非崩溃修复；真实 Desktop 界面验收仍单独进行。官方 `pluginManager` Remote 的 `listBundles`、`inspect`、`installBundle`、`waitForInstall`、`removeBundle`、`setBundleEnabled` 在 `0.2.2-rc.1` 全部保持原样，`settings.section`、`sidebar.panellist`、`main` 三个槽位契约也未变。
+
+`0.9.43` 修复 Desktop Catalog 请求中止时将浏览器 `AbortError.code` 数值误当字符串错误码、最终退化为 `DESKTOP_OPERATION_FAILED` 的问题。目录先请求 GitHub Raw；网络失败、HTTP 错误或超时时再尝试字节已核对一致的 GitHub Pages 镜像，并对镜像响应执行相同的大小、URL 和 Catalog 结构校验。界面会标明当前使用 Pages 镜像。Catalog pin 与真实 Desktop Profile 不由本 Source PR 修改。
 
 `0.9.37` 优化 Desktop 插件商城与安装确认弹窗界面视觉协调感；
 - `0.9.38` 修复多维筛选下拉选择框（分类、客户端适配、审核状态）在固定高度下文字垂直基线被下半部截断只露出一半的视觉缺陷，规范 `styles.select` 上下 padding 为 0 并保证充足右侧下拉图标安全间距。
