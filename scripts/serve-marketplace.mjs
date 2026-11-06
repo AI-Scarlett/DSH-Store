@@ -263,19 +263,24 @@ async function withRankingCurationLock(callback) {
 
 function curationChoicesView(snapshot, type) {
   const choices = rankingCurationChoices(snapshot, type)
+  const officialIds = new Set(choices.officialSlots.map(slot => slot.id))
   return {
     minimumManualEntries: choices.minimumManualEntries,
     officialSlots: choices.officialSlots,
-    entries: choices.eligible.map((entry, index) => ({
+    automaticIds: choices.automatic.map(entry => entry.id),
+    entries: choices.eligible.map(entry => ({
       id: entry.id,
+      packageName: entry.packageName || null,
       nameZh: entry.nameZh,
       nameEn: entry.nameEn,
+      description: entry.description,
       repositoryUrl: entry.repositoryUrl,
       stars: Number.isSafeInteger(entry.stars) ? entry.stars : null,
       listingStatus: entry.listingStatus,
       reviewStatus: entry.reviewStatus,
-      officialToolPick: Boolean(entry.officialToolPick),
-      rank: index + 1,
+      source: entry.source,
+      officialToolPick: officialIds.has(entry.id),
+      rank: choices.automaticById.get(entry.id)?.index + 1 || null,
     })),
   }
 }
