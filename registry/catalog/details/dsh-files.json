@@ -22,24 +22,24 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "900d4b4904ab81e9c63f534db6d7937c8b2386d9",
-  "version": "0.6.3",
+  "commit": "5759656699e1c4d5c3bea5bac51e674ef52158cd",
+  "version": "0.7.0",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-26T12:06:48.000Z",
-    "observedAt": "2026-10-26T13:38:19.000Z",
+    "updatedAt": "2026-11-07T06:36:06.000Z",
+    "observedAt": "2026-11-07T14:43:42.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-10-26T13:38:19.000Z",
-      "evidenceUrl": "https://github.com/taxueseek/dsh-files/commit/900d4b4904ab81e9c63f534db6d7937c8b2386d9",
+      "checkedAt": "2026-11-07T14:43:42.000Z",
+      "evidenceUrl": "https://github.com/taxueseek/dsh-files/commit/5759656699e1c4d5c3bea5bac51e674ef52158cd",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -78,14 +78,14 @@
   },
   "admission": {
     "engine": "bounded-source-v3",
-    "binding": "40f16b115cb7034148294e5cac743e30d469400ea0aa3579408a7d850baad0de",
+    "binding": "ea8117518324c571089b49d9751725e442735361ecc392d8eeb7c930ab10e86a",
     "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
     "state": "review-required",
     "sourceContract": "verified",
     "coverage": "complete",
     "capabilities": "review-required",
     "compatibility": "per-version-declaration",
-    "reviewRegistryDigest": "6e229699735bb0344a944715d03ab6a9b3acc4e0705434d46d15ece6f5735e9a"
+    "reviewRegistryDigest": "f40e4a10a2ae7f8d8dadbbde3a7a03e9f7d967caf114a14d6a7bbfe46a93efbf"
   },
   "entryIds": [
     "files-toolkit"
@@ -94,7 +94,7 @@
   "status": "blocked",
   "statusReason": "Automatic policy blocked installation: runtime or optional dependencies require a separate supply-chain review; fixed-source security warnings require review; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal",
   "compatibility": {
-    "dsh": "^0.1.0-rc.6 || ^0.1.1-rc.2 || ^0.2.0-rc.1 || ^0.2.1-alpha.3",
+    "dsh": "^0.1.0-rc.6 || ^0.1.1-rc.2 || ^0.2.0-rc.1 || ^0.2.1-alpha.3 || ^0.2.2-0",
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
@@ -108,12 +108,9 @@
       "0.2.1-alpha.3": "compatible",
       "0.2.1-rc.2": "compatible",
       "0.2.1-rc.3": "compatible",
-      "0.2.1-rc.1": "unknown",
-      "0.2.1-rc.4": "unknown",
-      "0.2.2-alpha.2": "unknown",
-      "0.2.1-rc.5": "unknown",
-      "0.2.2-alpha.3": "unknown",
-      "0.2.2-rc.1": "unknown"
+      "0.2.2-alpha.2": "compatible",
+      "0.2.2-rc.1": "compatible",
+      "0.2.2-alpha.3": "unknown"
     },
     "dshOperations": {
       "rc.7": {
@@ -188,37 +185,19 @@
         "uninstall": "unknown",
         "rollback": "unknown"
       },
-      "0.2.1-rc.1": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.2.1-rc.4": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
       "0.2.2-alpha.2": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",
         "rollback": "unknown"
       },
-      "0.2.1-rc.5": {
+      "0.2.2-rc.1": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",
         "rollback": "unknown"
       },
       "0.2.2-alpha.3": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.2.2-rc.1": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",
@@ -245,6 +224,7 @@
       ]
     },
     "externalDependencies": [
+      "jszip",
       "mammoth",
       "pdfjs-dist",
       "read-excel-file",
