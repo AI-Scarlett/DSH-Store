@@ -24,7 +24,7 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "5c62e227d94c9427a3ee71e9a0d7799c1abf07d4",
+  "commit": "35b36af497cebcd93ee20257e9148cfe3cbc52d6",
   "version": "0.6.2",
   "categories": [
     "experimental"
@@ -32,16 +32,16 @@
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-16T14:40:24.000Z",
-    "observedAt": "2026-10-19T03:39:26.000Z",
+    "updatedAt": "2026-11-07T15:05:17.000Z",
+    "observedAt": "2026-11-07T19:57:07.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-10-19T03:39:26.000Z",
-      "evidenceUrl": "https://github.com/HuanLinOTO/dsh-plugin-better-plan/commit/5c62e227d94c9427a3ee71e9a0d7799c1abf07d4",
+      "checkedAt": "2026-11-07T19:57:07.000Z",
+      "evidenceUrl": "https://github.com/HuanLinOTO/dsh-plugin-better-plan/commit/35b36af497cebcd93ee20257e9148cfe3cbc52d6",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -80,14 +80,14 @@
   },
   "admission": {
     "engine": "bounded-source-v3",
-    "binding": "717d080729cfe1d86b582eea6d7d552780159db425811de397cb775ca5186aae",
+    "binding": "71790da84c24ad1822d9848dedb4a6506f8fa1cd3caf221f94c5b6ed6bec52ae",
     "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
     "state": "incomplete",
     "sourceContract": "unverified",
     "coverage": "incomplete",
     "capabilities": "review-required",
     "compatibility": "per-version-declaration",
-    "reviewRegistryDigest": "6e229699735bb0344a944715d03ab6a9b3acc4e0705434d46d15ece6f5735e9a"
+    "reviewRegistryDigest": "f40e4a10a2ae7f8d8dadbbde3a7a03e9f7d967caf114a14d6a7bbfe46a93efbf"
   },
   "entryIds": [
     "better-plan"
@@ -96,7 +96,7 @@
   "status": "blocked",
   "statusReason": "Automatic policy blocked installation: manifest repository does not match the canonical GitHub repository; GitHub repository license metadata is NOASSERTION; fixed-source license evidence needs manual review; runtime or optional dependencies require a separate supply-chain review; manifest files selectors are unsupported or ambiguous; whole-package fallback requires review; package ignore rules require artifact review; package contains unsupported artifacts requiring review: .gitignore; fixed-source scan is incomplete; unobserved capability signals are unknown; runtime source contains the file",
   "compatibility": {
-    "dsh": "^0.2.1-alpha.5",
+    "dsh": "^0.2.2-rc.1",
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
@@ -106,13 +106,7 @@
       "0.1.2-alpha.3": "unknown",
       "0.1.2-alpha.4": "unknown",
       "0.1.2-alpha.5": "unknown",
-      "0.2.1-alpha.5": "unknown",
-      "0.2.1-rc.1": "unknown",
-      "0.2.1-rc.2": "unknown",
-      "0.2.1-rc.3": "unknown",
-      "0.2.1-rc.4": "unknown",
       "0.2.2-alpha.2": "unknown",
-      "0.2.1-rc.5": "unknown",
       "0.2.2-alpha.3": "unknown",
       "0.2.2-rc.1": "unknown"
     },
@@ -165,43 +159,7 @@
         "uninstall": "unknown",
         "rollback": "unknown"
       },
-      "0.2.1-alpha.5": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.2.1-rc.1": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.2.1-rc.2": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.2.1-rc.3": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.2.1-rc.4": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
       "0.2.2-alpha.2": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.2.1-rc.5": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",
@@ -220,7 +178,7 @@
         "rollback": "unknown"
       }
     },
-    "node": ">=22.0.0",
+    "node": ">=24.9.0",
     "systems": [],
     "profiles": [
       "web"

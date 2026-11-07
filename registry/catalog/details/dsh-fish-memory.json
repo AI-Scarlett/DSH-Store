@@ -20,28 +20,28 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "f7e524f3204763aeb426355595afa8f94d0f186f",
-  "version": "0.72.0",
+  "commit": "be08bfa7f20600c9aaaa2c5d18e921253ac941a6",
+  "version": "0.74.0",
   "categories": [
     "memory"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-11-07T14:53:46.000Z",
-    "observedAt": "2026-11-07T14:43:42.000Z",
+    "updatedAt": "2026-11-07T16:06:20.000Z",
+    "observedAt": "2026-11-07T19:57:07.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-policy-v1",
-      "checkedAt": "2026-11-07T14:43:42.000Z",
-      "evidenceUrl": "https://github.com/yscxdd/fish-memory-plugin/commit/f7e524f3204763aeb426355595afa8f94d0f186f",
+      "method": "automated-fixed-source-recheck-v1",
+      "checkedAt": "2026-11-07T19:57:07.000Z",
+      "evidenceUrl": "https://github.com/yscxdd/fish-memory-plugin/commit/be08bfa7f20600c9aaaa2c5d18e921253ac941a6",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
+      "summary": "The external-only or non-installable listing metadata was refreshed from a fixed Commit; no installability was inferred."
     },
     "installability": {
       "status": "unknown",
@@ -51,7 +51,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No third-party installation or build code was executed by the automation."
+      "summary": "The updated fixed Commit was not installed or built by Catalog automation."
     },
     "runtime": {
       "status": "unknown",
@@ -61,7 +61,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No DSH runtime acceptance was inferred from static automation."
+      "summary": "No DSH runtime acceptance was carried forward after the source changed."
     },
     "securityReview": {
       "status": "unknown",
@@ -71,12 +71,12 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Automated source policy is not an independent security audit."
+      "summary": "Automated fixed-source review is not an independent security audit."
     }
   },
   "admission": {
     "engine": "bounded-source-v3",
-    "binding": "42b2069dfa9b9946534fe331b304895652afd72ec5334774dd218f18d20581f5",
+    "binding": "d957acfcf2492d870fb36b83a4bd91b9855602b12f085023a6ac0952fa6e62c8",
     "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
     "state": "review-required",
     "sourceContract": "unverified",
@@ -88,6 +88,7 @@
   "entryIds": [
     "fish-memory"
   ],
+  "configOverrides": [],
   "status": "blocked",
   "statusReason": "Automatic policy blocked installation: manifest repository does not match the canonical GitHub repository; fixed-source security warnings require review; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal",
   "compatibility": {
