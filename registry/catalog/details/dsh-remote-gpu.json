@@ -22,7 +22,7 @@
   "manifestPath": "dsh-remote-gpu/package.json",
   "installPath": "dsh-remote-gpu",
   "updatePolicy": "external-only",
-  "commit": "e06a8a92587b5fccabff709c2150ce62dd8221ee",
+  "commit": "08bf94612f495ce07268f59feaf91188321dc373",
   "version": "0.1.0",
   "categories": [
     "experimental"
@@ -30,20 +30,20 @@
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-11-07T14:53:41.000Z",
-    "observedAt": "2026-11-07T14:43:42.000Z",
+    "updatedAt": "2026-11-07T14:54:08.000Z",
+    "observedAt": "2026-11-07T19:57:07.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-policy-v1",
-      "checkedAt": "2026-11-07T14:43:42.000Z",
-      "evidenceUrl": "https://github.com/Neiyako/dsh-remote-gpu/commit/e06a8a92587b5fccabff709c2150ce62dd8221ee",
+      "method": "automated-fixed-source-recheck-v1",
+      "checkedAt": "2026-11-07T19:57:07.000Z",
+      "evidenceUrl": "https://github.com/Neiyako/dsh-remote-gpu/commit/08bf94612f495ce07268f59feaf91188321dc373",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
+      "summary": "The external-only or non-installable listing metadata was refreshed from a fixed Commit; no installability was inferred."
     },
     "installability": {
       "status": "unknown",
@@ -53,7 +53,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No third-party installation or build code was executed by the automation."
+      "summary": "The updated fixed Commit was not installed or built by Catalog automation."
     },
     "runtime": {
       "status": "unknown",
@@ -63,7 +63,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No DSH runtime acceptance was inferred from static automation."
+      "summary": "No DSH runtime acceptance was carried forward after the source changed."
     },
     "securityReview": {
       "status": "unknown",
@@ -73,12 +73,12 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Automated source policy is not an independent security audit."
+      "summary": "Automated fixed-source review is not an independent security audit."
     }
   },
   "admission": {
     "engine": "bounded-source-v3",
-    "binding": "d4f9c591176799dc141b19faabadf4e5d878b74a6eb1cedd83d950a4f74d442f",
+    "binding": "6d192c136ced2343ebb48757a2ee54786401ae256e162bed9299bd1046c9bba0",
     "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
     "state": "review-required",
     "sourceContract": "unverified",
@@ -90,6 +90,7 @@
   "entryIds": [
     "remote-gpu"
   ],
+  "configOverrides": [],
   "status": "blocked",
   "statusReason": "Automatic policy blocked installation: manifest repository does not match the canonical GitHub repository; GitHub repository license metadata is NOASSERTION; fixed-source license evidence needs manual review; DSH compatibility is not explicitly declared; runtime source contains the files permission signal; runtime source contains the credentials permission signal",
   "compatibility": {
