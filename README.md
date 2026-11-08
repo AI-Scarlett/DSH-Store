@@ -23,9 +23,9 @@ DSH STORE 是一个运行在 DeepSeek Harness（DSH）设置页中的第三方
 > [GitHub Pages](https://ai-scarlett.github.io/DSH-Store/marketplace/repair/)
 > 查看官方修复/升级方案；修复页只有在 Catalog 固定到包含修复器的完整 Commit 后才会生成命令。
 
-> **DSH Store 0.9.44 源码候选：**修复 Desktop「官网完整目录」在慢速网络下读不出来的问题。官网发现索引约 10.4 MB（gzip 后约 2.5 MB），旧实现每次刷新都绕过浏览器 HTTP 缓存重新下载，并在加载期间渲染空列表；现在目录文档走 HTTP 缓存、发现索引由宿主落盘缓存后经本地接口提供，目录在读取期间先显示 Catalog 记录并报告已等待秒数。远端文档读取改为按体积设定上限并区分超时与停滞，目录中止不再退化成通用错误码。Catalog 固定在 Commit `7496798b1e05f758a9f4d6287d7186d09570014d`；真实 Desktop Profile 更新和 UI 验收尚未完成。
+> **DSH Store 0.9.45 源码候选：**修复 Desktop「推荐榜」和「必装榜」读取失败（报 DESKTOP_RANKING_UNAVAILABLE_DESKTOP_RANKING_ENTRY_0_INVALID）的问题。此前榜单数据模型在 0.9.42 增加了 packageName 属性用于后台管理，但客户端校验白名单未同步收纳该字段，导致榜单首条条目即被拒绝。现已扩展桌面端白名单并接入 packageName 校验与展示。Catalog 固定版本仍为 0.9.44；真实 Desktop Profile 更新和 UI 验收尚未完成。
 
-> **DSH Store 0.9.44：**已修复 Desktop 目录请求中止异常显示通用错误的问题；GitHub Raw 网络、HTTP 或超时失败时回退到同仓库 Pages 镜像，并执行相同的 Catalog 校验。Catalog 固定源码为 Commit `7496798b1e05f758a9f4d6287d7186d09570014d`；真实 Desktop Profile 更新和 UI 验收尚未完成。
+> **DSH Store 0.9.44：**修复 Desktop「官网完整目录」在慢速网络下读不出来的问题。官网发现索引约 10.4 MB（gzip 后约 2.5 MB），旧实现每次刷新都绕过浏览器 HTTP 缓存重新下载，并在加载期间渲染空列表；现在目录文档走 HTTP 缓存、发现索引由宿主落盘缓存后经本地接口提供，目录在读取期间先显示 Catalog 记录并报告已等待秒数。远端文档读取改为按体积设定上限并区分超时与停滞，目录中止不再退化成通用错误码。Catalog 固定在 Commit `7496798b1e05f758a9f4d6287d7186d09570014d`；真实 Desktop Profile 更新和 UI 验收尚未完成。
 
 > **DSH Store 0.9.42 兼容记录：**已用官方 DSH 0.2.2-rc.1 和一次性 Profile 完成 CLI 安装、配置检查、启动/API 冒烟与卸载还原；安装/启动/卸载通过，回滚未验证。DSH Desktop 实际 UI 仍未实机验收。`0.9.42` 把客户端静态依赖从已停止发布的 `@deepseek-ai/dsh-client-runtime` 改为官方实际提供 `remote` / `remote.pluginManager` 的 `@deepseek-ai/dsh-api-remotes`；这是依赖声明纠正，不是崩溃修复，旧声明曾被加载器跳过而不影响加载。
 
@@ -130,6 +130,8 @@ Bundle 启停通过 DSH 官方 `inspect`、`installBundle`、`removeBundle`、`s
 `0.9.44` 修复 Desktop Catalog 请求中止时将浏览器 `AbortError.code` 数值误当字符串错误码、最终退化为 `DESKTOP_OPERATION_FAILED` 的问题。目录先请求 GitHub Raw；网络失败、HTTP 错误或超时时再尝试 GitHub Pages 镜像，并对镜像响应执行相同的大小、URL 和 Catalog 结构校验。界面会标明当前使用 Pages 镜像。Catalog 固定在 Commit `7496798b1e05f758a9f4d6287d7186d09570014d`；真实 Desktop Profile 尚未更新，UI 仍未验收。
 
 `0.9.44` 修复 Desktop「官网完整目录」在慢速网络下始终读不出来的问题。官网发现索引 `registry/discovery-index.json` 约 10.4 MB（gzip 后约 2.5 MB、24,171 条），旧实现有三处缺陷：其一，目录文档用 `cache: 'no-store'` 读取，绕过了 CDN 提供的 `max-age=300` 与 `ETag`，每次刷新都从零下载；其二，目录、Catalog 主索引与候选记录同时下载，分抢同一条链路，把体积最大的发现索引拖到全部下载结束才到达；其三，读取期间面板渲染空列表，看起来像加载失败而不是加载中。Catalog 与目录请求的固定预算（12 秒 / 45 秒）也小于这两份文档在慢速链路上的实际耗时。现在发现索引与候选记录走 HTTP 缓存，发现索引由宿主按 6 小时 TTL 落盘缓存后经 `/api2/dsh-safe-plugin-manager/directory` 提供，客户端优先读宿主缓存并保留直连回退；目录在读取期间先显示 Catalog 记录并显示已等待秒数；远端文档读取改为按体积设定上限，区分超时与停滞并停止把浏览器数值 `code` 当作错误码。Catalog 主索引与榜单文档仍不缓存：它们分别被新鲜 Catalog 的 `registry.indexSha256` 和榜单摘要互相钉死，缓存副本可能与被校验对象不一致。真实 Desktop Profile 更新与 UI 验收仍单独进行。
+
+`0.9.45` 修复 Desktop 推荐榜与必装榜因榜单条目携带 `packageName` 字段而校验失败（DESKTOP_RANKING_ENTRY_0_INVALID）的问题。该字段在后台榜单管理增强时被加入数据模型，桌面端校验白名单未同步收纳导致报错；现已同步支持可选 `packageName` 及其安全格式校验，并在榜单行构建中优先复用。
 
 `0.9.37` 优化 Desktop 插件商城与安装确认弹窗界面视觉协调感；
 - `0.9.38` 修复多维筛选下拉选择框（分类、客户端适配、审核状态）在固定高度下文字垂直基线被下半部截断只露出一半的视觉缺陷，规范 `styles.select` 上下 padding 为 0 并保证充足右侧下拉图标安全间距。

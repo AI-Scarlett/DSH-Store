@@ -1,0 +1,123 @@
+{
+  "schemaVersion": 1,
+  "type": "dsh-native-market-upgrade",
+  "planId": "dsh-native-market-desktop-ranking-package-name-20261108",
+  "planFile": "docs/ops/dsh-native-market-desktop-ranking-package-name-20261108.json",
+  "createdAt": "2026-11-08T10:56:53Z",
+  "baseCommit": "d80ed1d225e493f1fa8bb949ded1be0037c84d65",
+  "scope": [
+    ".github/workflows/registry.yml",
+    "README.md",
+    "deploy/setup-model-service.sh",
+    "docs/ops/dsh-native-market-desktop-ranking-package-name-20261108.json",
+    "package.json",
+    "src/client.js",
+    "test/catalog.test.mjs",
+    "test/contracts.test.mjs",
+    "test/desktop-compat.test.mjs",
+    "test/upgrade-matrix.test.mjs"
+  ],
+  "preconditions": {
+    ".github/workflows/registry.yml": "51412d79d0f237efe7dfe5d879434f663623c03da4894ebffb26dd18ba823a8c",
+    "README.md": "5d5dbffd8e4e6d4524c8dd999b09a7b3dfd868c4295d42ee02dca3d38ae8490a",
+    "deploy/setup-model-service.sh": "8ef59e07008be4abddcd35ec73c69307471d20de5f6a0e28e2f16869ab88c362",
+    "docs/ops/dsh-native-market-desktop-ranking-package-name-20261108.json": null,
+    "package.json": "6c716d219b6ac21f77ffe837c84c57a4320149da92a69c17ffd68be52b50cb94",
+    "src/client.js": "54ceb6c4850f52a1b0c40655206f2902486ed20195ddc447adddcaff4e43c681",
+    "test/catalog.test.mjs": "c278fd38f51e3ca38eac8273990dfae4cca232a182136b0e3102ffeea9a56c9f",
+    "test/contracts.test.mjs": "28120b8214c84be5f9107760d1fe83d5d792d2d862c11f681244cc35b3332b01",
+    "test/desktop-compat.test.mjs": "8d4420df18736be9534bed5d39e1d3939f72ce3645840bf951262b2a59b04fe1",
+    "test/upgrade-matrix.test.mjs": "95822e8367b6d569c3c45e94536bb11985bf5d1f6fec34e24a325af7a8166f63"
+  },
+  "postconditions": {
+    ".github/workflows/registry.yml": "68d94522f601a2fb99b8458c302eacad9003d43efc25f1aca8256c3ea49c127b",
+    "README.md": "abcd2396c15c483b7f4fae6362842edfcdc9988d196a96501a776ba3bb4ac6c8",
+    "deploy/setup-model-service.sh": "11b6a4293e1acd525b94c55bef7f885bcaf0aa2229dbc80ebecb7dc297abab74",
+    "package.json": "63c37c083f3c8cd32fc54782ba67b20c0bf87e562575f52fc2c315ac1ee55767",
+    "src/client.js": "ff1094f8651eed1079289473e0bb64abf3c566de7f1b4ef680683169b9cbd670",
+    "test/catalog.test.mjs": "1ed24ee93d99123aeb9be238e10f2739fca740559a32ab54bfbbe44fd2189b4b",
+    "test/contracts.test.mjs": "59d8540e0b2c0479b83d5f489f76af25927c1d42f4d6e30ab60d1b5d2a7ea8c8",
+    "test/desktop-compat.test.mjs": "c09ce30977ad4812c2cfe01571c1caad51a650f904ba9697344b298e4e175fe0",
+    "test/upgrade-matrix.test.mjs": "c71832dfa672944ac4c6df85ae8a53fe099b81e96d8ca3bb92ba770ebd6790b8"
+  },
+  "authorization": {
+    "source": "direct-user-request",
+    "request": "用户报告 DSH Desktop 商城推荐榜和必装榜读取失败（报 DESKTOP_RANKING_UNAVAILABLE_DESKTOP_RANKING_ENTRY_0_INVALID），要求解决此故障。",
+    "githubWriteCredential": "short-lived-token-required",
+    "publication": "auditable-ci-checked-pull-request-only"
+  },
+  "objective": "修复 DSH Desktop 推荐榜和必装榜因数据包含 packageName 属性导致校验失败拒绝加载的问题。",
+  "change": {
+    "packageVersion": "0.9.45",
+    "rootCause": "后台榜单管理增强时，marketplace/rankings/model.js 在榜单条目中增加了 packageName 属性，但 Desktop 客户端校验白名单 validateDesktopRankingSnapshot 未同步将 packageName 纳入合法可选键列表，导致首个条目即校验失败并拒绝整个榜单。",
+    "clientValidation": "在 optionalKeys 中增加 packageName，并增加字符串格式与长度安全校验，与榜单模型约束完全一致。在榜单行构建中优先复用该 packageName。",
+    "scopeExclusions": "不写真实 DSH Profile，不安装或重启 DSH，不修改 @deepseek-ai/*、DSH 源码或 Catalog pin；合并源码后如需更新 Catalog，另建绑定完整 Commit 的新鲜计划。"
+  },
+  "commands": [
+    {
+      "argv": [
+        "node",
+        "--check",
+        "src/client.js"
+      ],
+      "expected": "exit 0"
+    },
+    {
+      "argv": [
+        "node",
+        "--test",
+        "test/desktop-compat.test.mjs"
+      ],
+      "expected": "all disposable Desktop compatibility cases pass, including ranking packageName validation"
+    },
+    {
+      "argv": [
+        "npm",
+        "run",
+        "check"
+      ],
+      "expected": "REGISTRY_OK and full repository suite passes"
+    },
+    {
+      "argv": [
+        "npm",
+        "pack",
+        "--dry-run",
+        "--json"
+      ],
+      "expected": "package dsh-safe-plugin-manager@0.9.45"
+    },
+    {
+      "argv": [
+        "node",
+        "scripts/verify-dsh-upgrade-plan.mjs",
+        "docs/ops/dsh-native-market-desktop-ranking-package-name-20261108.json"
+      ],
+      "expected": "DSH_UPGRADE_PLAN_OK"
+    },
+    {
+      "argv": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "expected": "exit 0"
+    }
+  ],
+  "gates": [
+    "The plan base Commit remains an ancestor and every scoped precondition hash matches immediately before commit.",
+    "Ranking entries with valid packageName pass desktop ranking validation without altering board sorting or official slot allocation.",
+    "All repository checks, package dry-run, typed-plan verifier and exact-head PR CI pass before merge.",
+    "After source merge, Catalog pin advancement uses a separate fresh policy plan; real Profile update and visible Desktop acceptance require a separate confirmed operation."
+  ],
+  "rollback": {
+    "source": "Revert only this change through a CI-checked PR; current Catalog stays pinned to 0.9.44 until a separate release plan advances it.",
+    "desktopProfile": "No real Profile, package or process mutation is included."
+  },
+  "healthCheck": "Run the disposable Desktop compatibility tests including ranking with packageName, npm run check, npm pack dry-run, typed-plan verification and exact-head PR CI. Report real Desktop/Profile acceptance separately.",
+  "verification": {
+    "exactHeadCi": "pending",
+    "catalogRelease": "pending separate plan after merge",
+    "realDesktopProfile": "unchanged; update and visible UI acceptance require separate confirmation"
+  }
+}
