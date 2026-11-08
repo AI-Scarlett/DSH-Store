@@ -1,0 +1,172 @@
+{
+  "schemaVersion": 1,
+  "type": "dsh-native-market-upgrade",
+  "planId": "dsh-native-market-desktop-directory-load-20261108",
+  "planFile": "docs/ops/dsh-native-market-desktop-directory-load-20261108.json",
+  "createdAt": "2026-11-08T09:24:59Z",
+  "baseCommit": "6ae5c1934059e9e716e8c55c9789e2da8a852a60",
+  "scope": [
+    ".github/workflows/registry.yml",
+    "README.md",
+    "deploy/setup-model-service.sh",
+    "docs/ops/dsh-native-market-desktop-directory-load-20261108.json",
+    "package.json",
+    "src/client.js",
+    "src/discovery.mjs",
+    "src/index.mjs",
+    "src/panel.mjs",
+    "test/catalog.test.mjs",
+    "test/client-catalog-download.test.mjs",
+    "test/client-directory-cache.test.mjs",
+    "test/contracts.test.mjs",
+    "test/discovery.test.mjs",
+    "test/upgrade-matrix.test.mjs"
+  ],
+  "preconditions": {
+    ".github/workflows/registry.yml": "2c30127621c04d6a5bd5858e7b41ec0b5c23d5b5675c97a9fbce32958471612b",
+    "README.md": "6c4912191698564827700dbe32d2d0565d6a5e4e2dc25326adad05ac7207e7f3",
+    "deploy/setup-model-service.sh": "a9ec77befbbe9d844d3198853a82a8d15d97216d13052914609d080ec6257e64",
+    "docs/ops/dsh-native-market-desktop-directory-load-20261108.json": null,
+    "package.json": "2e7f8b0bc6c0b7cf1c61ddefe1d349887c737c1e4873cafdfdaf16f93893a4c6",
+    "src/client.js": "ca036f7d10fccbd35be8386133a1b8c2156f3525080e95513811d8d99b306c35",
+    "src/discovery.mjs": null,
+    "src/index.mjs": "904128f82e86c5b85f7a97845dc2531e0d8a381e0df175c2d6c1b46462ac6b74",
+    "src/panel.mjs": "da92f4d5d47fd0d8b8ea1268850b6b1f40b2b4a1c33871bb88ddfa56ff5997b9",
+    "test/catalog.test.mjs": "247350a1b23a9fdead277fa487b4ccd71fce768544d793dfec3b8fac1262993d",
+    "test/client-catalog-download.test.mjs": null,
+    "test/client-directory-cache.test.mjs": null,
+    "test/contracts.test.mjs": "b2ff4f83ff8e329b986c1c6b2502ab5821074df48e8939a0694c5af722aa8ed4",
+    "test/discovery.test.mjs": null,
+    "test/upgrade-matrix.test.mjs": "e143eb9aafc35297428d197bb3228d06ff0298a20b9db1112efd3d3556447897"
+  },
+  "postconditions": {
+    ".github/workflows/registry.yml": "18450596370aadaa314cdaf768c14417a5ea6169d70eff97e628e6c996fae795",
+    "README.md": "5bfe63e9ef4234f797210c4b986b85808cf572759f71094d72dccbd20409296e",
+    "deploy/setup-model-service.sh": "8ef59e07008be4abddcd35ec73c69307471d20de5f6a0e28e2f16869ab88c362",
+    "package.json": "6c716d219b6ac21f77ffe837c84c57a4320149da92a69c17ffd68be52b50cb94",
+    "src/client.js": "54ceb6c4850f52a1b0c40655206f2902486ed20195ddc447adddcaff4e43c681",
+    "src/discovery.mjs": "fe4227de3cda25c52a4be1d07145a913703a8274224f1f24cda29b242bcfdf37",
+    "src/index.mjs": "d5e16f4b2777b1b4441f637596f4085795de9a54813faeb57f613644d65ce6b9",
+    "src/panel.mjs": "8bdf4ebb6e529db5a727869a6003244fa192c90f4b479850f2cc8be850551671",
+    "test/catalog.test.mjs": "c278fd38f51e3ca38eac8273990dfae4cca232a182136b0e3102ffeea9a56c9f",
+    "test/client-catalog-download.test.mjs": "03eccd9d3b628e223f0f8d4e84999e395c8cd1ce36d3890c646d41addd6cc9dc",
+    "test/client-directory-cache.test.mjs": "a20e8508ded269a5ee643aef2b047582466aa4e267603a7b2e9e7b152274d936",
+    "test/contracts.test.mjs": "28120b8214c84be5f9107760d1fe83d5d792d2d862c11f681244cc35b3332b01",
+    "test/discovery.test.mjs": "62974620c7d79aafc54f3319f00d544c88ab4932bce1c748effcfaff26d6c1a9",
+    "test/upgrade-matrix.test.mjs": "95822e8367b6d569c3c45e94536bb11985bf5d1f6fec34e24a325af7a8166f63"
+  },
+  "authorization": {
+    "source": "direct-user-request",
+    "request": "用户报告 DSH Desktop 商城「官网插件列表」加载不出来，并要求去上游解决这个问题，然后把该上线的上线、该提交的提交。",
+    "githubWriteCredential": "short-lived-token-required",
+    "publication": "auditable-ci-checked-pull-request-only"
+  },
+  "objective": "修复 DSH Desktop 商城「官网完整目录」在慢速网络下始终读不出来的问题，并把官网发现索引的重复下载从浏览器移到宿主落盘缓存。",
+  "change": {
+    "packageVersion": "0.9.44",
+    "rootCause": "官网发现索引 registry/discovery-index.json 约 10.4 MB（gzip 约 2.5 MB、24,171 条）。旧实现有三处缺陷：目录文档用 cache: no-store 读取，绕过 CDN 的 max-age=300 与 ETag，每次刷新都重新下载；目录、Catalog 主索引与候选记录同时下载，分抢同一条链路；读取期间面板渲染空列表，看起来像失败而不是加载中。远端文档预算（12 秒 / 45 秒）也小于这两份文档在慢速链路上的实际耗时，目录路径还会把浏览器 AbortError 的数值 code 当成错误码，最终退化成 DESKTOP_OPERATION_FAILED。",
+    "clientBudgets": "远端文档读取使用按体积设定的上限（Catalog 90 秒、目录 240 秒）并区分超时与停滞；只有符合安全格式的字符串才算 Desktop 错误码。插件管理器本地 RPC 的 12 秒预算保持不变。",
+    "clientDelivery": "发现索引与候选记录改用 HTTP 缓存；Catalog 主索引与榜单文档继续 no-store，因为它们分别被新鲜 Catalog 的 registry.indexSha256 与榜单摘要互相钉死，缓存副本可能与被校验对象不一致。发现索引优先由宿主提供，宿主不可用时保留直连回退。",
+    "hostCache": "宿主新增受边界约束的落盘缓存服务，按 6 小时 TTL 缓存官网发现索引，经 /api2/dsh-safe-plugin-manager/directory 提供。宿主只做有界传输与结构自检，客户端仍以自己的完整校验为准。",
+    "loadingUx": "目录读取期间先显示 Catalog 记录并显示已等待秒数，不再渲染空列表。",
+    "scopeExclusions": "不写真实 DSH Profile，不安装或重启 DSH，不修改 @deepseek-ai/*、DSH 源码或 Catalog pin；合并源码后如需更新 Catalog，另建绑定完整 Commit 的新鲜计划。不改变官网站点本身，不新增上游制品格式。"
+  },
+  "commands": [
+    {
+      "argv": [
+        "node",
+        "--check",
+        "src/client.js"
+      ],
+      "expected": "exit 0"
+    },
+    {
+      "argv": [
+        "node",
+        "--check",
+        "src/discovery.mjs"
+      ],
+      "expected": "exit 0"
+    },
+    {
+      "argv": [
+        "node",
+        "--test",
+        "test/desktop-compat.test.mjs"
+      ],
+      "expected": "all disposable Desktop compatibility cases pass"
+    },
+    {
+      "argv": [
+        "node",
+        "--test",
+        "test/discovery.test.mjs"
+      ],
+      "expected": "all disposable host discovery cache cases pass"
+    },
+    {
+      "argv": [
+        "node",
+        "--test",
+        "test/client-catalog-download.test.mjs",
+        "test/client-directory-cache.test.mjs"
+      ],
+      "expected": "all client download and cache policy cases pass"
+    },
+    {
+      "argv": [
+        "npm",
+        "run",
+        "check"
+      ],
+      "expected": "REGISTRY_OK and full repository suite passes"
+    },
+    {
+      "argv": [
+        "npm",
+        "pack",
+        "--dry-run",
+        "--json"
+      ],
+      "expected": "package dsh-safe-plugin-manager@0.9.44"
+    },
+    {
+      "argv": [
+        "node",
+        "scripts/verify-dsh-upgrade-plan.mjs",
+        "docs/ops/dsh-native-market-desktop-directory-load-20261108.json"
+      ],
+      "expected": "DSH_UPGRADE_PLAN_OK"
+    },
+    {
+      "argv": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "expected": "exit 0"
+    }
+  ],
+  "gates": [
+    "The plan base Commit remains an ancestor and every scoped precondition hash matches immediately before commit.",
+    "Only string error codes in the documented shape are surfaced; a numeric browser abort code never becomes DESKTOP_OPERATION_FAILED.",
+    "The discovery and candidate documents use the HTTP cache; the catalog index and ranking documents stay uncached because a digest pins them to another document.",
+    "The host discovery cache is bounded, atomic, TTL-limited and never caches or serves a structurally invalid document.",
+    "All repository checks, package dry-run, typed-plan verifier and exact-head PR CI pass before merge.",
+    "After source merge, Catalog pin advancement uses a separate fresh policy plan; real Profile update and visible Desktop acceptance require a separate confirmed operation."
+  ],
+  "rollback": {
+    "source": "Revert only this change through a CI-checked PR; current Catalog stays pinned to 0.9.43 until a separate release plan advances it.",
+    "desktopProfile": "No real Profile, package or process mutation is included.",
+    "hostCache": "Delete <dshHome>/dsh-safe-plugin-manager/discovery-cache.json to drop the cached document; the client falls back to the direct read."
+  },
+  "healthCheck": "Run the disposable Desktop and host discovery tests, npm run check, npm pack dry-run, typed-plan verification and exact-head PR CI. Report real Desktop/Profile acceptance separately.",
+  "verification": {
+    "nativeAbortEvidence": "AbortError.code is the number 20, so it must not be read as a Desktop error code.",
+    "publishedDocumentSizes": "registry/discovery-index.json is 10,381,927 bytes raw and 2,560,593 bytes gzip with 24,171 entries; registry/catalog.json is 1,941,790 bytes raw and 246,780 bytes gzip.",
+    "measuredLink": "The measured GitHub throughput on this machine is 15-26 KB/s, so the published documents need minutes rather than the previous 12 s / 45 s budgets.",
+    "exactHeadCi": "pending",
+    "catalogRelease": "pending separate plan after merge",
+    "realDesktopProfile": "unchanged; update and visible UI acceptance require separate confirmation"
+  }
+}

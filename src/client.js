@@ -21,6 +21,7 @@ window.__ModuleLoader__.load({
       guardian: '/api2/dsh-safe-plugin-manager/guardian',
       guardianPlan: '/api2/dsh-safe-plugin-manager/guardian/plan',
       guardianExecute: '/api2/dsh-safe-plugin-manager/guardian/execute',
+      directory: '/api2/dsh-safe-plugin-manager/directory',
     }
     const SUPPORT_URL = 'https://dsh.store/'
     const MARKET_PAGE_SIZE = 20
@@ -1574,10 +1575,24 @@ window.__ModuleLoader__.load({
     const DESKTOP_CATALOG_MAX_BYTES = 4 * 1024 * 1024
     const DESKTOP_CATALOG_MAX_ENTRIES = 2_000
     const DESKTOP_CATALOG_TIMEOUT_MS = 12_000
+    // The published Catalog document is ~1.9 MB raw (~247 KB gzip) and the
+    // official discovery index is ~10.4 MB raw (~2.5 MB gzip). A budget sized
+    // for a fast link aborts a slow-but-healthy download, so the remote
+    // document fetches get their own size-appropriate ceiling plus a stall
+    // guard that still fails a dead link quickly. The plugin-manager RPC
+    // timeout above is a local call and keeps its own short budget.
+    const DESKTOP_CATALOG_DOWNLOAD_TIMEOUT_MS = 90_000
+    const DESKTOP_DOWNLOAD_STALL_MS = 30_000
+    // The host caches the official discovery document on disk, so a warm host
+    // answers immediately. The client waits only briefly for it and otherwise
+    // falls back to reading the document itself.
+    const DESKTOP_DIRECTORY_HOST_TIMEOUT_MS = 20_000
     const DESKTOP_CATALOG_INDEX_MAX_BYTES = 2 * 1024 * 1024
-    const DESKTOP_DISCOVERY_MAX_BYTES = 12 * 1024 * 1024
+    // The published discovery index is ~10.4 MB and grows every day, so the
+    // ceiling needs real headroom instead of failing as the index grows.
+    const DESKTOP_DISCOVERY_MAX_BYTES = 32 * 1024 * 1024
     const DESKTOP_DISCOVERY_MAX_RECORDS = 50_000
-    const DESKTOP_DISCOVERY_TIMEOUT_MS = 45_000
+    const DESKTOP_DISCOVERY_TIMEOUT_MS = 240_000
     const DESKTOP_CANDIDATE_MAX_BYTES = 5 * 1024 * 1024
     const DESKTOP_CANDIDATE_MAX_RECORDS = 20_000
     const DESKTOP_RANKING_MAX_BYTES = 2 * 1024 * 1024
@@ -1930,6 +1945,45 @@ window.__ModuleLoader__.load({
       return Object.assign(new Error(code), { code })
     }
 
+    // A DOMException carries a legacy numeric `code` (AbortError is 20), so a
+    // truthiness test on `error.code` mistakes a browser abort for one of our
+    // own failures and hides the real reason. Only a string that matches the
+    // documented code shape is treated as a code.
+    function desktopErrorCodeString(value) {
+      return typeof value === 'string' && /^[A-Za-z0-9][A-Za-z0-9._/-]{0,79}$/.test(value) ? value : null
+    }
+
+    // Bounds a remote document download in two independent ways: a hard ceiling
+    // and a stall guard that aborts when the link stops delivering bytes. A slow
+    // link therefore still finishes, while a dead link fails well before the
+    // ceiling instead of blocking the panel for the whole budget.
+    function createDesktopDownloadGuard(controller, { maxWaitMs, stallMs = DESKTOP_DOWNLOAD_STALL_MS }) {
+      const state = { bytes: 0, reason: null }
+      let ceilingTimer = null
+      let stallTimer = null
+      const stop = () => {
+        if (ceilingTimer !== null) { window.clearTimeout(ceilingTimer); ceilingTimer = null }
+        if (stallTimer !== null) { window.clearTimeout(stallTimer); stallTimer = null }
+      }
+      const abort = reason => {
+        if (state.reason) return
+        state.reason = reason
+        controller.abort()
+      }
+      const armStall = () => { stallTimer = window.setTimeout(() => abort('STALLED'), stallMs) }
+      ceilingTimer = window.setTimeout(() => abort('TIMEOUT'), maxWaitMs)
+      armStall()
+      return {
+        state,
+        progress(bytes) {
+          state.bytes += bytes
+          if (stallTimer !== null) { window.clearTimeout(stallTimer); stallTimer = null }
+          armStall()
+        },
+        stop,
+      }
+    }
+
     function withDesktopTimeout(promise, code, timeoutMs = DESKTOP_CATALOG_TIMEOUT_MS) {
       return new Promise((resolve, reject) => {
         let settled = false
@@ -1953,11 +2007,9 @@ window.__ModuleLoader__.load({
     }
 
     async function fetchDesktopCatalogSource(source) {
-      let controller = null
-      let timeout = null
+      const controller = new AbortController()
+      const guard = createDesktopDownloadGuard(controller, { maxWaitMs: DESKTOP_CATALOG_DOWNLOAD_TIMEOUT_MS })
       try {
-        controller = new AbortController()
-        timeout = window.setTimeout(() => controller.abort(), DESKTOP_CATALOG_TIMEOUT_MS)
         const response = await fetch(source.url, {
           cache: 'no-store', redirect: 'error', headers: { accept: 'application/json' }, signal: controller.signal,
         })
@@ -1975,6 +2027,7 @@ window.__ModuleLoader__.load({
           while (true) {
             let chunk
             try { chunk = await reader.read() } catch (error) {
+              if (guard.state.reason) throw desktopFailure(`DESKTOP_CATALOG_${guard.state.reason}`)
               if (controller.signal.aborted || error?.name === 'AbortError') throw desktopFailure('DESKTOP_CATALOG_TIMEOUT')
               if (typeof error?.code === 'string') throw error
               throw desktopFailure('DESKTOP_CATALOG_FETCH_FAILED')
@@ -1982,6 +2035,7 @@ window.__ModuleLoader__.load({
             if (chunk.done) break
             if (!(chunk.value instanceof Uint8Array)) throw desktopFailure('DESKTOP_CATALOG_STREAM_INVALID')
             byteLength += chunk.value.byteLength
+            guard.progress(chunk.value.byteLength)
             if (byteLength > DESKTOP_CATALOG_MAX_BYTES) {
               try { await reader.cancel() } catch {}
               throw desktopFailure('DESKTOP_CATALOG_TOO_LARGE')
@@ -1991,7 +2045,8 @@ window.__ModuleLoader__.load({
           }
           try { raw += decoder.decode() } catch { throw desktopFailure('DESKTOP_CATALOG_ENCODING_INVALID') }
         } catch (error) {
-          if (typeof error?.code === 'string') throw error
+          if (desktopErrorCodeString(error?.code)) throw error
+          if (guard.state.reason) throw desktopFailure(`DESKTOP_CATALOG_${guard.state.reason}`)
           if (controller.signal.aborted || error?.name === 'AbortError') throw desktopFailure('DESKTOP_CATALOG_TIMEOUT')
           throw desktopFailure('DESKTOP_CATALOG_FETCH_FAILED')
         } finally {
@@ -2000,11 +2055,12 @@ window.__ModuleLoader__.load({
         if (byteLength === 0) throw desktopFailure('DESKTOP_CATALOG_EMPTY')
         try { return JSON.parse(raw) } catch { throw desktopFailure('DESKTOP_CATALOG_JSON_INVALID') }
       } catch (error) {
-        if (typeof error?.code === 'string' && /^[A-Za-z0-9][A-Za-z0-9._/-]{0,79}$/.test(error.code)) throw error
+        if (desktopErrorCodeString(error?.code)) throw error
+        if (guard.state.reason) throw desktopFailure(`DESKTOP_CATALOG_${guard.state.reason}`)
         if (controller?.signal?.aborted || error?.name === 'AbortError') throw desktopFailure('DESKTOP_CATALOG_TIMEOUT')
         throw desktopFailure('DESKTOP_CATALOG_FETCH_FAILED')
       } finally {
-        if (timeout !== null) window.clearTimeout(timeout)
+        guard.stop()
       }
     }
 
@@ -2015,7 +2071,7 @@ window.__ModuleLoader__.load({
           return { document: await fetchDesktopCatalogSource(source), deliverySource: source.id }
         } catch (error) {
           lastError = error
-          if (!['DESKTOP_CATALOG_TIMEOUT', 'DESKTOP_CATALOG_FETCH_FAILED', 'DESKTOP_CATALOG_HTTP_FAILED'].includes(error?.code)) throw error
+          if (!['DESKTOP_CATALOG_TIMEOUT', 'DESKTOP_CATALOG_STALLED', 'DESKTOP_CATALOG_FETCH_FAILED', 'DESKTOP_CATALOG_HTTP_FAILED'].includes(error?.code)) throw error
         }
       }
       throw lastError || desktopFailure('DESKTOP_CATALOG_FETCH_FAILED')
@@ -2317,14 +2373,14 @@ window.__ModuleLoader__.load({
       })
     }
 
-    async function fetchDesktopDirectoryDocument(sources, { maxBytes, timeoutMs, errorCode }) {
+    async function fetchDesktopDirectoryDocument(sources, { maxBytes, timeoutMs, errorCode, cacheMode = 'no-store' }) {
       const failures = []
       for (const source of sources) {
         const controller = new AbortController()
-        const timeout = window.setTimeout(() => controller.abort(), timeoutMs)
+        const guard = createDesktopDownloadGuard(controller, { maxWaitMs: timeoutMs })
         try {
           const response = await fetch(source.url, {
-            cache: 'no-store', credentials: 'omit', redirect: 'error',
+            cache: cacheMode, credentials: 'omit', redirect: 'error',
             headers: { accept: 'application/json' }, signal: controller.signal, referrerPolicy: 'no-referrer',
           })
           if (!response.ok) throw desktopFailure(`${errorCode}_HTTP_FAILED`)
@@ -2348,6 +2404,7 @@ window.__ModuleLoader__.load({
                 if (chunk.done) break
                 if (!(chunk.value instanceof Uint8Array)) throw desktopFailure(`${errorCode}_STREAM_INVALID`)
                 byteLength += chunk.value.byteLength
+                guard.progress(chunk.value.byteLength)
                 if (byteLength > maxBytes) {
                   try { await reader.cancel() } catch {}
                   throw desktopFailure(`${errorCode}_TOO_LARGE`)
@@ -2359,21 +2416,22 @@ window.__ModuleLoader__.load({
           } else {
             raw = await response.text()
             byteLength = new TextEncoder().encode(raw).byteLength
+            guard.progress(byteLength)
             if (byteLength > maxBytes) throw desktopFailure(`${errorCode}_TOO_LARGE`)
           }
           if (byteLength === 0) throw desktopFailure(`${errorCode}_EMPTY`)
           try { return { value: JSON.parse(raw), raw, source: source.host === 'raw.githubusercontent.com' ? 'GitHub Raw' : 'GitHub Pages' } }
           catch { throw desktopFailure(`${errorCode}_JSON_INVALID`) }
         } catch (error) {
-          failures.push(desktopErrorCode(error))
-        } finally { window.clearTimeout(timeout) }
+          failures.push(guard.state.reason ? `${errorCode}_${guard.state.reason}` : desktopErrorCode(error))
+        } finally { guard.stop() }
       }
       throw desktopFailure(`${errorCode}_UNAVAILABLE_${failures.join('_') || 'UNKNOWN'}`)
     }
 
     async function fetchDesktopBoundedText(source, { maxBytes, timeoutMs, errorCode }) {
       const controller = new AbortController()
-      const timeout = window.setTimeout(() => controller.abort(), timeoutMs)
+      const guard = createDesktopDownloadGuard(controller, { maxWaitMs: timeoutMs })
       try {
         const response = await fetch(source.url, {
           cache: 'no-store', credentials: 'omit', redirect: 'error',
@@ -2400,6 +2458,7 @@ window.__ModuleLoader__.load({
               if (chunk.done) break
               if (!(chunk.value instanceof Uint8Array)) throw desktopFailure(`${errorCode}_STREAM_INVALID`)
               byteLength += chunk.value.byteLength
+              guard.progress(chunk.value.byteLength)
               if (byteLength > maxBytes) {
                 try { await reader.cancel() } catch {}
                 throw desktopFailure(`${errorCode}_TOO_LARGE`)
@@ -2411,11 +2470,16 @@ window.__ModuleLoader__.load({
         } else {
           raw = await response.text()
           byteLength = new TextEncoder().encode(raw).byteLength
+          guard.progress(byteLength)
           if (byteLength > maxBytes) throw desktopFailure(`${errorCode}_TOO_LARGE`)
         }
         if (byteLength === 0) throw desktopFailure(`${errorCode}_EMPTY`)
         return raw
-      } finally { window.clearTimeout(timeout) }
+      } catch (error) {
+        if (desktopErrorCodeString(error?.code)) throw error
+        if (guard.state.reason) throw desktopFailure(`${errorCode}_${guard.state.reason}`)
+        throw error
+      } finally { guard.stop() }
     }
 
     async function fetchDesktopRankingSnapshot() {
@@ -2488,16 +2552,46 @@ window.__ModuleLoader__.load({
       return value.entries
     }
 
+    // The host keeps the official discovery document in a bounded, on-disk
+    // cache, so a warm host answers without the browser transferring a
+    // multi-megabyte document at all. Any failure falls back to reading the
+    // published document directly.
+    async function fetchDesktopHostDirectory() {
+      const controller = new AbortController()
+      const timeout = window.setTimeout(() => controller.abort(), DESKTOP_DIRECTORY_HOST_TIMEOUT_MS)
+      try {
+        const response = await fetch(ROUTES.directory, { cache: 'no-store', signal: controller.signal })
+        if (!response.ok) return null
+        const raw = await response.text()
+        if (!raw) return null
+        return { value: JSON.parse(raw), raw, source: 'DSH 宿主缓存' }
+      } catch { return null } finally { window.clearTimeout(timeout) }
+    }
+
+    async function fetchDesktopDiscoveryDocument() {
+      const hosted = await fetchDesktopHostDirectory()
+      if (hosted) return hosted
+      return fetchDesktopDirectoryDocument(DESKTOP_DIRECTORY_SOURCES.discovery, {
+        maxBytes: DESKTOP_DISCOVERY_MAX_BYTES, timeoutMs: DESKTOP_DISCOVERY_TIMEOUT_MS, errorCode: 'DESKTOP_DISCOVERY', cacheMode: 'default',
+      })
+    }
+
     async function fetchDesktopDirectorySnapshot(catalog) {
-      const catalogIndexPromise = fetchDesktopCatalogIndex(catalog)
-      const discoveryPromise = fetchDesktopDirectoryDocument(DESKTOP_DIRECTORY_SOURCES.discovery, {
-        maxBytes: DESKTOP_DISCOVERY_MAX_BYTES, timeoutMs: DESKTOP_DISCOVERY_TIMEOUT_MS, errorCode: 'DESKTOP_DISCOVERY',
-      }).then(result => ({ ...result, value: validateDesktopDiscoveryIndex(result.value) }))
-      const candidatePromise = fetchDesktopDirectoryDocument(DESKTOP_DIRECTORY_SOURCES.candidates, {
-        maxBytes: DESKTOP_CANDIDATE_MAX_BYTES, timeoutMs: DESKTOP_DISCOVERY_TIMEOUT_MS, errorCode: 'DESKTOP_CANDIDATE',
-      }).then(result => ({ ...result, value: validateDesktopCandidateRegistry(result.value) }))
-      const [catalogIndexResult, discoveryResult, candidateResult] = await Promise.allSettled([
-        catalogIndexPromise, discoveryPromise, candidatePromise,
+      // The official discovery document is an order of magnitude larger than
+      // the other two, so it is read on its own first: fetching all three at
+      // once splits the available link and delays the list the user is
+      // waiting for.
+      const discoveryPromise = fetchDesktopDiscoveryDocument()
+        .then(result => ({ ...result, value: validateDesktopDiscoveryIndex(result.value) }))
+      const discoveryResult = await discoveryPromise.then(
+        value => ({ status: 'fulfilled', value }),
+        reason => ({ status: 'rejected', reason }),
+      )
+      const [catalogIndexResult, candidateResult] = await Promise.allSettled([
+        fetchDesktopCatalogIndex(catalog),
+        fetchDesktopDirectoryDocument(DESKTOP_DIRECTORY_SOURCES.candidates, {
+          maxBytes: DESKTOP_CANDIDATE_MAX_BYTES, timeoutMs: DESKTOP_DISCOVERY_TIMEOUT_MS, errorCode: 'DESKTOP_CANDIDATE', cacheMode: 'default',
+        }).then(result => ({ ...result, value: validateDesktopCandidateRegistry(result.value) })),
       ])
       if (catalogIndexResult.status === 'rejected') throw catalogIndexResult.reason
       if (discoveryResult.status === 'rejected') throw discoveryResult.reason
@@ -2881,15 +2975,20 @@ window.__ModuleLoader__.load({
     }
 
     function desktopErrorCode(error) {
-      const value = [error?.code, error?.problem, error?.error?.code, error?.message]
-        .find(candidate => typeof candidate === 'string' && /^[A-Za-z0-9][A-Za-z0-9._/-]{0,79}$/.test(candidate))
-      return value || 'DESKTOP_OPERATION_FAILED'
+      // A DOMException abort carries a numeric legacy `code` (AbortError is 20),
+      // so only a string in the documented code shape counts as a code.
+      return desktopErrorCodeString(error?.code)
+        || desktopErrorCodeString(error?.problem)
+        || desktopErrorCodeString(error?.error?.code)
+        || desktopErrorCodeString(error?.message)
+        || 'DESKTOP_OPERATION_FAILED'
     }
 
     function DesktopStorePanel() {
       const [loadState, setLoadState] = useState({ status: 'loading' })
       const [inventoryState, setInventoryState] = useState({ status: 'loading' })
       const [directoryState, setDirectoryState] = useState({ status: 'loading' })
+      const [directoryElapsed, setDirectoryElapsed] = useState(0)
       const [rankingState, setRankingState] = useState({ status: 'idle' })
       const [refreshing, setRefreshing] = useState(false)
       const [view, setView] = useState('directory')
@@ -2913,6 +3012,7 @@ window.__ModuleLoader__.load({
       const loadDirectory = useCallback(async catalog => {
         const requestId = ++directoryRequestId.current
         setDirectoryState({ status: 'loading' })
+        setDirectoryElapsed(0)
         try {
           const snapshot = await fetchDesktopDirectorySnapshot(catalog)
           if (requestId === directoryRequestId.current) setDirectoryState({ status: 'ready', snapshot })
@@ -2967,14 +3067,28 @@ window.__ModuleLoader__.load({
       useEffect(() => {
         if (['recommended', 'essential'].includes(view) && rankingState.status === 'idle') void loadRankings()
       }, [view, rankingState.status, loadRankings])
+      // The official directory is a multi-megabyte document, so the wait is
+      // reported as elapsed seconds instead of an unexplained spinner.
+      useEffect(() => {
+        if (directoryState.status !== 'loading') return undefined
+        let timer = null
+        const tick = () => {
+          setDirectoryElapsed(value => value + 1)
+          timer = window.setTimeout(tick, 1000)
+        }
+        timer = window.setTimeout(tick, 1000)
+        return () => { if (timer !== null) window.clearTimeout(timer) }
+      }, [directoryState.status])
 
       const entries = loadState.status === 'ready' ? loadState.catalog.entries : []
       const categoryLabels = loadState.status === 'ready' ? loadState.catalog.registry.categories || {} : {}
       const directoryRows = useMemo(() => {
         if (loadState.status !== 'ready') return []
+        // While the official directory is still downloading, show the Catalog
+        // rows instead of an empty list: the panel is usable immediately and
+        // the full directory replaces them when it arrives.
         if (directoryState.status === 'ready') return createDesktopKnownDirectory(loadState.catalog, directoryState.snapshot)
-        if (directoryState.status === 'error') return createDesktopKnownDirectory(loadState.catalog, { discovery: { entries: [] }, candidates: [] })
-        return []
+        return createDesktopKnownDirectory(loadState.catalog, { discovery: { entries: [] }, candidates: [] })
       }, [loadState.status, loadState.catalog, directoryState.status, directoryState.snapshot])
       const rankingRowsByType = useMemo(() => {
         if (rankingState.status !== 'ready') return { recommended: [], essential: [] }
@@ -3740,7 +3854,9 @@ window.__ModuleLoader__.load({
               : '必装榜沿用官网每周分类榜；“分类高星补位”表示当前能核对到的星标顺序。若有插件星标数未知，显示第 1 位也不代表已确认该分类冠军。榜单位置不代表所有用户都必须安装，也不代表安全审查。') : null,
         directoryState.status === 'loading' ? React.createElement('div', { style: styles.marketEmpty, role: 'status' },
           React.createElement('strong', { style: styles.name }, '正在读取官网完整目录'),
-          React.createElement('span', { style: styles.muted }, '搜索框和分类筛选会在目录载入后覆盖全部记录。')) : null,
+          React.createElement('span', { style: styles.muted }, directoryElapsed >= 3
+            ? `已等待 ${directoryElapsed} 秒。官网目录是一份约 10 MB 的文档，慢速网络下可能需要几分钟；下方先显示 Catalog 记录，目录载入后会被全部记录覆盖。`
+            : '下方先显示 Catalog 记录；搜索框和分类筛选会在目录载入后覆盖全部记录。')) : null,
         directoryState.status === 'error' ? React.createElement('div', { style: styles.notice, role: 'alert' },
           `官网完整目录暂时不可用（${directoryState.code}）；下方仅显示 Catalog 回退记录，搜索结果不代表全部插件。可以刷新后重试。`) : null,
         directoryState.status === 'ready' && directoryState.snapshot.candidateError
