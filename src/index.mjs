@@ -1,6 +1,7 @@
 import { createActivationService } from './activation.mjs'
 import { createCatalogService, DEFAULT_CATALOG_URL } from './catalog.mjs'
 import { createCandidateService, DEFAULT_CANDIDATES_URL } from './candidates.mjs'
+import { createDiscoveryService } from './discovery.mjs'
 import { createDshRunner } from './dsh.mjs'
 import { resolveDshHome, validateProfileName } from './inventory.mjs'
 import { createOperationService } from './operations.mjs'
@@ -54,6 +55,12 @@ export function apply(ctx, config = {}) {
     cachePath: join(options.dshHome, 'dsh-safe-plugin-manager', 'catalog-cache.json'),
   })
   const candidateService = createCandidateService({ candidateUrl: options.candidateUrl })
+  // The official site directory is a multi-megabyte document. The host keeps a
+  // bounded copy on disk so the Desktop panel reads it over localhost.
+  const discoveryService = createDiscoveryService({
+    dshHome: options.dshHome,
+    logger: message => ctx.logger?.info?.(message),
+  })
   const runner = options.desktopMode ? null : createDshRunner({ cliPath: options.dshCliPath, environment: { ...process.env, DSH_HOME: options.dshHome } })
   const launchSpec = runner?.restartSpec(options.defaultProfile)
   const launchProfileArgs = options.defaultProfile === 'web' ? ['web'] : ['--profile', options.defaultProfile]
@@ -94,7 +101,7 @@ export function apply(ctx, config = {}) {
   })
   ctx.inject(['webServer', 'connection'], (webCtx) => {
     const dispose = registerManagerRoutes(webCtx.webServer, {
-      ...options, catalogService, candidateService, runner, operationService, sourceUpdateService, dshVersionService,
+      ...options, catalogService, candidateService, discoveryService, runner, operationService, sourceUpdateService, dshVersionService,
       runtimeStatus, restartService, guardianService, activationService, connection: webCtx.connection,
     })
     if (typeof dispose === 'function' && typeof webCtx.effect === 'function') {

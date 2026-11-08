@@ -1,4 +1,5 @@
 import { buildMarketplaceSnapshot, paginateMarketplaceSnapshot, selectMarketplaceIndexEntries } from './catalog.mjs'
+import { DISCOVERY_ERROR_CODES } from './discovery.mjs'
 import { checkProfileHealth } from './health.mjs'
 import { readProfileInventory, validateProfileName } from './inventory.mjs'
 import { readMarketplaceProvenance } from './provenance.mjs'
@@ -6,6 +7,7 @@ import { readFile } from 'node:fs/promises'
 import { communityRecommendationEntries, communityRecommendationPage } from '../marketplace/lib/community-recommendations.js'
 
 export const ROUTE_PATH = '/api2/dsh-safe-plugin-manager/inventory'
+export const DIRECTORY_ROUTE_PATH = '/api2/dsh-safe-plugin-manager/directory'
 export const MARKET_ROUTE_PATH = '/api2/dsh-safe-plugin-manager/market'
 export const HEALTH_ROUTE_PATH = '/api2/dsh-safe-plugin-manager/health'
 export const SOURCE_UPDATE_ROUTE_PATH = '/api2/dsh-safe-plugin-manager/source-update'
@@ -20,6 +22,13 @@ export const GUARDIAN_ROUTE_PATH = '/api2/dsh-safe-plugin-manager/guardian'
 export const GUARDIAN_PLAN_ROUTE_PATH = '/api2/dsh-safe-plugin-manager/guardian/plan'
 export const GUARDIAN_EXECUTE_ROUTE_PATH = '/api2/dsh-safe-plugin-manager/guardian/execute'
 const MAX_BODY_BYTES = 16 * 1024
+// The directory document is public data, so a failure only reports the bounded
+// error code. A stack trace or an absolute cache path never reaches the client.
+const DIRECTORY_ERROR_MESSAGES = {
+  DESKTOP_DIRECTORY_UNAVAILABLE: '官网完整目录暂时不可用，请稍后重试。',
+  DESKTOP_DIRECTORY_TIMEOUT: '官网完整目录获取超时，请稍后重试。',
+  DESKTOP_DIRECTORY_INVALID: '官网完整目录数据无效，已拒绝提供。',
+}
 
 class HttpError extends Error {
   constructor(status, message) {
@@ -119,6 +128,29 @@ export async function handleInventoryRequest(req, res, options = {}) {
     const status = Number.isInteger(error?.status) ? error.status : 500
     const code = status === 500 ? 'INVENTORY_FAILED' : 'REQUEST_REJECTED'
     sendJson(res, status, { ok: false, error: { code, message: String(error?.message || error) } })
+  }
+}
+
+// The official site directory is a large published document. The host keeps a
+// bounded copy on disk and answers with the document itself, so the browser
+// never has to download it from GitHub. Any failure is reported with the
+// documented error code and the browser falls back to its own download.
+export async function handleDirectoryRequest(req, res, options = {}) {
+  try {
+    if (req.method !== 'GET' && req.method !== 'HEAD') {
+      sendJson(res, 405, { ok: false, error: { code: 'METHOD_NOT_ALLOWED', message: 'GET required' } }, { allow: 'GET, HEAD' })
+      return
+    }
+    assertSameOrigin(req)
+    const service = options.discoveryService
+    if (!service || typeof service.load !== 'function') {
+      throw Object.assign(new Error('discovery directory service is unavailable'), { code: 'DESKTOP_DIRECTORY_UNAVAILABLE' })
+    }
+    const result = await service.load()
+    sendJson(res, 200, result.document)
+  } catch (error) {
+    const code = DISCOVERY_ERROR_CODES.includes(error?.code) ? error.code : 'DESKTOP_DIRECTORY_UNAVAILABLE'
+    sendJson(res, 503, { ok: false, error: { code, message: DIRECTORY_ERROR_MESSAGES[code] } })
   }
 }
 
@@ -385,6 +417,7 @@ export function registerManagerRoutes(webServer, options = {}) {
       } catch { sendJson(res, 409, { ok: false, error: { code: 'JOURNAL_UNAVAILABLE', message: '操作记录不可用，请检查恢复状态。' } }) }
     }],
     [ROUTE_PATH, (req, res) => handleInventoryRequest(req, res, options)],
+    [DIRECTORY_ROUTE_PATH, (req, res) => handleDirectoryRequest(req, res, options)],
     [MARKET_ROUTE_PATH, (req, res) => handleMarketRequest(req, res, options)],
     [HEALTH_ROUTE_PATH, (req, res) => handleHealthRequest(req, res, options)],
     [SOURCE_UPDATE_ROUTE_PATH, (req, res) => handleSourceUpdateRequest(req, res, options)],
