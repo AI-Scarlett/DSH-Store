@@ -3,7 +3,7 @@
   "registry": {
     "name": "DSH STORE Candidate Discovery Registry",
     "repositoryUrl": "https://github.com/AI-Scarlett/DSH-Store",
-    "updatedAt": "2026-11-07T19:57:07.000Z",
+    "updatedAt": "2026-11-08T04:54:29.000Z",
     "trustBoundary": {
       "installActionsDisabled": true,
       "catalogPromotionRequired": true,
@@ -19077,6 +19077,101 @@
       "discoveredAt": "2026-11-07T19:57:07.000Z",
       "discoverySources": [
         "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@4e649ccb1d96e2f445aefd065066b85f5bbfa5ba:data/plugins/techflag__dsh-friends.yml:sha256=1780e89b727c46891df7551e11d4c1e939f88effad7b86aeb5fd3d4e21c25ac3:at=2026-11-07T20:05:52.122Z:owner=939362"
+      ],
+      "topics": [
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "loadingvx-deepseek-harness-workbench-plugin",
+      "name": "loadingvx/deepseek-harness-workbench-plugin",
+      "description": "Discovered GitHub repository awaiting a compatible DSH Bundle.",
+      "repositoryUrl": "https://github.com/loadingvx/deepseek-harness-workbench-plugin",
+      "defaultBranch": "main",
+      "latestCommit": "421282dc771c72ccf5fac60d70e3d6571a4e62e3",
+      "sourceUpdatedAt": "2026-10-19T01:58:22.000Z",
+      "discoveredAt": "2026-11-08T04:54:29.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@cd36e8582eaa2a3e64f4e68d28dd8b73b255563f:data/plugins/loadingvx__deepseek-harness-workbench-plugin.yml:sha256=3fa414d21cdce29460138f82d4ca4163128843969ff8bd1871fd3e578475c4b8:at=2026-11-08T05:04:02.203Z:owner=3468890"
+      ],
+      "topics": [
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "lmxcode-dsh-bing-wallpaper",
+      "name": "lmxcode/dsh-bing-wallpaper",
+      "description": "Discovered GitHub repository awaiting a compatible DSH Bundle.",
+      "repositoryUrl": "https://github.com/lmxcode/dsh-bing-wallpaper",
+      "defaultBranch": "main",
+      "latestCommit": "f2405536a1343f3488ce01202b1de501b6382f12",
+      "sourceUpdatedAt": "2026-10-29T06:21:30.000Z",
+      "discoveredAt": "2026-11-08T04:54:29.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@cd36e8582eaa2a3e64f4e68d28dd8b73b255563f:data/plugins/lmxcode__dsh-bing-wallpaper.yml:sha256=d052b2da78ab08b3814c1dcbb3b0bdf083519fe60c60293d50473f994f4ce1a7:at=2026-11-08T05:04:02.203Z:owner=39985700"
+      ],
+      "topics": [
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "lo2589-dsh-plugin-rightbar",
+      "name": "lo2589/dsh-plugin-rightbar",
+      "description": "Discovered GitHub repository awaiting a compatible DSH Bundle.",
+      "repositoryUrl": "https://github.com/lo2589/dsh-plugin-rightbar",
+      "defaultBranch": "main",
+      "latestCommit": "33ba95bb32709143429cc09442b02e5f02070b70",
+      "sourceUpdatedAt": "2026-10-27T22:32:50.000Z",
+      "discoveredAt": "2026-11-08T04:54:29.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@cd36e8582eaa2a3e64f4e68d28dd8b73b255563f:data/plugins/lo2589__dsh-plugin-rightbar.yml:sha256=e47d927dcf3f58867807940463f130cffbe50a3714b3bb502533734e59c313d0:at=2026-11-08T05:04:02.203Z:owner=218595413"
+      ],
+      "topics": [
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "automagik-dev-automagik",
+      "name": "automagik-dev/automagik",
+      "description": "Automagik's plugins for DeepSeek Harness (the Bot team, the welcome) and the Automagik desktop app",
+      "repositoryUrl": "https://github.com/automagik-dev/automagik",
+      "defaultBranch": "dev",
+      "latestCommit": "361f78d74654153bdda0ef783620ed9b26f6c0da",
+      "sourceUpdatedAt": "2026-11-08T05:03:42.000Z",
+      "discoveredAt": "2026-11-08T04:54:29.000Z",
+      "discoverySources": [
+        "github-automatic-radar-v1"
+      ],
+      "topics": [
+        "automatic-radar"
+      ],
+      "status": "rejected",
+      "route": "monorepo-review",
+      "statusReason": "SUBMISSION_PACKAGE_AMBIGUOUS: Multiple DSH plugins were found. Set Plugin path to one of: apps/acp-dsh, apps/bots-dsh, apps/locale-pt-br-dsh, apps/unfold-bot-dsh, apps/unfold-bridge-dsh, apps/unfold-capabilities-dsh, apps/unfold-events-dsh, apps/unfold-mind-dsh, apps/unfold-session-dsh, apps/unfold-settings-dsh, apps/unfold-trajectory-dsh, apps/welcome-dsh, apps/bots-dsh/dev/advanced-fixture/probe, apps/bots-dsh/dev/advanced-fixture/seed"
+    },
+    {
+      "id": "lninghaha-dsh-coding-subscription-oauth",
+      "name": "lninghaha/dsh-coding-subscription-oauth",
+      "description": "Discovered GitHub repository awaiting a compatible DSH Bundle.",
+      "repositoryUrl": "https://github.com/lninghaha/dsh-coding-subscription-oauth",
+      "defaultBranch": "main",
+      "latestCommit": "1f31dd512eae5a3fb052277f5cfd50ae7e7ccede",
+      "sourceUpdatedAt": "2026-10-23T13:35:23.000Z",
+      "discoveredAt": "2026-11-08T04:54:29.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@cd36e8582eaa2a3e64f4e68d28dd8b73b255563f:data/plugins/lninghaha__dsh-coding-subscription-oauth.yml:sha256=3de5780df052f82e9b31bf86d816a630aebad9d0ca632db7ffe8ffd27e5a651d:at=2026-11-08T05:04:02.203Z:owner=89134667"
       ],
       "topics": [
         "automatic-radar"

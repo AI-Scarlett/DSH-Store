@@ -23,24 +23,24 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "f38d47054b8320f9cfe8c1265f8d397067bb0bd7",
-  "version": "0.1.17",
+  "commit": "aa1ab4ad5793fa81e732924a4a2e680e887ab4dd",
+  "version": "0.1.24",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-11-07T19:58:46.000Z",
-    "observedAt": "2026-11-07T19:57:07.000Z",
+    "updatedAt": "2026-11-07T21:46:38.000Z",
+    "observedAt": "2026-11-08T04:54:29.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-11-07T19:57:07.000Z",
-      "evidenceUrl": "https://github.com/GooDAnDReaDY/dsh-issue-reporter/commit/f38d47054b8320f9cfe8c1265f8d397067bb0bd7",
+      "checkedAt": "2026-11-08T04:54:29.000Z",
+      "evidenceUrl": "https://github.com/GooDAnDReaDY/dsh-issue-reporter/commit/aa1ab4ad5793fa81e732924a4a2e680e887ab4dd",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -79,12 +79,12 @@
   },
   "admission": {
     "engine": "bounded-source-v3",
-    "binding": "167b7786b738e103f17f0ce8ec3bee2816395b9818f7972b54c63d9828c36bd9",
+    "binding": "8a6c814a1ba4705bd6312d10e502cec0ce9278d893466d644d07db97fdb9c097",
     "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
-    "state": "review-required",
+    "state": "rejected",
     "sourceContract": "unverified",
     "coverage": "complete",
-    "capabilities": "review-required",
+    "capabilities": "prohibited",
     "compatibility": "per-version-declaration",
     "reviewRegistryDigest": "f40e4a10a2ae7f8d8dadbbde3a7a03e9f7d967caf114a14d6a7bbfe46a93efbf"
   },
@@ -93,7 +93,7 @@
   ],
   "configOverrides": [],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: DSH compatibility is not explicitly declared; Node.js compatibility is not explicitly declared; fixed-source security warnings require review; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal",
+  "statusReason": "Automatic policy blocked installation: DSH compatibility is not explicitly declared; Node.js compatibility is not explicitly declared; fixed-source security findings require quarantine; fixed-source security warnings require review; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal",
   "compatibility": {
     "dsh": null,
     "dshReleases": {
