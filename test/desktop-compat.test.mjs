@@ -880,6 +880,31 @@ test('Desktop recommendation and essential boards match the official website ran
   assert.equal(harness.directoryRequests.filter(item => item.url === desktopRankingDataUrl).length, 1)
 })
 
+test('Desktop recommendation and essential boards accept published ranking entries with packageName', async () => {
+  const { rankingSnapshot, catalog, directoryDocuments } = desktopRankingFixture()
+  for (const entry of rankingSnapshot.entries) {
+    entry.packageName = entry.source === 'catalog' ? `@acme/${entry.id}` : null
+  }
+  const harness = createDesktopHarness({ catalog, directoryDocuments, rankingSnapshot })
+  await harness.ready
+  await harness.render()
+  const panel = harness.getComponent('DesktopStorePanel')
+  await harness.runEffects(panel)
+  await waitForDesktopTree(harness, tree => desktopText(tree).includes('全部已知插件'))
+
+  let tree = await harness.render()
+  const tab = desktopNodes(tree).find(node => node.type === 'button' && node.props.role === 'tab'
+    && node.children?.some(value => String(value).startsWith('推荐榜单')))
+  assert.ok(tab, '推荐榜单 tab is visible')
+  tab.props.onClick()
+  tree = await harness.render()
+  await harness.runEffects(panel)
+  tree = await waitForDesktopTree(harness, value => desktopText(value).includes('官网推荐榜')
+    && !desktopText(value).includes('正在读取官网榜单')
+    && !desktopText(value).includes('官网榜单暂不可用'))
+  assert.ok(desktopNodes(tree).some(node => node.type === 'article'))
+})
+
 test('a ranking digest mismatch fails the board closed without disabling full-directory search', async () => {
   const { rankingSnapshot, catalog, directoryDocuments } = desktopRankingFixture()
   const harness = createDesktopHarness({ catalog, directoryDocuments, rankingSnapshot, rankingIndexDigest: 'f'.repeat(64) })

@@ -2190,11 +2190,13 @@ window.__ModuleLoader__.load({
         const keys = ['id', 'nameZh', 'nameEn', 'version', 'repositoryUrl', 'description', 'categories',
           'listingStatus', 'listingReason', 'source', 'reviewStatus', 'stars', 'weeklyStars',
           'weeklySnapshotMember', 'weeklyCategories']
-        const optionalKeys = ['communityRecommendation', 'featured', 'order']
+        const optionalKeys = ['communityRecommendation', 'featured', 'order', 'packageName']
         if (!entry || typeof entry !== 'object' || Array.isArray(entry)
           || keys.some(key => !Object.hasOwn(entry, key))
           || Object.keys(entry).some(key => !keys.includes(key) && !optionalKeys.includes(key))
           || !desktopBoundedString(entry.id, 1, 240) || ids.has(entry.id)
+          || (entry.packageName !== undefined && entry.packageName !== null
+            && (typeof entry.packageName !== 'string' || entry.packageName.length > 214 || /[\u0000-\u001f\u007f]/.test(entry.packageName)))
           || !desktopBoundedString(entry.nameZh, 1, 240) || !desktopBoundedString(entry.nameEn, 1, 240)
           || !desktopBoundedString(entry.version, 0, 120) || !desktopSafeRepositoryUrl(entry.repositoryUrl)
           || !desktopBoundedString(entry.description, 0, 256)
@@ -2353,7 +2355,7 @@ window.__ModuleLoader__.load({
         const existing = byId.get(ranked.id.toLowerCase()) || byRepository.get(ranked.repositoryUrl.toLowerCase())
         if (existing) return { ...existing, rankingEntry: ranked, categories: [...ranked.categories] }
         const catalogIndexEntry = ranked.source === 'catalog' ? {
-          id: ranked.id, nameZh: ranked.nameZh, nameEn: ranked.nameEn, packageName: '',
+          id: ranked.id, nameZh: ranked.nameZh, nameEn: ranked.nameEn, packageName: ranked.packageName || '',
           version: ranked.version, featured: false, order: Number.MAX_SAFE_INTEGER,
           repositoryUrl: ranked.repositoryUrl, status: ranked.reviewStatus, categories: ranked.categories, searchTerms: [],
         } : null
@@ -2363,7 +2365,7 @@ window.__ModuleLoader__.load({
         } : null
         return {
           id: `ranking:${ranked.id}`, source: ranked.source === 'candidate' ? 'candidate' : 'catalog',
-          sourceId: ranked.id, alias: '', packageName: '', name: ranked.nameZh || ranked.nameEn,
+          sourceId: ranked.id, alias: '', packageName: ranked.packageName || '', name: ranked.nameZh || ranked.nameEn,
           description: ranked.description, categories: [...ranked.categories], stars: ranked.stars || 0,
           kind: ranked.source === 'candidate' ? 'ranking-candidate' : 'ranking-catalog',
           repositoryUrl: ranked.repositoryUrl, detailUrl: null, order: Number.MAX_SAFE_INTEGER,
