@@ -3,7 +3,7 @@
   "registry": {
     "name": "DSH STORE Candidate Discovery Registry",
     "repositoryUrl": "https://github.com/AI-Scarlett/DSH-Store",
-    "updatedAt": "2026-11-08T20:14:55.000Z",
+    "updatedAt": "2026-11-09T05:01:55.000Z",
     "trustBoundary": {
       "installActionsDisabled": true,
       "catalogPromotionRequired": true,
@@ -19363,6 +19363,98 @@
       "status": "reviewing",
       "route": "direct-review",
       "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "oxmumu3-dsh-plugin-finder",
+      "name": "oxmumu3/dsh-plugin-finder",
+      "description": "Discovered GitHub repository awaiting a compatible DSH Bundle.",
+      "repositoryUrl": "https://github.com/oxmumu3/dsh-plugin-finder",
+      "defaultBranch": "main",
+      "latestCommit": "e204eab4474b65726541c33dbc350da19022c37e",
+      "sourceUpdatedAt": "2026-11-09T01:49:50.000Z",
+      "discoveredAt": "2026-11-09T05:01:55.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@668c3fa6e759f413da6b90e3f3af9a3e6b0f6ee9:data/plugins/oxmumu3__dsh-plugin-finder.yml:sha256=b6cd82e6dc572a8da283928960a905a000c82954b4146029dbbfeedfd3121a7f:at=2026-11-09T05:11:39.393Z:owner=157776623"
+      ],
+      "topics": [
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "oxlyn-dsh-plugin-mgr",
+      "name": "oxlyn/dsh-plugin-mgr",
+      "description": "Discovered GitHub repository awaiting a compatible DSH Bundle.",
+      "repositoryUrl": "https://github.com/oxlyn/dsh-plugin-mgr",
+      "defaultBranch": "main",
+      "latestCommit": "e325832995f17e3da2690ec7453c616ca35066d3",
+      "sourceUpdatedAt": "2026-11-08T11:24:00.000Z",
+      "discoveredAt": "2026-11-09T05:01:55.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@668c3fa6e759f413da6b90e3f3af9a3e6b0f6ee9:data/plugins/oxlyn__dsh-plugin-mgr.yml:sha256=a639d1c5e8ea3131563b8ef36aa1a28b1ccc269ad893af1862e04526fb482b21:at=2026-11-09T05:11:39.393Z:owner=18586529"
+      ],
+      "topics": [
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "oxlyn-dsh-model-health",
+      "name": "oxlyn/dsh-model-health",
+      "description": "Discovered GitHub repository awaiting a compatible DSH Bundle.",
+      "repositoryUrl": "https://github.com/oxlyn/dsh-model-health",
+      "defaultBranch": "main",
+      "latestCommit": "5f56624c5e2412ad1becab414b2e71701e8f6a47",
+      "sourceUpdatedAt": "2026-10-01T13:03:36.000Z",
+      "discoveredAt": "2026-11-09T05:01:55.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@668c3fa6e759f413da6b90e3f3af9a3e6b0f6ee9:data/plugins/oxlyn__dsh-model-health.yml:sha256=12d83ecb129e9c4b5f3ae9bb4acf46bf52b0227fc6ccff02c58384fdd454fb12:at=2026-11-09T05:11:39.393Z:owner=18586529"
+      ],
+      "topics": [
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "rohitg00-agentmemory",
+      "name": "rohitg00/agentmemory",
+      "description": "#1 Persistent memory for AI coding agents based on real-world benchmarks",
+      "repositoryUrl": "https://github.com/rohitg00/agentmemory",
+      "defaultBranch": "main",
+      "latestCommit": "5634bc5efd28b2ed2e7311df4e636215fc1b3cd7",
+      "sourceUpdatedAt": "2026-11-09T05:11:26.000Z",
+      "discoveredAt": "2026-11-09T05:01:55.000Z",
+      "discoverySources": [
+        "github-automatic-radar-v1"
+      ],
+      "topics": [
+        "agentmemory",
+        "agents",
+        "ai",
+        "claude",
+        "claudecode",
+        "codex",
+        "copilot",
+        "cursor",
+        "genai",
+        "harness",
+        "hermes",
+        "memory",
+        "omp",
+        "openclaw",
+        "opencode",
+        "pi",
+        "automatic-radar"
+      ],
+      "status": "rejected",
+      "route": "adapter-required",
+      "statusReason": "SUBMISSION_BUNDLE_MISSING: No package.json declaring dsh.bundle.patch was found"
     }
   ]
 }
