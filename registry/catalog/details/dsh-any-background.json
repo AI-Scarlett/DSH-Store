@@ -22,24 +22,24 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "c9b9490ba2118a4048df8e10961194a8a427bf5d",
-  "version": "0.4.3",
+  "commit": "b25114a4239a65fea580cadae85ebe1d97a41ef5",
+  "version": "0.4.4",
   "categories": [
     "themes"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-11-02T10:22:24.000Z",
-    "observedAt": "2026-11-03T07:18:33.000Z",
+    "updatedAt": "2026-11-08T23:09:43.000Z",
+    "observedAt": "2026-11-09T05:01:55.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-11-03T07:18:33.000Z",
-      "evidenceUrl": "https://github.com/Tkingxiao/dsh-any-background/commit/c9b9490ba2118a4048df8e10961194a8a427bf5d",
+      "checkedAt": "2026-11-09T05:01:55.000Z",
+      "evidenceUrl": "https://github.com/Tkingxiao/dsh-any-background/commit/b25114a4239a65fea580cadae85ebe1d97a41ef5",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -78,14 +78,14 @@
   },
   "admission": {
     "engine": "bounded-source-v3",
-    "binding": "11c5b46a09a431485f1d346fadc3725fa5a29e2636e0a272b1bc6968e5e6383d",
+    "binding": "5b76b0c0dae46432fd252d713b126d173f1208452df328ce5a05058d129e4b0f",
     "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
     "state": "review-required",
     "sourceContract": "unverified",
     "coverage": "complete",
     "capabilities": "review-required",
     "compatibility": "per-version-declaration",
-    "reviewRegistryDigest": "3ee824a897b999908d49e4102dc999a725cb096fc7b70eca0db7022561e73c07"
+    "reviewRegistryDigest": "f40e4a10a2ae7f8d8dadbbde3a7a03e9f7d967caf114a14d6a7bbfe46a93efbf"
   },
   "entryIds": [
     "dsh-any-background"
@@ -94,7 +94,7 @@
   "status": "blocked",
   "statusReason": "Automatic policy blocked installation: Node.js compatibility is not explicitly declared; runtime or optional dependencies require a separate supply-chain review; runtime source contains the files permission signal; runtime source contains the network permission signal",
   "compatibility": {
-    "dsh": "0.2.0-rc.1 || 0.2.0-rc.2 || 0.2.1-alpha.1 || 0.2.1-alpha.2 || 0.2.1-alpha.3 || 0.2.1-alpha.4 || 0.2.1-alpha.5 || 0.2.1-rc.1 || 0.2.1-rc.2 || 0.2.1-rc.3 || 0.2.1-rc.4 || 0.2.1-rc.5 || 0.2.2-alpha.2 || >=0.2.0-rc.1",
+    "dsh": "0.2.0-rc.1 || 0.2.0-rc.2 || 0.2.1-alpha.1 || 0.2.1-alpha.2 || 0.2.1-alpha.3 || 0.2.1-alpha.4 || 0.2.1-alpha.5 || 0.2.1-rc.1 || 0.2.1-rc.2 || 0.2.1-rc.3 || 0.2.1-rc.4 || 0.2.1-rc.5 || 0.2.2-alpha.2 || 0.2.2-rc.1 || >=0.2.0-rc.1",
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
@@ -117,8 +117,8 @@
       "0.2.1-rc.4": "compatible",
       "0.2.1-rc.5": "compatible",
       "0.2.2-alpha.2": "compatible",
-      "0.2.2-alpha.3": "unknown",
-      "0.2.2-rc.1": "unknown"
+      "0.2.2-rc.1": "compatible",
+      "0.2.2-alpha.3": "unknown"
     },
     "dshOperations": {
       "rc.7": {
@@ -247,13 +247,13 @@
         "uninstall": "unknown",
         "rollback": "unknown"
       },
-      "0.2.2-alpha.3": {
+      "0.2.2-rc.1": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",
         "rollback": "unknown"
       },
-      "0.2.2-rc.1": {
+      "0.2.2-alpha.3": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",
