@@ -22,24 +22,24 @@
   "manifestPath": "plugin/package.json",
   "installPath": "plugin",
   "updatePolicy": "external-only",
-  "commit": "03d8ab62df9dd10496e9060f69f392fdd9de12c3",
-  "version": "0.9.27",
+  "commit": "11f8ae1c9ec71c954a1053f16e8c2be119cb8319",
+  "version": "0.9.28",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-11-08T18:28:53.000Z",
-    "observedAt": "2026-11-08T20:14:55.000Z",
+    "updatedAt": "2026-11-09T18:46:51.000Z",
+    "observedAt": "2026-11-09T20:12:58.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-11-08T20:14:55.000Z",
-      "evidenceUrl": "https://github.com/AleksandrGoriachev/subagent-workflow/commit/03d8ab62df9dd10496e9060f69f392fdd9de12c3",
+      "checkedAt": "2026-11-09T20:12:58.000Z",
+      "evidenceUrl": "https://github.com/AleksandrGoriachev/subagent-workflow/commit/11f8ae1c9ec71c954a1053f16e8c2be119cb8319",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -78,7 +78,7 @@
   },
   "admission": {
     "engine": "bounded-source-v3",
-    "binding": "67d5a3a7b84eb0ac302bb9e055338bf6775a9cd157b1f6df35430d3b5b81bb2f",
+    "binding": "252c184c233006f85ec9cb38f9e295612d6079a90afe2e0f3c42b23e063f0e90",
     "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
     "state": "review-required",
     "sourceContract": "verified",
@@ -92,7 +92,7 @@
   ],
   "configOverrides": [],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: fixed-source security warnings require review; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal",
+  "statusReason": "Automatic policy blocked installation: fixed-source security warnings require review; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal; dynamic module loading or code evaluation requires separate review",
   "compatibility": {
     "dsh": ">=0.2.0-0 <0.3.0",
     "dshReleases": {

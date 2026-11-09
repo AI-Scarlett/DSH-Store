@@ -18,28 +18,28 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "5f98e454873bc283f5a474a3216435f6c8e76b59",
-  "version": "0.9.0",
+  "commit": "22c19a02e47b285f33ac8c3123922d730a9fb46d",
+  "version": "0.9.1",
   "categories": [
     "tools"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-11-09T05:11:30.000Z",
-    "observedAt": "2026-11-09T05:01:55.000Z",
+    "updatedAt": "2026-11-09T17:12:34.000Z",
+    "observedAt": "2026-11-09T20:12:58.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-policy-v1",
-      "checkedAt": "2026-11-09T05:01:55.000Z",
-      "evidenceUrl": "https://github.com/kaka100330/dsh-tool-gate/commit/5f98e454873bc283f5a474a3216435f6c8e76b59",
+      "method": "automated-fixed-source-recheck-v1",
+      "checkedAt": "2026-11-09T20:12:58.000Z",
+      "evidenceUrl": "https://github.com/kaka100330/dsh-tool-gate/commit/22c19a02e47b285f33ac8c3123922d730a9fb46d",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
+      "summary": "The external-only or non-installable listing metadata was refreshed from a fixed Commit; no installability was inferred."
     },
     "installability": {
       "status": "unknown",
@@ -49,7 +49,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No third-party installation or build code was executed by the automation."
+      "summary": "The updated fixed Commit was not installed or built by Catalog automation."
     },
     "runtime": {
       "status": "unknown",
@@ -59,7 +59,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No DSH runtime acceptance was inferred from static automation."
+      "summary": "No DSH runtime acceptance was carried forward after the source changed."
     },
     "securityReview": {
       "status": "unknown",
@@ -69,12 +69,12 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Automated source policy is not an independent security audit."
+      "summary": "Automated fixed-source review is not an independent security audit."
     }
   },
   "admission": {
     "engine": "bounded-source-v3",
-    "binding": "6ce245109ab534f9e52fed6414c4a92c334c91c714f66ee572a2726b3c8997dd",
+    "binding": "92e038436e61839cf08fa2174ef3eb745f8b2c5dacbd0f01194a4e360a11915a",
     "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
     "state": "review-required",
     "sourceContract": "verified",
@@ -86,10 +86,11 @@
   "entryIds": [
     "dsh-tool-gate"
   ],
+  "configOverrides": [],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: runtime or optional dependencies require a separate supply-chain review; runtime dependencies do not have one unambiguous fixed lockfile for supply-chain review; fixed-source security warnings require review; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal",
+  "statusReason": "Automatic policy blocked installation: runtime source contains the files permission signal; runtime source contains the network permission signal",
   "compatibility": {
-    "dsh": ">=0.2.0-rc.1",
+    "dsh": ">=0.2.1-rc.5",
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
@@ -190,9 +191,7 @@
         "unknown"
       ]
     },
-    "externalDependencies": [
-      "@deepseek-ai/schemastery"
-    ],
+    "externalDependencies": [],
     "reviewStatus": "automated-scan"
   },
   "risk": {

@@ -22,24 +22,24 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "ed996a9cfbc11fe8b32dcbace95e0311b235fcbd",
-  "version": "0.3.5",
+  "commit": "8741b5bbcfe21d9077ca759d365bfa5662da9352",
+  "version": "0.4.1",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-11-07T12:11:45.000Z",
-    "observedAt": "2026-11-07T14:43:42.000Z",
+    "updatedAt": "2026-11-09T16:13:01.000Z",
+    "observedAt": "2026-11-09T20:12:58.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-11-07T14:43:42.000Z",
-      "evidenceUrl": "https://github.com/Duoasa/DSH-to-Figma/commit/ed996a9cfbc11fe8b32dcbace95e0311b235fcbd",
+      "checkedAt": "2026-11-09T20:12:58.000Z",
+      "evidenceUrl": "https://github.com/Duoasa/DSH-to-Figma/commit/8741b5bbcfe21d9077ca759d365bfa5662da9352",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -78,7 +78,7 @@
   },
   "admission": {
     "engine": "bounded-source-v3",
-    "binding": "1f67a9bcc82b7618eb3286e99bcfa6c6ee5b6cda5cf09a98a8b5c81811788643",
+    "binding": "629c0506e784774f06721425e0daf5e91944ac42cb4b60b372ba1686200ac9ff",
     "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
     "state": "incomplete",
     "sourceContract": "verified",
@@ -196,6 +196,7 @@
     "externalDependencies": [
       "@modelcontextprotocol/client",
       "acorn",
+      "playwright-core",
       "zod"
     ],
     "reviewStatus": "automated-scan"
