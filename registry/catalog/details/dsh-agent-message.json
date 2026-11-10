@@ -22,24 +22,24 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "source-verified",
-  "commit": "79932887601c9553ef668be93f129cc1527af34b",
-  "version": "1.6.0",
+  "commit": "8fd5f6e6c56c081c42becf4d38a05ea2542e18b7",
+  "version": "1.6.5",
   "categories": [
     "sessions"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-08-31T00:26:13.000Z",
-    "observedAt": "2026-11-05T16:14:13.000Z",
+    "updatedAt": "2026-11-10T09:46:46.000Z",
+    "observedAt": "2026-11-10T16:10:49.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-update-v3",
-      "checkedAt": "2026-11-05T16:14:13.000Z",
-      "evidenceUrl": "https://github.com/GengDaPeng/dsh-agent-message/commit/79932887601c9553ef668be93f129cc1527af34b",
+      "checkedAt": "2026-11-10T16:10:49.000Z",
+      "evidenceUrl": "https://github.com/GengDaPeng/dsh-agent-message/commit/8fd5f6e6c56c081c42becf4d38a05ea2542e18b7",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -78,7 +78,7 @@
   },
   "admission": {
     "engine": "bounded-source-v3",
-    "binding": "95a601fb35b786b8ac0a52f9b1484cc6a8c535474dd6573677ff3484a209aede",
+    "binding": "cce7b097fecb54bd1430f78b0e554dac7b5df40879ff26c55be58d4b1180befb",
     "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
     "state": "source-verified",
     "sourceContract": "verified",
@@ -94,7 +94,7 @@
   "status": "blocked",
   "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Installation held because the Catalog has no compatible result for any declared DSH release; the official latest 3 releases need rechecking (0.2.2-alpha.2, 0.2.2-alpha.3, 0.2.2-rc.1). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence.",
   "compatibility": {
-    "dsh": ">=0.1.1-rc.2 <0.2.0",
+    "dsh": ">=0.2.2-rc.1 <0.3.0",
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
