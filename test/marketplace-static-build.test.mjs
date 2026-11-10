@@ -11,6 +11,7 @@ import { promisify } from 'node:util'
 import test from 'node:test'
 import { catalogBridgeBuffer, compareVersions, loadCatalogFromFiles, splitCatalogDocument } from '../src/catalog.mjs'
 import { createRankingSnapshot, isDshDiscoveryCandidate, MAX_RANKING_DESCRIPTION_CHARS, MAX_RANKING_SNAPSHOT_BYTES } from '../marketplace/rankings/model.js'
+import { staticSeoCopy } from '../scripts/static-marketplace-seo-copy.mjs'
 import { COMPATIBILITY_HOLD_PREFIX } from '../src/catalog-compatibility-policy.mjs'
 
 const execFileAsync = promisify(execFile)
@@ -18,6 +19,52 @@ const root = new URL('../', import.meta.url)
 const rootPath = fileURLToPath(root)
 const staticBuilderPath = fileURLToPath(new URL('scripts/build-marketplace-static.mjs', root))
 const sha256 = value => createHash('sha256').update(value).digest('hex')
+const escapeHtml = value => String(value).replace(/[&<>"']/g, character => ({
+  '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;',
+})[character])
+const escapeRegExp = value => String(value).replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+function assertStaticSeoPage(page, route, locale, origin) {
+  const copy = staticSeoCopy[route][locale]
+  const htmlLocale = locale === 'en' ? 'en' : 'zh-CN'
+  const defaultLocale = locale === 'en' ? 'en' : 'zh'
+  assert.ok(copy.title.length <= (locale === 'en' ? 60 : 48), `${route} title stays concise`)
+  assert.ok(copy.description.length <= (locale === 'en' ? 160 : 90), `${route} description stays concise`)
+  assert.match(page, new RegExp(`<html lang="${htmlLocale}" data-default-locale="${defaultLocale}">`), `${route} document language`)
+  assert.match(page, new RegExp(`<title>${escapeRegExp(escapeHtml(copy.title))}</title>`), `${route} title`)
+  const metaContent = (attribute, key) => {
+    const expression = new RegExp(`<meta\\b(?=[^>]*\\b${attribute}=["']${escapeRegExp(key)}["'])[^>]*>`, 'i')
+    const tag = page.match(expression)?.[0]
+    assert.ok(tag, `${route} meta ${attribute}=${key} exists`)
+    return tag.match(/\bcontent=["']([^"']*)["']/i)?.[1]
+  }
+  assert.equal(metaContent('name', 'description'), escapeHtml(copy.description), `${route} description`)
+  assert.equal(metaContent('property', 'og:title'), escapeHtml(copy.title), `${route} Open Graph title`)
+  assert.equal(metaContent('property', 'og:description'), escapeHtml(copy.description), `${route} Open Graph description`)
+  assert.equal(metaContent('name', 'twitter:title'), escapeHtml(copy.title), `${route} Twitter title`)
+  assert.equal(metaContent('name', 'twitter:description'), escapeHtml(copy.description), `${route} Twitter description`)
+  const schemaNodes = []
+  const collectSchemaNodes = value => {
+    if (Array.isArray(value)) return value.forEach(collectSchemaNodes)
+    if (!value || typeof value !== 'object') return
+    schemaNodes.push(value)
+    Object.values(value).forEach(collectSchemaNodes)
+  }
+  for (const match of page.matchAll(/<script\b(?=[^>]*\btype=["']application\/ld\+json["'])[^>]*>([\s\S]*?)<\/script>/gi)) {
+    collectSchemaNodes(JSON.parse(match[1]))
+  }
+  const pageSchema = schemaNodes.find(node => node.url === `${origin}${route}` && node.name === copy.title)
+  assert.ok(pageSchema, `${route} has locale-matched page structured data`)
+  assert.equal(pageSchema.description, copy.description, `${route} structured description`)
+  for (const text of Object.values(copy.text || {})) {
+    assert.ok(page.includes(escapeHtml(text)), `${route} has static first-fold copy for ${locale}`)
+  }
+  assert.ok(page.includes(`<link rel="canonical" href="${origin}${route}">`), `${route} canonical URL`)
+  const alternate = locale === 'en' ? 'https://dsh-store.cn' : 'https://dsh.store'
+  assert.ok(page.includes(`hreflang="en" href="https://dsh.store${route}"`), `${route} English hreflang`)
+  assert.ok(page.includes(`hreflang="zh-CN" href="https://dsh-store.cn${route}"`), `${route} Chinese hreflang`)
+  assert.ok(page.includes(`hreflang="x-default" href="https://dsh.store${route}"`), `${route} x-default hreflang`)
+  assert.ok(alternate !== origin, `${route} has a distinct alternate locale origin`)
+}
 function assertCompactFooterNavigation(page, { alternateUrl, label, code }) {
   const primaryNav = page.match(/<nav class="site-nav"[\s\S]*?<\/nav>/)?.[0]
   const footerNav = page.match(/<nav class="footer-nav"[\s\S]*?<\/nav>/)?.[0]
@@ -151,6 +198,11 @@ test('static marketplace derives manager identity and catalog cards without muta
     const scans = await readFile(join(output, 'marketplace/scans/index.html'), 'utf8')
     const scansStyles = await readFile(join(output, 'marketplace/scans/scans.css'), 'utf8')
     const rankings = await readFile(join(output, 'marketplace/rankings/index.html'), 'utf8')
+    for (const route of Object.keys(staticSeoCopy)) {
+      const pagePath = join(output, 'marketplace', route.slice(1), 'index.html')
+      const page = await readFile(pagePath, 'utf8')
+      assertStaticSeoPage(page, route, 'en', 'https://dsh.store')
+    }
     const rankingBytes = await readFile(join(output, 'marketplace/rankings/data.json'))
     const rankingData = JSON.parse(rankingBytes)
     assert.equal(rankingData.schemaVersion, 4)
@@ -299,8 +351,7 @@ test('static marketplace derives manager identity and catalog cards without muta
     assert.match(home, /c0cf0ce3-b77c-4570-9573-59c07a583950/)
     assert.match(home, /https:\/\/aiaiai\.help\/umami\/script\.js/)
     assert.doesNotMatch(home, /763ad43e-f5c9-4342-9a82-8366d1ea90df/)
-    assert.match(home, /DSH STORE \| DSH Desktop Plugin Marketplace \| DSH 插件商城/)
-    assert.match(home, /DSH Desktop 官方插件管理器负责兼容性预检/)
+    assert.match(home, /<title>DSH STORE \| DSH Desktop Plugin Marketplace<\/title>/)
     assert.match(home, /name="applicable-device" content="pc,mobile"/)
     assert.match(home, /href="\.\/dsh-plugins\/"[^>]*data-analytics-event="guide_open"/)
     assert.match(home, /href="https:\/\/tracefence\.com\/"[^>]*>TraceFence/)
@@ -542,6 +593,7 @@ test('static marketplace publishes a compatibility-held manager without installa
       cp(join(rootPath, 'registry'), join(fixture, 'registry'), { recursive: true }),
       cp(staticBuilderPath, join(fixture, 'scripts/build-marketplace-static.mjs')),
       cp(join(rootPath, 'scripts/ranking-github-metadata.mjs'), join(fixture, 'scripts/ranking-github-metadata.mjs')),
+      cp(join(rootPath, 'scripts/static-marketplace-seo-copy.mjs'), join(fixture, 'scripts/static-marketplace-seo-copy.mjs')),
       cp(join(rootPath, 'scripts/build-server-articles.py'), join(fixture, 'scripts/build-server-articles.py')),
     ])
     const catalog = await loadCatalogFromFiles()
@@ -641,6 +693,11 @@ test('static marketplace accepts a domestic origin and renders the ICP record', 
     const domesticAbout = await readFile(join(output, 'marketplace/about/index.html'), 'utf8')
     const domesticArticle = await readFile(join(output, 'marketplace/about/deepseek-harness-guide/index.html'), 'utf8')
     const domesticPlugins = await readFile(join(output, 'marketplace/plugins/index.html'), 'utf8')
+    for (const route of Object.keys(staticSeoCopy)) {
+      const pagePath = join(output, 'marketplace', route.slice(1), 'index.html')
+      const page = await readFile(pagePath, 'utf8')
+      assertStaticSeoPage(page, route, 'zh', 'https://dsh-store.cn')
+    }
     const googleSiteVerification = await readFile(join(output, 'marketplace/googled542dac4f5a6c169.html'), 'utf8')
     assert.equal(googleSiteVerification, 'google-site-verification: googled542dac4f5a6c169.html')
     assert.match(robots, /Sitemap: https:\/\/dsh-store\.cn\/sitemap\.xml/)

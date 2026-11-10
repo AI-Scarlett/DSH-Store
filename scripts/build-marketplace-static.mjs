@@ -9,6 +9,7 @@ import { automationReportRunId, buildAutomationStatus } from '../src/automation-
 import { enrichRankingSnapshot } from './ranking-github-metadata.mjs'
 import { applyRankingRefreshState, createRankingSnapshot, MAX_RANKING_SNAPSHOT_BYTES, validateRankingSnapshot, rankingPage, renderRankingRows } from '../marketplace/rankings/model.js'
 import { createKnownPluginDirectory, filterPluginDirectory } from '../marketplace/lib/plugin-directory.js'
+import { staticSeoCopy } from './static-marketplace-seo-copy.mjs'
 
 const projectRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const args = process.argv.slice(2)
@@ -497,6 +498,110 @@ function replaceRequired(source, search, replacement, label) {
   return source.replace(search, replacement)
 }
 
+function replaceStaticLocaleText(source, key, value, pagePath) {
+  const escapedKey = key.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+  const openingPattern = new RegExp(`<([a-z][a-z0-9:-]*)\\b(?=[^>]*\\bdata-(?:seo-)?i18n=["']${escapedKey}["'])[^>]*>`, 'i')
+  const opening = openingPattern.exec(source)
+  if (!opening) throw new Error(`${pagePath} is missing static locale text marker ${key}`)
+  const contentStart = opening.index + opening[0].length
+  const closingPattern = new RegExp(`</${opening[1]}\\s*>`, 'i')
+  const closing = closingPattern.exec(source.slice(contentStart))
+  if (!closing) throw new Error(`${pagePath} has an unclosed static locale text marker ${key}`)
+  const contentEnd = contentStart + closing.index
+  return `${source.slice(0, contentStart)}${htmlEscape(value)}${source.slice(contentEnd)}`
+}
+
+function setStaticMetaContent(source, attribute, key, value, pagePath) {
+  const escapedKey = key.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+  const attributePattern = new RegExp(`\\b${attribute}\\s*=\\s*["']${escapedKey}["']`, 'i')
+  const contentPattern = /\bcontent\s*=\s*(["'])(.*?)\1/i
+  let matched = false
+  const updated = source.replace(/<meta\b[^>]*>/gi, tag => {
+    if (!attributePattern.test(tag)) return tag
+    matched = true
+    if (!contentPattern.test(tag)) throw new Error(`${pagePath} meta ${attribute}=${key} has no content attribute`)
+    return tag.replace(contentPattern, (_match, quote) => `content=${quote}${htmlEscape(value)}${quote}`)
+  })
+  if (matched) return updated
+  const headEnd = updated.search(/<\/head\s*>/i)
+  if (headEnd < 0) throw new Error(`${pagePath} has no head element for meta ${attribute}=${key}`)
+  return `${updated.slice(0, headEnd)}  <meta ${attribute}="${key}" content="${htmlEscape(value)}">\n${updated.slice(headEnd)}`
+}
+
+function localizeStructuredPage(source, route, locale, copy, siteOrigin, pagePath) {
+  const canonicalUrl = `${siteOrigin}${route}`
+  const language = locale === 'en' ? 'en' : 'zh-CN'
+  let pageSchemaFound = false
+  const scriptPattern = /(<script\b(?=[^>]*\btype=["']application\/ld\+json["'])[^>]*>)([\s\S]*?)(<\/script>)/gi
+  let localized = source.replace(scriptPattern, (_match, opening, json, closing) => {
+    let schema
+    try {
+      schema = JSON.parse(json)
+    } catch {
+      throw new Error(`${pagePath} contains malformed JSON-LD`)
+    }
+    const visit = value => {
+      if (Array.isArray(value)) {
+        value.forEach(visit)
+        return
+      }
+      if (!value || typeof value !== 'object') return
+      const types = Array.isArray(value['@type']) ? value['@type'] : [value['@type']]
+      const isPage = types.some(type => typeof type === 'string' && (type.endsWith('Page') || type === 'TechArticle'))
+      let valueUrl = null
+      if (typeof value.url === 'string') {
+        try {
+          valueUrl = new URL(value.url, siteOrigin).href
+        } catch {}
+      }
+      if (isPage && valueUrl === canonicalUrl) {
+        value.name = copy.title
+        value.description = copy.description
+        pageSchemaFound = true
+      }
+      Object.values(value).forEach(visit)
+    }
+    visit(schema)
+    const jsonOutput = JSON.stringify(schema, null, 2).replace(/</g, '\\u003c')
+    return `${opening}\n${jsonOutput}\n  ${closing}`
+  })
+  if (!pageSchemaFound) {
+    const pageSchema = {
+      '@context': 'https://schema.org',
+      '@type': 'WebPage',
+      '@id': `${canonicalUrl}#page`,
+      url: canonicalUrl,
+      name: copy.title,
+      description: copy.description,
+      inLanguage: language,
+      isPartOf: { '@id': `${siteOrigin}/#website` },
+    }
+    const script = `  <script type="application/ld+json">\n${JSON.stringify(pageSchema, null, 2).replace(/</g, '\\u003c')}\n  </script>\n`
+    const headEnd = localized.search(/<\/head\s*>/i)
+    if (headEnd < 0) throw new Error(`${pagePath} has no head element for page structured data`)
+    localized = `${localized.slice(0, headEnd)}${script}${localized.slice(headEnd)}`
+  }
+  return localized
+}
+
+function applyStaticSeoCopy(source, route, locale, siteOrigin, pagePath) {
+  const copy = staticSeoCopy[route]?.[locale]
+  if (!copy) return source
+  const titlePattern = /<title\b[^>]*>[\s\S]*?<\/title>/i
+  if (!titlePattern.test(source)) throw new Error(`${pagePath} has no title element`)
+  let localized = source.replace(titlePattern, `<title>${htmlEscape(copy.title)}</title>`)
+  localized = setStaticMetaContent(localized, 'name', 'description', copy.description, pagePath)
+  localized = setStaticMetaContent(localized, 'property', 'og:title', copy.title, pagePath)
+  localized = setStaticMetaContent(localized, 'property', 'og:description', copy.description, pagePath)
+  localized = setStaticMetaContent(localized, 'name', 'twitter:title', copy.title, pagePath)
+  localized = setStaticMetaContent(localized, 'name', 'twitter:description', copy.description, pagePath)
+  localized = localizeStructuredPage(localized, route, locale, copy, siteOrigin, pagePath)
+  for (const [key, value] of Object.entries(copy.text || {})) {
+    localized = replaceStaticLocaleText(localized, key, value, pagePath)
+  }
+  return localized
+}
+
 function replaceBetweenMarkers(source, begin, end, content, label) {
   const start = source.indexOf(begin)
   const finish = source.indexOf(end, start + begin.length)
@@ -749,7 +854,9 @@ const umamiMarkup = `<script>
 for (const { file: pagePath, route, fixedLocale, domesticOnly = false } of canonicalPages) {
   const absolutePath = resolve(outputRoot, pagePath)
   const page = await readFile(absolutePath, 'utf8')
-  const compactPage = compactPrimaryNavigation(page, pagePath)
+  const pageLocale = fixedLocale === 'zh-CN' ? 'zh' : defaultLocale
+  const localizedPage = applyStaticSeoCopy(page, route, pageLocale, siteOrigin, pagePath)
+  const compactPage = compactPrimaryNavigation(localizedPage, pagePath)
   const withAlternate = replaceRequired(compactPage, '<!-- DSH_ALTERNATE_SITE -->', '<!-- DSH_SERVER_ARTICLES_NAV -->', `${pagePath} article navigation marker`)
   const withFriendLinks = replaceRequired(withAlternate, '<!-- DSH_FRIEND_SISTER_SITE -->', '', `${pagePath} friend sister site marker`)
   const withFooterLinks = ensureFooterUtilityLinks(withFriendLinks, pagePath, route)
