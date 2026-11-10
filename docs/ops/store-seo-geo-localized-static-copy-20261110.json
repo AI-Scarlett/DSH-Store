@@ -8,9 +8,9 @@
   "baseCommit": "c71b5cbb569e1bf1b6a03d65f04169cc074e5977",
   "authorization": {
     "source": "direct-user-request",
-    "request": "优化 DSH Store 网站 SEO/GEO；用户明确更正目标站点为 DSH Store。",
+    "request": "优化网站 SEO/GEO；用户明确更正目标站点为 DSH Store，并已要求把应更新的代码同步到官网。",
     "publication": "auditable-ci-checked-pull-request",
-    "productionDeployment": "not-included-in-this-change",
+    "productionDeployment": "authorized-by-direct-user-request; merge only after required CI passes, then use existing Pages and storefront refresh paths",
     "githubWriteCredential": "short-lived-token-required"
   },
   "objective": "Ensure core DSH STORE discovery pages serve locale-consistent titles, descriptions, social previews, page-level structured data, and first-fold copy in static HTML before JavaScript runs.",
@@ -46,7 +46,7 @@
     "nonGoals": [
       "No Catalog, DSH package, Profile, or lifecycle changes.",
       "No Google Search Console, Bing, Baidu, or IndexNow account mutation.",
-      "No production server or DNS change.",
+      "No DNS, Search Console, analytics-account, or server-configuration change; use the existing release and rollback paths.",
       "No claim that indexing, ranking, visits, or AI citations have improved without their own measurement evidence."
     ]
   },
@@ -56,9 +56,9 @@
     "npm run check passes using the repository's disposable fixtures.",
     "Build international and domestic output into disposable directories; verify language, title, description, social metadata, page-level JSON-LD, first-fold copy, canonical URLs, hreflang, and sitemap host for both origins.",
     "Keep every title and meta description within the locale-specific deterministic length bounds enforced by the static-build test.",
-    "Submit one auditable CI-checked pull request; production deployment and public indexing are separate states."
+    "Merge only after all required checks pass, then independently verify GitHub Raw, GitHub Pages, dsh.store, and dsh-store.cn for the generated locale-matched metadata and page structured data. Keep indexing, ranking, visits, and AI citations as separate evidence states."
   ],
-  "healthCheck": "International output exposes English core SEO metadata, matching page-level structured data, and first-fold headings before JavaScript; domestic output exposes Simplified Chinese equivalents. Existing canonical and hreflang links remain correct, and no DSH/Profile mutation occurs.",
+  "healthCheck": "International output exposes English core SEO metadata, matching page-level structured data, and first-fold headings before JavaScript; domestic output exposes Simplified Chinese equivalents. After merge, GitHub Raw, Pages, and both custom domains must serve the intended source/build revision with existing canonical and hreflang links intact. No DSH/Profile mutation occurs.",
   "validation": {
     "checkedAt": "2026-11-10",
     "command": "npm run check",
@@ -69,7 +69,7 @@
   },
   "rollback": {
     "source": "Revert the exact merged SEO-content commit through a new CI-checked pull request.",
-    "runtime": "No runtime, server, DSH package, Catalog, or Profile state is changed by this plan."
+    "runtime": "The existing storefront refresher keeps a prior release and atomically restores it on a failed health check. No DNS, server configuration, DSH package, Catalog, or Profile state is changed by this plan."
   },
   "postconditionSha256": {
     "marketplace/dsh-plugins/index.html": "cf39daf566f34389c401ad843f5835c78a644d5fe77acbeff98680da0d1d7821",
