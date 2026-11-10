@@ -1,0 +1,81 @@
+{
+  "schemaVersion": 1,
+  "id": "store-seo-geo-localized-static-copy-20261110",
+  "kind": "storefront-seo-geo-content-plan",
+  "status": "local-checks-passed",
+  "createdAt": "2026-11-10",
+  "repository": "AI-Scarlett/DSH-Store",
+  "baseCommit": "c71b5cbb569e1bf1b6a03d65f04169cc074e5977",
+  "authorization": {
+    "source": "direct-user-request",
+    "request": "优化网站 SEO/GEO；用户明确更正目标站点为 DSH Store，并已要求把应更新的代码同步到官网。",
+    "publication": "auditable-ci-checked-pull-request",
+    "productionDeployment": "authorized-by-direct-user-request; merge only after required CI passes, then use existing Pages and storefront refresh paths",
+    "githubWriteCredential": "short-lived-token-required"
+  },
+  "objective": "Ensure core DSH STORE discovery pages serve locale-consistent titles, descriptions, social previews, page-level structured data, and first-fold copy in static HTML before JavaScript runs.",
+  "scope": [
+    "docs/ops/store-seo-geo-localized-static-copy-20261110.json",
+    "scripts/static-marketplace-seo-copy.mjs",
+    "marketplace/dsh-plugins/index.html",
+    "scripts/build-marketplace-static.mjs",
+    "test/marketplace-static-build.test.mjs",
+    "test/deploy-refresh.test.mjs"
+  ],
+  "preconditionSha256": {
+    "docs/ops/store-seo-geo-localized-static-copy-20261110.json": null,
+    "scripts/static-marketplace-seo-copy.mjs": null,
+    "marketplace/dsh-plugins/index.html": "8e2eec434c60f866831d361ef33780d01763d1cbe2f386869c2d56f8a2f72a59",
+    "scripts/build-marketplace-static.mjs": "153aa4eff7ed408565c8208ff00ce6c4f315d034234d24c4cd396e6e56b47530",
+    "test/marketplace-static-build.test.mjs": "50b7fcab8d294269003df8e92593d48288ed3ea898846601d16f472bce53413b",
+    "test/deploy-refresh.test.mjs": "d31bdacc028d30cf5b7165ddb68e7604ed6d6916a515d1e4908c140b1a0c4479"
+  },
+  "changes": {
+    "routes": [
+      "/",
+      "/plugins/",
+      "/standards/",
+      "/dsh-plugins/",
+      "/build/",
+      "/faq/",
+      "/about/",
+      "/community/",
+      "/rankings/"
+    ],
+    "behavior": "Generate Chinese or English title, meta description, Open Graph, Twitter, page-level JSON-LD name and description, and key first-fold text from the site's canonical locale during the static build. Add a WebPage schema where a core page has none. Keep JavaScript language switching and page routing intact.",
+    "nonGoals": [
+      "No Catalog, DSH package, Profile, or lifecycle changes.",
+      "No Google Search Console, Bing, Baidu, or IndexNow account mutation.",
+      "No DNS, Search Console, analytics-account, or server-configuration change; use the existing release and rollback paths.",
+      "No claim that indexing, ranking, visits, or AI citations have improved without their own measurement evidence."
+    ]
+  },
+  "deterministicGates": [
+    "Recheck base Commit and every listed precondition hash immediately before editing and before commit.",
+    "git diff --check passes and the changed-file set is exactly the declared scope.",
+    "npm run check passes using the repository's disposable fixtures.",
+    "Build international and domestic output into disposable directories; verify language, title, description, social metadata, page-level JSON-LD, first-fold copy, canonical URLs, hreflang, and sitemap host for both origins.",
+    "Keep every title and meta description within the locale-specific deterministic length bounds enforced by the static-build test.",
+    "Merge only after all required checks pass, then independently verify GitHub Raw, GitHub Pages, dsh.store, and dsh-store.cn for the generated locale-matched metadata and page structured data. Keep indexing, ranking, visits, and AI citations as separate evidence states."
+  ],
+  "healthCheck": "International output exposes English core SEO metadata, matching page-level structured data, and first-fold headings before JavaScript; domestic output exposes Simplified Chinese equivalents. After merge, GitHub Raw, Pages, and both custom domains must serve the intended source/build revision with existing canonical and hreflang links intact. No DSH/Profile mutation occurs.",
+  "validation": {
+    "checkedAt": "2026-11-10",
+    "command": "npm run check",
+    "result": "passed",
+    "registry": "893 entries validated",
+    "tests": "651 passed, 0 failed",
+    "gitDiffCheck": "passed"
+  },
+  "rollback": {
+    "source": "Revert the exact merged SEO-content commit through a new CI-checked pull request.",
+    "runtime": "The existing storefront refresher keeps a prior release and atomically restores it on a failed health check. No DNS, server configuration, DSH package, Catalog, or Profile state is changed by this plan."
+  },
+  "postconditionSha256": {
+    "marketplace/dsh-plugins/index.html": "cf39daf566f34389c401ad843f5835c78a644d5fe77acbeff98680da0d1d7821",
+    "scripts/build-marketplace-static.mjs": "fb00cdfaaad8d78f8c9393f66a0514e6b45737afdaa355e04739f96a0d9fca0d",
+    "scripts/static-marketplace-seo-copy.mjs": "9e08a078dec85342a01f5a21eacd16e2ac2e6adb845e1bbfc95f83f6af77077d",
+    "test/deploy-refresh.test.mjs": "0fd6722030a1407569fbf63ec1aa0fea04be011dd1d2844b75319f96831c4de6",
+    "test/marketplace-static-build.test.mjs": "b7804a08b0bd137dc27dc33b613b060ab0c91457cd718b4cd5445eca21604e99"
+  }
+}

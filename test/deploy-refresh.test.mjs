@@ -39,6 +39,7 @@ test('production candidate gate accepts a held manager but rejects an exposed in
         cp(join(root, 'registry'), join(fixture, 'registry'), { recursive: true }),
         cp(join(root, 'scripts/build-marketplace-static.mjs'), join(fixture, 'scripts/build-marketplace-static.mjs')),
         cp(join(root, 'scripts/ranking-github-metadata.mjs'), join(fixture, 'scripts/ranking-github-metadata.mjs')),
+        cp(join(root, 'scripts/static-marketplace-seo-copy.mjs'), join(fixture, 'scripts/static-marketplace-seo-copy.mjs')),
         cp(join(root, 'scripts/build-server-articles.py'), join(fixture, 'scripts/build-server-articles.py')),
       ])
       const catalog = await loadCatalogFromFiles()
