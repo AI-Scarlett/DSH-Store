@@ -21,7 +21,7 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "5c0e7f7b57d3ea6b1ebbfd95f50e5b797d4c246b",
+  "commit": "0a45f4a89481572057660af53a65e470a29f745a",
   "version": "0.1.4",
   "categories": [
     "experimental"
@@ -29,20 +29,20 @@
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-11-11T01:38:29.000Z",
-    "observedAt": "2026-11-11T01:30:34.000Z",
+    "updatedAt": "2026-11-11T01:50:57.000Z",
+    "observedAt": "2026-11-11T05:04:04.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-policy-v1",
-      "checkedAt": "2026-11-11T01:30:34.000Z",
-      "evidenceUrl": "https://github.com/liangdabiao/dsh-lego-forge/commit/5c0e7f7b57d3ea6b1ebbfd95f50e5b797d4c246b",
+      "method": "automated-fixed-source-recheck-v1",
+      "checkedAt": "2026-11-11T05:04:04.000Z",
+      "evidenceUrl": "https://github.com/liangdabiao/dsh-lego-forge/commit/0a45f4a89481572057660af53a65e470a29f745a",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
+      "summary": "The external-only or non-installable listing metadata was refreshed from a fixed Commit; no installability was inferred."
     },
     "installability": {
       "status": "unknown",
@@ -52,7 +52,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No third-party installation or build code was executed by the automation."
+      "summary": "The updated fixed Commit was not installed or built by Catalog automation."
     },
     "runtime": {
       "status": "unknown",
@@ -62,7 +62,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No DSH runtime acceptance was inferred from static automation."
+      "summary": "No DSH runtime acceptance was carried forward after the source changed."
     },
     "securityReview": {
       "status": "unknown",
@@ -72,12 +72,12 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Automated source policy is not an independent security audit."
+      "summary": "Automated fixed-source review is not an independent security audit."
     }
   },
   "admission": {
     "engine": "bounded-source-v3",
-    "binding": "a84560dc91c8a3d15bfa64fe3b73b2a531db3880aa90b4a1128f0c11531b80f8",
+    "binding": "85077b1690cfe0f2d73909eafad3f962957ccedf96dd1a5a8d38316870039325",
     "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
     "state": "rejected",
     "sourceContract": "unverified",
@@ -89,6 +89,7 @@
   "entryIds": [
     "lego-forge"
   ],
+  "configOverrides": [],
   "status": "blocked",
   "statusReason": "Automatic policy blocked installation: GitHub repository license metadata is NOASSERTION; fixed-source license evidence needs manual review; install lifecycle scripts are present: prepare; runtime or optional dependencies require a separate supply-chain review; runtime artifact is missing from the distributable surface: ./dist/client.js; package contains unsupported artifacts requiring review: examples/cottage/out/model.ldr, examples/cottage/out/parts.csv, examples/retro-computer/out/model.ldr, examples/retro-computer/out/parts.csv; scanner budget source-total-bytes: package actual=15564987 ma",
   "compatibility": {
