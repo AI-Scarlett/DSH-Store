@@ -23,7 +23,7 @@
   "manifestPath": "packages/dsh/package.json",
   "installPath": "packages/dsh",
   "updatePolicy": "external-only",
-  "commit": "87d5a504205c94c4dace1cc8e82681f6d59957f4",
+  "commit": "2aba3fb99a87a0dadcb0b047dc3f84ccc8f1f10b",
   "version": "3.1.0",
   "categories": [
     "workflow"
@@ -31,16 +31,16 @@
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-11-04T11:09:01.000Z",
-    "observedAt": "2026-11-05T16:14:13.000Z",
+    "updatedAt": "2026-11-11T11:36:33.000Z",
+    "observedAt": "2026-11-11T15:54:26.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-11-05T16:14:13.000Z",
-      "evidenceUrl": "https://github.com/severin-ye/uagent-sync/commit/87d5a504205c94c4dace1cc8e82681f6d59957f4",
+      "checkedAt": "2026-11-11T15:54:26.000Z",
+      "evidenceUrl": "https://github.com/severin-ye/uagent-sync/commit/2aba3fb99a87a0dadcb0b047dc3f84ccc8f1f10b",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -79,7 +79,7 @@
   },
   "admission": {
     "engine": "bounded-source-v3",
-    "binding": "6d19155dbfae34f0a288472cdc4f1cda5a2bebac768156b6962f9b25364cdac9",
+    "binding": "6ecefd63d771e6e325865dff615b961cb7898e4b98c92ac3b3928d1a950c9883",
     "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
     "state": "review-required",
     "sourceContract": "verified",
@@ -110,7 +110,8 @@
       "0.2.2-alpha.2": "incompatible",
       "0.2.1-rc.5": "unknown",
       "0.2.2-alpha.3": "unknown",
-      "0.2.2-rc.1": "unknown"
+      "0.2.2-rc.1": "unknown",
+      "0.2.2-rc.2": "unknown"
     },
     "dshOperations": {
       "rc.7": {
@@ -192,6 +193,12 @@
         "rollback": "unknown"
       },
       "0.2.2-rc.1": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.2.2-rc.2": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",

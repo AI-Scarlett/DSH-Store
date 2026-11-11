@@ -24,7 +24,7 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "source-verified",
-  "commit": "64a4b44010c34e5f7397133338a10d9160fc896b",
+  "commit": "3e2b3c5c3cc2f2920777fd1480d33c712af863bd",
   "version": "0.1.0",
   "categories": [
     "experimental"
@@ -32,16 +32,16 @@
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-11-05T07:10:49.000Z",
-    "observedAt": "2026-11-05T16:14:13.000Z",
+    "updatedAt": "2026-11-11T06:56:44.000Z",
+    "observedAt": "2026-11-11T15:54:26.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-update-v3",
-      "checkedAt": "2026-11-05T16:14:13.000Z",
-      "evidenceUrl": "https://github.com/zyf2492313716-cloud/dsh-auto-image-optimizer/commit/64a4b44010c34e5f7397133338a10d9160fc896b",
+      "checkedAt": "2026-11-11T15:54:26.000Z",
+      "evidenceUrl": "https://github.com/zyf2492313716-cloud/dsh-auto-image-optimizer/commit/3e2b3c5c3cc2f2920777fd1480d33c712af863bd",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -80,7 +80,7 @@
   },
   "admission": {
     "engine": "bounded-source-v3",
-    "binding": "ba852408d5aa8ca33eabd43b7b563dc9fd5fff70c69338220de3dcf921e2f628",
+    "binding": "3dd0b41ad23881aee0a24e611fae431495aba0f4f2693d04609b64830ca82169",
     "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
     "state": "source-verified",
     "sourceContract": "verified",
@@ -109,7 +109,8 @@
       "0.2.1-rc.5": "compatible",
       "0.2.2-alpha.2": "compatible",
       "0.2.2-alpha.3": "compatible",
-      "0.2.2-rc.1": "compatible"
+      "0.2.2-rc.1": "compatible",
+      "0.2.2-rc.2": "unknown"
     },
     "dshOperations": {
       "rc.7": {
@@ -183,14 +184,20 @@
         "start": "unknown",
         "uninstall": "unknown",
         "rollback": "unknown"
+      },
+      "0.2.2-rc.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
       }
     },
     "latestWindow": {
       "state": "current",
       "releases": [
-        "0.2.2-alpha.2",
         "0.2.2-alpha.3",
-        "0.2.2-rc.1"
+        "0.2.2-rc.1",
+        "0.2.2-rc.2"
       ]
     },
     "node": "^22.19 || >=24",
