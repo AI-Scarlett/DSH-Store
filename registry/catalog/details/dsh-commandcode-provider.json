@@ -23,24 +23,24 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "6cfff97340c6384ea597fd15187dc50d12ba792a",
-  "version": "0.17.6",
+  "commit": "de810894a420e4ca8ee5144bf00563fd64399e3d",
+  "version": "0.17.7",
   "categories": [
     "models"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-11-11T06:08:53.000Z",
-    "observedAt": "2026-11-11T15:54:26.000Z",
+    "updatedAt": "2026-11-12T06:05:55.000Z",
+    "observedAt": "2026-11-12T06:08:31.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-11-11T15:54:26.000Z",
-      "evidenceUrl": "https://github.com/Mars-Sea/dsh-commandcode-provider/commit/6cfff97340c6384ea597fd15187dc50d12ba792a",
+      "checkedAt": "2026-11-12T06:08:31.000Z",
+      "evidenceUrl": "https://github.com/Mars-Sea/dsh-commandcode-provider/commit/de810894a420e4ca8ee5144bf00563fd64399e3d",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -79,7 +79,7 @@
   },
   "admission": {
     "engine": "bounded-source-v3",
-    "binding": "5e2bc7b65df0d244455864a5c68c76542bb01826a36d8faa669dc2f58715fca7",
+    "binding": "20d6e404f48bcbd9fd51a67386ff9d5c60bb35e87fcff05908804f9894e5d9ad",
     "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
     "state": "rejected",
     "sourceContract": "verified",
@@ -93,7 +93,7 @@
   ],
   "configOverrides": [],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: install lifecycle scripts are present: prepare; manifest files selectors are unsupported or ambiguous; whole-package fallback requires review; package ignore rules require artifact review; package contains unsupported artifacts requiring review: .gitattributes, .gitignore, .gitleaks.toml; local module is missing from the distributable surface: src/client/panel-slots.ts -> ./panel-view.ts; fixed-source scan is incomplete; unobserved capability signals are unknown; fixed-source security findings require quarantine; fixed-source security warnings require rev",
+  "statusReason": "Automatic policy blocked installation: install lifecycle scripts are present: prepare; manifest files selectors are unsupported or ambiguous; whole-package fallback requires review; package ignore rules require artifact review; package contains unsupported artifacts requiring review: .gitattributes, .gitignore, .gitleaks.toml, designs/commandcode-settings-dsh/.gitignore; local module is missing from the distributable surface: src/client/panel-slots.ts -> ./panel-view.ts; fixed-source scan is incomplete; unobserved capability signals are unknown; fixed-source security findings require quarantin",
   "compatibility": {
     "dsh": ">=0.2.1-rc.2 <0.2.2-0 || >=0.2.2-alpha.2 <0.2.3-0",
     "dshReleases": {
@@ -112,7 +112,7 @@
       "0.2.2-alpha.2": "compatible",
       "0.2.2-alpha.3": "compatible",
       "0.2.2-rc.1": "compatible",
-      "0.2.2-rc.2": "unknown"
+      "0.2.2-rc.2": "compatible"
     },
     "dshOperations": {
       "rc.7": {
