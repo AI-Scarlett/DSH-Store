@@ -12,13 +12,13 @@ test('client peer declarations match the official Host pre-install contract', as
   assert.ok(!clients.includes('@deepseek-ai/dsh-client-runtime'),
     'the standalone dsh-client-runtime line stopped publishing after 0.1.1-rc.2')
   assert.equal(manifest.peerDependencies['@deepseek-ai/dsh-client-runtime'], undefined)
-  for (const release of ['0.2.1-alpha.1', '0.2.1-alpha.2', '0.2.1-alpha.3', '0.2.1-alpha.4', '0.2.1-alpha.5', '0.2.1-rc.1', '0.2.1-rc.2', '0.2.1-rc.3', '0.2.1-rc.4', '0.2.1-rc.5', '0.2.2-alpha.2', '0.2.2-alpha.3', '0.2.2-rc.1']) {
+  for (const release of ['0.2.1-alpha.1', '0.2.1-alpha.2', '0.2.1-alpha.3', '0.2.1-alpha.4', '0.2.1-alpha.5', '0.2.1-rc.1', '0.2.1-rc.2', '0.2.1-rc.3', '0.2.1-rc.4', '0.2.1-rc.5', '0.2.2-alpha.2', '0.2.2-alpha.3', '0.2.2-rc.1', '0.2.2-rc.2']) {
     assert.ok(manifest.peerDependencies[remotes].split(' || ').includes(release),
       `the remote service provider must explicitly support published ${release}`)
   }
   for (const name of clients) {
     const alternatives = manifest.peerDependencies[name].split(' || ')
-    for (const release of ['0.2.0-rc.2', '0.2.1-alpha.1', '0.2.1-alpha.2', '0.2.1-alpha.3', '0.2.1-alpha.4', '0.2.1-alpha.5', '0.2.1-rc.1', '0.2.1-rc.2', '0.2.1-rc.3', '0.2.1-rc.4', '0.2.1-rc.5', '0.2.2-alpha.2', '0.2.2-alpha.3', '0.2.2-rc.1']) {
+    for (const release of ['0.2.0-rc.2', '0.2.1-alpha.1', '0.2.1-alpha.2', '0.2.1-alpha.3', '0.2.1-alpha.4', '0.2.1-alpha.5', '0.2.1-rc.1', '0.2.1-rc.2', '0.2.1-rc.3', '0.2.1-rc.4', '0.2.1-rc.5', '0.2.2-alpha.2', '0.2.2-alpha.3', '0.2.2-rc.1', '0.2.2-rc.2']) {
       assert.ok(alternatives.includes(release), `${name} must explicitly support published ${release}`)
     }
     assert.ok(alternatives.includes('>=0.1.0-rc.6 <0.2.0'), `${name} retains its historical bound`)
@@ -30,7 +30,7 @@ test('client peer declarations match the official Host pre-install contract', as
 test('every declared client dependency publishes every version its peer range names', async () => {
   const manifest = JSON.parse(await readFile(new URL('../package.json', import.meta.url), 'utf8'))
   const fixture = JSON.parse(await readFile(new URL('fixtures/official-client-packages.json', import.meta.url), 'utf8'))
-  const latestThree = ['0.2.2-alpha.2', '0.2.2-alpha.3', '0.2.2-rc.1']
+  const latestThree = ['0.2.2-alpha.2', '0.2.2-alpha.3', '0.2.2-rc.1', '0.2.2-rc.2']
   for (const name of manifest.dsh.client.inject) {
     const published = new Set(fixture.packages[name])
     assert.ok(published.size > 0, `${name} must be a known official client package`)
@@ -66,11 +66,11 @@ test('RC support is exact across the host and published UI peers without future 
   const uiClients = manifest.dsh.client.inject
   for (const range of [manifest.dsh.compatibility.dsh, manifest.engines.dsh,
     ...uiClients.map(name => manifest.peerDependencies[name])]) {
-    for (const release of ['0.2.1-rc.1', '0.2.1-rc.2', '0.2.1-rc.3', '0.2.1-rc.4', '0.2.1-rc.5', '0.2.2-alpha.2', '0.2.2-alpha.3', '0.2.2-rc.1']) assert.ok(range.split(' || ').includes(release))
+    for (const release of ['0.2.1-rc.1', '0.2.1-rc.2', '0.2.1-rc.3', '0.2.1-rc.4', '0.2.1-rc.5', '0.2.2-alpha.2', '0.2.2-alpha.3', '0.2.2-rc.1', '0.2.2-rc.2']) assert.ok(range.split(' || ').includes(release))
     assert.ok(!range.includes('*'))
     assert.ok(!range.split(' || ').some(part => /^>=0\.2\./.test(part)))
   }
-  assert.equal(manifest.version, '0.9.45')
+  assert.equal(manifest.version, '0.9.46')
   assert.ok(['unknown', 'compatible'].includes(manifest.dsh.compatibility.dshReleases['0.2.1-rc.1']))
   assert.equal(manifest.dsh.compatibility.dshReleases['0.2.2-rc.1'], 'compatible')
   assert.equal(manifest.dsh.compatibility.dshOperations['0.2.1-rc.1'].rollback, 'unknown')
