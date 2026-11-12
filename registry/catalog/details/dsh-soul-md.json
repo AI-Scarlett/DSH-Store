@@ -26,8 +26,8 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "c79c9734ee412e8f7dea0770b61d4fe941a73d1f",
-  "version": "0.12.2",
+  "commit": "c7640c27fcf79cbcb10972d2a6125719d0d9c84f",
+  "version": "0.12.3",
   "categories": [
     "tools",
     "memory"
@@ -35,16 +35,16 @@
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-11-08T15:10:59.000Z",
-    "observedAt": "2026-11-08T20:14:55.000Z",
+    "updatedAt": "2026-11-12T12:08:07.000Z",
+    "observedAt": "2026-11-12T16:37:58.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-11-08T20:14:55.000Z",
-      "evidenceUrl": "https://github.com/Scorp1o117/dsh-soul-md/commit/c79c9734ee412e8f7dea0770b61d4fe941a73d1f",
+      "checkedAt": "2026-11-12T16:37:58.000Z",
+      "evidenceUrl": "https://github.com/Scorp1o117/dsh-soul-md/commit/c7640c27fcf79cbcb10972d2a6125719d0d9c84f",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -83,7 +83,7 @@
   },
   "admission": {
     "engine": "bounded-source-v3",
-    "binding": "56aed2bf08f8436a9caba8a2f6ef9d476958922a660919ed87611d68be344925",
+    "binding": "235a68ebf43052d75f30aeab9b65a242491044ad42c9aea7750f7d6c1d9c4292",
     "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
     "state": "review-required",
     "sourceContract": "verified",
@@ -99,7 +99,7 @@
   "status": "blocked",
   "statusReason": "Automatic policy blocked installation: runtime or optional dependencies require a separate supply-chain review; runtime source contains the files permission signal",
   "compatibility": {
-    "dsh": ">=0.2.0-rc.2 <0.3.0 || 0.2.1-rc.1 || 0.2.1-rc.2 || 0.2.1-rc.3 || 0.2.1-rc.4 || 0.2.1-rc.5 || 0.2.2-rc.1",
+    "dsh": ">=0.2.0-rc.2 <0.3.0 || 0.2.1-rc.1 || 0.2.1-rc.2 || 0.2.1-rc.3 || 0.2.1-rc.4 || 0.2.1-rc.5 || 0.2.2-rc.1 || 0.2.2-rc.2",
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
@@ -124,9 +124,8 @@
       "0.2.1-rc.4": "compatible",
       "0.2.1-rc.5": "compatible",
       "0.2.2-rc.1": "compatible",
-      "0.2.2-alpha.2": "unknown",
-      "0.2.2-alpha.3": "unknown",
-      "0.2.2-rc.2": "unknown"
+      "0.2.2-rc.2": "compatible",
+      "0.2.2-alpha.3": "unknown"
     },
     "dshOperations": {
       "rc.7": {
@@ -267,19 +266,13 @@
         "uninstall": "unknown",
         "rollback": "unknown"
       },
-      "0.2.2-alpha.2": {
+      "0.2.2-rc.2": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",
         "rollback": "unknown"
       },
       "0.2.2-alpha.3": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.2.2-rc.2": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",

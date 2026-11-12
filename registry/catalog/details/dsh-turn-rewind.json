@@ -24,24 +24,24 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "fa4fde65da2f503c0269d5425904bf9d9f340b34",
-  "version": "0.3.12",
+  "commit": "f357dad58c8f42b705c009a4ff352ec33a034e3c",
+  "version": "0.3.13",
   "categories": [
     "sessions"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-11-06T18:17:40.000Z",
-    "observedAt": "2026-11-06T21:20:33.000Z",
+    "updatedAt": "2026-11-12T07:27:14.000Z",
+    "observedAt": "2026-11-12T16:37:58.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-11-06T21:20:33.000Z",
-      "evidenceUrl": "https://github.com/Anionex/dsh-turn-rewind/commit/fa4fde65da2f503c0269d5425904bf9d9f340b34",
+      "checkedAt": "2026-11-12T16:37:58.000Z",
+      "evidenceUrl": "https://github.com/Anionex/dsh-turn-rewind/commit/f357dad58c8f42b705c009a4ff352ec33a034e3c",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -80,7 +80,7 @@
   },
   "admission": {
     "engine": "bounded-source-v3",
-    "binding": "ba56095b08440331cde3a0c6ef0c117ffd7fbf2f0c1f95c27ba8ddc389f8c3ca",
+    "binding": "86cfaa09e50a86107e465c40a01064aa13079a2bd4a3ca620cdbcf03d2b2196d",
     "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
     "state": "review-required",
     "sourceContract": "verified",
@@ -96,7 +96,7 @@
   "status": "blocked",
   "statusReason": "Automatic policy blocked installation: runtime or optional dependencies require a separate supply-chain review; fixed-source security warnings require review; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal",
   "compatibility": {
-    "dsh": ">=0.1.0-rc.8 <0.2.0 || ^0.1.7-rc.1 || 0.2.0-rc.2 || 0.2.1-rc.2 || 0.2.1-rc.3 || 0.2.1-rc.5",
+    "dsh": ">=0.1.0-rc.8 <0.2.0 || ^0.1.7-rc.1 || 0.2.0-rc.2 || 0.2.1-rc.2 || 0.2.1-rc.3 || 0.2.1-rc.5 || 0.2.2-rc.1",
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "compatible",
@@ -115,9 +115,8 @@
       "0.2.1-rc.2": "compatible",
       "0.2.1-rc.3": "compatible",
       "0.2.1-rc.5": "compatible",
-      "0.2.2-alpha.2": "unknown",
+      "0.2.2-rc.1": "compatible",
       "0.2.2-alpha.3": "unknown",
-      "0.2.2-rc.1": "unknown",
       "0.2.2-rc.2": "unknown"
     },
     "dshOperations": {
@@ -223,19 +222,13 @@
         "uninstall": "unknown",
         "rollback": "unknown"
       },
-      "0.2.2-alpha.2": {
+      "0.2.2-rc.1": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",
         "rollback": "unknown"
       },
       "0.2.2-alpha.3": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.2.2-rc.1": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",
