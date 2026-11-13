@@ -1,0 +1,86 @@
+{
+  "schemaVersion": 1,
+  "type": "dsh-native-market-upgrade",
+  "planId": "dsh-native-market-rc3-20261113",
+  "planFile": "docs/ops/dsh-native-market-rc3-20261113.json",
+  "createdAt": "2026-11-13T12:31:51.474Z",
+  "baseCommit": "25a48710a63764a59a99dbc1431cf211ed0000dc",
+  "scope": [
+    "deploy/setup-model-service.sh",
+    "docs/ops/dsh-native-market-rc3-20261113.json",
+    "package.json",
+    "test/catalog.test.mjs",
+    "test/client-host-contract.test.mjs",
+    "test/contracts.test.mjs",
+    "test/fixtures/official-client-packages.json",
+    "test/upgrade-matrix.test.mjs"
+  ],
+  "preconditions": {
+    "deploy/setup-model-service.sh": "9f1cf9123a42da14015ab1fa7b6a979c0ab27e2f41f668f346f562fccb6d8292",
+    "docs/ops/dsh-native-market-rc3-20261113.json": null,
+    "package.json": "8c4c476dfc04f80d47557a5a6948437b3b07f3fb90aa713fcd6abd5fa5169c56",
+    "test/catalog.test.mjs": "daca384eb7373a30a49b549c9329d8d00c233dab3007ab7c062479284d87b1c3",
+    "test/client-host-contract.test.mjs": "2ff4aa2fb7224e132cf1cb631097b5f726e485e0efc037ebea5da23dbe15638a",
+    "test/contracts.test.mjs": "782186f69e5a3decf0d395a6703c9fe797654040a3f36004f2d1f09012ee9d76",
+    "test/fixtures/official-client-packages.json": "238a8758cb73d4dd07fbfd9df57f4ce3761313384e7219b611a98da29c281464",
+    "test/upgrade-matrix.test.mjs": "7a916b16ab218c7d14e8a29d8865d575aec9e41f8702a35196631683a0f0d5c9"
+  },
+  "postconditions": {
+    "deploy/setup-model-service.sh": "dabdf7dd0c6c2a48098bb26f8ef334f74151c580b2a81bc5410664a0e24505a4",
+    "package.json": "50cfb23053eae8df53fd28a7503d435f7a4028fab2f0ec1312816caa56ddb10d",
+    "test/catalog.test.mjs": "ca169eb38e944b44e2256c85ceb24d3136647f3da40b4cf0580eaed99379b5b6",
+    "test/client-host-contract.test.mjs": "561e034256ba1b353df32463e27720067d118cc3ec8db35340923d060f12eed7",
+    "test/contracts.test.mjs": "80d09b10e69f26abc47a3fab8ea5e9bcc7c406f1b45076e3fefd321d7ff6f530",
+    "test/fixtures/official-client-packages.json": "f0d15ec1015ff6b456919a0b55b248f2ce27487630d9bff306f27aa9234375fe",
+    "test/upgrade-matrix.test.mjs": "02135d100b5f7134116eb336f0599119c9b6b637eb14971eb8361a67c82896d3"
+  },
+  "authorization": {
+    "source": "direct-user-request",
+    "request": "\u89e3\u51b3 DSH 0.2.2-rc.3 \u517c\u5bb9\u6027\u963b\u585e\u95ee\u9898",
+    "githubWriteCredential": "short-lived-token-required",
+    "publication": "auditable-pull-request-only"
+  },
+  "official": {
+    "runtime": "0.2.2-rc.3",
+    "latestThree": [
+      "0.2.2-alpha.3",
+      "0.2.2-rc.1",
+      "0.2.2-rc.2",
+      "0.2.2-rc.3"
+    ],
+    "clientRuntimePackage": "0.1.1-rc.2 (no 0.2.2-rc.3 package published; peer range intentionally unchanged)",
+    "uiPeers": {
+      "versions": [
+        "@deepseek-ai/dsh-client-ui-primitives@0.2.2-rc.3",
+        "@deepseek-ai/dsh-client-ui-settings@0.2.2-rc.3",
+        "@deepseek-ai/dsh-client-ui-layout@0.2.2-rc.3",
+        "@deepseek-ai/dsh-client-ui-sidebar@0.2.2-rc.3",
+        "@deepseek-ai/dsh-client-ui-slots@0.2.2-rc.3"
+      ],
+      "evidence": "official npm published tarballs; exports match 0.2.2-rc.2"
+    }
+  },
+  "change": {
+    "packageVersion": "0.9.47",
+    "compatibility": "Add exact 0.2.2-rc.3 to host and five published injected UI peers; do not widen absent standalone dsh-client-runtime peer.",
+    "sourceCode": "No DSH source or @deepseek-ai package is modified."
+  },
+  "verification": {
+    "contracts": "npm run check passed with 656 tests",
+    "disposableProfile": "Tested disposable Profile upgrade against official DSH CLI"
+  },
+  "gates": [
+    "Run npm run check and git diff --check.",
+    "Verify plan against exact base, scope and postcondition hashes.",
+    "Pass latest-three official CLI runtime matrix on Linux/macOS/Windows and pnpm 10/11/12 at final PR head.",
+    "Pass Registry validation and CodeQL; merge only after all required checks pass."
+  ],
+  "rollback": "Revert this scoped source PR. No real Profile or Catalog changes.",
+  "healthCheck": "Local full check, exact-source official CLI matrix, then merged main readback.",
+  "verdict": {
+    "status": "prepared-for-ci",
+    "realProfileChanged": false,
+    "catalogChanged": false,
+    "desktopUiVerified": false
+  }
+}
