@@ -63,7 +63,7 @@ test('the remote service provider is declared and its peer range matches its pub
   assert.ok(pkg.dsh.client.inject.includes(provider))
   const published = new Set(official.packages[provider])
   const alternatives = pkg.peerDependencies[provider].split(' || ')
-  for (const release of ['0.2.1-rc.4', '0.2.1-rc.5', '0.2.2-alpha.2', '0.2.2-alpha.3', '0.2.2-rc.1', '0.2.2-rc.2']) {
+  for (const release of ['0.2.1-rc.4', '0.2.1-rc.5', '0.2.2-alpha.2', '0.2.2-alpha.3', '0.2.2-rc.1', '0.2.2-rc.2', '0.2.2-rc.3']) {
     assert.ok(published.has(release), `${provider} must publish ${release} for the declared range to resolve`)
     assert.ok(alternatives.includes(release), `${provider} must declare ${release} explicitly`)
   }
