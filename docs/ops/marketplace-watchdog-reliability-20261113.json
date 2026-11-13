@@ -1,0 +1,52 @@
+{
+  "schemaVersion": 1,
+  "type": "dsh-store-source-fix",
+  "planId": "marketplace-watchdog-reliability-20261113",
+  "planFile": "docs/ops/marketplace-watchdog-reliability-20261113.json",
+  "createdAt": "2026-11-13T08:38:18Z",
+  "baseCommit": "e52db967c6dcfc095327773203190070539c656f",
+  "sourceBranch": "codex/marketplace-watchdog-reliability-20261113",
+  "scope": [
+    ".github/workflows/marketplace-watchdog.yml",
+    "README.md",
+    "docs/ops/marketplace-watchdog-reliability-20261113.json",
+    "registry/README.md",
+    "scripts/marketplace-watchdog-cadence.mjs",
+    "test/catalog-automation.test.mjs",
+    "test/marketplace-watchdog-cadence.test.mjs"
+  ],
+  "preconditions": {
+    ".github/workflows/marketplace-watchdog.yml": "67eb5c6b88bf7a33d7544ddeeda886d023afd8aea21fed149efaddde4f51e80f",
+    "README.md": "abcd2396c15c483b7f4fae6362842edfcdc9988d196a96501a776ba3bb4ac6c8",
+    "docs/ops/marketplace-watchdog-reliability-20261113.json": null,
+    "registry/README.md": "0fd5f4c62582cd6354f100ba6a86973d421ea562753662fca7ba389dcf9269b2",
+    "scripts/marketplace-watchdog-cadence.mjs": null,
+    "test/catalog-automation.test.mjs": "4244ea2b2441b42ff70583488bb8bcb85612264f989715657e2188540b65b39e",
+    "test/marketplace-watchdog-cadence.test.mjs": null
+  },
+  "postconditions": {
+    ".github/workflows/marketplace-watchdog.yml": "b53c5735e78e120dda69f2e79c3474b4ec3bbb1e036ae4babcb71e4f07b53d1d",
+    "README.md": "d91cd4f68b4b5d6f15802b37f005b78c0f44e0952a8c1c53db9bbc60f5edc564",
+    "registry/README.md": "c85d1a2d9df8d3ef061bd2d8f17d2e34495a3438a5452f49f4025bc1f58c0a56",
+    "scripts/marketplace-watchdog-cadence.mjs": "045a44ad5661b0cbe98ba076246c42464dffdc94ac665b1fb51f113c993dbb4e",
+    "test/catalog-automation.test.mjs": "bcd137926805bf17f4a45708e64e0a45131330881277a64c1d01da45e4c41ad1",
+    "test/marketplace-watchdog-cadence.test.mjs": "a373970f5a036d93c156458eeb1978251cc1e776c0a832ff746bb7335a4de3bc"
+  },
+  "authorization": {
+    "source": "direct-user-request",
+    "request": "去解决 GitHub 三小时巡查未按期运行和报告中断问题",
+    "githubWriteCredential": "short-lived-token-required",
+    "mutationRoute": "auditable-ci-checked-pull-request-only"
+  },
+  "change": {
+    "behavior": "GitHub Actions wakes every 30 minutes and runs a full patrol once 150 minutes have elapsed since the last successful full patrol; manual dispatch always runs. Report delivery fetches the latest main Commit immediately before making a hash-bound plan.",
+    "prohibited": [
+      "Do not modify Catalog or Candidate Registry data.",
+      "Do not change author contact history or send author outreach.",
+      "Do not alter any DSH Profile, package, install, or running service."
+    ]
+  },
+  "externalEffects": "Create one source PR and merge only after required CI. After merge, GitHub Actions may execute the repaired watchdog schedule and update the existing automation report Issue using its idempotent, hash-bound delivery plan.",
+  "healthCheck": "Run npm run check, JSON parse validation, git diff --check, and exact-head required GitHub CI. After merge, verify workflow state and scheduled heartbeat; verify that the new patrol publishes its report or records a deterministic blocked result.",
+  "rollback": "Revert only this exact source PR through a new CI-checked PR. Git history is the recoverable backup; no Catalog, author-contact, DSH Profile, package, or service rollback is in scope."
+}
