@@ -18,24 +18,24 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "f259253703df2fc65d90780298c1af86a0eca093",
-  "version": "0.7.9",
+  "commit": "eb0eff54257fa6997988923e7769914ec5b4fbe4",
+  "version": "0.7.10",
   "categories": [
     "tools"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-11-04T13:09:47.000Z",
-    "observedAt": "2026-11-05T16:14:13.000Z",
+    "updatedAt": "2026-11-13T18:32:04.000Z",
+    "observedAt": "2026-11-13T20:27:56.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-11-05T16:14:13.000Z",
-      "evidenceUrl": "https://github.com/STARDUSTLC666/dsh-cite/commit/f259253703df2fc65d90780298c1af86a0eca093",
+      "checkedAt": "2026-11-13T20:27:56.000Z",
+      "evidenceUrl": "https://github.com/STARDUSTLC666/dsh-cite/commit/eb0eff54257fa6997988923e7769914ec5b4fbe4",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -74,7 +74,7 @@
   },
   "admission": {
     "engine": "bounded-source-v3",
-    "binding": "0786fb0ca4bdbd349113dbaef43fb02d72c23c66eebe7482f3e57b96032f7f9b",
+    "binding": "164fcad241ca728d28af9ac7f8bd4aff35180aef4b9da635add1957cd883a12d",
     "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
     "state": "review-required",
     "sourceContract": "verified",
@@ -90,7 +90,7 @@
   "status": "blocked",
   "statusReason": "Automatic policy blocked installation: runtime or optional dependencies require a separate supply-chain review; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the credentials permission signal; dynamic module loading or code evaluation requires separate review",
   "compatibility": {
-    "dsh": ">=0.2.1-rc.3",
+    "dsh": ">=0.2.2-rc.3",
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
@@ -100,10 +100,9 @@
       "0.1.2-alpha.3": "unknown",
       "0.1.2-alpha.4": "unknown",
       "0.1.2-alpha.5": "unknown",
-      "0.2.2-alpha.2": "unknown",
-      "0.2.2-alpha.3": "unknown",
       "0.2.2-rc.1": "unknown",
-      "0.2.2-rc.2": "unknown"
+      "0.2.2-rc.2": "unknown",
+      "0.2.2-rc.3": "unknown"
     },
     "dshOperations": {
       "rc.7": {
@@ -154,18 +153,6 @@
         "uninstall": "unknown",
         "rollback": "unknown"
       },
-      "0.2.2-alpha.2": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.2.2-alpha.3": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
       "0.2.2-rc.1": {
         "install": "unknown",
         "start": "unknown",
@@ -173,6 +160,12 @@
         "rollback": "unknown"
       },
       "0.2.2-rc.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.2.2-rc.3": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",
