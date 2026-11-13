@@ -23,24 +23,24 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "de810894a420e4ca8ee5144bf00563fd64399e3d",
-  "version": "0.17.7",
+  "commit": "4335537d94c04dd50961c2181c17841311f11593",
+  "version": "0.18.0",
   "categories": [
     "models"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-11-12T06:05:55.000Z",
-    "observedAt": "2026-11-12T06:08:31.000Z",
+    "updatedAt": "2026-11-13T07:56:46.000Z",
+    "observedAt": "2026-11-13T20:27:56.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-11-12T06:08:31.000Z",
-      "evidenceUrl": "https://github.com/Mars-Sea/dsh-commandcode-provider/commit/de810894a420e4ca8ee5144bf00563fd64399e3d",
+      "checkedAt": "2026-11-13T20:27:56.000Z",
+      "evidenceUrl": "https://github.com/Mars-Sea/dsh-commandcode-provider/commit/4335537d94c04dd50961c2181c17841311f11593",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -79,7 +79,7 @@
   },
   "admission": {
     "engine": "bounded-source-v3",
-    "binding": "20d6e404f48bcbd9fd51a67386ff9d5c60bb35e87fcff05908804f9894e5d9ad",
+    "binding": "e103829e7b9b8213c7ae03333806b9d71242e402440d82839a5cf2d2607fd40a",
     "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
     "state": "rejected",
     "sourceContract": "verified",
@@ -112,7 +112,8 @@
       "0.2.2-alpha.2": "compatible",
       "0.2.2-alpha.3": "compatible",
       "0.2.2-rc.1": "compatible",
-      "0.2.2-rc.2": "compatible"
+      "0.2.2-rc.2": "compatible",
+      "0.2.2-rc.3": "unknown"
     },
     "dshOperations": {
       "rc.7": {
@@ -206,6 +207,12 @@
         "rollback": "unknown"
       },
       "0.2.2-rc.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.2.2-rc.3": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",

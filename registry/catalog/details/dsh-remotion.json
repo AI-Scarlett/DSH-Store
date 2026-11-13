@@ -26,8 +26,8 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "35677331d8372eaffac3ceab7beef6cab725f664",
-  "version": "0.10.5",
+  "commit": "8015d9828ccc74333bc33c889f7c90f9521c3ba8",
+  "version": "0.10.6",
   "categories": [
     "workflow",
     "tools"
@@ -35,16 +35,16 @@
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-11-04T13:10:51.000Z",
-    "observedAt": "2026-11-05T16:14:13.000Z",
+    "updatedAt": "2026-11-13T18:34:18.000Z",
+    "observedAt": "2026-11-13T20:27:56.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-11-05T16:14:13.000Z",
-      "evidenceUrl": "https://github.com/STARDUSTLC666/dsh-remotion/commit/35677331d8372eaffac3ceab7beef6cab725f664",
+      "checkedAt": "2026-11-13T20:27:56.000Z",
+      "evidenceUrl": "https://github.com/STARDUSTLC666/dsh-remotion/commit/8015d9828ccc74333bc33c889f7c90f9521c3ba8",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -83,7 +83,7 @@
   },
   "admission": {
     "engine": "bounded-source-v3",
-    "binding": "afc62e261a44fa437424a2431f23eccc3b6edcadddfbb2221ab4fcb126e6d45b",
+    "binding": "c89addc83bedb87f1b2c6fef5d01e5ae9e971408eaaf22dbf64fa43c588f7490",
     "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
     "state": "incomplete",
     "sourceContract": "verified",
@@ -99,7 +99,7 @@
   "status": "blocked",
   "statusReason": "Automatic policy blocked installation: runtime or optional dependencies require a separate supply-chain review; package contains unsupported artifacts requiring review: skills/remotion-best-practices/remotion-maps/techniques/cesium/assets/sample-river.geojson, skills/remotion-best-practices/remotion-markup/remotion-maps/techniques/cesium/assets/sample-river.geojson, skills/remotion-maps/techniques/cesium/assets/sample-river.geojson, skills/remotion-markup/remotion-maps/techniques/cesium/assets/sample-river.geojson; local module is missing from the distributable surface: skills/remotion-best-pr",
   "compatibility": {
-    "dsh": ">=0.2.1-rc.3",
+    "dsh": ">=0.2.2-rc.3",
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
@@ -109,10 +109,9 @@
       "0.1.2-alpha.3": "unknown",
       "0.1.2-alpha.4": "unknown",
       "0.1.2-alpha.5": "unknown",
-      "0.2.2-alpha.2": "unknown",
-      "0.2.2-alpha.3": "unknown",
       "0.2.2-rc.1": "unknown",
-      "0.2.2-rc.2": "unknown"
+      "0.2.2-rc.2": "unknown",
+      "0.2.2-rc.3": "unknown"
     },
     "dshOperations": {
       "rc.7": {
@@ -163,18 +162,6 @@
         "uninstall": "unknown",
         "rollback": "unknown"
       },
-      "0.2.2-alpha.2": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.2.2-alpha.3": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
       "0.2.2-rc.1": {
         "install": "unknown",
         "start": "unknown",
@@ -182,6 +169,12 @@
         "rollback": "unknown"
       },
       "0.2.2-rc.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.2.2-rc.3": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",

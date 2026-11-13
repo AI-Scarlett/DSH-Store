@@ -25,8 +25,8 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "5f5b43dcedfc792054173c2fbb358f7aebaea02f",
-  "version": "0.11.5",
+  "commit": "7fcc9bd44e1d3396335c7cf730c30dd19c0251b6",
+  "version": "0.11.6",
   "categories": [
     "workflow",
     "tools"
@@ -34,16 +34,16 @@
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-11-04T13:10:35.000Z",
-    "observedAt": "2026-11-05T16:14:13.000Z",
+    "updatedAt": "2026-11-13T18:33:57.000Z",
+    "observedAt": "2026-11-13T20:27:56.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-11-05T16:14:13.000Z",
-      "evidenceUrl": "https://github.com/STARDUSTLC666/dsh-hyperframes/commit/5f5b43dcedfc792054173c2fbb358f7aebaea02f",
+      "checkedAt": "2026-11-13T20:27:56.000Z",
+      "evidenceUrl": "https://github.com/STARDUSTLC666/dsh-hyperframes/commit/7fcc9bd44e1d3396335c7cf730c30dd19c0251b6",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -82,7 +82,7 @@
   },
   "admission": {
     "engine": "bounded-source-v3",
-    "binding": "f2de8c8c61b33afe0668b9a9c11ee4f26d49ad54f891cabd3ee73b9979975bf4",
+    "binding": "5dcf6dca623f5d267e87adfe7962dd852cd89f84839f339d8f54cf700a5b177b",
     "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
     "state": "rejected",
     "sourceContract": "verified",
@@ -98,7 +98,7 @@
   "status": "blocked",
   "statusReason": "Automatic policy blocked installation: runtime or optional dependencies require a separate supply-chain review; package ignore rules require artifact review; package contains unsupported artifacts requiring review: skills/media-use/.gitignore, skills/media-use/UPSTREAM.gitignore, skills/media-use/audio/assets/sfx/chime.mp3, skills/media-use/audio/assets/sfx/click-soft.mp3, skills/media-use/audio/assets/sfx/click.mp3; local module is missing from the distributable surface: skills/remotion-to-hyperframes/assets/test-corpus/tier-1-title-card/remotion-src/src/Root.tsx -> ./TitleCard; local module",
   "compatibility": {
-    "dsh": ">=0.2.1-rc.3",
+    "dsh": ">=0.2.2-rc.3",
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
@@ -108,10 +108,9 @@
       "0.1.2-alpha.3": "unknown",
       "0.1.2-alpha.4": "unknown",
       "0.1.2-alpha.5": "unknown",
-      "0.2.2-alpha.2": "unknown",
-      "0.2.2-alpha.3": "unknown",
       "0.2.2-rc.1": "unknown",
-      "0.2.2-rc.2": "unknown"
+      "0.2.2-rc.2": "unknown",
+      "0.2.2-rc.3": "unknown"
     },
     "dshOperations": {
       "rc.7": {
@@ -162,18 +161,6 @@
         "uninstall": "unknown",
         "rollback": "unknown"
       },
-      "0.2.2-alpha.2": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.2.2-alpha.3": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
       "0.2.2-rc.1": {
         "install": "unknown",
         "start": "unknown",
@@ -181,6 +168,12 @@
         "rollback": "unknown"
       },
       "0.2.2-rc.2": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.2.2-rc.3": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",
