@@ -3,7 +3,7 @@
   "registry": {
     "name": "DSH STORE Candidate Discovery Registry",
     "repositoryUrl": "https://github.com/AI-Scarlett/DSH-Store",
-    "updatedAt": "2026-11-13T02:10:39.000Z",
+    "updatedAt": "2026-11-13T05:30:05.000Z",
     "trustBoundary": {
       "installActionsDisabled": true,
       "catalogPromotionRequired": true,
@@ -2821,11 +2821,11 @@
     {
       "id": "hashgraph-online-hol-guard",
       "name": "hashgraph-online/hol-guard",
-      "description": "Open-source antivirus for AI agents: block risky tools, secret access, prompt injection, malicious packages, MCP servers, plugins, and skills at runtime.",
+      "description": "Open-source antivirus and firewall for AI agents: block risky tools, secret access, prompt injection, malicious packages, MCP servers, plugins, and skills at runtime.",
       "repositoryUrl": "https://github.com/hashgraph-online/hol-guard",
       "defaultBranch": "main",
-      "latestCommit": "b3371c6557f6ab23ccf14861d62408fa8aaaace6",
-      "sourceUpdatedAt": "2026-09-21T14:56:04.000Z",
+      "latestCommit": "4acc2c58be767c917e831182245ac4adc565b294",
+      "sourceUpdatedAt": "2026-11-13T05:32:25.000Z",
       "discoveredAt": "2026-08-30T21:40:03.000Z",
       "discoverySources": [
         "github-automatic-radar-v1"
@@ -2837,10 +2837,8 @@
         "ai-antivirus",
         "ai-security",
         "claude-code",
-        "codex",
         "cursor",
         "devsecops",
-        "dsh-plugin",
         "gemini-cli",
         "mcp",
         "mcp-security",
@@ -2850,7 +2848,9 @@
         "runtime-security",
         "secrets-detection",
         "security",
+        "security-scanner",
         "supply-chain-security",
+        "vulnify",
         "automatic-radar"
       ],
       "status": "rejected",
@@ -20260,6 +20260,82 @@
       "discoveredAt": "2026-11-13T02:10:39.000Z",
       "discoverySources": [
         "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@891b3e37d0a05ee0dd11d748a75895803681f42c:data/plugins/c10ck-p__dsh-checkpoint-dock.yml:sha256=547db075ee7f74c578e9b1175d724868fbbf5f0db2101607833405e152df6f70:at=2026-11-13T02:19:43.944Z:owner=125860744"
+      ],
+      "topics": [
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "caimc21069065-prog-dsh-gitlab-panel",
+      "name": "caimc21069065-prog/dsh-gitlab-panel",
+      "description": "Discovered GitHub repository awaiting a compatible DSH Bundle.",
+      "repositoryUrl": "https://github.com/caimc21069065-prog/dsh-gitlab-panel",
+      "defaultBranch": "main",
+      "latestCommit": "e3e41e4087d5ef9a831ec60025d74f0d23e5a00b",
+      "sourceUpdatedAt": "2026-11-01T13:46:39.000Z",
+      "discoveredAt": "2026-11-13T05:30:05.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@891b3e37d0a05ee0dd11d748a75895803681f42c:data/plugins/caimc21069065-prog__dsh-gitlab-panel.yml:sha256=7855f870484a15fca9960d988f3ea38ca101488c9380121ce60ee7d4201643a5:at=2026-11-13T05:40:23.187Z:owner=317191654"
+      ],
+      "topics": [
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "caimc21069065-prog-dsh-reflect",
+      "name": "caimc21069065-prog/dsh-reflect",
+      "description": "Discovered GitHub repository awaiting a compatible DSH Bundle.",
+      "repositoryUrl": "https://github.com/caimc21069065-prog/dsh-reflect",
+      "defaultBranch": "main",
+      "latestCommit": "1be1d68a3419f3c83efca30b85c21075d0192570",
+      "sourceUpdatedAt": "2026-10-25T13:29:09.000Z",
+      "discoveredAt": "2026-11-13T05:30:05.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@891b3e37d0a05ee0dd11d748a75895803681f42c:data/plugins/caimc21069065-prog__dsh-reflect.yml:sha256=0f44cf795dcaa76c664b5fcab180060da9dbfc6266a80ebf7935da8123a6c4df:at=2026-11-13T05:40:23.187Z:owner=317191654"
+      ],
+      "topics": [
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "cailikelog-dsh-plugin-account-balance",
+      "name": "cailikelog/dsh-plugin-account-balance",
+      "description": "Discovered GitHub repository awaiting a compatible DSH Bundle.",
+      "repositoryUrl": "https://github.com/cailikelog/dsh-plugin-account-balance",
+      "defaultBranch": "main",
+      "latestCommit": "c2c3dd6272f996ba4b99fa58f3875fd216b7b43b",
+      "sourceUpdatedAt": "2026-10-24T16:20:15.000Z",
+      "discoveredAt": "2026-11-13T05:30:05.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@891b3e37d0a05ee0dd11d748a75895803681f42c:data/plugins/cailikelog__dsh-plugin-account-balance.yml:sha256=7eb9bbe6753d99d7512fa2bc7752d1f52957b0221f0e555a0b733b4750016daf:at=2026-11-13T05:40:23.187Z:owner=150981331"
+      ],
+      "topics": [
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "caishzh-dsh-hot-search",
+      "name": "caishzh/dsh-hot-search",
+      "description": "Discovered GitHub repository awaiting a compatible DSH Bundle.",
+      "repositoryUrl": "https://github.com/caishzh/dsh-hot-search",
+      "defaultBranch": "main",
+      "latestCommit": "5538f15f8e3f68df0b1845040b196fb68626ffd8",
+      "sourceUpdatedAt": "2026-10-04T13:19:55.000Z",
+      "discoveredAt": "2026-11-13T05:30:05.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@891b3e37d0a05ee0dd11d748a75895803681f42c:data/plugins/caishzh__dsh-hot-search.yml:sha256=3ed6bdcdb1a5537c4e87de7991d3215b3fcf2827bae1b867719c4c9c849fc5d5:at=2026-11-13T05:40:23.187Z:owner=59287727"
       ],
       "topics": [
         "automatic-radar"
