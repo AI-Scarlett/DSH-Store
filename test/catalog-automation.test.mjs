@@ -451,7 +451,13 @@ test('watchdog waits for its exact repair run, invokes its report, and checks ev
     read('scripts/verify-marketplace-public.mjs'),
     read('AGENTS.md'),
   ])
-  assert.match(workflow, /cron: "55 \*\/3 \* \* \*"/)
+  assert.match(workflow, /cron: "10,40 \* \* \* \*"/)
+  assert.match(workflow, /cancel-in-progress: false/)
+  assert.match(workflow, /jobs:\s+cadence:[\s\S]*actions: read[\s\S]*contents: read/)
+  assert.match(workflow, /needs: cadence[\s\S]*needs\.cadence\.outputs\.due == 'true'/)
+  assert.match(workflow, /actions\/workflows\/marketplace-watchdog\.yml\/runs\?per_page=100&status=completed/)
+  assert.match(workflow, /LAST_SUCCESSFUL_WATCHDOG_AT=.*node scripts\/marketplace-watchdog-cadence\.mjs/)
+  assert.doesNotMatch(workflow, /steps\.base|Bind the current main authority/)
   assert.match(workflow, /32400/)
   assert.match(workflow, /issues: write/)
   assert.match(workflow, /request_id="watchdog-\$\{GITHUB_RUN_ID\}-\$\{GITHUB_RUN_ATTEMPT\}"/)
@@ -473,6 +479,7 @@ test('watchdog waits for its exact repair run, invokes its report, and checks ev
   assert.match(workflow, /id: catalog_report[\s\S]{0,160}continue-on-error: true/)
   assert.match(workflow, /catalog-report-delivery\.mjs snapshot/)
   assert.match(workflow, /catalog-report-delivery\.mjs plan/)
+  assert.match(workflow, /git fetch --no-tags origin main[\s\S]*base_commit=\$\(git rev-parse FETCH_HEAD\)[\s\S]*--base-commit "\$base_commit"/)
   assert.match(workflow, /catalog-report-delivery\.mjs apply/)
   assert.match(workflow, /watchdog-alert/)
   assert.match(workflow, /catalog-report-state\.json/)

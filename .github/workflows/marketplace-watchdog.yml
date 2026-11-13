@@ -2,7 +2,8 @@ name: Three-hour marketplace watchdog
 
 on:
   schedule:
-    - cron: "55 */3 * * *"
+    # A half-hour pulse catches up after GitHub drops a scheduled event.
+    - cron: "10,40 * * * *"
   workflow_dispatch:
 
 permissions:
@@ -12,10 +13,61 @@ permissions:
 
 concurrency:
   group: marketplace-watchdog
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
+  cadence:
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: read
+    outputs:
+      due: ${{ steps.cadence.outputs.due }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 1
+      - name: Check whether a complete three-hour patrol is due
+        id: cadence
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          last_success=''
+          history_known=true
+
+          if test "$GITHUB_EVENT_NAME" = schedule; then
+            if ! runs=$(gh api "repos/$GITHUB_REPOSITORY/actions/workflows/marketplace-watchdog.yml/runs?per_page=100&status=completed"); then
+              history_known=false
+            else
+              while IFS= read -r run_id; do
+                test -n "$run_id" || continue
+                if ! jobs=$(gh api "repos/$GITHUB_REPOSITORY/actions/runs/$run_id/jobs?per_page=100"); then
+                  history_known=false
+                  break
+                fi
+                if ! last_success=$(jq -r '[.jobs[] | select(.name == "verify-and-repair" and .conclusion == "success") | .completed_at][0] // empty' <<<"$jobs"); then
+                  history_known=false
+                  break
+                fi
+                test -z "$last_success" || break
+              done < <(jq -r --argjson current_run "$GITHUB_RUN_ID" '.workflow_runs[] | select(.id != $current_run and .conclusion == "success") | .id' <<<"$runs")
+            fi
+          fi
+
+          if test "$history_known" != true; then
+            echo "::warning::Previous patrol history could not be read; running a fresh verification."
+            last_success=''
+          fi
+
+          decision=$(LAST_SUCCESSFUL_WATCHDOG_AT="$last_success" node scripts/marketplace-watchdog-cadence.mjs)
+          printf '%s\n' "$decision" >> "$GITHUB_OUTPUT"
+          printf '%s\n' "$decision" >> "$GITHUB_STEP_SUMMARY"
+
   verify-and-repair:
+    needs: cadence
+    if: ${{ needs.cadence.outputs.due == 'true' }}
     runs-on: ubuntu-latest
     timeout-minutes: 110
     steps:
@@ -26,13 +78,6 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      - name: Bind the current main authority for this watchdog run
-        id: base
-        run: |
-          git fetch --no-tags origin main
-          base_sha=$(git rev-parse HEAD)
-          test "$base_sha" = "$(git rev-parse origin/main)"
-          echo "sha=$base_sha" >> "$GITHUB_OUTPUT"
       - name: Resolve and wait for the exact Catalog run
         id: catalog
         env:
@@ -230,9 +275,8 @@ jobs:
         run: node scripts/catalog-report-delivery.mjs snapshot --output "$RUNNER_TEMP/catalog-report-state.json"
       - name: Create a hash-bound watchdog report delivery plan
         id: delivery_plan
-        if: always() && steps.notification_report.outcome == 'success' && steps.base.outcome == 'success'
+        if: always() && steps.notification_report.outcome == 'success'
         env:
-          BASE_COMMIT: ${{ steps.base.outputs.sha }}
           REPORT_PATH: ${{ steps.notification_report.outputs.path }}
           REPORT_RUN_ID: ${{ steps.catalog.outputs.report_run_id }}
           REPORT_RUN_CONCLUSION: ${{ steps.catalog.outputs.report_run_conclusion }}
@@ -250,10 +294,12 @@ jobs:
             "$RUNNER_TEMP/catalog-report-state.json" >/dev/null; then
             delivery_key="${delivery_key}-watchdog-alert"
           fi
+          git fetch --no-tags origin main
+          base_commit=$(git rev-parse FETCH_HEAD)
           node scripts/catalog-report-delivery.mjs plan \
             --report "$REPORT_PATH" \
             --state "$RUNNER_TEMP/catalog-report-state.json" \
-            --base-commit "$BASE_COMMIT" \
+            --base-commit "$base_commit" \
             --catalog-run-id "$REPORT_RUN_ID" \
             --delivery-key "$delivery_key" \
             --output "$RUNNER_TEMP/catalog-report-delivery-plan.json"
