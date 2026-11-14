@@ -1,3 +1,4 @@
+/Users/zhouxiaoming/.bash_profile: line 16: /Users/zhouxiaoming/.local/bin/env: No such file or directory
 import assert from 'node:assert/strict'
 import { execFile } from 'node:child_process'
 import { mkdtemp, readFile, rm } from 'node:fs/promises'
@@ -222,6 +223,15 @@ test('scheduled automation uses a policy PR and never executes third-party packa
   assert.match(workflow, /owner-report:[\s\S]+needs: \[update, author-notifications\][\s\S]+if: always\(\)/)
   assert.doesNotMatch(workflow, /git commit|git push/)
   assert.doesNotMatch(workflow, /npm (?:install|ci)|pnpm|yarn/)
+  assert.match(workflow, /manual_scan_plan_branch/)
+  assert.match(workflow, /manual_scan_plan_commit/)
+  assert.match(workflow, /verify-manual-scan-plan\.mjs/)
+  assert.match(workflow, /manual_args=\(\)/)
+  assert.match(workflow, /author-notifications:[\s\S]+inputs\.manual_scan_plan_branch == ''/)
+  assert.match(workflow, /owner-report:[\s\S]+inputs\.manual_scan_plan_commit == ''/)
+  assert.match(source, /if \(manualScanPlan\)/)
+  assert.match(source, /inspectManualAdmissions\(/)
+  assert.match(source, /supportsDshReleaseWindow\(entry, dshReleaseWindow\.releases\)/)
   assert.doesNotMatch(source, /from ['"]node:child_process['"]|require\(['"](?:node:)?child_process['"]\)/)
   assert.doesNotMatch(source, /npm (?:install|ci)|pnpm|yarn/)
   assert.match(source, /allowLifecycleScripts/)

@@ -1,3 +1,4 @@
+/Users/zhouxiaoming/.bash_profile: line 16: /Users/zhouxiaoming/.local/bin/env: No such file or directory
 #!/usr/bin/env node
 import { createCatalogGithubReader, sameCommitLineage } from './catalog-github-reader.mjs'
 import { admissionDecision, LICENSE_METADATA_REVIEW_REASON, validateAdmissionReviews } from '../src/admission-review.mjs'
@@ -41,10 +42,12 @@ import { assertNoExcludedRecommendations, isBlockedAuthor, isWithdrawnRepository
 import { validateCommunityRecommendations } from '../marketplace/lib/community-recommendations.js'
 import {
   applyLatestDshCompatibilityPolicy,
+  supportsDshReleaseWindow,
   DSH_RELEASE_WINDOW_AUTHORITY,
   DSH_REGISTRY_URL,
   fetchOfficialDshReleaseWindow,
 } from '../src/catalog-compatibility-policy.mjs'
+import { validateManualScanPlan } from '../src/manual-scan-plan.mjs'
 import {
   inspectRejectedCandidateCompatibility,
   isDurableRejectedCandidateDecision,
@@ -79,6 +82,7 @@ function parseArgs(argv) {
     expectedRecommendationsSha: null,
     catalogBackup: null, catalogIndexBackup: null, catalogDetailsBackup: null,
     candidatesBackup: null, recommendationsBackup: null, observedAt: null, report: null,
+    manualScanPlan: null,
   }
   for (let index = 0; index < argv.length; index += 1) {
     const value = argv[index]
@@ -94,6 +98,7 @@ function parseArgs(argv) {
     else if (value === '--recommendations-backup') options.recommendationsBackup = argv[++index]
     else if (value === '--observed-at') options.observedAt = argv[++index]
     else if (value === '--report') options.report = argv[++index]
+    else if (value === '--manual-scan-plan') options.manualScanPlan = argv[++index]
     else throw new Error(`unknown argument: ${value}`)
   }
   return options
@@ -304,6 +309,103 @@ function candidateRecord(repository, head, previous, observedAt, outcome) {
     route: outcome.route,
     statusReason: boundedText(outcome.reason, 'Automatic policy did not produce an installable Catalog entry.'),
   }
+}
+
+function stableJson(value) {
+  if (Array.isArray(value)) return `[${value.map(stableJson).join(',')}]`
+  if (!value || typeof value !== 'object') return JSON.stringify(value)
+  return `{${Object.keys(value).sort().map(key => `${JSON.stringify(key)}:${stableJson(value[key])}`).join(',')}}`
+}
+
+async function inspectManualAdmissions(catalog, policy, github, observedAt, report, dshReleaseWindow, scanPlan) {
+  const manualReport = {
+    scanPlanId: scanPlan.scan.planId,
+    scanBaseCommit: scanPlan.scan.baseCommit,
+    sourceIndexSha256: scanPlan.scan.sourceIndexSha256,
+    mainResultsSha256: scanPlan.scan.mainResultsSha256,
+    supplementalResultsSha256: scanPlan.scan.supplementalResultsSha256,
+    sourceTargets: scanPlan.scan.targetCount,
+    sourceOutcomes: scanPlan.scan.outcomes,
+    latestDshReleasesAtScan: scanPlan.scan.latestDshReleases,
+    latestDshReleasesAtPolicyRun: [...dshReleaseWindow.releases],
+    selected: scanPlan.selected.map(({ repositoryUrl, commit, packageName, version, entryIds, sourceBinding, sourceDigest }) => ({
+      repositoryUrl, commit, packageName, version, entryIds, sourceBinding, sourceDigest,
+    })),
+    alreadyCatalogued: [],
+    admitted: [],
+  }
+  report.manualScan = manualReport
+  const manualEntries = []
+  const catalogRepositories = new Set(catalog.entries.map(entry => entry.repositoryUrl.toLowerCase()))
+
+  for (const selected of scanPlan.selected) {
+    const repositoryKey = selected.repositoryUrl.toLowerCase()
+    if (catalogRepositories.has(repositoryKey)) {
+      manualReport.alreadyCatalogued.push({ repositoryUrl: selected.repositoryUrl, commit: selected.commit })
+      continue
+    }
+    const pluginPath = selected.manifestPath === 'package.json' ? '' : selected.manifestPath.slice(0, -'/package.json'.length)
+    const result = await retryInfrastructure(() => checkRepository(selected.repositoryUrl, pluginPath, {
+      catalogDocument: catalog,
+      token: process.env.GITHUB_TOKEN,
+      timeoutMs: 12_000,
+      fetch: github.fetch,
+      fixedCommit: selected.commit,
+    }))
+    const candidate = result.candidate
+    const identityMatches = candidate.repositoryUrl === selected.repositoryUrl
+      && candidate.commit === selected.commit
+      && candidate.packageName === selected.packageName
+      && candidate.version === selected.version
+      && candidate.manifestPath === selected.manifestPath
+      && stableJson(candidate.entryIds) === stableJson(selected.entryIds)
+      && candidate.compatibility.dsh === selected.compatibility.dsh
+      && stableJson(candidate.compatibility.dshReleases ?? {}) === stableJson(selected.compatibility.dshReleases)
+    if (!identityMatches) {
+      throw Object.assign(new Error(`manual scan result no longer matches fixed source identity for ${selected.repositoryUrl}`), {
+        code: 'MANUAL_SCAN_SOURCE_BINDING_CHANGED',
+      })
+    }
+    const analysis = await retryInfrastructure(() => analyzeFixedSource(candidate, policy, github))
+    if (analysis.sourceDigest !== selected.sourceDigest) {
+      throw Object.assign(new Error(`manual scan source digest changed at ${selected.repositoryUrl}@${selected.commit}`), {
+        code: 'MANUAL_SCAN_SOURCE_DIGEST_CHANGED',
+      })
+    }
+    const entry = automatedEntry(candidate, analysis, observedAt)
+    if (entry.status !== 'approved' || !supportsDshReleaseWindow(entry, dshReleaseWindow.releases)) {
+      throw Object.assign(new Error(`manual scan candidate no longer satisfies Catalog admission at ${selected.repositoryUrl}: ${entry.statusReason ?? 'no compatible result in the official latest-three DSH release window'}`), {
+        code: 'MANUAL_SCAN_ADMISSION_GATE_FAILED',
+      })
+    }
+    manualEntries.push(entry)
+    catalog.entries.push(entry)
+    catalogRepositories.add(repositoryKey)
+    manualReport.admitted.push({ repositoryUrl: entry.repositoryUrl, id: entry.id, commit: entry.commit, status: entry.status })
+    report.addedEntries.push({ id: entry.id, status: entry.status, commit: entry.commit, reasons: [] })
+  }
+
+  report.compatibilityPolicy = applyLatestDshCompatibilityPolicy(
+    { ...catalog, entries: manualEntries },
+    candidates,
+    dshReleaseWindow,
+    observedAt,
+    { policyDigest: sha256(JSON.stringify({ sourceBounds: policy.sourceBounds, automaticApproval: policy.automaticApproval })), reviewRegistryDigest: admissionReviewDigest },
+  )
+  report.compatibilityUnlisted = report.compatibilityPolicy.unlisted
+  report.compatibilityRestored = report.compatibilityPolicy.restored
+  report.compatibilityRefreshed = report.compatibilityPolicy.refreshed
+  report.manualScan.planId = sha256(stableJson({
+    baseCommit: report.baseCommit,
+    inputPlanSha256: report.preconditions.manualScanPlanSha256,
+    preconditions: report.preconditions,
+    policyDigest: report.preconditions.sourcePolicySha256,
+    admissionReviewsSha256: report.preconditions.admissionReviewsSha256,
+    officialWindowSha256: report.preconditions.dshReleaseWindowSha256,
+    selected: report.manualScan.selected,
+    added: report.manualScan.admitted,
+  })).slice(0, 24)
+  report.manualScan.status = 'passed'
 }
 
 async function discoverRepositories(policy, github) {
@@ -826,7 +928,7 @@ async function restoreCatalogDetails(path) {
   await cp(path, catalogDetailsPath, { recursive: true, force: true })
 }
 
-async function writeCatalogFiles(bridgeBuffer, indexBuffer, details) {
+async function writeCatalogFiles(bridgeBuffer, indexBuffer, details, { pruneUnlisted = true } = {}) {
   await mkdir(catalogDetailsPath, { recursive: true })
   const expected = new Set()
   for (const detail of details) {
@@ -834,17 +936,32 @@ async function writeCatalogFiles(bridgeBuffer, indexBuffer, details) {
     const scoped = relative(root, target)
     if (!scoped || scoped.startsWith('..') || isAbsolute(scoped)) throw new Error(`catalog detail path escapes the repository: ${detail.path}`)
     expected.add(target)
-    await atomicWrite(target, Buffer.from(`${JSON.stringify(detail.entry, null, 2)}\n`))
+    const contents = Buffer.from(`${JSON.stringify(detail.entry, null, 2)}\n`)
+    let existing = null
+    try { existing = await readFile(target) } catch (error) {
+      if (error?.code !== 'ENOENT') throw error
+    }
+    if (!existing?.equals(contents)) await atomicWrite(target, contents)
   }
-  for (const name of await readdir(catalogDetailsPath)) {
-    const target = resolve(catalogDetailsPath, name)
-    if (!expected.has(target)) await rm(target, { recursive: true, force: true })
+  if (pruneUnlisted) {
+    for (const name of await readdir(catalogDetailsPath)) {
+      const target = resolve(catalogDetailsPath, name)
+      if (!expected.has(target)) await rm(target, { recursive: true, force: true })
+    }
   }
-  await atomicWrite(catalogIndexPath, indexBuffer)
+  let existingIndex = null
+  try { existingIndex = await readFile(catalogIndexPath) } catch (error) {
+    if (error?.code !== 'ENOENT') throw error
+  }
+  if (!existingIndex?.equals(indexBuffer)) await atomicWrite(catalogIndexPath, indexBuffer)
   // Publish the compatibility bridge last: readers either observe the old
   // complete generation or a bridge whose integrity metadata matches the new
   // index and details generation.
-  await atomicWrite(catalogPath, bridgeBuffer)
+  let existingBridge = null
+  try { existingBridge = await readFile(catalogPath) } catch (error) {
+    if (error?.code !== 'ENOENT') throw error
+  }
+  if (!existingBridge?.equals(bridgeBuffer)) await atomicWrite(catalogPath, bridgeBuffer)
 }
 
 const options = parseArgs(process.argv.slice(2))
@@ -916,6 +1033,10 @@ const originalCatalog = await readFile(catalogPath)
 const originalCatalogIndex = await readFile(catalogIndexPath)
 const originalCandidates = await readFile(candidatesPath)
 const originalRecommendations = await readFile(recommendationsPath)
+const manualScanPlanBytes = options.manualScanPlan ? await readFile(resolve(options.manualScanPlan)) : null
+if (manualScanPlanBytes && manualScanPlanBytes.length > 2 * 1024 * 1024) throw new Error('manual scan plan exceeds the bounded input size')
+const manualScanPlan = manualScanPlanBytes ? validateManualScanPlan(JSON.parse(manualScanPlanBytes.toString('utf8'))) : null
+const manualScanPlanSha = manualScanPlanBytes ? sha256(manualScanPlanBytes) : null
 const catalogSha = sha256(originalCatalog)
 const catalogIndexSha = sha256(originalCatalogIndex)
 const candidatesSha = sha256(originalCandidates)
@@ -942,7 +1063,10 @@ const report = {
   status: 'running',
   completed: false,
   statisticsAvailable: false,
-  planId: sha256(`${baseCommit ?? 'local'}:${catalogSha}:${catalogIndexSha}:${candidatesSha}:${recommendationsSha}:${dshReleaseWindowSha}:${observedAt}`).slice(0, 24),
+  planId: sha256(manualScanPlan
+    ? `${baseCommit ?? 'local'}:${catalogSha}:${catalogIndexSha}:${candidatesSha}:${recommendationsSha}:${dshReleaseWindowSha}:${manualScanPlanSha}:${observedAt}`
+    : `${baseCommit ?? 'local'}:${catalogSha}:${catalogIndexSha}:${candidatesSha}:${recommendationsSha}:${dshReleaseWindowSha}:${observedAt}`).slice(0, 24),
+  ...(manualScanPlan ? { mode: 'manual-fixed-source-batch-admission' } : {}),
   baseCommit,
   observedAt,
   preconditions: {
@@ -954,6 +1078,7 @@ const report = {
     sourcePolicySha256: sha256(JSON.stringify(policy)),
     admissionReviewsSha256: sha256(JSON.stringify(admissionReviews)),
     catalogMigrationsSha256: sha256(JSON.stringify(catalogMigrations)),
+    ...(manualScanPlan ? { manualScanPlanSha256: manualScanPlanSha } : {}),
   },
   policy: 'registry/automation-policy.json',
   sourceVersionChecks: {
@@ -994,6 +1119,10 @@ const report = {
 failureContext.report = report
 const github = createCatalogGithubReader()
 report.apiUsage = github.statistics
+if (manualScanPlan) {
+  failureContext.stage = 'inspect-manual-fixed-source-admissions'
+  await inspectManualAdmissions(catalog, policy, github, observedAt, report, dshReleaseWindow, manualScanPlan)
+} else {
 // Resolve canonical repository identity and head metadata in bounded read-only
 // batches. All later package reads share these immutable snapshots and cache.
 await github.primeRepositories(catalog.entries.filter(entry => !isWithdrawnRepository(entry.repositoryUrl, policy))
@@ -1032,10 +1161,13 @@ report.compatibilityPolicy = applyLatestDshCompatibilityPolicy(
 report.compatibilityUnlisted = report.compatibilityPolicy.unlisted
 report.compatibilityRestored = report.compatibilityPolicy.restored
 report.compatibilityRefreshed = report.compatibilityPolicy.refreshed
+}
 failureContext.stage = 'refresh-catalog-localization'
-const localized = relocalizeCatalogEntries(catalog.entries, catalog.registry.categories)
-catalog.entries = localized.entries
-report.relocalizedEntries = localized.changes
+if (!manualScanPlan) {
+  const localized = relocalizeCatalogEntries(catalog.entries, catalog.registry.categories)
+  catalog.entries = localized.entries
+  report.relocalizedEntries = localized.changes
+}
 catalog.entries.sort(compareCatalogEntries)
 assertCatalogLocalization(catalog)
 
@@ -1069,6 +1201,47 @@ if (!candidatesChanged && !candidatesBuffer.equals(originalCandidates)) {
 }
 if (!recommendationsChanged && !canonicalRecommendationsBuffer.equals(originalRecommendations)) {
   throw new Error('Community recommendation serialization changed without a write decision')
+}
+if (manualScanPlan) {
+  if (candidatesChanged || recommendationsChanged) throw new Error('manual Catalog admission cannot mutate Candidate or Community registries')
+  const admittedIds = new Set(report.manualScan.admitted.map(entry => entry.id))
+  const changedDetails = split.details.filter(detail => admittedIds.has(detail.entry.id))
+  const scope = catalogChanged
+    ? [...new Set(['registry/catalog.json', 'registry/catalog-index.json', ...changedDetails.map(detail => `registry/${detail.path}`)])].sort()
+    : []
+  const scopePreconditions = {}
+  const scopePostconditions = {}
+  for (const file of scope) {
+    if (file === 'registry/catalog.json') {
+      scopePreconditions[file] = catalogSha
+      scopePostconditions[file] = sha256(catalogBuffer)
+    } else if (file === 'registry/catalog-index.json') {
+      scopePreconditions[file] = catalogIndexSha
+      scopePostconditions[file] = sha256(catalogIndexBuffer)
+    } else {
+      let existing = null
+      try { existing = await readFile(resolve(root, file)) } catch (error) {
+        if (error?.code !== 'ENOENT') throw error
+      }
+      if (existing !== null) throw new Error(`manual Catalog admission detail path already exists: ${file}`)
+      const detail = changedDetails.find(item => `registry/${item.path}` === file)
+      if (!detail) throw new Error(`manual Catalog admission plan lost detail path: ${file}`)
+      scopePreconditions[file] = null
+      scopePostconditions[file] = sha256(Buffer.from(`${JSON.stringify(detail.entry, null, 2)}\n`))
+    }
+  }
+  report.mutationPlan = {
+    schemaVersion: 1,
+    type: 'manual-fixed-source-catalog-admission',
+    planId: report.manualScan.planId,
+    baseCommit,
+    inputScanPlanSha256: manualScanPlanSha,
+    scope,
+    preconditions: scopePreconditions,
+    postconditions: scopePostconditions,
+    backup: 'external-runner-temporary-directory',
+    commitRoute: 'signed-catalog-policy-pull-request',
+  }
 }
 report.postconditions = {
   catalogChanged, candidatesChanged, recommendationsChanged,
@@ -1106,7 +1279,7 @@ await backupCatalogDetails(catalogDetailsBackup)
 await copyFile(candidatesPath, candidatesBackup)
 await copyFile(recommendationsPath, recommendationsBackup)
 try {
-  if (catalogChanged) await writeCatalogFiles(catalogBuffer, catalogIndexBuffer, split.details)
+  if (catalogChanged) await writeCatalogFiles(catalogBuffer, catalogIndexBuffer, split.details, { pruneUnlisted: !manualScanPlan })
   if (candidatesChanged) await atomicWrite(candidatesPath, candidatesBuffer)
   if (recommendationsChanged) await atomicWrite(recommendationsPath, canonicalRecommendationsBuffer)
 } catch (error) {
