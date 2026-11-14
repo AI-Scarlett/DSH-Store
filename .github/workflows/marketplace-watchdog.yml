@@ -5,6 +5,16 @@ on:
     # A half-hour pulse catches up after GitHub drops a scheduled event.
     - cron: "10,40 * * * *"
   workflow_dispatch:
+    inputs:
+      request_id:
+        description: Optional caller correlation identifier
+        required: false
+        default: manual
+        type: string
+  workflow_run:
+    workflows: [Publish plugin marketplace]
+    types: [completed]
+    branches: [main]
 
 permissions:
   contents: read
@@ -17,6 +27,9 @@ concurrency:
 
 jobs:
   cadence:
+    if: >-
+      github.event_name != 'workflow_run' ||
+      (github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.event == 'schedule')
     runs-on: ubuntu-latest
     permissions:
       actions: read
@@ -37,7 +50,7 @@ jobs:
           last_success=''
           history_known=true
 
-          if test "$GITHUB_EVENT_NAME" = schedule; then
+          if test "$GITHUB_EVENT_NAME" = schedule || test "$GITHUB_EVENT_NAME" = workflow_run; then
             if ! runs=$(gh api "repos/$GITHUB_REPOSITORY/actions/workflows/marketplace-watchdog.yml/runs?per_page=100&status=completed"); then
               history_known=false
             else
@@ -189,11 +202,52 @@ jobs:
         id: public
         continue-on-error: true
         run: node scripts/verify-marketplace-public.mjs --attempts 3 --report "$RUNNER_TEMP/marketplace-watchdog-report.json"
-      - name: Repair the public build when any surface is stale
+      - name: Repair the public build and wait for its exact deployment
+        id: pages_repair
         if: steps.public.outcome != 'success'
+        continue-on-error: true
         env:
           GH_TOKEN: ${{ github.token }}
-        run: gh workflow run pages.yml --ref main
+        run: |
+          request_id="watchdog-pages-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
+          gh workflow run pages.yml --ref main -f request_id="$request_id"
+          expected_title="Publish plugin marketplace ($request_id)"
+          pages_run_id=''
+          for attempt in $(seq 1 60); do
+            runs=$(gh run list --workflow pages.yml --event workflow_dispatch --limit 50 \
+              --json databaseId,displayTitle)
+            pages_run_id=$(jq -r --arg expected "$expected_title" \
+              '.[] | select(.displayTitle == $expected) | .databaseId' <<<"$runs" | head -n 1)
+            test -n "$pages_run_id" && break
+            sleep 5
+          done
+          test -n "$pages_run_id"
+
+          pages_run=''
+          for attempt in $(seq 1 180); do
+            pages_run=$(gh api "repos/$GITHUB_REPOSITORY/actions/runs/$pages_run_id")
+            test "$(jq -r .status <<<"$pages_run")" = completed && break
+            sleep 15
+          done
+          test "$(jq -r .status <<<"$pages_run")" = completed
+          test "$(jq -r .conclusion <<<"$pages_run")" = success
+          echo "run_id=$pages_run_id" >> "$GITHUB_OUTPUT"
+          echo "run_url=$(jq -r .html_url <<<"$pages_run")" >> "$GITHUB_OUTPUT"
+      - name: Reverify the public surfaces after repair
+        id: public_after_repair
+        if: steps.public.outcome != 'success' && steps.pages_repair.outcome == 'success'
+        continue-on-error: true
+        run: node scripts/verify-marketplace-public.mjs --attempts 3 --report "$RUNNER_TEMP/marketplace-watchdog-report.json"
+      - name: Select the final public verification result
+        id: final_public
+        if: always()
+        env:
+          INITIAL_PUBLIC_OUTCOME: ${{ steps.public.outcome }}
+          REPAIRED_PUBLIC_OUTCOME: ${{ steps.public_after_repair.outcome }}
+        run: |
+          outcome="$INITIAL_PUBLIC_OUTCOME"
+          if test "$REPAIRED_PUBLIC_OUTCOME" = success; then outcome=success; fi
+          echo "outcome=$outcome" >> "$GITHUB_OUTPUT"
       - name: Download the exact Catalog decision record
         id: catalog_report
         if: always()
@@ -280,7 +334,7 @@ jobs:
           REPORT_PATH: ${{ steps.notification_report.outputs.path }}
           REPORT_RUN_ID: ${{ steps.catalog.outputs.report_run_id }}
           REPORT_RUN_CONCLUSION: ${{ steps.catalog.outputs.report_run_conclusion }}
-          PUBLIC_OUTCOME: ${{ steps.public.outcome }}
+          PUBLIC_OUTCOME: ${{ steps.final_public.outputs.outcome }}
           OWNER_REPORT_CONCLUSION: ${{ steps.owner_report.outputs.conclusion }}
           REPAIR_TRIGGERED: ${{ steps.catalog.outputs.repair }}
         run: |
@@ -326,6 +380,6 @@ jobs:
         if: >-
           steps.catalog.outputs.report_run_status != 'completed' ||
           steps.catalog.outputs.report_run_conclusion != 'success' ||
-          steps.public.outcome != 'success' ||
+          steps.final_public.outputs.outcome != 'success' ||
           (steps.catalog.outputs.repair == 'true' && steps.owner_report.outputs.conclusion != 'success')
         run: exit 1

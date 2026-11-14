@@ -1,5 +1,7 @@
 name: Publish plugin marketplace
 
+run-name: Publish plugin marketplace (${{ inputs.request_id || github.event_name }})
+
 on:
   push:
     branches: [main]
@@ -22,6 +24,12 @@ on:
     # Sunday 10:30 China Standard Time: refresh all three charts, including the weekly baseline.
     - cron: "30 2 * * 0"
   workflow_dispatch:
+    inputs:
+      request_id:
+        description: Optional caller correlation identifier
+        required: false
+        default: manual
+        type: string
 
 permissions:
   contents: read

@@ -13,6 +13,7 @@ import {
 
 const root = resolve(fileURLToPath(new URL('..', import.meta.url)))
 const policy = JSON.parse(await readFile(resolve(root, 'registry/automation-policy.json'), 'utf8'))
+const PUBLIC_FETCH_TIMEOUT_MS = 30_000
 
 function parseArgs(argv) {
   const options = { report: null, attempts: 3 }
@@ -31,10 +32,14 @@ async function fetchText(url, maximum = 4 * 1024 * 1024, redirect = 'follow') {
   let lastError
   for (let attempt = 1; attempt <= options.attempts; attempt += 1) {
     const controller = new AbortController()
-    const timer = setTimeout(() => controller.abort(), 15_000)
+    const timer = setTimeout(() => controller.abort(), PUBLIC_FETCH_TIMEOUT_MS)
     try {
       const response = await fetch(url, {
-        headers: { accept: 'application/json', 'user-agent': 'dsh-safe-plugin-manager-public-watchdog' },
+        headers: {
+          accept: 'application/json',
+          'cache-control': 'no-cache',
+          'user-agent': 'dsh-safe-plugin-manager-public-watchdog',
+        },
         signal: controller.signal, redirect,
       })
       if (!response.ok) throw new Error(`HTTP ${response.status}`)
