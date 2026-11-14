@@ -498,9 +498,10 @@ Issue 创建、编辑或重新打开后，GitHub Actions 会自动取得默认�
 `submission-passed` 或 `submission-failed` 标签。
 
 工作流不检出申请仓库，不执行第三方 `install`、`prepare`、`build` 或 `test`。静态证据不能
-可靠证明的权限、凭据和外部依赖保持“未知”。八小时自动策略只批准完整有界运行时源码可读取、
-无生命周期脚本和运行依赖、许可证/仓库/Bundle/入口一致且没有文件、网络、命令、凭据、原生
-制品或受保护 DSH 信号的固定 Commit；其他项目自动拒绝、隔离或标记 `blocked`。
+可靠证明的权限、凭据和外部依赖保持“未知”。八小时定时策略只对已收录 Catalog 条目检查固定源码更新，
+不扫描新发现或候选仓库。完整有界运行时源码可读取、无生命周期脚本和运行依赖、许可证/仓库/Bundle/入口一致，
+且没有文件、网络、命令、凭据、原生制品或受保护 DSH 信号的固定 Commit 才能通过自动准入门槛；
+其他结果保持失败关闭。
 
 #### 自动策略与自检清单
 
@@ -511,10 +512,7 @@ Issue 创建、编辑或重新打开后，GitHub Actions 会自动取得默认�
 - 高权限或原生构建依赖需要额外核对 `allowBuilds`、平台支持、失败清理和回滚；
 - 最终目录字段、推荐状态和公开页面必须从 GitHub `registry/catalog.json` 读回后才算完成。
 
-自动任务每八小时依次处理 GitHub 主动发现项目与用户提交，先以远端 `main` 目录去重，再对
-每个项目验证 canonical GitHub、manifest、许可证、完整运行产物、Bundle Patch、受保护条目
-和固定 Commit。满足 `registry/automation-policy.json` 的项目自动生成 PR，通过仓库检查与
-CodeQL 后自动 squash 合并；其余结果失败关闭，不再用机械人工确认代替证据。
+每八小时的定时任务只复检 Catalog 已收录插件：核对 canonical GitHub 固定源码、上游版本和官方 DSH 兼容窗口。它不搜索新仓库、不抓取候选仓库源码，也不新增或清理 Candidate Registry、Community Registry 记录。需要全量发现或候选源码复扫时，必须由独立人工计划明确列出仓库和固定 Commit；本次 26,870 条人工复扫不会自动重跑。
 
 Catalog 在 UTC 00:05、08:05、16:05 扫描；发生 Catalog 变更并合并后会立即触发且等待绑定该
 merge Commit 的 Pages 发布，国际站和国内站仍按三小时错峰刷新。看门狗每半小时唤醒一次，距上次
@@ -526,12 +524,11 @@ GitHub 定时事件漏跑的空档。公开面失配时看门狗等待精确关�
 看门狗还会把每轮的新增收录数、历史版本更新数、中文名（英文名）清单、暂缓原因和四个公开面
 结果写入 `DSH STORE 自动更新报告（每 3 小时）` 跟踪 Issue。
 
-Catalog 扫描成功后，独立的 `author-notifications.yml` 会为 `blocked` 条目、发现上游高版本但暂缓
-更新的条目，以及明确属于 DSH 且有确定性整改原因的候选项目维护 GitHub 修复单，并在新建或原因
-变化时 `@维护者`；个人仓库提及所有者，组织仓库优先提及最近的人类提交者。同一 canonical 仓库
+Catalog 复检成功后，独立的 `author-notifications.yml` 会为 `blocked` 条目、暂缓更新的条目和已有候选记录
+维护 GitHub 修复单，并在新建或原因变化时 `@维护者`；候选通知只使用注册表中已有的固定 Commit 与
+状态，不读取候选源码。个人仓库提及所有者，组织仓库优先提及最近的人类提交者。同一 canonical 仓库
 只有一个修复单；原因不变不重复提醒，阻断清除后自动
-关闭。搜索误命中、403/404/429、超时、默认分支移动等临时故障不通知；历史候选不会无边界群发，
-每轮最多新建 3 个，剩余项在后续八小时轮次中处理。每次写入都绑定当前 `main` Commit、Catalog、
+关闭。定时 Catalog 路径不搜索或复核候选仓库源码。403/404/429、超时、默认分支移动等临时故障不通知；每轮最多新建 3 个修复单。每次写入都绑定当前 `main` Commit、Catalog、
 候选表、扫描报告和现有修复单哈希。这条链路只使用 GitHub Actions 的短期仓库令牌，不依赖 Codex、
 外部 PAT 或 SMTP 密码。每封修复单都会建议维护者使用
 [build-dsh-plugin](https://github.com/AI-Scarlett/build-dsh-plugin) 检查并修改项目，并提供

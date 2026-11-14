@@ -1,0 +1,102 @@
+{
+  "schemaVersion": 1,
+  "operation": "scheduled-catalog-scan-scope-change",
+  "planId": "dsh-catalog-only-scheduled-recheck-20261115",
+  "createdAt": "2026-11-14T22:26:54Z",
+  "baseCommit": "6c956f39b3c54f0f80632efc704e604d6c90d424",
+  "planArtifact": "docs/ops/catalog-only-scan-policy-plan-20261115.json",
+  "scope": [
+    ".github/workflows/catalog-automation.yml",
+    "README.md",
+    "registry/README.md",
+    "registry/automation-policy.json",
+    "scripts/automate-catalog.mjs",
+    "src/automation-status.mjs",
+    "src/catalog-compatibility-policy.mjs",
+    "test/automation-status.test.mjs",
+    "test/catalog-automation.test.mjs",
+    "test/catalog-compatibility-policy.test.mjs"
+  ],
+  "fileHashes": {
+    ".github/workflows/catalog-automation.yml": {
+      "preconditionSha256": "b718c1a458c63404df136cde1aec77d68176a334957970db5eb3565d8db3be2f",
+      "postconditionSha256": "41801c811d13cb167fae00495d6ca9c206999581208b9a95257abf7f3d7bb397"
+    },
+    "README.md": {
+      "preconditionSha256": "0064ad3e49964e1feb8f5c1b72eefd7264456c6ad26e3e05ea2fe27cc1827ff9",
+      "postconditionSha256": "ac143db6e6caa3d40c32ff739aea743a210ed9298c6f5a5771ad7209a49a2ca6"
+    },
+    "registry/README.md": {
+      "preconditionSha256": "34ae7f00cd943763f685afbb52b14e31ed80ddf507c740647a7248281426f743",
+      "postconditionSha256": "99145e31ff84d8f5fa11868631c545452d4f1e50f0d317970b816523645274b6"
+    },
+    "registry/automation-policy.json": {
+      "preconditionSha256": "1f90f00722e25e5ee5d735200d431291af56ad9bfb22adc784802855ceb594e1",
+      "postconditionSha256": "655d44335d588718afeed1f2b61900700d6b2df880e334c94d38bc619e3d24ec"
+    },
+    "scripts/automate-catalog.mjs": {
+      "preconditionSha256": "34fb09180b5081a06a75dbb5ffedf869e6636d11efa63e473601701fe15de0b0",
+      "postconditionSha256": "a0b8b363b8b8ae2c7db0379d6feb21f095606b875400165d2c6114008becb102"
+    },
+    "src/automation-status.mjs": {
+      "preconditionSha256": "264a83616e437467b775c5a13ebe2d139996fad8d8c33e5f3ec39d623a4ec104",
+      "postconditionSha256": "64d6fd63ac0390aa1ed0e9b8346a1bb6673665792783a9f07ac519c0e91839bf"
+    },
+    "src/catalog-compatibility-policy.mjs": {
+      "preconditionSha256": "b8152b649e826d07de2bd83ca4704bdbe71b725b53d9264ba7b6d7636b23a1e1",
+      "postconditionSha256": "8aabcf2f216fed774f841c571c364af3aca440760a1efbbb84c53c67d4e2d0ec"
+    },
+    "test/automation-status.test.mjs": {
+      "preconditionSha256": "bc6b5de86dbbcc76958faefc637201c3bae00896013a817ca7880125f20875b6",
+      "postconditionSha256": "588622574b0662e5bd26844f941e0eb2007171ce44c583700c70f46bb5d91938"
+    },
+    "test/catalog-automation.test.mjs": {
+      "preconditionSha256": "372f15077b538dccb758de8655ef5b4c67554094bb99585572621499d5444092",
+      "postconditionSha256": "c2bdf96901d4a0617343dff1de0f0630081928405c16a2ad48483ddd13a15e6b"
+    },
+    "test/catalog-compatibility-policy.test.mjs": {
+      "preconditionSha256": "1ddfb48975d1bb34fbcf06921004e925e5245debb84bd19c91cd7337c5c6c36d",
+      "postconditionSha256": "bcf971be42a21f6d59aaa04771b510e5d75205e4b9a67268a5431d20c7ec376f"
+    }
+  },
+  "scheduledPolicy": {
+    "cron": "5 */8 * * *",
+    "scope": "catalog-only",
+    "catalogChecks": [
+      "existing Catalog entries at fixed source commits",
+      "canonical manifest version and source updates",
+      "official DSH latest-three compatibility window"
+    ],
+    "disabled": [
+      "GitHub repository discovery queries",
+      "discovery-feed repository ingestion",
+      "Candidate Registry repository source scans",
+      "Candidate Registry compatibility retention scans and removals",
+      "Candidate Registry writes",
+      "Community Registry writes"
+    ],
+    "manualPlanRequiredFor": [
+      "new-repository discovery",
+      "candidate fixed-source review",
+      "broad ecosystem rescan"
+    ]
+  },
+  "threeHourPublicWatchdog": {
+    "changed": false,
+    "evidence": [
+      ".github/workflows/marketplace-watchdog.yml",
+      ".github/workflows/pages.yml"
+    ]
+  },
+  "deterministicGates": {
+    "focusedTests": "36 passed, 0 failed",
+    "npmRunCheck": "passed; 662 tests passed, 0 failed",
+    "registryValidation": "passed; 915 Catalog entries and 24,171 discovery records",
+    "gitDiffCheck": "passed"
+  },
+  "mutationRoute": {
+    "type": "CI-checked auditable pull request",
+    "shortLivedCredential": "GitHub App connector for repository writes; workflow uses the Actions GITHUB_TOKEN",
+    "rollback": "Revert the merged policy PR through a follow-up PR; the three-hour public watchdog is independent."
+  }
+}

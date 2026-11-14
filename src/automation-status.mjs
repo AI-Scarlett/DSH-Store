@@ -67,6 +67,8 @@ function reportRecord(item) {
   const identity = {
     runId: Number.isSafeInteger(Number(item.runId)) ? Number(item.runId) : null,
     observedAt: iso(report.observedAt),
+    mode: text(report.mode, 80),
+    scanScope: text(report.scanScope, 80),
     statisticsAvailable,
     failure: statisticsAvailable ? null : {
       stage: text(report.failure?.stage, 120),
@@ -102,6 +104,7 @@ function reportRecord(item) {
     },
     candidateRetention: {
       authority: text(report.candidateRetention?.authority, 120),
+      skippedByScope: report.candidateRetention?.skippedByScope === true,
       bucket: count(report.candidateRetention?.bucket),
       bucketCount: count(report.candidateRetention?.bucketCount),
       checkedCandidates: count(report.candidateRetention?.checkedCandidates),
@@ -144,6 +147,7 @@ function publicScanRun(run, report) {
     sourceCommit: run.sourceCommit,
     reportAvailable: Boolean(report),
     statisticsAvailable,
+    scanScope: report?.scanScope ?? null,
     observedAt: report?.observedAt ?? null,
     added: statisticsAvailable ? arrayCount(report.addedEntries) : null,
     updated: statisticsAvailable ? arrayCount(report.updatedEntries) : null,
@@ -264,6 +268,7 @@ export function buildAutomationStatus({ catalog, candidates, runs = {}, reports 
     },
     latestChanges: {
       observedAt: latestReport?.observedAt ?? null,
+      scanScope: latestReport?.scanScope ?? null,
       statisticsAvailable: latestStatisticsAvailable,
       failure: latestReport?.failure ?? null,
       added: latestAdded,

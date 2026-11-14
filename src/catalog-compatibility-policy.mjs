@@ -162,13 +162,15 @@ function currentAdmission(entry, authority) {
       || record.state === 'reviewed' && record.capabilities === 'reviewed')
 }
 
-export function applyLatestDshCompatibilityPolicy(catalog, candidates, window, observedAt, admissionAuthority = null) {
+export function applyLatestDshCompatibilityPolicy(catalog, candidates, window, observedAt, admissionAuthority = null, { manageCandidates = true } = {}) {
   if (!catalog || !Array.isArray(catalog.entries)) throw new Error('compatibility policy requires Catalog entries')
   if (!candidates || !Array.isArray(candidates.entries)) throw new Error('compatibility policy requires Candidate Registry entries')
   if (!window || !Array.isArray(window.releases) || window.releases.length !== window.releaseCount) {
     throw new Error('compatibility policy requires a complete official DSH release window')
   }
-  const candidateByRepository = new Map(candidates.entries.map(candidate => [candidate.repositoryUrl.toLowerCase(), candidate]))
+  const candidateByRepository = manageCandidates
+    ? new Map(candidates.entries.map(candidate => [candidate.repositoryUrl.toLowerCase(), candidate]))
+    : new Map()
   const report = {
     authority: window.authority,
     registryUrl: window.registryUrl,
@@ -251,15 +253,15 @@ export function applyLatestDshCompatibilityPolicy(catalog, candidates, window, o
   }
   for (const [repositoryKey, entries] of heldByRepository) {
     const existingCandidate = candidateByRepository.get(repositoryKey)
-    let disposition = 'existing-candidate-preserved'
-    if (!existingCandidate) {
+    let disposition = manageCandidates ? 'existing-candidate-preserved' : 'candidate-registry-not-managed'
+    if (manageCandidates && !existingCandidate) {
       const candidate = managedCandidate(entries, candidates, window.releases, observedAt)
       candidates.entries.push(candidate)
       candidateByRepository.set(repositoryKey, candidate)
       disposition = 'managed-candidate-created'
       report.candidatesChanged = true
       report.managedCandidatesCreated += 1
-    } else if (isManagedCandidate(existingCandidate)) {
+    } else if (manageCandidates && isManagedCandidate(existingCandidate)) {
       if (existingCandidate.discoverySources.length !== 1) {
         throw new Error(`managed compatibility candidate for ${entries[0].repositoryUrl} has additional discovery history`)
       }
@@ -275,26 +277,28 @@ export function applyLatestDshCompatibilityPolicy(catalog, candidates, window, o
       } else {
         disposition = 'managed-candidate-unchanged'
       }
-    } else {
+    } else if (manageCandidates && existingCandidate) {
       report.existingCandidatesPreserved += 1
     }
     for (const item of transitionByRepository.get(repositoryKey) ?? []) item.candidateDisposition = disposition
   }
-  for (const [repositoryKey, candidate] of candidateByRepository) {
-    if (!isManagedCandidate(candidate) || heldByRepository.has(repositoryKey)) continue
-    if (candidate.discoverySources.length !== 1) {
-      throw new Error(`managed compatibility candidate for ${candidate.repositoryUrl} has additional discovery history`)
+  if (manageCandidates) {
+    for (const [repositoryKey, candidate] of candidateByRepository) {
+      if (!isManagedCandidate(candidate) || heldByRepository.has(repositoryKey)) continue
+      if (candidate.discoverySources.length !== 1) {
+        throw new Error(`managed compatibility candidate for ${candidate.repositoryUrl} has additional discovery history`)
+      }
+      candidates.entries = candidates.entries.filter(item => item !== candidate)
+      report.candidatesChanged = true
+      report.managedCandidatesRemoved += 1
+      for (const item of transitionByRepository.get(repositoryKey) ?? []) item.candidateDisposition = 'managed-candidate-removed'
     }
-    candidates.entries = candidates.entries.filter(item => item !== candidate)
-    report.candidatesChanged = true
-    report.managedCandidatesRemoved += 1
-    for (const item of transitionByRepository.get(repositoryKey) ?? []) item.candidateDisposition = 'managed-candidate-removed'
   }
   for (const item of [...report.restored, ...report.unlisted, ...report.refreshed]) {
     if (item.candidateDisposition === null) {
-      item.candidateDisposition = candidateByRepository.has(item.repositoryUrl.toLowerCase())
-        ? 'existing-candidate-preserved'
-        : 'no-managed-candidate'
+      item.candidateDisposition = !manageCandidates
+        ? 'candidate-registry-not-managed'
+        : candidateByRepository.has(item.repositoryUrl.toLowerCase()) ? 'existing-candidate-preserved' : 'no-managed-candidate'
     }
   }
   return report

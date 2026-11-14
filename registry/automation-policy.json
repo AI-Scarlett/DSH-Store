@@ -1,7 +1,9 @@
 {
   "schemaVersion": 1,
   "scheduleHours": 8,
+  "scheduledScanScope": "catalog-only",
   "search": {
+    "enabled": false,
     "queries": [
       "topic:dsh-plugin",
       "topic:deepseek-harness",
@@ -153,7 +155,7 @@
     ]
   },
   "discoveryFeeds": {
-    "enabled": true,
+    "enabled": false,
     "repository": "awesome-dsh-plugin/awesome-dsh-plugin",
     "admission": "candidate-only",
     "maxRecordsPerRun": 8,
