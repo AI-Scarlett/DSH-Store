@@ -3,7 +3,7 @@
   "registry": {
     "name": "DSH STORE Candidate Discovery Registry",
     "repositoryUrl": "https://github.com/AI-Scarlett/DSH-Store",
-    "updatedAt": "2026-11-14T18:24:06.000Z",
+    "updatedAt": "2026-11-14T19:28:08.000Z",
     "trustBoundary": {
       "installActionsDisabled": true,
       "catalogPromotionRequired": true,
@@ -915,8 +915,8 @@
       "description": "Reverse engineer anything with agents, from app behavior down to native binaries.",
       "repositoryUrl": "https://github.com/morluto/rea",
       "defaultBranch": "main",
-      "latestCommit": "4502bd44bb65741e3c62eb9c7d579df085d33a13",
-      "sourceUpdatedAt": "2026-11-14T18:28:43.000Z",
+      "latestCommit": "a0d90252020ef41eef1e572314e745a2b4d854ac",
+      "sourceUpdatedAt": "2026-11-14T19:35:28.000Z",
       "discoveredAt": "2026-08-21T02:40:10.936Z",
       "discoverySources": [
         "blue-whale-fixed-ee0f3167f213144680f1b80be8cd30fe6353c8aa",
@@ -20004,8 +20004,8 @@
       "description": "The workspace to stay in the loop and on top of agents - shape, decide, plan, annotate, review code, share with team, and send all feedback to agents with one click.",
       "repositoryUrl": "https://github.com/backnotprop/plannotator",
       "defaultBranch": "main",
-      "latestCommit": "2a4dae4c9991061527f7da38bdc5b2f48863a6e0",
-      "sourceUpdatedAt": "2026-11-14T17:52:10.000Z",
+      "latestCommit": "248f87e63c9018ae9ffda98b057d25669fe8f4e3",
+      "sourceUpdatedAt": "2026-11-14T18:45:33.000Z",
       "discoveredAt": "2026-11-11T22:30:29.000Z",
       "discoverySources": [
         "github-automatic-radar-v1"
@@ -20726,8 +20726,8 @@
       "description": "为 DSH 提供会话管理能力。英文原始说明：Keeps unsent composer text as a per-session draft in local storage, so it comes back after switching sessions or restarting DeepSeek Harness.",
       "repositoryUrl": "https://github.com/wangkohan/dsh-composer-draft-keeper",
       "defaultBranch": "main",
-      "latestCommit": "4f1d6793cc8c8bf768aaa051c8974c2c607bcacc",
-      "sourceUpdatedAt": "2026-11-14T18:32:20.000Z",
+      "latestCommit": "60527f177043799ceb9f3222be452b30c8690e95",
+      "sourceUpdatedAt": "2026-11-14T18:44:21.000Z",
       "discoveredAt": "2026-11-14T18:24:06.000Z",
       "discoverySources": [
         "catalog-latest-three-compatibility-v1"
@@ -20739,6 +20739,82 @@
       "status": "reviewing",
       "route": "direct-review",
       "statusReason": "DSH_LATEST_THREE_COMPATIBILITY_HOLD: Installation held because the Catalog has no compatible result for any declared DSH release; the official latest 3 releases need rechecking (0.2.2-rc.1, 0.2.2-rc.2, 0.2.2-rc.3). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence. Affected Catalog entries: dsh-composer-draft-keeper."
+    },
+    {
+      "id": "xian-jl-mouse-keyboard-plugin",
+      "name": "Xian-JL/Mouse-Keyboard-Plugin",
+      "description": "Discovered GitHub repository awaiting a compatible DSH Bundle.",
+      "repositoryUrl": "https://github.com/Xian-JL/Mouse-Keyboard-Plugin",
+      "defaultBranch": "main",
+      "latestCommit": "d6c290cbc21a49882cdef4759ec975250c86ea05",
+      "sourceUpdatedAt": "2026-11-07T15:08:35.000Z",
+      "discoveredAt": "2026-11-14T19:28:08.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@9e8514dc834309328b6f28ccc027a89c257b825a:data/plugins/Xian-JL__Mouse-Keyboard-Plugin.yml:sha256=5c29b3045d5d140de15710a45948537c25efd0428e1f6a437e0a4feca91ee41e:at=2026-11-14T19:35:30.712Z:owner=236509219"
+      ],
+      "topics": [
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "xiangdeen-dsh-sidebar-video-player",
+      "name": "XIANGDEEN/dsh-sidebar-video-player",
+      "description": "Discovered GitHub repository awaiting a compatible DSH Bundle.",
+      "repositoryUrl": "https://github.com/XIANGDEEN/dsh-sidebar-video-player",
+      "defaultBranch": "main",
+      "latestCommit": "15e405163807e6ea01f71d797bad8ea74862977a",
+      "sourceUpdatedAt": "2026-10-28T14:56:39.000Z",
+      "discoveredAt": "2026-11-14T19:28:08.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@9e8514dc834309328b6f28ccc027a89c257b825a:data/plugins/XIANGDEEN__dsh-sidebar-video-player.yml:sha256=1ed95b0c0406d485ccc84ad48455f83641a17888f17b1f847b28cc48de4b134d:at=2026-11-14T19:35:30.712Z:owner=191225417"
+      ],
+      "topics": [
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "xian-jl-dsh-xiao-theme",
+      "name": "Xian-JL/dsh-Xiao-theme",
+      "description": "Discovered GitHub repository awaiting a compatible DSH Bundle.",
+      "repositoryUrl": "https://github.com/Xian-JL/dsh-Xiao-theme",
+      "defaultBranch": "main",
+      "latestCommit": "b64e0c323dd548a36dc4bc8bc8257a5e3c03a9a0",
+      "sourceUpdatedAt": "2026-10-23T10:45:54.000Z",
+      "discoveredAt": "2026-11-14T19:28:08.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@9e8514dc834309328b6f28ccc027a89c257b825a:data/plugins/Xian-JL__dsh-Xiao-theme.yml:sha256=99e315eff36491ac96ff8df0fc12456b4e40b35bb2b5bdfc9d0b1d68260e8241:at=2026-11-14T19:35:30.712Z:owner=236509219"
+      ],
+      "topics": [
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "xian-jl-dsh-kinich-theme",
+      "name": "Xian-JL/dsh-Kinich-theme",
+      "description": "Discovered GitHub repository awaiting a compatible DSH Bundle.",
+      "repositoryUrl": "https://github.com/Xian-JL/dsh-Kinich-theme",
+      "defaultBranch": "main",
+      "latestCommit": "a572ca226b2eeec4f504b6c93413d21647b07f98",
+      "sourceUpdatedAt": "2026-10-23T10:45:47.000Z",
+      "discoveredAt": "2026-11-14T19:28:08.000Z",
+      "discoverySources": [
+        "github-feed:awesome-dsh-plugin/awesome-dsh-plugin@9e8514dc834309328b6f28ccc027a89c257b825a:data/plugins/Xian-JL__dsh-Kinich-theme.yml:sha256=a44faa548f6a9b0e8d718bacd96ec0f6c3b002411f7646e09f941d14a8383a84:at=2026-11-14T19:35:30.712Z:owner=236509219"
+      ],
+      "topics": [
+        "automatic-radar"
+      ],
+      "status": "reviewing",
+      "route": "direct-review",
+      "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
     }
   ]
 }
