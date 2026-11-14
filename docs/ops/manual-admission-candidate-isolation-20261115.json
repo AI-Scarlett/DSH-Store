@@ -1,0 +1,82 @@
+{
+  "schemaVersion": 1,
+  "id": "manual-admission-candidate-isolation-20261115",
+  "type": "catalog-policy-runner-repair",
+  "createdAt": "2026-11-15",
+  "repository": "AI-Scarlett/DSH-Store",
+  "baseCommit": "266638914371f08d5990eca19d3bd59a1df2347b",
+  "authorization": {
+    "source": "direct-user-request",
+    "request": "手动重新扫描已知两万多个 DSH 插件，符合收录条件的予以收录；自动巡查继续按既有范围运行，不执行本次大批量复扫。",
+    "githubWriteCredential": "short-lived-token-required",
+    "mutationRoute": "auditable-ci-checked-pull-request-only"
+  },
+  "scope": [
+    "docs/ops/manual-admission-candidate-isolation-20261115.json",
+    "scripts/automate-catalog.mjs",
+    "src/catalog-compatibility-policy.mjs",
+    "test/catalog-automation.test.mjs",
+    "test/catalog-compatibility-policy.test.mjs"
+  ],
+  "preconditions": {
+    "docs/ops/manual-admission-candidate-isolation-20261115.json": null,
+    "scripts/automate-catalog.mjs": "6dde4ab699cb747e173d02021e0b2a89b72c1ebb2f014c7115a91120c474bd80",
+    "src/catalog-compatibility-policy.mjs": "37df1d51133010c92dfdf0d8d8faf8a626d6cfda428cbb1d7e090f511853533a",
+    "test/catalog-automation.test.mjs": "ec38cf6daac923566ca1d6ce267e289148223cb6f51aacc76641e42a5d2c6c4b",
+    "test/catalog-compatibility-policy.test.mjs": "fb6617b620ae52b20ece6c1fd7ff2f332425b4ef595bae294012d1110616bd24"
+  },
+  "change": {
+    "description": "The one-time manual admission check runs latest-three compatibility on only the three selected Catalog entries, but the compatibility policy also prunes managed candidates absent from its partial Catalog view. Give that recheck an isolated empty candidate scope so historical Candidate Registry records remain read-only; preserve the scheduled Catalog policy unchanged.",
+    "manualScan": {
+      "branch": "codex/manual-dsh-rescan-20261115-final",
+      "commit": "2cf6767995dda31589ff7278036ae50cba74517f",
+      "targetCount": 26870,
+      "selectedCount": 3,
+      "result": "the three fixed sources must be rechecked against current source policy and the live official latest-three DSH release window before Catalog changes"
+    },
+    "failureEvidence": {
+      "workflowRun": 43636094081,
+      "stage": "Inspect and apply the bounded automatic policy",
+      "error": "manual Catalog admission cannot mutate Candidate or Community registries"
+    },
+    "boundaries": [
+      "No scheduled discovery or 26,870-target scan is started by the repair.",
+      "The scheduled Catalog workflow and its current scan cadence and scope remain unchanged.",
+      "Manual compatibility evaluation must not mutate registry/candidates.json or registry/community-recommendations.json.",
+      "No third-party install, prepare, build, test, or runtime code is executed.",
+      "No author outreach, real DSH Profile, package, or restart mutation is in scope."
+    ]
+  },
+  "postconditions": {
+    "scripts/automate-catalog.mjs": "34fb09180b5081a06a75dbb5ffedf869e6636d11efa63e473601701fe15de0b0",
+    "src/catalog-compatibility-policy.mjs": "b8152b649e826d07de2bd83ca4704bdbe71b725b53d9264ba7b6d7636b23a1e1",
+    "test/catalog-automation.test.mjs": "372f15077b538dccb758de8655ef5b4c67554094bb99585572621499d5444092",
+    "test/catalog-compatibility-policy.test.mjs": "1ddfb48975d1bb34fbcf06921004e925e5245debb84bd19c91cd7337c5c6c36d"
+  },
+  "deterministicGates": [
+    {
+      "id": "plan-hash-binding",
+      "required": "The repair plan matches the current base Commit and every scoped base-file SHA-256; actual changed paths exactly match scope."
+    },
+    {
+      "id": "repository-check",
+      "command": "npm run check",
+      "required": "Registry validation and all disposable-fixture tests pass."
+    },
+    {
+      "id": "diff-check",
+      "command": "git diff --check",
+      "required": "No whitespace errors and no out-of-scope files."
+    },
+    {
+      "id": "exact-head-ci",
+      "required": "The repair PR exact head passes all required checks and merges through the auditable PR route."
+    },
+    {
+      "id": "one-time-manual-policy",
+      "required": "After merge, dispatch only the existing verified 26,870-target plan with its three selections; require a fresh current-base Catalog plan, fixed-Commit source recheck, live DSH latest-three check, and Catalog-only PR."
+    }
+  ],
+  "rollback": "Revert the source repair through a new CI-checked PR. Preserve all Candidate Registry, Community Registry, and contact-ledger history. If the one-time policy run fails, do not dispatch again until the failure report is reviewed; no automatic retries.",
+  "healthCheck": "The exact-head repair CI passes; the single manual policy run emits its machine report; Catalog PR and merge are verified separately from GitHub Raw, Pages, dsh.store, and dsh-store.cn readback."
+}

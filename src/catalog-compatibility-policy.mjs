@@ -63,6 +63,19 @@ export function compatibilityHoldReason(releases) {
   return boundedText(`${COMPATIBILITY_HOLD_PREFIX} Installation held because the Catalog has no compatible result for any declared DSH release; the official latest ${releases.length} releases need rechecking (${releases.join(', ')}). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence.`)
 }
 
+export function createManualCompatibilityCandidateScope(candidates) {
+  if (!candidates || typeof candidates !== 'object' || !Array.isArray(candidates.entries)) {
+    throw new Error('manual compatibility policy requires Candidate Registry entries')
+  }
+  return {
+    ...candidates,
+    registry: candidates.registry && typeof candidates.registry === 'object'
+      ? { ...candidates.registry }
+      : candidates.registry,
+    entries: [],
+  }
+}
+
 function isManagedHold(entry) {
   return ['blocked', 'unlisted'].includes(entry?.status) && String(entry.statusReason ?? '').startsWith(COMPATIBILITY_HOLD_PREFIX)
 }

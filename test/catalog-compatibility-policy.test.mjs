@@ -2,6 +2,7 @@ import assert from 'node:assert/strict'
 import test from 'node:test'
 import {
   applyLatestDshCompatibilityPolicy,
+  createManualCompatibilityCandidateScope,
   COMPATIBILITY_CANDIDATE_SOURCE,
   COMPATIBILITY_HOLD_PREFIX,
   fetchOfficialDshReleaseWindow,
@@ -229,6 +230,43 @@ test('a pre-existing candidate for the same repository is preserved byte-for-byt
   assert.deepEqual(candidates.entries, [original])
   assert.equal(report.unlisted[0].candidateDisposition, 'existing-candidate-preserved')
   assert.equal(report.candidatesChanged, false)
+})
+
+test('manual partial Catalog compatibility checks cannot prune unrelated managed candidates', () => {
+  const unrelatedManagedCandidate = {
+    id: 'otherowner-old-plugin',
+    name: 'Old plugin',
+    description: 'A plugin retained for a separate Catalog review.',
+    repositoryUrl: 'https://github.com/OtherOwner/old-plugin',
+    defaultBranch: 'main',
+    latestCommit: 'b'.repeat(40),
+    sourceUpdatedAt: null,
+    discoveredAt: observedAt,
+    discoverySources: [COMPATIBILITY_CANDIDATE_SOURCE],
+    topics: ['dsh-compatibility-review'],
+    status: 'reviewing',
+    route: 'direct-review',
+    statusReason: `${COMPATIBILITY_HOLD_PREFIX} separate Catalog review`,
+  }
+  const candidates = {
+    schemaVersion: 1,
+    registry: { updatedAt: observedAt },
+    entries: [unrelatedManagedCandidate],
+  }
+  const before = structuredClone(candidates)
+  const compatibilityScope = createManualCompatibilityCandidateScope(candidates)
+  const manualEntry = entry({
+    compatibility: { dsh: '>=0.1.0-rc.7', dshReleases: { '0.1.2-alpha.3': 'compatible' } },
+  })
+
+  assert.deepEqual(compatibilityScope.entries, [])
+  assert.notEqual(compatibilityScope.registry, candidates.registry)
+  const report = applyLatestDshCompatibilityPolicy({ entries: [manualEntry] }, compatibilityScope, releaseWindow, observedAt)
+
+  assert.equal(manualEntry.status, 'approved')
+  assert.equal(report.candidatesChanged, false)
+  assert.equal(report.managedCandidatesRemoved, 0)
+  assert.deepEqual(candidates, before)
 })
 
 test('multiple held plugins from one repository share one candidate and partial restoration keeps it', () => {
