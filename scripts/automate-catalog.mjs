@@ -41,6 +41,7 @@ import { assertNoExcludedRecommendations, isBlockedAuthor, isWithdrawnRepository
 import { validateCommunityRecommendations } from '../marketplace/lib/community-recommendations.js'
 import {
   applyLatestDshCompatibilityPolicy,
+  createManualCompatibilityCandidateScope,
   supportsDshReleaseWindow,
   DSH_RELEASE_WINDOW_AUTHORITY,
   DSH_REGISTRY_URL,
@@ -384,13 +385,17 @@ async function inspectManualAdmissions(catalog, candidates, policy, github, obse
     report.addedEntries.push({ id: entry.id, status: entry.status, commit: entry.commit, reasons: [] })
   }
 
+  const manualCompatibilityCandidates = createManualCompatibilityCandidateScope(candidates)
   report.compatibilityPolicy = applyLatestDshCompatibilityPolicy(
     { ...catalog, entries: manualEntries },
-    candidates,
+    manualCompatibilityCandidates,
     dshReleaseWindow,
     observedAt,
     { policyDigest: sha256(JSON.stringify({ sourceBounds: policy.sourceBounds, automaticApproval: policy.automaticApproval })), reviewRegistryDigest: admissionReviewDigest },
   )
+  if (report.compatibilityPolicy.candidatesChanged || manualCompatibilityCandidates.entries.length !== 0) {
+    throw new Error('manual Catalog compatibility recheck escaped its isolated Candidate Registry scope')
+  }
   report.compatibilityUnlisted = report.compatibilityPolicy.unlisted
   report.compatibilityRestored = report.compatibilityPolicy.restored
   report.compatibilityRefreshed = report.compatibilityPolicy.refreshed
