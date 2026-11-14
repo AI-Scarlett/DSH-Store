@@ -181,9 +181,9 @@ GitHub 暂时失败、仓库树截断或 manifest 数量超出有界检查面时
   维护者解析仅回退到台账中的仓库所有者名，不让一个失效仓库中断其他通知；403、429、5xx 和
   网络故障仍失败关闭并留待重试；
 - `catalog-run-report.yml` 立即发布一次按 Catalog Run ID 去重的所有者 `@mention` 报告，不依赖 `workflow_run`；
-- `marketplace-watchdog.yml` 每半小时通过 GitHub Actions 唤醒一次；只有上次完整成功巡查距今至少 150 分钟才核验 Catalog、GitHub、Pages、国际站和国内站，人工调度始终立即执行；历史无法读取时执行巡查而不跳过；
+- `marketplace-watchdog.yml` 每半小时唤醒，并由成功的三小时 Pages 定时发布提供第二个到期信号；只有上次完整成功巡查距今至少 150 分钟才核验 Catalog、GitHub、Pages、国际站和国内站，人工调度始终立即执行；历史无法读取时执行巡查而不跳过；
 - 看门狗生成报告计划前重新获取 `main` 的最新 Commit；若计划生成后 `main` 再次变化，报告写入仍由 CAS 门禁拒绝，等待下一心跳用新基线重建计划；
-- 上一轮缺失、失败、超过九小时或公共目录不一致时，自动重跑 Catalog 或 Pages；
+- 上一轮缺失、失败、超过九小时或公共目录不一致时，自动重跑 Catalog 或 Pages；Pages 修复必须等待对应部署完成后再做公开回读，仍失败就保留失败状态并留待重试；
 - 所有 Catalog 写入绑定 base Commit、文件 SHA-256、外部备份、机器计划 ID 和精确文件范围。
 
 公开商城首页和插件目录会读取 GitHub Pages 上的 `automation-status.json`，分别显示最近一次

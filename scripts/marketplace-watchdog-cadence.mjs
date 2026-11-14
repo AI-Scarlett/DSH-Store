@@ -8,7 +8,9 @@ export function decideMarketplaceWatchdogRun({
   lastSuccessfulAt,
   now = Date.now(),
 } = {}) {
-  if (eventName !== 'schedule') return { due: true, reason: 'manual-dispatch' }
+  if (eventName !== 'schedule' && eventName !== 'workflow_run') {
+    return { due: true, reason: 'manual-dispatch' }
+  }
   if (!lastSuccessfulAt) return { due: true, reason: 'no-successful-patrol' }
 
   const lastSuccessMs = Date.parse(lastSuccessfulAt)

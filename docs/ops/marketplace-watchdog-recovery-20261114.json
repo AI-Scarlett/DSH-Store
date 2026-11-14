@@ -1,0 +1,59 @@
+{
+  "schemaVersion": 1,
+  "type": "dsh-store-source-fix",
+  "planId": "marketplace-watchdog-recovery-20261114",
+  "planFile": "docs/ops/marketplace-watchdog-recovery-20261114.json",
+  "createdAt": "2026-11-14T11:50:15Z",
+  "baseCommit": "028497ba74a6cbe584ceaab07c2f4529946a88a5",
+  "sourceBranch": "codex/marketplace-watchdog-live-recovery-20261114",
+  "scope": [
+    ".github/workflows/marketplace-watchdog.yml",
+    ".github/workflows/pages.yml",
+    "README.md",
+    "docs/ops/marketplace-watchdog-recovery-20261114.json",
+    "registry/README.md",
+    "scripts/marketplace-watchdog-cadence.mjs",
+    "scripts/verify-marketplace-public.mjs"
+  ],
+  "preconditions": {
+    ".github/workflows/marketplace-watchdog.yml": "b53c5735e78e120dda69f2e79c3474b4ec3bbb1e036ae4babcb71e4f07b53d1d",
+    ".github/workflows/pages.yml": "de564f1aab241342bdd1b7eba2f59f3f0fc5b5022260dc501217257ce09f0f17",
+    "README.md": "d91cd4f68b4b5d6f15802b37f005b78c0f44e0952a8c1c53db9bbc60f5edc564",
+    "docs/ops/marketplace-watchdog-recovery-20261114.json": null,
+    "registry/README.md": "c85d1a2d9df8d3ef061bd2d8f17d2e34495a3438a5452f49f4025bc1f58c0a56",
+    "scripts/marketplace-watchdog-cadence.mjs": "045a44ad5661b0cbe98ba076246c42464dffdc94ac665b1fb51f113c993dbb4e",
+    "scripts/verify-marketplace-public.mjs": "31eded246a16332d88788b5af5ceeda44b30975e498519d8a0ea5bf6e3c9fbd5"
+  },
+  "postconditions": {
+    ".github/workflows/marketplace-watchdog.yml": "75a0f45180308d82633b24d7d629fe2a6659efaf728adee07dbce69f9d589080",
+    ".github/workflows/pages.yml": "b31dd08b7b895be94f20a89b64afdd0c3c4915a258376383e10e85416b857585",
+    "README.md": "0064ad3e49964e1feb8f5c1b72eefd7264456c6ad26e3e05ea2fe27cc1827ff9",
+    "registry/README.md": "34ae7f00cd943763f685afbb52b14e31ed80ddf507c740647a7248281426f743",
+    "scripts/marketplace-watchdog-cadence.mjs": "7377d558cb40abfad9f0fb54d9f7845bd85ac50d9005fec242e14f00db71eaf0",
+    "scripts/verify-marketplace-public.mjs": "a92bc36613e04f585de00ebe3bfd6dcf728beac3327c437d5842cec5b2c87101"
+  },
+  "authorization": {
+    "source": "direct-user-request",
+    "request": "修复 GitHub 三小时巡查缺失和公开商城回读失败；全量 DSH 插件扫描仅手动执行，自动任务继续核验已收录 Catalog。",
+    "githubWriteCredential": "short-lived-token-required",
+    "mutationRoute": "auditable-ci-checked-pull-request-only"
+  },
+  "change": {
+    "behavior": "Retain the half-hour watchdog heartbeat and use successful scheduled Pages deployments as a second cadence signal. A successful scheduled Pages event triggers the watchdog's existing 150-minute due check; watchdog-dispatched Pages repairs are excluded to prevent loops. After a stale public result, dispatch Pages with a correlated request ID, wait for that exact run, and repeat the bounded four-surface verification. Raise the per-request public read timeout from 15 to 30 seconds to cover the observed 19-second dsh.store response.",
+    "scopeBoundary": "Do not modify automatic plugin discovery bounds, Catalog data, candidate data, author-contact history, or DSH Profile/package state. The 22,884-repository rescan remains a separate one-time manual operation.",
+    "rollback": "Revert only this source PR through a new CI-checked PR; recover prior files from baseCommit and preserve all Registry and contact state."
+  },
+  "evidence": {
+    "failedWatchdogRun": "https://github.com/AI-Scarlett/DSH-Store/actions/runs/43571643099",
+    "failure": "The patrol found stale Catalog, Candidate Registry, and native-market artifacts after main advanced, dispatched Pages asynchronously, and ended without waiting for or repeating verification. Current dsh.store catalog payload matches main but took 19.1 seconds to return, exceeding the verifier's 15-second fetch deadline.",
+    "currentReadback": "GitHub Raw, Pages, dsh-store.cn and all three native indexes match main; dsh.store Catalog and Candidate Registry timed out once at 15 seconds, then direct reads succeeded/matched at 19.1 and 17.0 seconds respectively."
+  },
+  "healthCheck": "Run npm run check, JSON plan parsing, workflow YAML validation, git diff --check, and exact-head required GitHub CI. After merge, verify the workflow is active, a scheduled Pages completion can trigger the due check, and the resulting report contains the final post-repair readback.",
+  "externalEffects": "Create one auditable source PR. After merge, existing scheduled workflows may dispatch a Pages rebuild and update the existing automation report Issue through its established idempotent, hash-bound policy.",
+  "deterministicGates": [
+    "All scoped precondition hashes still match baseCommit.",
+    "The Pages completion trigger runs only for successful scheduled runs on main; watchdog-dispatched repair runs cannot recurse.",
+    "A repair run is correlated by an exact request ID and must complete successfully before public verification is repeated.",
+    "The final public report is regenerated after repair and still fails closed if any surface remains mismatched or unavailable."
+  ]
+}
