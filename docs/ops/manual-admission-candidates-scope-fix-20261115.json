@@ -1,0 +1,79 @@
+{
+  "schemaVersion": 1,
+  "id": "manual-admission-candidates-scope-fix-20261115",
+  "type": "catalog-policy-runner-repair",
+  "createdAt": "2026-11-15",
+  "repository": "AI-Scarlett/DSH-Store",
+  "baseCommit": "19c4fe716a201f2394fbb390dc0c06eb1b608ed7",
+  "authorization": {
+    "source": "direct-user-request",
+    "request": "Manually rescan all known DSH plugin records without triggering a scheduled bulk scan; admit qualifying plugins only through the dedicated one-time policy workflow, while scheduled policy continues reviewing Catalog entries.",
+    "githubCredential": "GitHub App connector for the repair PR; workflow_dispatch uses the authenticated UI and the policy job uses its short-lived Actions token."
+  },
+  "scope": [
+    "docs/ops/manual-admission-candidates-scope-fix-20261115.json",
+    "scripts/automate-catalog.mjs",
+    "test/catalog-automation.test.mjs"
+  ],
+  "preconditions": {
+    "docs/ops/manual-admission-candidates-scope-fix-20261115.json": null,
+    "scripts/automate-catalog.mjs": "d5948d56605bcb739c806cf824f40ee9b48b1cb5406e10447606f49300c884f9",
+    "test/catalog-automation.test.mjs": "a25449097eff31b69a88c388bf999f70a381cf8060220d6a013a9cc777f9df10"
+  },
+  "change": {
+    "description": "Pass the already validated Candidate Registry into inspectManualAdmissions so the selected fixed-source set is checked against the official latest-three compatibility policy without relying on an out-of-scope binding.",
+    "manualScanPlan": {
+      "branch": "codex/manual-dsh-rescan-20261115-rerun",
+      "commit": "6d36a0268eb61c066dd1264927b4a2961ed4ea54",
+      "sha256": "789c1449b370f188a0fa36daf504e0aae65de8a6aa4700a33fd965c3b4d8686b",
+      "targetCount": 26870,
+      "selectedCount": 3
+    },
+    "boundaries": [
+      "The manual policy path reads only the three selected immutable source Commits and disables scheduled discovery, historical Catalog rescans, author notifications, and owner reports.",
+      "The scheduled workflow remains unchanged and continues to review the existing Catalog entries.",
+      "No third-party install, prepare, build, test, or runtime code is executed.",
+      "Candidate and community registries are not mutated by the manual admission path."
+    ]
+  },
+  "postconditions": {
+    "scripts/automate-catalog.mjs": "6dde4ab699cb747e173d02021e0b2a89b72c1ebb2f014c7115a91120c474bd80",
+    "test/catalog-automation.test.mjs": "ec38cf6daac923566ca1d6ce267e289148223cb6f51aacc76641e42a5d2c6c4b"
+  },
+  "deterministicGates": [
+    {
+      "id": "manual-scan-plan",
+      "command": "node scripts/verify-manual-scan-plan.mjs \"$RUNNER_TEMP/manual-dsh-scan-plan/plan.json\"",
+      "required": "MANUAL_DSH_SCAN_PLAN_OK for all 26,870 completed targets and exactly three source-verified selections."
+    },
+    {
+      "id": "repository-check",
+      "command": "npm run check",
+      "required": "Registry validation and all tests pass."
+    },
+    {
+      "id": "diff-check",
+      "command": "git diff --check",
+      "required": "No whitespace errors and exact planned file scope."
+    },
+    {
+      "id": "signed-ci-pull-request",
+      "required": "The exact PR head has all required CI checks passing, and the merged GitHub commit reports verification.verified=true."
+    },
+    {
+      "id": "manual-admission-policy",
+      "required": "Dispatch the exact manual scan plan branch and commit once; require a fresh Catalog policy plan, fixed-Commit source recheck, official latest-three compatibility, and an auditable Catalog PR."
+    }
+  ],
+  "mutation": {
+    "commit": "One atomic GitHub-generated signed commit on an isolated PR branch; no direct main mutation.",
+    "backup": "The original main Commit and files remain recoverable through Git history.",
+    "rollback": "Revert the repair through a new CI-checked, signed PR. Do not rewrite the contact ledger or restore the defective manual admission path."
+  },
+  "healthCheck": "All repository checks and exact-head PR CI pass; after merge, the one-time policy workflow either opens a fresh Catalog PR for currently eligible fixed Commits or records a fail-closed outcome. Verify merged Catalog and public storefronts separately.",
+  "nonGoals": [
+    "No scheduled 26,870-target scan.",
+    "No changes to periodic discovery cadence or existing Catalog review scope.",
+    "No third-party execution, author outreach, DSH Profile changes, or runtime installation."
+  ]
+}
