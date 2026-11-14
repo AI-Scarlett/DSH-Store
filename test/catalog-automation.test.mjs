@@ -1,4 +1,3 @@
-/Users/zhouxiaoming/.bash_profile: line 16: /Users/zhouxiaoming/.local/bin/env: No such file or directory
 import assert from 'node:assert/strict'
 import { execFile } from 'node:child_process'
 import { mkdtemp, readFile, rm } from 'node:fs/promises'

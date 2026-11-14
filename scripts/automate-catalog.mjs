@@ -1,4 +1,3 @@
-/Users/zhouxiaoming/.bash_profile: line 16: /Users/zhouxiaoming/.local/bin/env: No such file or directory
 #!/usr/bin/env node
 import { createCatalogGithubReader, sameCommitLineage } from './catalog-github-reader.mjs'
 import { admissionDecision, LICENSE_METADATA_REVIEW_REASON, validateAdmissionReviews } from '../src/admission-review.mjs'

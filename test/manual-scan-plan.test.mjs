@@ -1,4 +1,3 @@
-/Users/zhouxiaoming/.bash_profile: line 16: /Users/zhouxiaoming/.local/bin/env: No such file or directory
 import assert from 'node:assert/strict'
 import test from 'node:test'
 import { validateManualScanPlan } from '../src/manual-scan-plan.mjs'

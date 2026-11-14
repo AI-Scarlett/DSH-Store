@@ -1,4 +1,3 @@
-/Users/zhouxiaoming/.bash_profile: line 16: /Users/zhouxiaoming/.local/bin/env: No such file or directory
 import { canonicalGithubRepository } from './catalog.mjs'
 
 const FULL_SHA = /^[a-f0-9]{40}$/

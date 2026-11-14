@@ -1,4 +1,3 @@
-/Users/zhouxiaoming/.bash_profile: line 16: /Users/zhouxiaoming/.local/bin/env: No such file or directory
 #!/usr/bin/env node
 import { readFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
