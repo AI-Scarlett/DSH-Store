@@ -105,6 +105,43 @@ test('unknown compatibility stays visibly blocked and moved to a non-installable
   assert.equal(report.candidatesChanged, true)
 })
 
+test('Catalog-only compatibility rechecks do not create, refresh, or remove Candidate Registry records', () => {
+  const unrelatedManagedCandidate = {
+    id: 'otherowner-old-plugin',
+    name: 'Old plugin',
+    description: 'A plugin retained for a separate Catalog review.',
+    repositoryUrl: 'https://github.com/OtherOwner/old-plugin',
+    defaultBranch: 'main',
+    latestCommit: 'b'.repeat(40),
+    sourceUpdatedAt: null,
+    discoveredAt: observedAt,
+    discoverySources: [COMPATIBILITY_CANDIDATE_SOURCE],
+    topics: ['dsh-compatibility-review'],
+    status: 'reviewing',
+    route: 'direct-review',
+    statusReason: `${COMPATIBILITY_HOLD_PREFIX} previous window`,
+  }
+  const catalog = { entries: [entry()] }
+  const originalCandidate = structuredClone(unrelatedManagedCandidate)
+  const candidateEntries = new Proxy([unrelatedManagedCandidate], {
+    get(target, property, receiver) {
+      if (property === Symbol.iterator) throw new Error('Catalog-only compatibility must not enumerate candidate records')
+      return Reflect.get(target, property, receiver)
+    },
+  })
+  const candidates = { entries: candidateEntries }
+  const report = applyLatestDshCompatibilityPolicy(catalog, candidates, releaseWindow, observedAt, null, { manageCandidates: false })
+
+  assert.equal(catalog.entries[0].status, 'blocked')
+  assert.equal(candidates.entries.length, 1)
+  assert.deepEqual(candidates.entries[0], originalCandidate)
+  assert.equal(report.candidatesChanged, false)
+  assert.equal(report.managedCandidatesCreated, 0)
+  assert.equal(report.managedCandidatesRefreshed, 0)
+  assert.equal(report.managedCandidatesRemoved, 0)
+  assert.equal(report.unlisted[0].candidateDisposition, 'candidate-registry-not-managed')
+})
+
 test('each policy run materializes the live latest-three fields without inventing evidence', () => {
   const value = entry({
     compatibility: {

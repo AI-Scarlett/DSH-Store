@@ -132,6 +132,9 @@ test('author target resolution suppresses deterministically unavailable reposito
 test('automatic policy runs every eight hours and fails closed on permission or supply-chain signals', async () => {
   const policy = JSON.parse(await read('registry/automation-policy.json'))
   assert.equal(policy.scheduleHours, 8)
+  assert.equal(policy.scheduledScanScope, 'catalog-only')
+  assert.equal(policy.search.enabled, false)
+  assert.equal(policy.discoveryFeeds.enabled, false)
   assert.equal(policy.updates.checkAllCatalogEntries, true)
   assert.equal(policy.updates.versionAuthority, 'canonical-github-default-branch-manifest-at-fixed-commit')
   assert.equal(policy.updates.concurrency, 8)
@@ -226,9 +229,19 @@ test('scheduled automation uses a policy PR and never executes third-party packa
   assert.match(workflow, /manual_scan_plan_commit/)
   assert.match(workflow, /verify-manual-scan-plan\.mjs/)
   assert.match(workflow, /manual_args=\(\)/)
+  assert.match(workflow, /manual_args=\(--catalog-only\)/)
+  assert.match(workflow, /Catalog-only policy workflow/)
   assert.match(workflow, /author-notifications:[\s\S]+inputs\.manual_scan_plan_branch == ''/)
   assert.match(workflow, /owner-report:[\s\S]+inputs\.manual_scan_plan_commit == ''/)
   assert.match(source, /if \(manualScanPlan\)/)
+  assert.match(source, /scheduled automation must be restricted to the Catalog/)
+  assert.match(source, /select a verified --manual-scan-plan or the bounded --catalog-only scope/)
+  assert.match(source, /mode: 'catalog-only-periodic-recheck', scanScope: 'catalog-only'/)
+  assert.match(source, /\{ manageCandidates: false \}/)
+  assert.match(source, /if \(policy\.search\?\.enabled !== true\) return \[\]/)
+  const scheduledBranch = source.split('// The scheduled path is deliberately Catalog-only.')[1]?.split("if (!manualScanPlan)")[0]
+  assert.ok(scheduledBranch, 'scheduled policy branch remains explicitly delimited')
+  assert.doesNotMatch(scheduledBranch, /candidateIdentity|inspectDiscoveries|pruneHistoricalRejectedCandidates|pruneExcludedCandidates|pruneExcludedRecommendations/)
   assert.match(source, /async function inspectManualAdmissions\(catalog, candidates, policy,/)
   assert.match(source, /inspectManualAdmissions\(catalog, candidates, policy, github,/)
   assert.match(source, /const manualCompatibilityCandidates = createManualCompatibilityCandidateScope\(candidates\)/)
@@ -305,6 +318,7 @@ test('failed Catalog automation preserves a machine-readable failure report befo
   const reportPath = join(directory, 'catalog-automation-report.json')
   await assert.rejects(execFileAsync(process.execPath, [
     catalogAutomationPath,
+    '--catalog-only',
     '--observed-at', '2026-08-25T10:00:00Z',
     '--report', reportPath,
   ], {

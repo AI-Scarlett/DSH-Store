@@ -82,7 +82,7 @@ function parseArgs(argv) {
     expectedRecommendationsSha: null,
     catalogBackup: null, catalogIndexBackup: null, catalogDetailsBackup: null,
     candidatesBackup: null, recommendationsBackup: null, observedAt: null, report: null,
-    manualScanPlan: null,
+    manualScanPlan: null, catalogOnly: false,
   }
   for (let index = 0; index < argv.length; index += 1) {
     const value = argv[index]
@@ -99,6 +99,7 @@ function parseArgs(argv) {
     else if (value === '--observed-at') options.observedAt = argv[++index]
     else if (value === '--report') options.report = argv[++index]
     else if (value === '--manual-scan-plan') options.manualScanPlan = argv[++index]
+    else if (value === '--catalog-only') options.catalogOnly = true
     else throw new Error(`unknown argument: ${value}`)
   }
   return options
@@ -413,6 +414,7 @@ async function inspectManualAdmissions(catalog, candidates, policy, github, obse
 }
 
 async function discoverRepositories(policy, github) {
+  if (policy.search?.enabled !== true) return []
   const found = new Map()
   const excluded = excludedRepositoryKeys(policy)
   for (const query of policy.search.queries) {
@@ -1013,6 +1015,7 @@ failureContext.stage = 'validate-policy'
 const policy = JSON.parse(await readFile(policyPath, 'utf8'))
 if (JSON.stringify(policy.sourceBounds) !== JSON.stringify(SOURCE_SCAN_BOUNDS)) throw new Error('submission and automation scan budgets diverged')
 if (policy.schemaVersion !== 1 || policy.scheduleHours !== 8) throw new Error('unsupported automation policy')
+if (policy.scheduledScanScope !== 'catalog-only') throw new Error('scheduled automation must be restricted to the Catalog')
 if (policy.compatibility?.authority !== DSH_RELEASE_WINDOW_AUTHORITY
   || policy.compatibility?.registryUrl !== DSH_REGISTRY_URL
   || policy.compatibility?.latestReleaseCount !== 3
@@ -1040,6 +1043,8 @@ const originalRecommendations = await readFile(recommendationsPath)
 const manualScanPlanBytes = options.manualScanPlan ? await readFile(resolve(options.manualScanPlan)) : null
 if (manualScanPlanBytes && manualScanPlanBytes.length > 2 * 1024 * 1024) throw new Error('manual scan plan exceeds the bounded input size')
 const manualScanPlan = manualScanPlanBytes ? validateManualScanPlan(JSON.parse(manualScanPlanBytes.toString('utf8'))) : null
+if (manualScanPlan && options.catalogOnly) throw new Error('--manual-scan-plan and --catalog-only are mutually exclusive')
+if (!manualScanPlan && !options.catalogOnly) throw new Error('select a verified --manual-scan-plan or the bounded --catalog-only scope')
 const manualScanPlanSha = manualScanPlanBytes ? sha256(manualScanPlanBytes) : null
 const catalogSha = sha256(originalCatalog)
 const catalogIndexSha = sha256(originalCatalogIndex)
@@ -1069,8 +1074,9 @@ const report = {
   statisticsAvailable: false,
   planId: sha256(manualScanPlan
     ? `${baseCommit ?? 'local'}:${catalogSha}:${catalogIndexSha}:${candidatesSha}:${recommendationsSha}:${dshReleaseWindowSha}:${manualScanPlanSha}:${observedAt}`
-    : `${baseCommit ?? 'local'}:${catalogSha}:${catalogIndexSha}:${candidatesSha}:${recommendationsSha}:${dshReleaseWindowSha}:${observedAt}`).slice(0, 24),
+    : `catalog-only:${baseCommit ?? 'local'}:${catalogSha}:${catalogIndexSha}:${candidatesSha}:${recommendationsSha}:${dshReleaseWindowSha}:${observedAt}`).slice(0, 24),
   ...(manualScanPlan ? { mode: 'manual-fixed-source-batch-admission' } : {}),
+  ...(options.catalogOnly ? { mode: 'catalog-only-periodic-recheck', scanScope: 'catalog-only' } : {}),
   baseCommit,
   observedAt,
   preconditions: {
@@ -1117,6 +1123,7 @@ const report = {
     prunedUnsupported: 0,
     durableDecisionsPreserved: 0,
     registryRemovals: 0,
+    ...(options.catalogOnly ? { skippedByScope: true } : {}),
   },
   skippedDiscoveries: [], transientFailures: [],
 }
@@ -1127,40 +1134,18 @@ if (manualScanPlan) {
   failureContext.stage = 'inspect-manual-fixed-source-admissions'
   await inspectManualAdmissions(catalog, candidates, policy, github, observedAt, report, dshReleaseWindow, manualScanPlan)
 } else {
-// Resolve canonical repository identity and head metadata in bounded read-only
-// batches. All later package reads share these immutable snapshots and cache.
+// The scheduled path is deliberately Catalog-only. Candidate discovery,
+// Candidate Registry source reads, and retention cleanup require a separate
+// fixed-source manual scan plan and are never inferred from a scheduled run.
 await github.primeRepositories(catalog.entries.filter(entry => !isWithdrawnRepository(entry.repositoryUrl, policy))
   .flatMap(entry => [entry.repositoryUrl, catalogMigrationSource(entry, catalogMigrations).repositoryUrl]))
-const candidateIdentityEntries = candidates.entries.filter(entry => !isWithdrawnRepository(entry.repositoryUrl, policy)
-  && !excludedRepositoryKeys(policy).has(entry.repositoryUrl.toLowerCase()))
-const candidateIdentitySnapshots = await github.primeRepositories(candidateIdentityEntries.map(entry => entry.repositoryUrl))
-const candidateOwnerUserIds = new Map()
-for (let index = 0; index < candidateIdentityEntries.length; index += 1) {
-  const result = candidateIdentitySnapshots[index]
-  if (result?.status === 'fulfilled' && Number.isSafeInteger(result.value?.metadata?.owner?.id)) {
-    candidateOwnerUserIds.set(candidateIdentityEntries[index].repositoryUrl.toLowerCase(), result.value.metadata.owner.id)
-  } else if (result?.status === 'rejected') {
-    report.transientFailures.push({ repository: candidateIdentityEntries[index].repositoryUrl,
-      reason: boundedText(result.reason?.message, 'candidate owner identity lookup failed') })
-  }
-}
 failureContext.stage = 'inspect-historical-catalog-entries'
 await updateExistingEntries(catalog, policy, github, observedAt, report)
-report.excludedCandidates = pruneExcludedCandidates(candidates, policy, candidateOwnerUserIds)
-  .map(item => ({ recordFingerprint: sha256(`${item.id}\n${item.repositoryUrl.toLowerCase()}`), reason: item.reason }))
-report.removedRecommendations = pruneExcludedRecommendations(recommendations, policy)
-  .map(item => ({ recordFingerprint: sha256(item.id), reason: item.reason }))
-assertNoExcludedCandidates(candidates, policy, candidateOwnerUserIds)
-assertNoExcludedRecommendations(recommendations, policy)
-validateCommunityRecommendations(recommendations)
-failureContext.stage = 'prune-historical-candidates'
-await pruneHistoricalRejectedCandidates(candidates, policy, github, dshReleaseWindow, observedAt, report)
-failureContext.stage = 'inspect-new-discoveries'
-await inspectDiscoveries(catalog, candidates, policy, github, observedAt, report, dshReleaseWindow)
 failureContext.stage = 'apply-latest-dsh-compatibility-policy'
 report.compatibilityPolicy = applyLatestDshCompatibilityPolicy(
   catalog, candidates, dshReleaseWindow, observedAt,
   { policyDigest: sha256(JSON.stringify({ sourceBounds: policy.sourceBounds, automaticApproval: policy.automaticApproval })), reviewRegistryDigest: admissionReviewDigest },
+  { manageCandidates: false },
 )
 report.compatibilityUnlisted = report.compatibilityPolicy.unlisted
 report.compatibilityRestored = report.compatibilityPolicy.restored

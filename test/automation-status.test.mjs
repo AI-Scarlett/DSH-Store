@@ -95,6 +95,29 @@ test('public status separates successful execution from actual Catalog changes',
   assert.deepEqual(status.catalog, { entries: 2, approved: 1, blocked: 1, unlisted: 0, candidates: 1, updatedAt: '2026-08-22T00:00:00.000Z' })
 })
 
+test('public status exposes the scheduled Catalog-only scope and skipped candidate source scan', () => {
+  const status = buildAutomationStatus({
+    catalog, candidates: { entries: [] }, generatedAt: '2026-08-22T03:00:00Z', sourceCommit: 'a'.repeat(40),
+    runs: {
+      catalogAutomation: [{ databaseId: 52, status: 'completed', conclusion: 'success', createdAt: '2026-08-22T02:00:00Z', updatedAt: '2026-08-22T02:05:00Z', url: 'https://github.com/example/repo/actions/runs/52', headSha: 'b'.repeat(40) }],
+      marketplaceWatchdog: [{ databaseId: 53, status: 'completed', conclusion: 'success', createdAt: '2026-08-22T02:50:00Z', updatedAt: '2026-08-22T02:55:00Z', url: 'https://github.com/example/repo/actions/runs/53', headSha: 'c'.repeat(40) }],
+    },
+    reports: [{ runId: 52, report: {
+      status: 'passed', completed: true, statisticsAvailable: true,
+      mode: 'catalog-only-periodic-recheck', scanScope: 'catalog-only',
+      observedAt: '2026-08-22T02:01:00Z', addedEntries: [], updatedEntries: [],
+      compatibilityUnlisted: [], compatibilityRestored: [], prunedCandidates: [],
+      compatibilityPolicy: {},
+      candidateRetention: { authority: 'candidate-fixed-commit-package-manifests', skippedByScope: true },
+      rejectedCandidates: [], deferredUpdates: [], transientFailures: [], sourceVersionChecks: {},
+    } }],
+  })
+
+  assert.equal(status.latestChanges.scanScope, 'catalog-only')
+  assert.equal(status.latestChanges.candidateRetention.skippedByScope, true)
+  assert.equal(status.recentScanRuns[0].scanScope, 'catalog-only')
+})
+
 test('missing workflow evidence remains explicitly unknown', () => {
   const status = buildAutomationStatus({ catalog, candidates: { entries: [] }, generatedAt: '2026-08-22T03:00:00Z', sourceCommit: 'local' })
   assert.equal(status.overall.status, 'unknown')
