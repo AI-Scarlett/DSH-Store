@@ -97,8 +97,11 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           request_id="watchdog-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
-          latest_id=$(gh run list --workflow catalog-automation.yml --limit 1 \
-            --json databaseId --jq '.[0].databaseId // empty')
+          # Ignore push and pull-request validation runs for this workflow. They
+          # are not Catalog policy decisions and must not trigger a repair run.
+          latest_id=$(gh run list --workflow catalog-automation.yml --limit 100 \
+            --json databaseId,event,displayTitle \
+            --jq '[.[] | select(.event == "schedule" or .event == "workflow_dispatch") | select(.displayTitle | startswith("Catalog automation ("))][0].databaseId // empty')
           repair=false
 
           if test -n "$latest_id"; then
