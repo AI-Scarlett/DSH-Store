@@ -3,7 +3,7 @@
   "registry": {
     "name": "DSH STORE Candidate Discovery Registry",
     "repositoryUrl": "https://github.com/AI-Scarlett/DSH-Store",
-    "updatedAt": "2026-11-14T07:07:10.000Z",
+    "updatedAt": "2026-11-14T07:33:50.000Z",
     "trustBoundary": {
       "installActionsDisabled": true,
       "catalogPromotionRequired": true,
@@ -11903,8 +11903,8 @@
       "description": "The design vocabulary for your coding agent. Steer with polish and bolder, review with critique and audit, catch AI slop before it ships.",
       "repositoryUrl": "https://github.com/pbakaus/impeccable",
       "defaultBranch": "main",
-      "latestCommit": "c4cd1924c389f68d37c687d9c2bbf13f12547c41",
-      "sourceUpdatedAt": "2026-11-13T06:07:50.000Z",
+      "latestCommit": "e1104dd1713c3c7f511a7be8eee78e35e05de33b",
+      "sourceUpdatedAt": "2026-11-14T07:29:23.000Z",
       "discoveredAt": "2026-10-08T21:04:41.000Z",
       "discoverySources": [
         "github-automatic-radar-v1"
@@ -20557,6 +20557,35 @@
       "status": "reviewing",
       "route": "direct-review",
       "statusReason": "External discovery signal only; fixed-source Catalog review required before installation."
+    },
+    {
+      "id": "sadami3066-deepdeep",
+      "name": "Sadami3066/DeepDeep",
+      "description": "DeepDeep : 更接近原生体验的手机 Personal Agent 应用",
+      "repositoryUrl": "https://github.com/Sadami3066/DeepDeep",
+      "defaultBranch": "master",
+      "latestCommit": "65c4c5a06e879ed32156a08ff29bab9147ac0379",
+      "sourceUpdatedAt": "2026-11-13T17:03:28.000Z",
+      "discoveredAt": "2026-11-14T07:33:50.000Z",
+      "discoverySources": [
+        "github-automatic-radar-v1"
+      ],
+      "topics": [
+        "ai-agent",
+        "alpine-linux",
+        "android",
+        "jetpack-compose",
+        "kotlin",
+        "llm",
+        "mcp",
+        "personal-agent",
+        "plugin-system",
+        "proot",
+        "automatic-radar"
+      ],
+      "status": "rejected",
+      "route": "adapter-required",
+      "statusReason": "SUBMISSION_BUNDLE_MISSING: No package.json declaring dsh.bundle.patch was found"
     }
   ]
 }

@@ -24,7 +24,7 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "91353af29bea6d3fbc20bfb74ffc75728a0f03c3",
+  "commit": "09acdcad172088a0e352a56c16325f55e41796e4",
   "version": "0.1.0",
   "categories": [
     "experimental"
@@ -32,20 +32,20 @@
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-11-14T07:14:07.000Z",
-    "observedAt": "2026-11-14T07:07:10.000Z",
+    "updatedAt": "2026-11-14T07:18:31.000Z",
+    "observedAt": "2026-11-14T07:33:50.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-policy-v1",
-      "checkedAt": "2026-11-14T07:07:10.000Z",
-      "evidenceUrl": "https://github.com/huahai0202/dsh-web-fetch-firecrawl/commit/91353af29bea6d3fbc20bfb74ffc75728a0f03c3",
+      "method": "automated-fixed-source-recheck-v1",
+      "checkedAt": "2026-11-14T07:33:50.000Z",
+      "evidenceUrl": "https://github.com/huahai0202/dsh-web-fetch-firecrawl/commit/09acdcad172088a0e352a56c16325f55e41796e4",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
+      "summary": "The external-only or non-installable listing metadata was refreshed from a fixed Commit; no installability was inferred."
     },
     "installability": {
       "status": "unknown",
@@ -55,7 +55,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No third-party installation or build code was executed by the automation."
+      "summary": "The updated fixed Commit was not installed or built by Catalog automation."
     },
     "runtime": {
       "status": "unknown",
@@ -65,7 +65,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No DSH runtime acceptance was inferred from static automation."
+      "summary": "No DSH runtime acceptance was carried forward after the source changed."
     },
     "securityReview": {
       "status": "unknown",
@@ -75,12 +75,12 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Automated source policy is not an independent security audit."
+      "summary": "Automated fixed-source review is not an independent security audit."
     }
   },
   "admission": {
     "engine": "bounded-source-v3",
-    "binding": "cfc27fb62bd2f141a7e9352ec8b69fc9936b2fcf23d0982c7f32fc0da5a96762",
+    "binding": "df4552ad183a7eec34db961182831b4ed4d45787f179e048550ae8de2fafc57a",
     "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
     "state": "review-required",
     "sourceContract": "unverified",
@@ -92,6 +92,7 @@
   "entryIds": [
     "web-fetch-firecrawl"
   ],
+  "configOverrides": [],
   "status": "blocked",
   "statusReason": "Automatic policy blocked installation: manifest repository does not match the canonical GitHub repository; Node.js compatibility is not explicitly declared; runtime source contains the network permission signal; runtime source contains the credentials permission signal",
   "compatibility": {
