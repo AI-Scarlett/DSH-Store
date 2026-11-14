@@ -1,0 +1,113 @@
+{
+  "schemaVersion": 1,
+  "type": "manual-dsh-known-plugin-rescan",
+  "scan": {
+    "status": "complete",
+    "planId": "manual-dsh-rescan-20261115",
+    "baseCommit": "740b2afdab91afd98db089df765bae7dff7ec49c",
+    "sourceUrl": "https://cdn.dsh.so/plugins-index.json",
+    "sourceGeneratedAt": "2026-11-14T00:29:40.007Z",
+    "sourceIndexSha256": "cc5b54fe9443043463133af4ee630b3d82a1d76794d888b71ce31b18a17d7329",
+    "mainResultsSha256": "04b3fed4cb4a4d139bd51e94339612058d8548f68cf3ce3cdab31e09c27153c5",
+    "supplementalResultsSha256": "f4d386b67ea805c1cbfeff19fe087ab46511356bb53316380ec1f5ddfa798072",
+    "officialWindowSha256": "8a41894ea06e7ae8896b7849625b4cf57a9f864334c83b73f93de5480b1a3201",
+    "targetCount": 26870,
+    "completedTargetCount": 26870,
+    "outcomes": {
+      "manifest-http-404": 566,
+      "already-catalogued-periodic-review": 437,
+      "precheck-blocked": 13307,
+      "npm-githead-unavailable": 1651,
+      "git-ref-ambiguous": 1498,
+      "github-public-source-unavailable": 9307,
+      "npm-http-404": 24,
+      "repository-exclusion": 2,
+      "manifest-manifest-invalid-json": 25,
+      "npm-no-canonical-github-repository": 30,
+      "git-ref-invalid": 6,
+      "candidate-for-fixed-source-scan": 9,
+      "github-install-path-invalid": 7,
+      "git-ref-unresolved": 1
+    },
+    "latestDshReleases": [
+      "0.2.2-rc.1",
+      "0.2.2-rc.2",
+      "0.2.2-rc.3"
+    ],
+    "selectedCount": 3
+  },
+  "selected": [
+    {
+      "repositoryUrl": "https://github.com/ZilongYang/dsh-multiline-input",
+      "commit": "33b9a9066c213e347381f92b62b02e75fde5daaa",
+      "packageName": "dsh-multiline-input",
+      "version": "0.2.1",
+      "manifestPath": "package.json",
+      "entryIds": [
+        "multiline-input"
+      ],
+      "outcome": "eligible",
+      "scanComplete": true,
+      "admissionState": "source-verified",
+      "sourceBinding": "8b326ff6bfe167999f2aaec1de8914868ec5cbfbc1a24ee910caadd2d197d410",
+      "sourceDigest": "a7c7abdd5ae516f9337fd71c7f52acb92542f415b1b7b6038792b1cfae7c207e",
+      "compatibility": {
+        "dsh": ">=0.2.1-rc.5 <0.3.0-0",
+        "dshReleases": {
+          "0.2.1-rc.5": "compatible",
+          "0.2.2-rc.1": "compatible"
+        }
+      }
+    },
+    {
+      "repositoryUrl": "https://github.com/XiaoPb/dsh-mobile-layout",
+      "commit": "c3b3c57a6f77e9e1b6adcb93059499ed784e827e",
+      "packageName": "@xiaopb/dsh-mobile-layout",
+      "version": "0.4.12",
+      "manifestPath": "package.json",
+      "entryIds": [
+        "mobile-layout"
+      ],
+      "outcome": "eligible",
+      "scanComplete": true,
+      "admissionState": "source-verified",
+      "sourceBinding": "f025e702ef24111485ed5024efa490fea98dac73dfa9793ef9780559bfc3b950",
+      "sourceDigest": "dfa02f5da341af02da7d9efc874a3a44371c1498cbfaf11776e52b170d511972",
+      "compatibility": {
+        "dsh": ">=0.2.1-rc.2",
+        "dshReleases": {
+          "0.2.1-rc.2": "compatible",
+          "0.2.1-rc.5": "compatible",
+          "0.2.2-rc.1": "compatible"
+        }
+      }
+    },
+    {
+      "repositoryUrl": "https://github.com/devome/dsh-panel-layout",
+      "commit": "483fd607e06dbb717526dc3e6694991d61ff6cb4",
+      "packageName": "dsh-panel-layout",
+      "version": "0.2.4",
+      "manifestPath": "package.json",
+      "entryIds": [
+        "dsh-panel-layout"
+      ],
+      "outcome": "eligible",
+      "scanComplete": true,
+      "admissionState": "source-verified",
+      "sourceBinding": "280866774fc35085e0e74fb5e2ffbef5846f35ef787a23215e9c41860f1585fa",
+      "sourceDigest": "d14f42ef14fd1c1758b1221eaa4fe3600b4d029a95c76a19790638db5c321572",
+      "compatibility": {
+        "dsh": "^0.2.1-rc.3 || ^0.2.2-0",
+        "dshReleases": {
+          "0.2.1-rc.3": "compatible",
+          "0.2.1-rc.4": "compatible",
+          "0.2.1-rc.5": "compatible",
+          "0.2.2-alpha.2": "compatible",
+          "0.2.2-alpha.3": "compatible",
+          "0.2.2-rc.1": "compatible",
+          "0.2.2-rc.2": "compatible"
+        }
+      }
+    }
+  ]
+}
