@@ -22,7 +22,7 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "697f84e375572ca5e4d91a011cab2432b9f91e32",
+  "commit": "3876864eea9f6559e1449d3698fd83ea3f989626",
   "version": "1.0.0",
   "categories": [
     "experimental"
@@ -30,20 +30,20 @@
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-11-14T07:39:29.000Z",
-    "observedAt": "2026-11-14T07:33:50.000Z",
+    "updatedAt": "2026-11-14T07:44:29.000Z",
+    "observedAt": "2026-11-14T14:50:15.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-policy-v1",
-      "checkedAt": "2026-11-14T07:33:50.000Z",
-      "evidenceUrl": "https://github.com/Nyamuchin/dsh-coolapk-dive/commit/697f84e375572ca5e4d91a011cab2432b9f91e32",
+      "method": "automated-fixed-source-recheck-v1",
+      "checkedAt": "2026-11-14T14:50:15.000Z",
+      "evidenceUrl": "https://github.com/Nyamuchin/dsh-coolapk-dive/commit/3876864eea9f6559e1449d3698fd83ea3f989626",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
+      "summary": "The external-only or non-installable listing metadata was refreshed from a fixed Commit; no installability was inferred."
     },
     "installability": {
       "status": "unknown",
@@ -53,7 +53,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No third-party installation or build code was executed by the automation."
+      "summary": "The updated fixed Commit was not installed or built by Catalog automation."
     },
     "runtime": {
       "status": "unknown",
@@ -63,7 +63,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No DSH runtime acceptance was inferred from static automation."
+      "summary": "No DSH runtime acceptance was carried forward after the source changed."
     },
     "securityReview": {
       "status": "unknown",
@@ -73,12 +73,12 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Automated source policy is not an independent security audit."
+      "summary": "Automated fixed-source review is not an independent security audit."
     }
   },
   "admission": {
     "engine": "bounded-source-v3",
-    "binding": "3da0fe0de6c719748375f264324a23df5c7d910eaedacf2442ba4d4f077c5fff",
+    "binding": "0c14e4412476c4453ec9bfb9051c530ef75aa14596ea1a11e5f479de14a73549",
     "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
     "state": "incomplete",
     "sourceContract": "unverified",
@@ -90,6 +90,7 @@
   "entryIds": [
     "coolapk-dive"
   ],
+  "configOverrides": [],
   "status": "blocked",
   "statusReason": "Automatic policy blocked installation: manifest repository does not match the canonical GitHub repository; package contains unsupported artifacts requiring review: lib/bcrypt.LICENSE; fixed-source scan is incomplete; unobserved capability signals are unknown; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the credentials permission signal",
   "compatibility": {
