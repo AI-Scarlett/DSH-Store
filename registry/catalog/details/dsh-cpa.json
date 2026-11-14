@@ -21,7 +21,7 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "3b61ef65966737983fd6e2e1f8ef5ed957c88ce1",
+  "commit": "563defa1e6c2bccde01128c6a4ffebc27b8f6b23",
   "version": "0.1.13",
   "categories": [
     "experimental"
@@ -29,16 +29,16 @@
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-11-13T14:13:39.000Z",
-    "observedAt": "2026-11-13T20:27:56.000Z",
+    "updatedAt": "2026-11-14T17:17:01.000Z",
+    "observedAt": "2026-11-14T18:24:06.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-11-13T20:27:56.000Z",
-      "evidenceUrl": "https://github.com/Moraxyc/dsh-cpa/commit/3b61ef65966737983fd6e2e1f8ef5ed957c88ce1",
+      "checkedAt": "2026-11-14T18:24:06.000Z",
+      "evidenceUrl": "https://github.com/Moraxyc/dsh-cpa/commit/563defa1e6c2bccde01128c6a4ffebc27b8f6b23",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -77,10 +77,10 @@
   },
   "admission": {
     "engine": "bounded-source-v3",
-    "binding": "e5237b5435795e7bcb05b7a20280a34ef8952c8215c04e31d55602aeaf1b0ede",
+    "binding": "16340fe4f129ec4ba5a7758aea19589cf53e52c6517fc177359ecabb3d428585",
     "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
     "state": "incomplete",
-    "sourceContract": "unverified",
+    "sourceContract": "verified",
     "coverage": "incomplete",
     "capabilities": "review-required",
     "compatibility": "per-version-declaration",
@@ -91,9 +91,9 @@
   ],
   "configOverrides": [],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: DSH compatibility is not explicitly declared; runtime or optional dependencies require a separate supply-chain review; runtime artifact is missing from the distributable surface: ./lib/index.js; runtime artifact is missing from the distributable surface: ./lib/client.js; runtime artifact is missing from the distributable surface: ./lib/index.d.ts; fixed-source scan is incomplete; unobserved capability signals are unknown",
+  "statusReason": "Automatic policy blocked installation: runtime or optional dependencies require a separate supply-chain review; runtime artifact is missing from the distributable surface: ./lib/index.js; runtime artifact is missing from the distributable surface: ./lib/client.js; runtime artifact is missing from the distributable surface: ./lib/index.d.ts; fixed-source scan is incomplete; unobserved capability signals are unknown",
   "compatibility": {
-    "dsh": null,
+    "dsh": "0.2.2-rc.3",
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
@@ -175,7 +175,7 @@
         "rollback": "unknown"
       }
     },
-    "node": ">=26.13.1",
+    "node": ">=24",
     "systems": [],
     "profiles": [
       "web"
