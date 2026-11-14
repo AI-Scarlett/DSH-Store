@@ -316,7 +316,7 @@ function stableJson(value) {
   return `{${Object.keys(value).sort().map(key => `${JSON.stringify(key)}:${stableJson(value[key])}`).join(',')}}`
 }
 
-async function inspectManualAdmissions(catalog, policy, github, observedAt, report, dshReleaseWindow, scanPlan) {
+async function inspectManualAdmissions(catalog, candidates, policy, github, observedAt, report, dshReleaseWindow, scanPlan) {
   const manualReport = {
     scanPlanId: scanPlan.scan.planId,
     scanBaseCommit: scanPlan.scan.baseCommit,
@@ -1120,7 +1120,7 @@ const github = createCatalogGithubReader()
 report.apiUsage = github.statistics
 if (manualScanPlan) {
   failureContext.stage = 'inspect-manual-fixed-source-admissions'
-  await inspectManualAdmissions(catalog, policy, github, observedAt, report, dshReleaseWindow, manualScanPlan)
+  await inspectManualAdmissions(catalog, candidates, policy, github, observedAt, report, dshReleaseWindow, manualScanPlan)
 } else {
 // Resolve canonical repository identity and head metadata in bounded read-only
 // batches. All later package reads share these immutable snapshots and cache.
