@@ -99,9 +99,19 @@ jobs:
           request_id="watchdog-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
           # Ignore push and pull-request validation runs for this workflow. They
           # are not Catalog policy decisions and must not trigger a repair run.
-          latest_id=$(gh run list --workflow catalog-automation.yml --limit 100 \
+          catalog_runs=$(gh run list --workflow catalog-automation.yml --limit 100 \
             --json databaseId,event,displayTitle \
-            --jq '[.[] | select(.event == "schedule" or .event == "workflow_dispatch") | select(.displayTitle | startswith("Catalog automation ("))][0].databaseId // empty')
+            --jq '[.[] | select(.event == "schedule" or .event == "workflow_dispatch") | select(.displayTitle | startswith("Catalog automation ("))]')
+          latest=$(jq -c '.[0] // empty' <<<"$catalog_runs")
+          # A cancelled run makes no Catalog decision. Fall back to the prior
+          # policy run so an intentional stop does not start broad discovery.
+          if test -n "$latest" && test "$(jq -r '.conclusion // ""' <<<"$latest")" = cancelled; then
+            latest=$(jq -c '.[1] // empty' <<<"$catalog_runs")
+          fi
+          latest_id=''
+          if test -n "$latest"; then
+            latest_id=$(jq -r '.databaseId // empty' <<<"$latest")
+          fi
           repair=false
 
           if test -n "$latest_id"; then

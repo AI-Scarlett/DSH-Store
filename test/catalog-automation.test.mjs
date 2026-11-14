@@ -471,6 +471,7 @@ test('watchdog waits for its exact repair run, invokes its report, and checks ev
   assert.match(workflow, /issues: write/)
   assert.match(workflow, /request_id="watchdog-\$\{GITHUB_RUN_ID\}-\$\{GITHUB_RUN_ATTEMPT\}"/)
   assert.match(workflow, /gh run list --workflow catalog-automation\.yml --limit 100[\s\S]*--json databaseId,event,displayTitle[\s\S]*\.event == "schedule" or \.event == "workflow_dispatch"[\s\S]*startswith\("Catalog automation \("\)/)
+  assert.match(workflow, /if test -n "\$latest" && test "\$\(jq -r '\.conclusion \/\/ ""' <<<"\$latest"\)" = cancelled; then[\s\S]*jq -c '\.\[1\] \/\/ empty'/)
   assert.match(workflow, /gh workflow run catalog-automation\.yml --ref main -f request_id="\$request_id"/)
   assert.match(workflow, /select\(\.displayTitle == \$expected\)/)
   assert.match(workflow, /repos\/\$GITHUB_REPOSITORY\/actions\/runs\/\$target_id/)
