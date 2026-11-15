@@ -23,24 +23,24 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "7d9aa4d329da864ecc18cd58a19f995fb3f7cc9e",
-  "version": "0.8.6",
+  "commit": "323516eed6a940760d20b32a4c2e39c7dbc52f81",
+  "version": "0.8.7",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-11-11T14:20:08.000Z",
-    "observedAt": "2026-11-11T15:54:26.000Z",
+    "updatedAt": "2026-11-15T13:28:59.000Z",
+    "observedAt": "2026-11-15T15:25:35.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-11-11T15:54:26.000Z",
-      "evidenceUrl": "https://github.com/omdsh-dev/dsh-llm-fallbacks/commit/7d9aa4d329da864ecc18cd58a19f995fb3f7cc9e",
+      "checkedAt": "2026-11-15T15:25:35.000Z",
+      "evidenceUrl": "https://github.com/omdsh-dev/dsh-llm-fallbacks/commit/323516eed6a940760d20b32a4c2e39c7dbc52f81",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -79,7 +79,7 @@
   },
   "admission": {
     "engine": "bounded-source-v3",
-    "binding": "02a155f4961bc943b79302f7bca86a3633853ed23ab1cdbde7312ef84164bfd4",
+    "binding": "3a9b8be787bbaceb78ddd613331281cb2812b5e083237f026ae5769cef41023c",
     "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
     "state": "incomplete",
     "sourceContract": "unverified",
@@ -95,7 +95,7 @@
   "status": "blocked",
   "statusReason": "Automatic policy blocked installation: manifest and GitHub repository license metadata conflict; install lifecycle scripts are present: prepare; runtime or optional dependencies require a separate supply-chain review; runtime artifact is missing from the distributable surface: ./dist/index.js; runtime artifact is missing from the distributable surface: ./dist/index.d.ts; runtime artifact is missing from the distributable surface: ./dist/client/index.d.ts; runtime artifact is missing from the distributable surface: ./dist/client/index.js; fixed-source scan is incomplete; unobserved capability s",
   "compatibility": {
-    "dsh": "^0.2.2-rc.1",
+    "dsh": "^0.2.2-rc.3",
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
@@ -105,7 +105,6 @@
       "0.1.2-alpha.3": "unknown",
       "0.1.2-alpha.4": "unknown",
       "0.1.2-alpha.5": "unknown",
-      "0.2.2-alpha.3": "unknown",
       "0.2.2-rc.1": "unknown",
       "0.2.2-rc.2": "unknown",
       "0.2.2-rc.3": "unknown"
@@ -154,12 +153,6 @@
         "rollback": "unknown"
       },
       "0.1.2-alpha.5": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.2.2-alpha.3": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",
