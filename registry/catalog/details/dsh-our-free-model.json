@@ -23,28 +23,28 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "a912a51959ebb36c865fba1a40570aee7e094d9e",
-  "version": "2.8.4",
+  "commit": "8cb6ac429257e6af9aba6e7746a18f8e6aee9c67",
+  "version": "2.8.5",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-11-14T19:35:24.000Z",
-    "observedAt": "2026-11-14T19:28:08.000Z",
+    "updatedAt": "2026-11-15T03:19:12.000Z",
+    "observedAt": "2026-11-15T05:17:13.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-policy-v1",
-      "checkedAt": "2026-11-14T19:28:08.000Z",
-      "evidenceUrl": "https://github.com/Ebony-Vinyl/dsh-our-free-model/commit/a912a51959ebb36c865fba1a40570aee7e094d9e",
+      "method": "automated-fixed-source-recheck-v1",
+      "checkedAt": "2026-11-15T05:17:13.000Z",
+      "evidenceUrl": "https://github.com/Ebony-Vinyl/dsh-our-free-model/commit/8cb6ac429257e6af9aba6e7746a18f8e6aee9c67",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Fixed source and Bundle identity were verified; automatic install approval failed closed on one or more policy gates."
+      "summary": "The external-only or non-installable listing metadata was refreshed from a fixed Commit; no installability was inferred."
     },
     "installability": {
       "status": "unknown",
@@ -54,7 +54,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No third-party installation or build code was executed by the automation."
+      "summary": "The updated fixed Commit was not installed or built by Catalog automation."
     },
     "runtime": {
       "status": "unknown",
@@ -64,7 +64,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No DSH runtime acceptance was inferred from static automation."
+      "summary": "No DSH runtime acceptance was carried forward after the source changed."
     },
     "securityReview": {
       "status": "unknown",
@@ -74,12 +74,12 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Automated source policy is not an independent security audit."
+      "summary": "Automated fixed-source review is not an independent security audit."
     }
   },
   "admission": {
     "engine": "bounded-source-v3",
-    "binding": "f491f3993e17f71933ebc24d7a51ef46d1d2727aca4df9393a53f3a19bf56f7b",
+    "binding": "d7f9227dac5abe9cd5b43ae865c3230be10ee29eacd87354bf36a58cff2b0440",
     "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
     "state": "incomplete",
     "sourceContract": "verified",
@@ -91,6 +91,7 @@
   "entryIds": [
     "our-free-model"
   ],
+  "configOverrides": [],
   "status": "blocked",
   "statusReason": "Automatic policy blocked installation: package contains unsupported artifacts requiring review: src/engine-parts/win32-x64.000.part, src/engine-parts/win32-x64.001.part, src/engine-parts/win32-x64.002.part, src/engine-parts/win32-x64.003.part, src/engine-parts/win32-x64.004.part; fixed-source scan is incomplete; unobserved capability signals are unknown; fixed-source security warnings require review; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the cred",
   "compatibility": {
