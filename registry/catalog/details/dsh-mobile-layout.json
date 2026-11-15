@@ -23,7 +23,7 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "source-verified",
-  "commit": "c3b3c57a6f77e9e1b6adcb93059499ed784e827e",
+  "commit": "dcb1b6c9bee1efbf9dfc8454dbc34ec3a511b17d",
   "version": "0.4.12",
   "categories": [
     "experimental"
@@ -31,20 +31,20 @@
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-11-09T18:10:25.000Z",
-    "observedAt": "2026-11-14T20:54:51.000Z",
+    "updatedAt": "2026-11-09T18:10:21.000Z",
+    "observedAt": "2026-11-15T05:17:13.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-policy-v1",
-      "checkedAt": "2026-11-14T20:54:51.000Z",
-      "evidenceUrl": "https://github.com/XiaoPb/dsh-mobile-layout/commit/c3b3c57a6f77e9e1b6adcb93059499ed784e827e",
+      "method": "automated-fixed-source-update-v3",
+      "checkedAt": "2026-11-15T05:17:13.000Z",
+      "evidenceUrl": "https://github.com/XiaoPb/dsh-mobile-layout/commit/dcb1b6c9bee1efbf9dfc8454dbc34ec3a511b17d",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Fixed source, package contract, license, bounded runtime source, dependencies, and permission signals passed the automatic policy."
+      "summary": "The same-version fixed Commit passed the complete automatic low-risk source policy."
     },
     "installability": {
       "status": "unknown",
@@ -54,7 +54,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No third-party installation or build code was executed by the automation."
+      "summary": "The updated fixed Commit was not installed or built by Catalog automation."
     },
     "runtime": {
       "status": "unknown",
@@ -64,7 +64,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No DSH runtime acceptance was inferred from static automation."
+      "summary": "No DSH runtime acceptance was carried forward after the source changed."
     },
     "securityReview": {
       "status": "unknown",
@@ -74,12 +74,12 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Automated source policy is not an independent security audit."
+      "summary": "Automated fixed-source review is not an independent security audit."
     }
   },
   "admission": {
     "engine": "bounded-source-v3",
-    "binding": "f025e702ef24111485ed5024efa490fea98dac73dfa9793ef9780559bfc3b950",
+    "binding": "67b71a640105479a59218a40a6f62ddac26aec00d1c446b5c72161c17f0ea857",
     "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
     "state": "source-verified",
     "sourceContract": "verified",
@@ -91,6 +91,7 @@
   "entryIds": [
     "mobile-layout"
   ],
+  "configOverrides": [],
   "status": "approved",
   "statusReason": null,
   "compatibility": {

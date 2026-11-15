@@ -18,7 +18,7 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "source-verified",
-  "commit": "33b9a9066c213e347381f92b62b02e75fde5daaa",
+  "commit": "83fffeb24f92b66d41e8a6af437d51a96adffe13",
   "version": "0.2.1",
   "categories": [
     "experimental"
@@ -26,20 +26,20 @@
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-11-05T13:41:46.000Z",
-    "observedAt": "2026-11-14T20:54:51.000Z",
+    "updatedAt": "2026-11-05T13:41:44.000Z",
+    "observedAt": "2026-11-15T05:17:13.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-policy-v1",
-      "checkedAt": "2026-11-14T20:54:51.000Z",
-      "evidenceUrl": "https://github.com/ZilongYang/dsh-multiline-input/commit/33b9a9066c213e347381f92b62b02e75fde5daaa",
+      "method": "automated-fixed-source-update-v3",
+      "checkedAt": "2026-11-15T05:17:13.000Z",
+      "evidenceUrl": "https://github.com/ZilongYang/dsh-multiline-input/commit/83fffeb24f92b66d41e8a6af437d51a96adffe13",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Fixed source, package contract, license, bounded runtime source, dependencies, and permission signals passed the automatic policy."
+      "summary": "The same-version fixed Commit passed the complete automatic low-risk source policy."
     },
     "installability": {
       "status": "unknown",
@@ -49,7 +49,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No third-party installation or build code was executed by the automation."
+      "summary": "The updated fixed Commit was not installed or built by Catalog automation."
     },
     "runtime": {
       "status": "unknown",
@@ -59,7 +59,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No DSH runtime acceptance was inferred from static automation."
+      "summary": "No DSH runtime acceptance was carried forward after the source changed."
     },
     "securityReview": {
       "status": "unknown",
@@ -69,12 +69,12 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Automated source policy is not an independent security audit."
+      "summary": "Automated fixed-source review is not an independent security audit."
     }
   },
   "admission": {
     "engine": "bounded-source-v3",
-    "binding": "8b326ff6bfe167999f2aaec1de8914868ec5cbfbc1a24ee910caadd2d197d410",
+    "binding": "f76e017f1bd199fbca053c9d5d37af8e09084143dcf10d4591d326685dd083bd",
     "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
     "state": "source-verified",
     "sourceContract": "verified",
@@ -86,6 +86,7 @@
   "entryIds": [
     "multiline-input"
   ],
+  "configOverrides": [],
   "status": "approved",
   "statusReason": null,
   "compatibility": {
