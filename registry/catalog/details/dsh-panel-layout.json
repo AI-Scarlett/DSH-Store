@@ -22,28 +22,28 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "source-verified",
-  "commit": "483fd607e06dbb717526dc3e6694991d61ff6cb4",
-  "version": "0.2.4",
+  "commit": "b03a1b6a6b8473e1713834377e89a0524af6109d",
+  "version": "0.2.5",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-11-13T01:37:03.000Z",
-    "observedAt": "2026-11-14T20:54:51.000Z",
+    "updatedAt": "2026-11-17T02:07:54.000Z",
+    "observedAt": "2026-11-17T03:46:07.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-policy-v1",
-      "checkedAt": "2026-11-14T20:54:51.000Z",
-      "evidenceUrl": "https://github.com/devome/dsh-panel-layout/commit/483fd607e06dbb717526dc3e6694991d61ff6cb4",
+      "method": "automated-fixed-source-update-v3",
+      "checkedAt": "2026-11-17T03:46:07.000Z",
+      "evidenceUrl": "https://github.com/devome/dsh-panel-layout/commit/b03a1b6a6b8473e1713834377e89a0524af6109d",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Fixed source, package contract, license, bounded runtime source, dependencies, and permission signals passed the automatic policy."
+      "summary": "The same-version fixed Commit passed the complete automatic low-risk source policy."
     },
     "installability": {
       "status": "unknown",
@@ -53,7 +53,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No third-party installation or build code was executed by the automation."
+      "summary": "The updated fixed Commit was not installed or built by Catalog automation."
     },
     "runtime": {
       "status": "unknown",
@@ -63,7 +63,7 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "No DSH runtime acceptance was inferred from static automation."
+      "summary": "No DSH runtime acceptance was carried forward after the source changed."
     },
     "securityReview": {
       "status": "unknown",
@@ -73,12 +73,12 @@
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Automated source policy is not an independent security audit."
+      "summary": "Automated fixed-source review is not an independent security audit."
     }
   },
   "admission": {
     "engine": "bounded-source-v3",
-    "binding": "280866774fc35085e0e74fb5e2ffbef5846f35ef787a23215e9c41860f1585fa",
+    "binding": "d44cf926b628d417ed1e99d9e27d8910d029b4d4ba0945e4d4b13629133ea622",
     "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
     "state": "source-verified",
     "sourceContract": "verified",
@@ -90,6 +90,7 @@
   "entryIds": [
     "dsh-panel-layout"
   ],
+  "configOverrides": [],
   "status": "approved",
   "statusReason": null,
   "compatibility": {
