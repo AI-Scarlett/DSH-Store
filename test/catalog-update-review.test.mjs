@@ -317,6 +317,22 @@ test('a complete automatic scan refreshes review-required fixed-source decisions
   assert.equal(refreshAutomaticPolicyReview(previous, reviewed).admission.binding, 'new-binding')
 })
 
+test('a stale review-required fixed-source decision is selected for one automatic recheck', async () => {
+  const { isPendingAutomaticPolicyRecheck } = await import('../src/catalog-update-review.mjs')
+  const stale = entry({
+    status: 'blocked',
+    statusReason: 'Fixed-source recheck blocked installation: prior capability signals',
+    updatePolicy: 'external-only',
+    risk: { review: 'automatic-policy-blocked-not-installable' },
+    admission: { state: 'review-required' },
+  })
+
+  assert.equal(isPendingAutomaticPolicyRecheck(stale), true)
+  assert.equal(isPendingAutomaticPolicyRecheck({ ...stale, statusReason: 'Automatic policy blocked installation: current findings' }), false)
+  assert.equal(isPendingAutomaticPolicyRecheck({ ...stale, risk: { review: 'manual' } }), false)
+  assert.equal(isPendingAutomaticPolicyRecheck({ ...stale, updatePolicy: 'user-reviewed' }), false)
+})
+
 test('a connected fixed-source review can replace the specific disconnected-history hold', async () => {
   const { refreshAutomaticPolicyReview } = await import('../src/catalog-update-review.mjs')
   const original = entry({ status: 'blocked', updatePolicy: 'external-only' })

@@ -256,6 +256,11 @@ function isRefreshableAutomaticReview(entry) {
     && entry.risk?.review === 'automatic-policy-blocked-not-installable'
 }
 
+export function isPendingAutomaticPolicyRecheck(entry) {
+  return isRefreshableAutomaticReview(entry)
+    && String(entry.statusReason ?? '').startsWith('Fixed-source recheck blocked installation:')
+}
+
 export function refreshAutomaticPolicyReview(entry, reviewed) {
   const disconnectedHistory = entry.status === 'blocked'
     && entry.updatePolicy === 'external-only'
