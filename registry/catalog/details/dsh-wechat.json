@@ -32,14 +32,14 @@
   "installCount": null,
   "source": {
     "updatedAt": "2026-10-26T04:27:45.000Z",
-    "observedAt": "2026-10-26T13:38:19.000Z",
+    "observedAt": "2026-11-17T22:28:18.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-update-v3",
-      "checkedAt": "2026-10-26T13:38:19.000Z",
+      "checkedAt": "2026-11-17T22:28:18.000Z",
       "evidenceUrl": "https://github.com/zgat/dsh-wechat/commit/8213a830351753f128926b535693355b2f77763e",
       "dshRelease": null,
       "systems": [],
@@ -79,21 +79,21 @@
   },
   "admission": {
     "engine": "bounded-source-v3",
-    "binding": "1b34b2242fb7b91ccc3dc58e9dd83471c0cf65627233776f9520790c481e25a4",
+    "binding": "fe383ba7afe1d0a4045516948b879db142f836e0352e80fe73add2608c4b3b14",
     "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
     "state": "review-required",
     "sourceContract": "verified",
     "coverage": "complete",
     "capabilities": "review-required",
     "compatibility": "per-version-declaration",
-    "reviewRegistryDigest": "b8c7a806ef232745039ed1d51ab5b1bfe9ae0955cacb20f2dfc5f911917a5dc2"
+    "reviewRegistryDigest": "f40e4a10a2ae7f8d8dadbbde3a7a03e9f7d967caf114a14d6a7bbfe46a93efbf"
   },
   "entryIds": [
     "dsh-wechat"
   ],
   "configOverrides": [],
   "status": "blocked",
-  "statusReason": "Fixed-source recheck blocked installation: fixed-source security warnings require review; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal; runtime source contains the nativeOrExecutableArtifacts permission signal",
+  "statusReason": "Automatic policy blocked installation: runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the credentials permission signal",
   "compatibility": {
     "dsh": ">=0.2.0-rc.2 <0.3.0",
     "dshReleases": {
@@ -108,18 +108,7 @@
       "0.2.0-rc.2": "compatible",
       "0.2.0-rc.1": "unknown",
       "0.2.1-alpha.1": "unknown",
-      "0.2.1-alpha.2": "unknown",
-      "0.2.1-alpha.3": "unknown",
-      "0.2.1-alpha.4": "unknown",
-      "0.2.1-alpha.5": "unknown",
-      "0.2.1-rc.1": "unknown",
       "0.2.1-rc.2": "compatible",
-      "0.2.1-rc.3": "unknown",
-      "0.2.1-rc.4": "unknown",
-      "0.2.2-alpha.2": "unknown",
-      "0.2.1-rc.5": "unknown",
-      "0.2.2-alpha.3": "unknown",
-      "0.2.2-rc.1": "unknown",
       "0.2.2-rc.2": "unknown",
       "0.2.2-rc.3": "unknown",
       "0.2.2-rc.4": "unknown"
@@ -191,73 +180,7 @@
         "uninstall": "unknown",
         "rollback": "unknown"
       },
-      "0.2.1-alpha.2": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.2.1-alpha.3": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.2.1-alpha.4": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.2.1-alpha.5": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.2.1-rc.1": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
       "0.2.1-rc.2": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.2.1-rc.3": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.2.1-rc.4": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.2.2-alpha.2": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.2.1-rc.5": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.2.2-alpha.3": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.2.2-rc.1": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",
