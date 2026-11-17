@@ -20,24 +20,24 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "49e9a5159f995468f5cecdef191badec0c13c42d",
-  "version": "0.9.11",
+  "commit": "8d0c6106defba4c44a49a1c90a9656173e46d282",
+  "version": "0.10.0",
   "categories": [
     "workflow"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-11-05T01:29:47.000Z",
-    "observedAt": "2026-11-05T16:14:13.000Z",
+    "updatedAt": "2026-11-17T10:59:16.000Z",
+    "observedAt": "2026-11-17T16:21:15.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-11-05T16:14:13.000Z",
-      "evidenceUrl": "https://github.com/cloader/dsh-taskboard/commit/49e9a5159f995468f5cecdef191badec0c13c42d",
+      "checkedAt": "2026-11-17T16:21:15.000Z",
+      "evidenceUrl": "https://github.com/cloader/dsh-taskboard/commit/8d0c6106defba4c44a49a1c90a9656173e46d282",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -76,7 +76,7 @@
   },
   "admission": {
     "engine": "bounded-source-v3",
-    "binding": "64b79e0855d3f68eb7e8558ee4be0d436ba53d12daeaa0366c1abfab04727cb9",
+    "binding": "4aa19952d8d4f4bfbd36627273a21f5da19c372ea0e4126cda8d8db942fa3c67",
     "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
     "state": "incomplete",
     "sourceContract": "unverified",
@@ -103,8 +103,6 @@
       "0.1.2-alpha.4": "unknown",
       "0.1.2-alpha.5": "unknown",
       "0.2.0-rc.2": "compatible",
-      "0.2.2-alpha.2": "unknown",
-      "0.2.2-alpha.3": "unknown",
       "0.2.2-rc.1": "unknown",
       "0.2.2-rc.2": "unknown",
       "0.2.2-rc.3": "unknown"
@@ -164,18 +162,6 @@
         "uninstall": "unknown",
         "rollback": "unknown"
       },
-      "0.2.2-alpha.2": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.2.2-alpha.3": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
       "0.2.2-rc.1": {
         "install": "unknown",
         "start": "unknown",
@@ -195,7 +181,7 @@
         "rollback": "unknown"
       }
     },
-    "node": ">=22",
+    "node": ">=24.9.0",
     "systems": [],
     "profiles": [
       "web"
