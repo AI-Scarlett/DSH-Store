@@ -23,7 +23,7 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "9419ca1d0ec5df96b0267be9c43963c545910169",
+  "commit": "9ee03199e23aeab6a76b04d2ad9d91d21aa34ff5",
   "version": "1.0.0",
   "categories": [
     "experimental"
@@ -31,16 +31,16 @@
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-11-16T10:01:57.000Z",
-    "observedAt": "2026-11-16T18:01:33.000Z",
+    "updatedAt": "2026-11-17T06:40:55.000Z",
+    "observedAt": "2026-11-17T06:57:27.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-11-16T18:01:33.000Z",
-      "evidenceUrl": "https://github.com/versot/dsh-workspace-skill-scope/commit/9419ca1d0ec5df96b0267be9c43963c545910169",
+      "checkedAt": "2026-11-17T06:57:27.000Z",
+      "evidenceUrl": "https://github.com/versot/dsh-workspace-skill-scope/commit/9ee03199e23aeab6a76b04d2ad9d91d21aa34ff5",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -79,7 +79,7 @@
   },
   "admission": {
     "engine": "bounded-source-v3",
-    "binding": "3847c3d041551e390f08f408c233b270d1191f075aebeb945b6d90714a7e4bdc",
+    "binding": "a4fc35efe35267aa47dc15b1bf7c495fc603b4271b1c43a087fdb752c4907cd4",
     "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
     "state": "review-required",
     "sourceContract": "verified",
@@ -93,7 +93,7 @@
   ],
   "configOverrides": [],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: runtime or optional dependencies require a separate supply-chain review; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the credentials permission signal",
+  "statusReason": "Automatic policy blocked installation: runtime or optional dependencies require a separate supply-chain review; runtime dependencies do not have one unambiguous fixed lockfile for supply-chain review; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the credentials permission signal",
   "compatibility": {
     "dsh": ">=0.2.2-rc.3",
     "dshReleases": {
