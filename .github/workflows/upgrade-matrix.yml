@@ -49,6 +49,7 @@ jobs:
       - name: Verify Store in a disposable Profile
         env:
           DSH_TEST_PLUGIN_SPEC: github:AI-Scarlett/DSH-Store#${{ github.event.pull_request.head.sha || github.sha }}
+          DSH_VERSION: ${{ needs.resolve.outputs.latest_version }}
         run: node scripts/test-disposable-upgrade.mjs .runtime/node_modules/@deepseek-ai/dsh/lib/bin.js
 
   previous-latest-three:
@@ -76,6 +77,7 @@ jobs:
       - name: Verify Store in a disposable Profile
         env:
           DSH_TEST_PLUGIN_SPEC: github:AI-Scarlett/DSH-Store#${{ github.event.pull_request.head.sha || github.sha }}
+          DSH_VERSION: ${{ matrix.dsh-version }}
         run: node scripts/test-disposable-upgrade.mjs .runtime/node_modules/@deepseek-ai/dsh/lib/bin.js
 
   next-channel:
@@ -103,4 +105,5 @@ jobs:
       - name: Verify Store in a disposable Profile
         env:
           DSH_TEST_PLUGIN_SPEC: github:AI-Scarlett/DSH-Store#${{ github.event.pull_request.head.sha || github.sha }}
+          DSH_VERSION: ${{ needs.resolve.outputs.next_version }}
         run: node scripts/test-disposable-upgrade.mjs .runtime/node_modules/@deepseek-ai/dsh/lib/bin.js
