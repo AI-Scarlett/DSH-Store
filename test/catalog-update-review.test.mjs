@@ -296,6 +296,41 @@ test('a complete new automatic review refreshes a stale blocked classification w
   assert.throws(() => refreshAutomaticPolicyReview(previous, { ...reviewed, assurance: {} }), /complete automatic/)
 })
 
+test('a complete automatic scan refreshes review-required fixed-source decisions and their binding', async () => {
+  const { refreshAutomaticPolicyReview } = await import('../src/catalog-update-review.mjs')
+  const previous = entry({
+    status: 'blocked',
+    statusReason: 'Fixed-source recheck blocked installation: prior capability signals',
+    updatePolicy: 'external-only',
+    risk: { review: 'automatic-policy-blocked-not-installable', installScripts: [] },
+    admission: { state: 'review-required', binding: 'old-binding' },
+  })
+  const reviewed = {
+    ...previous,
+    commit: 'b'.repeat(40),
+    status: 'blocked',
+    statusReason: 'Fixed-source recheck blocked installation: current capability signals',
+    admission: { state: 'review-required', binding: 'new-binding' },
+    assurance: { discovery: { method: 'automated-fixed-source-policy-v1' } },
+  }
+
+  assert.equal(refreshAutomaticPolicyReview(previous, reviewed).admission.binding, 'new-binding')
+})
+
+test('a connected fixed-source review can replace the specific disconnected-history hold', async () => {
+  const { refreshAutomaticPolicyReview } = await import('../src/catalog-update-review.mjs')
+  const original = entry({ status: 'blocked', updatePolicy: 'external-only' })
+  const held = holdExternalOnlyAfterDisconnectedHistory(original, 'a'.repeat(40), 'b'.repeat(40))
+  const reviewed = {
+    ...held,
+    statusReason: 'Fixed-source recheck blocked installation: current source findings',
+    risk: { ...held.risk, review: 'automatic-policy-blocked-not-installable' },
+    assurance: { discovery: { method: 'automated-fixed-source-policy-v1' } },
+  }
+
+  assert.equal(refreshAutomaticPolicyReview(held, reviewed).statusReason, reviewed.statusReason)
+})
+
 test('a disconnected third-party source refresh remains blocked and external-only', () => {
   const previous = 'a'.repeat(40)
   const candidate = 'b'.repeat(40)

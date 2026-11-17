@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "type": "author-feedback-resolution",
+  "createdAt": "2026-11-18",
+  "baseCommit": "2c7c2a2ed7680c4dd0b470bcb041e3c3174dd6f8",
+  "scope": [
+    ".github/workflows/upgrade-matrix.yml",
+    "scripts/test-disposable-upgrade.mjs",
+    "src/catalog-update-review.mjs",
+    "test/catalog-update-review.test.mjs",
+    "docs/ops/author-feedback-recheck-20261118.json"
+  ],
+  "preconditions": {
+    ".github/workflows/upgrade-matrix.yml": "243feb54f4b5fc0e87726704b2ebfc8b268f03a00960ea491e9b30087ef25723",
+    "scripts/test-disposable-upgrade.mjs": "94d0fa4fa9a4d00d1b9dabfbeac5d8312e9823d9345dd8f4bf24452a27a27f87",
+    "src/catalog-update-review.mjs": "c3d0acfbf296c5e0b234c28bf32aad24a6a3848021f29cc3ee5fd03077480893",
+    "test/catalog-update-review.test.mjs": "81b9ef5de2b975a4b74afd3657a1bf6d9b12310a64d03bed90cc766192a3e32c",
+    "docs/ops/author-feedback-recheck-20261118.json": null
+  },
+  "postconditions": {
+    ".github/workflows/upgrade-matrix.yml": "88695e05f9bf61725bd141b30e8567e3a250ca2614320f90946fa04db8bf3471",
+    "scripts/test-disposable-upgrade.mjs": "90242f52b73d05bc371eaee6eb64d721a32c1a2f98328960e109e53491a21dc4",
+    "src/catalog-update-review.mjs": "b5e682eb18d3cf0e1704f3c6147d2acea72637db7aadfbc4a6582c804f4ea033",
+    "test/catalog-update-review.test.mjs": "a165c5a8fcf8c4c32063acb56fc6ed62c3e58d61d17098f0e79ccd45f01d85b3"
+  },
+  "authorization": {
+    "githubWriteCredential": "short-lived-token-required"
+  },
+  "purpose": "Repair the fixed-source admission refresh gate identified by Issue #1321 and let the DSH upgrade matrix exercise each exact official release with a temporary allow-version grant in its disposable Profile. Preserve shipped compatibility declarations and manual admission decisions."
+}

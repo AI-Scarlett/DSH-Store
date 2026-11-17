@@ -6,6 +6,9 @@ import assert from 'node:assert/strict'
 const cli = resolve(process.argv[2])
 const buildRoot = process.argv[3] ? resolve(process.argv[3]) : null
 const managerSpec = process.env.DSH_TEST_PLUGIN_SPEC ?? `file:${resolve('.')}`
+const managerManifest = JSON.parse(await readFile(resolve('package.json'), 'utf8'))
+const testDshVersion = process.env.DSH_VERSION
+if (!/^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?$/.test(testDshVersion ?? '')) throw new Error('exact DSH_VERSION is required for the disposable matrix')
 // Keep file dependencies on the fixture drive: pnpm 10 on Windows cannot
 // resolve the cross-drive file-source layout. This remains a disposable sibling.
 const root = await mkdtemp(join(dirname(resolve('.')), 'store-e3-'))
@@ -32,6 +35,10 @@ let child
 try {
   await mkdir(env.DSH_HOME, { recursive: true })
   const baselineConfig = await run(['--profile', 'web', '--dump-config'])
+  // The Store is the plugin under test. Grant this exact version only inside
+  // the disposable DSH_HOME so unknown host releases can be exercised without
+  // changing the shipped compatibility declaration.
+  await run(['plugin', '--profile', 'web', 'allow-version', `${managerManifest.name}@${managerManifest.version}`, '--dsh-version', testDshVersion, '--accept-risk'])
   await run(['plugin', '--profile', 'web', 'add', '--ignore-scripts', '--config.auto-install-peers=false', managerSpec])
   if (buildRoot) await run(['plugin', '--profile', 'web', 'add', '--ignore-scripts', `file:${buildRoot}`])
   const config = await run(['--profile', 'web', '--dump-config'])
