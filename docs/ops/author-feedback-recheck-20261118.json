@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "type": "author-feedback-resolution",
+  "createdAt": "2026-11-18",
+  "baseCommit": "2c7c2a2ed7680c4dd0b470bcb041e3c3174dd6f8",
+  "scope": [
+    "src/catalog-update-review.mjs",
+    "test/catalog-update-review.test.mjs",
+    "docs/ops/author-feedback-recheck-20261118.json"
+  ],
+  "preconditions": {
+    "src/catalog-update-review.mjs": "c3d0acfbf296c5e0b234c28bf32aad24a6a3848021f29cc3ee5fd03077480893",
+    "test/catalog-update-review.test.mjs": "81b9ef5de2b975a4b74afd3657a1bf6d9b12310a64d03bed90cc766192a3e32c",
+    "docs/ops/author-feedback-recheck-20261118.json": null
+  },
+  "postconditions": {
+    "src/catalog-update-review.mjs": "b5e682eb18d3cf0e1704f3c6147d2acea72637db7aadfbc4a6582c804f4ea033",
+    "test/catalog-update-review.test.mjs": "a165c5a8fcf8c4c32063acb56fc6ed62c3e58d61d17098f0e79ccd45f01d85b3"
+  },
+  "authorization": {
+    "githubWriteCredential": "short-lived-token-required"
+  },
+  "purpose": "Repair the fixed-source admission refresh gate identified by Issue #1321. Recompute only automatic review-required and disconnected-history states after a complete exact-Commit policy scan; preserve manual decisions."
+}
