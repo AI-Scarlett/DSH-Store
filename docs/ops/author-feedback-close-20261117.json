@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "type": "author-feedback-resolution",
+  "baseCommit": "2db18586813335eb4cccdee4ccf0c56f2a8b4d10",
+  "scope": [
+    "docs/ops/author-feedback-close-20261117.json",
+    "registry/author-closures/dshhub-false-positive-20261117.json"
+  ],
+  "preconditions": {
+    "docs/ops/author-feedback-close-20261117.json": null,
+    "registry/author-closures/dshhub-false-positive-20261117.json": null
+  },
+  "postconditions": {
+    "registry/author-closures/dshhub-false-positive-20261117.json": "7aff2dbf30a68f3dbba6e15d9b1de67e4f3df53d827c2c45bd67a2433d275831"
+  },
+  "authorization": {
+    "githubWriteCredential": "short-lived-token-required"
+  },
+  "purpose": "Authorize only the exact requested closure for Issue #1693 after live immutable identity, issue/comment hashes, repository ownership, current open state and absence from the current candidate registry were reviewed. The workflow will CAS-reserve the immutable person's central contact slot before the single state change."
+}
