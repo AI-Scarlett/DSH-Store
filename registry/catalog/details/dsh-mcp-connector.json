@@ -23,8 +23,8 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "3c96d7b24955e6c8064a5dc1ffa6a69ff4b6034c",
-  "version": "0.2.110",
+  "commit": "05ab3feacb44d97c9c7d6de69a2e118e1596c95a",
+  "version": "0.2.111",
   "categories": [
     "marketplace",
     "tools"
@@ -32,16 +32,16 @@
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-11-17T04:28:46.000Z",
-    "observedAt": "2026-11-17T06:57:27.000Z",
+    "updatedAt": "2026-11-17T09:42:53.000Z",
+    "observedAt": "2026-11-17T16:21:15.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-11-17T06:57:27.000Z",
-      "evidenceUrl": "https://github.com/duhu2000/dsh-mcp-connector/commit/3c96d7b24955e6c8064a5dc1ffa6a69ff4b6034c",
+      "checkedAt": "2026-11-17T16:21:15.000Z",
+      "evidenceUrl": "https://github.com/duhu2000/dsh-mcp-connector/commit/05ab3feacb44d97c9c7d6de69a2e118e1596c95a",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -80,11 +80,11 @@
   },
   "admission": {
     "engine": "bounded-source-v3",
-    "binding": "4fe306f0724276618a77bb69d2ec4b1742358cd7be2a275c43753b716f5e5ae3",
+    "binding": "413c6d0a59f77d26028a81a39c1cb8aab6350bf3097eb9984c6bbc9685d0eaad",
     "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
     "state": "rejected",
     "sourceContract": "unverified",
-    "coverage": "complete",
+    "coverage": "incomplete",
     "capabilities": "prohibited",
     "compatibility": "per-version-declaration",
     "reviewRegistryDigest": "f40e4a10a2ae7f8d8dadbbde3a7a03e9f7d967caf114a14d6a7bbfe46a93efbf"
@@ -94,7 +94,7 @@
   ],
   "configOverrides": [],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: DSH compatibility is not explicitly declared; runtime or optional dependencies require a separate supply-chain review; runtime dependencies do not have one unambiguous fixed lockfile for supply-chain review; fixed-source security warnings require review; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal; runtime source contains the protectedDsh permission signal; runtime source contains",
+  "statusReason": "Automatic policy blocked installation: DSH compatibility is not explicitly declared; runtime or optional dependencies require a separate supply-chain review; runtime dependencies do not have one unambiguous fixed lockfile for supply-chain review; local module is missing from the distributable surface: ui/smart-mode.js -> ./smart-mode-en.js; fixed-source scan is incomplete; unobserved capability signals are unknown; fixed-source security warnings require review; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains th",
   "compatibility": {
     "dsh": null,
     "dshReleases": {
