@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "type": "author-feedback-resolution",
+  "createdAt": "2026-11-18",
+  "baseCommit": "205c81cbedbbec19a0c60a27b3ce3423180aa33b",
+  "scope": [
+    "scripts/automate-catalog.mjs",
+    "src/catalog-update-review.mjs",
+    "test/catalog-update-review.test.mjs",
+    "docs/ops/author-feedback-scheduler-recheck-20261118.json"
+  ],
+  "preconditions": {
+    "scripts/automate-catalog.mjs": "a0b8b363b8b8ae2c7db0379d6feb21f095606b875400165d2c6114008becb102",
+    "src/catalog-update-review.mjs": "b5e682eb18d3cf0e1704f3c6147d2acea72637db7aadfbc4a6582c804f4ea033",
+    "test/catalog-update-review.test.mjs": "a165c5a8fcf8c4c32063acb56fc6ed62c3e58d61d17098f0e79ccd45f01d85b3",
+    "docs/ops/author-feedback-scheduler-recheck-20261118.json": null
+  },
+  "postconditions": {
+    "scripts/automate-catalog.mjs": "e59c28d03b07a02bc476df1f69d07f39b3e732b60acb2a97bc6b9af8262e20df",
+    "src/catalog-update-review.mjs": "563fcc7c87bdb9247735a9a2baee0a7e059510871b09336272049cc8decacaa4",
+    "test/catalog-update-review.test.mjs": "f08b6624e5bad082a7d294f7f69f6e6fc36ed08027543242dbf7525b5f958fdf"
+  },
+  "authorization": {
+    "source": "direct-user-request",
+    "request": "你都处理了 该回复回复 该更新更新",
+    "githubWriteCredential": "short-lived-token-required"
+  },
+  "purpose": "Repair Issue #1321 scheduling: requeue only a blocked external-only entry whose automatic admission is review-required and whose reason still has the stale Fixed-source recheck prefix. Preserve manual decisions and perform a single current fixed-Commit rescan; keep the reply behind the main-reviewed plan and central ledger CAS.",
+  "commitStrategy": "Create one isolated Git tree commit on a short-lived-token GitHub branch and open a CI-checked PR against the exact base Commit; merge only after exact-head checks pass.",
+  "backup": "The base Commit and the PR retain the complete recoverable source history; no live Catalog or contact-ledger file is written by this source repair.",
+  "healthCheck": "npm run check, exact-head GitHub CI, then the dedicated Catalog workflow result and independent public readback for the resulting Catalog decision.",
+  "rollback": "If source health or policy verification fails, do not merge; after a merged regression, revert the exact source commit through a CI-checked PR. Catalog and contact-ledger rollback remain their own audited workflows and never reset contact history."
+}

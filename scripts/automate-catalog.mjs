@@ -15,6 +15,7 @@ import { assertCatalogLocalization, localizeCatalogEntry, relocalizeCatalogEntri
 import {
   assessUpstreamVersion,
   isAutomaticPolicyBlocked,
+  isPendingAutomaticPolicyRecheck,
   refreshAutomaticPolicyReview,
   buildCatalogVersionUpdate,
   catalogChangeReviewContract,
@@ -545,7 +546,14 @@ async function updateExistingEntries(catalog, policy, github, observedAt, report
       snapshot = await sourceSnapshot(entry)
       if (snapshot.blockedAuthor === true) return { index, entry, kind: 'blocked-author', ownerUserId: snapshot.ownerUserId }
       const pendingMigration = catalogMigrationTarget(entry, snapshot, catalogMigrations).record
-      const recheckCurrent = snapshot.commit === entry.commit && (pendingMigration !== null || ((entry.status === 'approved' || isAutomaticPolicyBlocked(entry) || String(entry.statusReason ?? '').startsWith('DSH_LATEST_THREE_COMPATIBILITY_HOLD:')) && (entry.admission?.engine !== SCAN_POLICY_VERSION || entry.admission?.reviewRegistryDigest !== admissionReviewDigest || entry.admission?.policyDigest !== sha256(JSON.stringify({ sourceBounds: policy.sourceBounds, automaticApproval: policy.automaticApproval })))))
+      const policyReviewStale = entry.status === 'approved'
+        || isAutomaticPolicyBlocked(entry)
+        || String(entry.statusReason ?? '').startsWith('DSH_LATEST_THREE_COMPATIBILITY_HOLD:')
+      const recheckCurrent = snapshot.commit === entry.commit && (pendingMigration !== null
+        || isPendingAutomaticPolicyRecheck(entry)
+        || (policyReviewStale && (entry.admission?.engine !== SCAN_POLICY_VERSION
+          || entry.admission?.reviewRegistryDigest !== admissionReviewDigest
+          || entry.admission?.policyDigest !== sha256(JSON.stringify({ sourceBounds: policy.sourceBounds, automaticApproval: policy.automaticApproval })))))
       if (snapshot.commit === entry.commit && !recheckCurrent) return { index, entry, kind: 'current' }
       let manifest
       try {
