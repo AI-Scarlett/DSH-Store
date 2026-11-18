@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 1,
+  "type": "author-feedback-resolution",
+  "phase": "fixed-source-terminal-review",
+  "baseCommit": "72e45bc3427fee0acfff6ac0d64ab87db43fefc9",
+  "createdAt": "2026-11-18T00:31:23Z",
+  "scope": [
+    "docs/ops/author-feedback-zgat-dsh-wechat-20261118.json",
+    "docs/reviews/author-feedback-zgat-dsh-wechat-20261118.md",
+    "registry/admission-reviews.json"
+  ],
+  "preconditions": {
+    "docs/ops/author-feedback-zgat-dsh-wechat-20261118.json": null,
+    "docs/reviews/author-feedback-zgat-dsh-wechat-20261118.md": null,
+    "registry/admission-reviews.json": "94d160b3284e63dbf4b0a667a32d91122ccc5765b7e88a365681c6683ba3782a"
+  },
+  "postconditions": {
+    "docs/reviews/author-feedback-zgat-dsh-wechat-20261118.md": "d2475d986a1a78cea2ca9425fae9bd654fb18e621810b7465ba89345ecc1e266",
+    "registry/admission-reviews.json": "f9699220ff04ee799c080e05b18ef60a12a15917b66e8344350e669db7cf6382"
+  },
+  "authorization": {
+    "githubWriteCredential": "short-lived-token-required"
+  },
+  "gates": [
+    "fixed-source review is bound to author Issue #1321 and current immutable user ID 23634926",
+    "requested Commit 0776189bc200ddda2129a611ba6aeade44be380a and current Catalog Commit 8213a830351753f128926b535693355b2f77763e are separately identified",
+    "record a terminal admission verdict and exact actionable blockers",
+    "npm run check and CI-checked pull request",
+    "Catalog changes only through the dedicated Catalog policy workflow",
+    "no third-party install, lifecycle, test, build or runtime code is executed",
+    "no real DSH Profile is modified"
+  ],
+  "rollback": {
+    "source": "revert the CI-checked PR through Git history",
+    "catalog": "retain the current blocked status unless the dedicated workflow verifies a new exact source decision",
+    "contactLedger": "no reservation or notification in this review-record phase"
+  },
+  "purpose": "Record the requested dsh-wechat fixed-source review and terminal rejection against the current Catalog source; the scheduled Catalog defect was already repaired and must not be attributed to the author."
+}
