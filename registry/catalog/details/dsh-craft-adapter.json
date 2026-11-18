@@ -21,7 +21,7 @@
   "manifestPath": "adapters/deepseek-harness/package.json",
   "installPath": "adapters/deepseek-harness",
   "updatePolicy": "external-only",
-  "commit": "6cee3a71507efe25e9fd54129c03ab0dec9b40f2",
+  "commit": "663a9e74edc72725dbb478ae7a95b211ee731fe7",
   "version": "0.20.5",
   "categories": [
     "experimental"
@@ -29,16 +29,16 @@
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-11-16T16:42:02.000Z",
-    "observedAt": "2026-11-16T18:01:33.000Z",
+    "updatedAt": "2026-11-18T12:04:49.000Z",
+    "observedAt": "2026-11-18T12:19:36.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-update-v3",
-      "checkedAt": "2026-11-16T18:01:33.000Z",
-      "evidenceUrl": "https://github.com/wdx9413/craft/commit/6cee3a71507efe25e9fd54129c03ab0dec9b40f2",
+      "checkedAt": "2026-11-18T12:19:36.000Z",
+      "evidenceUrl": "https://github.com/wdx9413/craft/commit/663a9e74edc72725dbb478ae7a95b211ee731fe7",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -77,21 +77,21 @@
   },
   "admission": {
     "engine": "bounded-source-v3",
-    "binding": "665438499ea73b4aeb0d42aa71afec2532487360fd92bed431df5650efbc37d6",
+    "binding": "bc1080ac0574b544c7eafac8223acf14cde17900b2c5f8928aa4b188945471eb",
     "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
     "state": "incomplete",
     "sourceContract": "unverified",
     "coverage": "incomplete",
     "capabilities": "review-required",
     "compatibility": "per-version-declaration",
-    "reviewRegistryDigest": "f40e4a10a2ae7f8d8dadbbde3a7a03e9f7d967caf114a14d6a7bbfe46a93efbf"
+    "reviewRegistryDigest": "77be8f89953685d21010262f77080ad73105babc199c839657ae916dc6a3dbde"
   },
   "entryIds": [
     "craft-adapter"
   ],
   "configOverrides": [],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: the current fixed source d6f8f78ab88a has no common ancestor with the prior Catalog pin aaf9f035d7c0; independent source history remains external-only. manifest repository does not match the canonical GitHub repository manifest and GitHub repository license metadata conflict Node.js compatibility is not explicitly declared runtime artifact is missing from the distributable surface: dist/index.js runtime artifact is missing from the distributable surface: dist/index.d.ts local module is missing from the distributable surface: index.ts -> ./adapter-tools.ts",
+  "statusReason": "Automatic policy blocked installation: manifest repository does not match the canonical GitHub repository; manifest and GitHub repository license metadata conflict; Node.js compatibility is not explicitly declared; runtime artifact is missing from the distributable surface: dist/index.js; runtime artifact is missing from the distributable surface: dist/index.d.ts; local module is missing from the distributable surface: index.ts -> ./adapter-tools.ts; fixed-source scan is incomplete; unobserved capability signals are unknown",
   "compatibility": {
     "dsh": "*",
     "dshReleases": {
@@ -103,9 +103,6 @@
       "0.1.2-alpha.3": "unknown",
       "0.1.2-alpha.4": "unknown",
       "0.1.2-alpha.5": "unknown",
-      "0.2.2-alpha.2": "unknown",
-      "0.2.2-alpha.3": "unknown",
-      "0.2.2-rc.1": "unknown",
       "0.2.2-rc.2": "unknown",
       "0.2.2-rc.3": "unknown",
       "0.2.2-rc.4": "unknown"
@@ -159,24 +156,6 @@
         "uninstall": "unknown",
         "rollback": "unknown"
       },
-      "0.2.2-alpha.2": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.2.2-alpha.3": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.2.2-rc.1": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
       "0.2.2-rc.2": {
         "install": "unknown",
         "start": "unknown",
@@ -218,6 +197,6 @@
   },
   "risk": {
     "installScripts": [],
-    "review": "disconnected-history-external-only"
+    "review": "automatic-policy-blocked-not-installable"
   }
 }
