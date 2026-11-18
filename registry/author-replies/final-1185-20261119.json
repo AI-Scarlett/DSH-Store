@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "operation": "requested-author-reply",
+  "repository": "AI-Scarlett/DSH-Store",
+  "issueNumber": 1185,
+  "userId": 175226580,
+  "requestCommentId": 6736970862,
+  "requestBodySha256": "a496170ab3a23ad4260268d14e77eec2e53d3718ed4a8931963a7ad0db4d3738",
+  "requestUpdatedAt": "2026-11-09T09:45:27Z",
+  "review": {
+    "decision": "explicit-request-to-continue",
+    "requestQuote": "请继续复核固定源码",
+    "scope": "Provide one final, exact-Commit admission decision for the verified request; do not grant general future contact permission.",
+    "kind": "admission-recheck"
+  },
+  "responseBody": "正式准入结论：**准入**。我已完成对固定源码 **2.0.5 / bd08ad3f71e394bd5aa4f38c4d9cf3ddc89459b2** 的完整固定源复核。Catalog 条目 **math-research-dsh** 当前为 **approved**，更新策略为 **user-reviewed**；本结论仅适用于这个 Commit。\n\n扫描覆盖分发包内 150 个文件，其中 70 个代码/文本文件完整复核；未发现不支持文件、扫描预算缺口、安全规则告警、受保护 DSH 修改、动态加载、运行时依赖、安装钩子或原生可执行产物。权限仍按实际能力披露为写文件、任意网络和 Shell 命令，插件本身不收集或存储凭据；安装与后续更新继续走逐次风险审阅。\n\n官方 DSH 最新三版 0.2.2-rc.3、0.2.2-rc.4、0.2.2-rc.5 的兼容状态仍为 unknown。本次没有完成 DSH Store 安装/运行验收，也不代表独立安全审计；作者此前较早版本的 Profile 记录仍是作者自报证据。\n\n固定源码审查记录：https://github.com/AI-Scarlett/DSH-Store/blob/main/docs/reviews/author-feedback-1185-math-research-dsh-20261118.md",
+  "resolution": {
+    "path": "registry/author-resolutions.json",
+    "sha256": "cb5739cacd96ee548366a25b45144f3f3a5897ffb476f5d6f1681ee3e88982ad"
+  }
+}

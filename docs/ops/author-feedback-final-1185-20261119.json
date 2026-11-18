@@ -1,0 +1,64 @@
+{
+  "schemaVersion": 1,
+  "type": "author-feedback-resolution",
+  "planId": "author-feedback-final-1185-20261119",
+  "createdAt": "2026-11-18T21:22:32Z",
+  "baseCommit": "b9d8083e2abe9fffc5e268de16318d666fd0b7c0",
+  "scope": [
+    "registry/author-resolutions.json",
+    "registry/author-replies/final-1185-20261119.json",
+    "docs/ops/author-feedback-final-1185-20261119.json"
+  ],
+  "preconditions": {
+    "registry/author-resolutions.json": "a12074493d6b29fa2ca86be2f1e71f4f951f6777c016f0acfc1476210ca50228",
+    "registry/author-replies/final-1185-20261119.json": null,
+    "docs/ops/author-feedback-final-1185-20261119.json": null
+  },
+  "postconditions": {
+    "registry/author-resolutions.json": "cb5739cacd96ee548366a25b45144f3f3a5897ffb476f5d6f1681ee3e88982ad",
+    "registry/author-replies/final-1185-20261119.json": "203e701f25dda8d3598b8a9c504f1bf8434d430171505604a429b12583048e44"
+  },
+  "authorization": {
+    "source": "direct-user-request",
+    "request": "你都处理了 该回复回复 该更新更新；你直接去搞定，你就是我，你负责审查。",
+    "githubWriteCredential": "short-lived-token-required",
+    "scope": "Record and send one request-specific final admission decision for Issue #1185, user ID 175226580, comment 6736970862, and fixed Commit bd08ad3f71e394bd5aa4f38c4d9cf3ddc89459b2. The reply is permitted by the author’s exact continuation request and uses the central contact ledger CAS. No other author, issue, channel, Catalog entry, or future communication is authorized."
+  },
+  "evidence": {
+    "request": "https://github.com/AI-Scarlett/DSH-Store/issues/1185#issuecomment-6736970862",
+    "sourceCommit": "bd08ad3f71e394bd5aa4f38c4d9cf3ddc89459b2",
+    "sourceReview": "https://github.com/AI-Scarlett/DSH-Store/blob/main/docs/reviews/author-feedback-1185-math-research-dsh-20261118.md",
+    "admissionBinding": "5d054ed571df64cb967d17c4b4fee4ea8e0863e07c337bd1dfe0a1c3782e8df2",
+    "decision": "admitted",
+    "catalogId": "math-research-dsh",
+    "currentCatalogStatus": "approved",
+    "updatePolicy": "user-reviewed",
+    "latestDshWindow": {
+      "releases": [
+        "0.2.2-rc.3",
+        "0.2.2-rc.4",
+        "0.2.2-rc.5"
+      ],
+      "statuses": [
+        "unknown",
+        "unknown",
+        "unknown"
+      ]
+    }
+  },
+  "verification": {
+    "required": [
+      "verify-author-feedback-plan.mjs",
+      "npm run validate:registry",
+      "npm run check",
+      "verify exact live request before and after central-ledger CAS",
+      "one POST followed by exact readback"
+    ],
+    "status": "prepared-awaiting-CI-and-main-review"
+  },
+  "rollback": {
+    "type": "git-revert",
+    "baseCommit": "b9d8083e2abe9fffc5e268de16318d666fd0b7c0",
+    "description": "Before send, revert the reviewed resolution and reply plan through a CI-checked PR. After a ledger reservation or message attempt, preserve the reservation permanently; never reset or retry. No Catalog or DSH Profile mutation is included."
+  }
+}
