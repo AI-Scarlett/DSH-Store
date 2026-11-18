@@ -8,6 +8,9 @@ const root = new URL('../', import.meta.url)
 test('backend deployment includes the ranking module dependency in both setup paths', async () => {
   const setup = await readFile(new URL('deploy/setup-model-service.sh', root), 'utf8')
   const service = await readFile(new URL('scripts/serve-marketplace.mjs', root), 'utf8')
+  assert.match(setup, /EnvironmentFile=-\/etc\/dsh-store\/model-service\.env/)
+  assert.match(setup, /sudoedit \/etc\/dsh-store\/model-service\.env/)
+  assert.doesNotMatch(setup, /初始密码/)
   assert.match(service, /from '\.\.\/marketplace\/rankings\/model\.js'/)
 
   const stagedFiles = [

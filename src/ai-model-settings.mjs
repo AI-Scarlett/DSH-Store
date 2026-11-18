@@ -8,7 +8,7 @@ export const DEFAULT_CONFIG_PATH = process.env.MODEL_SETTINGS_CONFIG_PATH ? reso
 export const DEFAULT_KEY_PATH = process.env.MODEL_SETTINGS_KEY_PATH ? resolve(process.env.MODEL_SETTINGS_KEY_PATH) : resolve(projectRoot, ".local/model-settings.key")
 
 export const DEFAULT_ADMIN_USERNAME = process.env.DSH_ADMIN_USERNAME || 'admin'
-export const DEFAULT_ADMIN_PASSWORD = process.env.DSH_ADMIN_PASSWORD || 'dsh2026admin'
+export const DEFAULT_ADMIN_PASSWORD = process.env.DSH_ADMIN_PASSWORD || ''
 
 export const MODEL_PRESETS = [
   {
@@ -99,6 +99,7 @@ export const DEFAULT_PROMPT_SUGGESTIONS = [
 export function defaultSettings() {
   return {
     revision: 1,
+    adminCredentialVersion: 1,
     enabled: true,
     mode: 'model-first', // 'model-first' | 'rules-first'
     dailyLimit: 0, // 0 = 不限
@@ -200,7 +201,7 @@ export function hashPassword(password, salt = randomBytes(16).toString('hex')) {
 }
 
 export function verifyPassword(providedPassword, expectedHash) {
-  if (!expectedHash) return true // no password set yet
+  if (!expectedHash) return false
   if (!providedPassword || typeof providedPassword !== 'string') return false
   const stored = String(expectedHash).trim()
   if (!stored.startsWith('s1:')) return false
@@ -212,10 +213,12 @@ export function verifyPassword(providedPassword, expectedHash) {
   return timingSafeEqual(Buffer.from(computed), Buffer.from(expectedDigest))
 }
 
+const SESSION_TOKEN_VERSION = 'v2'
+
 export function generateSessionToken(username, secretKey) {
-  const payload = username + ':' + Date.now()
+  const payload = `${SESSION_TOKEN_VERSION}:${username}:${Date.now()}`
   const signature = createHmac('sha256', secretKey).update(payload).digest('hex')
-  return Buffer.from(payload + ':' + signature).toString('base64url')
+  return Buffer.from(`${payload}:${signature}`).toString('base64url')
 }
 
 export function verifySessionToken(token, secretKey, maxAgeMs = 7 * 24 * 3600 * 1000) {
@@ -223,12 +226,13 @@ export function verifySessionToken(token, secretKey, maxAgeMs = 7 * 24 * 3600 * 
   try {
     const raw = Buffer.from(token, 'base64url').toString('utf8')
     const parts = raw.split(':')
-    if (parts.length !== 3) return null
-    const [username, timestampStr, signature] = parts
+    if (parts.length !== 4) return null
+    const [version, username, timestampStr, signature] = parts
+    if (version !== SESSION_TOKEN_VERSION) return null
     const timestamp = Number(timestampStr)
     if (!Number.isFinite(timestamp)) return null
     if (Date.now() - timestamp > maxAgeMs || timestamp > Date.now() + 60000) return null
-    const payload = username + ':' + timestampStr
+    const payload = `${version}:${username}:${timestampStr}`
     const expectedSig = createHmac('sha256', secretKey).update(payload).digest('hex')
     if (signature.length !== expectedSig.length) return null
     if (!timingSafeEqual(Buffer.from(signature), Buffer.from(expectedSig))) return null
@@ -247,7 +251,16 @@ export async function loadModelSettings(configPath = DEFAULT_CONFIG_PATH) {
   try {
     const raw = await readFile(configPath, 'utf8')
     const parsed = JSON.parse(raw)
-    return { ...defaultSettings(), ...parsed }
+    const settings = { ...defaultSettings(), ...parsed }
+    if (parsed.adminCredentialVersion !== 1) {
+      // Old settings may contain the published bootstrap hash. Require an
+      // operator-provided secret during migration and never trust that hash.
+      settings.adminPasswordHash = hashPassword(DEFAULT_ADMIN_PASSWORD)
+      settings.adminCredentialVersion = 1
+    } else if (!settings.adminPasswordHash && DEFAULT_ADMIN_PASSWORD) {
+      settings.adminPasswordHash = hashPassword(DEFAULT_ADMIN_PASSWORD)
+    }
+    return settings
   } catch {
     return defaultSettings()
   }
@@ -333,6 +346,7 @@ export async function saveModelSettings(input, configPath = DEFAULT_CONFIG_PATH,
 
   const updated = {
     revision: (current.revision || 1) + 1,
+    adminCredentialVersion: 1,
     enabled: input.enabled !== false,
     mode: ['model-first', 'rules-first'].includes(input.mode) ? input.mode : current.mode,
     dailyLimit: Number.isInteger(input.dailyLimit) && input.dailyLimit >= 0 ? input.dailyLimit : current.dailyLimit,

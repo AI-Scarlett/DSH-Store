@@ -17,11 +17,19 @@ DSH STORE 是一个运行在 DeepSeek Harness（DSH）设置页中的第三方
 [目录准入规则](registry/README.md) ·
 [安全说明](SECURITY.md)
 
+### 管理后台凭据
+
+管理后台不再提供内置默认口令。部署脚本通过权限为 `0600` 的
+`/etc/dsh-store/model-service.env` 读取 `DSH_ADMIN_PASSWORD`；用 `sudoedit` 配置，
+不要把口令放进命令行、仓库、日志或 issue。升级旧配置时，旧的引导口令与已发放的旧版管理员会话都会失效；未配置环境口令时，首次部署和旧版配置迁移会保持锁定。已经设置过新管理员密码的配置仍可使用该密码登录。
+
 > **旧版更新安全修复：** 如果商城或其他插件更新出现
 > `ERR_PNPM_GIT_DEP_PREPARE_NOT_ALLOWED`，不要放开整个 Profile 的 `prepare` 权限，也不要手改
 > Profile。请通过[国内站](https://dsh-store.cn/repair/)或
 > [GitHub Pages](https://ai-scarlett.github.io/DSH-Store/marketplace/repair/)
 > 查看官方修复/升级方案；修复页只有在 Catalog 固定到包含修复器的完整 Commit 后才会生成命令。
+
+> **DSH Store 0.9.48 源码候选：**移除公开默认管理员口令，旧设置在首次升级时改用部署环境提供的口令或保持锁定，并使升级前签发的管理员会话失效。该版本尚待 CI、固定源码复审和 Catalog 流程确认。
 
 > **DSH Store 0.9.45 源码候选：**修复 Desktop「推荐榜」和「必装榜」读取失败（报 DESKTOP_RANKING_UNAVAILABLE_DESKTOP_RANKING_ENTRY_0_INVALID）的问题。此前榜单数据模型在 0.9.42 增加了 packageName 属性用于后台管理，但客户端校验白名单未同步收纳该字段，导致榜单首条条目即被拒绝。现已扩展桌面端白名单并接入 packageName 校验与展示。Catalog 固定版本仍为 0.9.44；真实 Desktop Profile 更新和 UI 验收尚未完成。
 

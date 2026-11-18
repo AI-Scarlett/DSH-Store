@@ -630,5 +630,8 @@ const server = createServer(async (request, response) => {
 server.listen(port, host, () => {
   console.log(`DSH plugin marketplace: http://${host}:${port}/marketplace/`)
   console.log(`DSH model admin portal: http://${host}:${port}/marketplace/admin/`)
+  if (!DEFAULT_ADMIN_PASSWORD) {
+    console.warn('DSH_ADMIN_PASSWORD is not configured; new installs and legacy settings remain locked. Existing configured admin password hashes still work.')
+  }
   console.log('Press Ctrl+C to stop.')
 })

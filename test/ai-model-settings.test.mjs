@@ -1,5 +1,6 @@
+import { createHmac } from 'node:crypto'
 import assert from 'node:assert/strict'
-import { mkdtemp, rm } from 'node:fs/promises'
+import { mkdtemp, rm, writeFile } from 'node:fs/promises'
 import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import test from 'node:test'
@@ -39,7 +40,56 @@ test('Admin password hashing and verification', () => {
   assert.equal(verifyPassword('my-admin-password', hash), true)
   assert.equal(verifyPassword('wrong-password', hash), false)
   assert.equal(verifyPassword('', hash), false)
-  assert.equal(verifyPassword('my-admin-password', ''), true)
+  assert.equal(verifyPassword('my-admin-password', ''), false)
+})
+
+test('legacy settings require an explicit password and fail closed without it', async () => {
+  const dir = await mkdtemp(fileURLToPath(new URL('.tmp-ai-credential-migration-', root)))
+  const original = process.env.DSH_ADMIN_PASSWORD
+  process.env.DSH_ADMIN_PASSWORD = ''
+  try {
+    const isolated = await import(`../src/ai-model-settings.mjs?credential-migration=${Date.now()}-${Math.random()}`)
+    const configPath = join(dir, 'legacy-settings.json')
+    await writeFile(configPath, JSON.stringify({
+      revision: 2,
+      adminUsername: 'admin',
+      adminPasswordHash: isolated.hashPassword('legacy-fixture-password'),
+    }))
+
+    const settings = await isolated.loadModelSettings(configPath)
+    assert.equal(settings.adminCredentialVersion, 1)
+    assert.equal(settings.adminPasswordHash, '')
+    assert.equal(isolated.verifyPassword('legacy-fixture-password', settings.adminPasswordHash), false)
+    assert.equal(isolated.verifyPassword('anything', ''), false)
+  } finally {
+    if (original === undefined) delete process.env.DSH_ADMIN_PASSWORD
+    else process.env.DSH_ADMIN_PASSWORD = original
+    await rm(dir, { recursive: true, force: true })
+  }
+})
+
+test('legacy settings migrate to an operator-provided bootstrap password', async () => {
+  const dir = await mkdtemp(fileURLToPath(new URL('.tmp-ai-credential-migration-', root)))
+  const original = process.env.DSH_ADMIN_PASSWORD
+  process.env.DSH_ADMIN_PASSWORD = 'fixture-bootstrap-password'
+  try {
+    const isolated = await import(`../src/ai-model-settings.mjs?credential-configured=${Date.now()}-${Math.random()}`)
+    const configPath = join(dir, 'legacy-settings.json')
+    await writeFile(configPath, JSON.stringify({
+      revision: 2,
+      adminUsername: 'admin',
+      adminPasswordHash: isolated.hashPassword('legacy-fixture-password'),
+    }))
+
+    const settings = await isolated.loadModelSettings(configPath)
+    assert.equal(settings.adminCredentialVersion, 1)
+    assert.equal(isolated.verifyPassword('legacy-fixture-password', settings.adminPasswordHash), false)
+    assert.equal(isolated.verifyPassword('fixture-bootstrap-password', settings.adminPasswordHash), true)
+  } finally {
+    if (original === undefined) delete process.env.DSH_ADMIN_PASSWORD
+    else process.env.DSH_ADMIN_PASSWORD = original
+    await rm(dir, { recursive: true, force: true })
+  }
 })
 
 test('Session token generation and verification', () => {
@@ -47,10 +97,16 @@ test('Session token generation and verification', () => {
   const token = generateSessionToken('admin', secretKey)
   assert.ok(typeof token === 'string' && token.length > 20)
 
+  const decoded = Buffer.from(token, 'base64url').toString('utf8')
+  assert.match(decoded, /^v2:admin:/)
   const verified = verifySessionToken(token, secretKey)
   assert.equal(verified?.username, 'admin')
   assert.ok(typeof verified?.timestamp === 'number')
 
+  const legacyPayload = `admin:${Date.now()}`
+  const legacySignature = createHmac('sha256', secretKey).update(legacyPayload).digest('hex')
+  const legacyToken = Buffer.from(`${legacyPayload}:${legacySignature}`).toString('base64url')
+  assert.equal(verifySessionToken(legacyToken, secretKey), null)
   assert.equal(verifySessionToken('invalid-token', secretKey), null)
   assert.equal(verifySessionToken(token, Buffer.from('wrongkeywrongkeywrongkeywrongkey')), null)
 })
