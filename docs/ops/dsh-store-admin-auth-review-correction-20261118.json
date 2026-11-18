@@ -1,0 +1,46 @@
+{
+  "schemaVersion": 1,
+  "type": "owner-directed-review-correction",
+  "planId": "dsh-store-admin-auth-review-correction-20261118",
+  "createdAt": "2026-11-18T15:41:05Z",
+  "baseCommit": "932e1a8d5dba7c1328783a5124baf6644d37e027",
+  "artifactPath": "docs/ops/dsh-store-admin-auth-review-correction-20261118.json",
+  "fileScope": {
+    "modify": [
+      "README.md",
+      "docs/ops/dsh-store-admin-auth-remediation-20261118.json"
+    ],
+    "add": []
+  },
+  "preconditionsSha256": {
+    "README.md": "cb01f4383772240927e52d29c35730f4df55c31888e16c8ac1444265a85e1ced",
+    "docs/ops/dsh-store-admin-auth-remediation-20261118.json": "6a5d9b3692150a2a0ddadd8a87f9da5e1fd0040ff0b7b66a861adc61ec8c0884"
+  },
+  "postconditionsSha256": {
+    "README.md": "798edc1cfd52f0704378d0663eea2dd9e587eefb25c002c27067ae6ba4e2d0f4",
+    "docs/ops/dsh-store-admin-auth-remediation-20261118.json": "b16e271364a6e6fb18f5e0c3b5aaae35547aea2718f8e8964b409af4ecc1d0a1"
+  },
+  "change": {
+    "summary": "Clarify that only settings marked adminCredentialVersion=1 retain their password hash; all unversioned legacy settings are replaced with the operator-provided DSH_ADMIN_PASSWORD or remain locked.",
+    "runtimeBehaviorChanged": false,
+    "authorContact": false,
+    "productionDeployment": false,
+    "realDshProfile": "untouched"
+  },
+  "verification": {
+    "required": [
+      "npm run check",
+      "git diff --check",
+      "precondition and postcondition SHA-256 comparison"
+    ],
+    "status": "passed",
+    "npmRunCheck": "passed: REGISTRY_OK entries=914; 681 tests passed, 0 failed",
+    "gitDiffCheck": "passed",
+    "planHashCheck": "passed"
+  },
+  "recovery": {
+    "type": "git-revert",
+    "description": "Revert the review-correction commit; it changes only documentation and its machine-readable evidence."
+  },
+  "status": "verified-pending-pr"
+}

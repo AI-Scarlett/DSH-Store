@@ -21,7 +21,7 @@ DSH STORE 是一个运行在 DeepSeek Harness（DSH）设置页中的第三方
 
 管理后台不再提供内置默认口令。部署脚本通过权限为 `0600` 的
 `/etc/dsh-store/model-service.env` 读取 `DSH_ADMIN_PASSWORD`；用 `sudoedit` 配置，
-不要把口令放进命令行、仓库、日志或 issue。升级旧配置时，旧的引导口令与已发放的旧版管理员会话都会失效；未配置环境口令时，首次部署和旧版配置迁移会保持锁定。已经设置过新管理员密码的配置仍可使用该密码登录。
+不要把口令放进命令行、仓库、日志或 issue。升级旧配置时，旧配置中的管理员密码哈希与旧版会话都会失效；若未配置环境口令，首次部署和旧配置迁移会保持锁定。已带 `adminCredentialVersion: 1` 的配置保留当前管理员密码；旧版本尚未带此标记，因此升级前请在环境文件中设置 `DSH_ADMIN_PASSWORD`。
 
 > **旧版更新安全修复：** 如果商城或其他插件更新出现
 > `ERR_PNPM_GIT_DEP_PREPARE_NOT_ALLOWED`，不要放开整个 Profile 的 `prepare` 权限，也不要手改
