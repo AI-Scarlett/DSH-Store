@@ -193,6 +193,24 @@ test('bounded Lean templates, hash manifests, and gitkeep markers are scanned as
   assert.equal(nonempty.signals.network, true)
 })
 
+test('bounded CSV and TeX templates are scanned and TeX execution primitives remain visible', async () => {
+  const files = {
+    ...sources,
+    'assets/evidence_inventory.csv': 'result_id,title,scope\n',
+    'assets/paper-analysis.template.tex': '\\input{local-macros.tex}\n\\begin{document}Example\\end{document}',
+    'assets/proof-paper.template.tex': '% \\write18{comment-only}\n\\immediate\\write18{touch output.pdf}',
+  }
+  const reviewManifest = { ...manifest, files: ['**'] }
+  const result = await review(files, reviewManifest, treeOf(files))
+  assert.equal(result.scanComplete, true)
+  assert.equal(result.signals.files, true)
+  assert.equal(result.signals.commands, true)
+  for (const path of Object.keys(files).filter(path => /\.(?:csv|tex)$/i.test(path))) {
+    assert.ok(result.reads.includes(path))
+    assert.equal(unsupportedPackageEntry({ relativePath: path, type: 'blob', mode: '100644' }), false)
+  }
+})
+
 test('only the canonical Store excludes generated registry data from executable-source signals', async () => {
   const files = {
     ...sources,

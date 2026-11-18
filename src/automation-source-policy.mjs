@@ -262,20 +262,32 @@ export function permissionSignals(source, relativePath = '') {
   const text = String(source ?? '')
   const useJavaScriptLexer = !relativePath || JAVASCRIPT_SOURCE.test(relativePath)
   const code = useJavaScriptLexer ? javascriptCode(text) : text
+  const isTex = /\.tex$/i.test(relativePath)
+  const texCode = isTex ? text.split(/\r?\n/).map(line => {
+    for (let index = 0; index < line.length; index += 1) {
+      if (line[index] !== '%') continue
+      let backslashes = 0
+      for (let cursor = index - 1; cursor >= 0 && line[cursor] === '\\'; cursor -= 1) backslashes += 1
+      if (backslashes % 2 === 0) return line.slice(0, index)
+    }
+    return line
+  }).join('\n') : ''
   const moduleSignal = (pattern) => useJavaScriptLexer
     ? hasCodeMatch(pattern, text, code)
     : pattern.test(text)
   return {
     files: moduleSignal(FILE_MODULE)
       || /\b(?:readFile|writeFile|appendFile|rename|unlink|mkdir|rmdir|rm)\s*\(/i.test(code)
-      || /\bprocess\s*\.\s*env\s*\.\s*DSH_HOME\b/i.test(code),
+      || /\bprocess\s*\.\s*env\s*\.\s*DSH_HOME\b/i.test(code)
+      || (isTex && /\\(?:openin|openout|read|input|include|includegraphics|bibliography|addbibresource)\b/i.test(texCode)),
     network: moduleSignal(NETWORK_MODULE)
       || /\b(?:fetch|WebSocket|EventSource)\s*\(/i.test(code)
       || /\b(?:axios|got|undici)\s*(?:\.|\()/i.test(code)
       || browserScriptSignals(text, relativePath).network,
     commands: moduleSignal(COMMAND_MODULE)
       || COMMAND_CALL.test(code)
-      || /shell\s*:\s*true|Bun\.spawn|new\s+Deno\.Command/i.test(code),
+      || /shell\s*:\s*true|Bun\.spawn|new\s+Deno\.Command/i.test(code)
+      || (isTex && /\\(?:write18|immediate\s*\\write18|directlua|latelua)\b/i.test(texCode)),
     credentials: /process\s*\.\s*env(?!\s*(?:\.\s*(?:DSH_HOME|HOME|USERPROFILE|PATH|NODE_ENV|LANG)\b|\[\s*['\"](?:DSH_HOME|HOME|USERPROFILE|PATH|NODE_ENV|LANG)['\"]\s*\]))/i.test(code)
       || /\b(?:keychain|credentials?|oauth)\b\s*(?:\.|\[|\()/i.test(code)
       || /\b(?:api[_-]?key|apiKey|access[_-]?token|accessToken|client[_-]?secret|clientSecret|password)\b/i.test(code),
