@@ -657,6 +657,7 @@ async function inspectManualReviewedFixedSourceUpdate(catalog, policy, github, o
     timeoutMs: 12_000,
     fetch: github.fetch,
     fixedCommit: source.commit,
+    allowProtectedManager: isSelfManagerEntry(entry),
   }))
   const candidate = checked.candidate
   if (candidate.repositoryUrl !== source.repositoryUrl || candidate.commit !== source.commit
