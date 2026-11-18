@@ -24,24 +24,24 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "a9593926d72f65b343bf66bb389f41cf2fffa66e",
-  "version": "0.1.5",
+  "commit": "677790112a513d8ecb73432842d0c3e0cab6f33b",
+  "version": "0.1.9",
   "categories": [
     "tools"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-09-10T18:48:08.000Z",
-    "observedAt": "2026-10-17T01:45:36.000Z",
+    "updatedAt": "2026-11-18T02:31:48.000Z",
+    "observedAt": "2026-11-18T12:19:36.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-update-v3",
-      "checkedAt": "2026-10-17T01:45:36.000Z",
-      "evidenceUrl": "https://github.com/gongyijie85/dsh-repo-setup/commit/a9593926d72f65b343bf66bb389f41cf2fffa66e",
+      "method": "automated-fixed-source-recheck-v1",
+      "checkedAt": "2026-11-18T12:19:36.000Z",
+      "evidenceUrl": "https://github.com/gongyijie85/dsh-repo-setup/commit/677790112a513d8ecb73432842d0c3e0cab6f33b",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -80,14 +80,14 @@
   },
   "admission": {
     "engine": "bounded-source-v3",
-    "binding": "4b7129941494bbc5b7b6e667c6bb14ab95c1329e9f6bf75c7deeb73a99b375f8",
+    "binding": "98bfad46e5683737191b86e4af8ecaf15e19fdd2a8f9e0191ceb4b708fa32c96",
     "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
     "state": "review-required",
     "sourceContract": "unverified",
     "coverage": "complete",
     "capabilities": "review-required",
     "compatibility": "per-version-declaration",
-    "reviewRegistryDigest": "d23b593eac9261fdbb9de78d469344a9cf81e42ddc9402ad3cbf627b8940b138"
+    "reviewRegistryDigest": "77be8f89953685d21010262f77080ad73105babc199c839657ae916dc6a3dbde"
   },
   "entryIds": [
     "dsh-repo-setup"
@@ -96,7 +96,7 @@
   "status": "blocked",
   "statusReason": "Automatic policy blocked installation: Node.js compatibility is not explicitly declared; runtime source contains the files permission signal",
   "compatibility": {
-    "dsh": ">=0.1.0-rc.6",
+    "dsh": ">=0.1.0-rc.6 <0.3.0",
     "dshReleases": {
       "rc.7": "compatible",
       "rc.8": "compatible",
@@ -118,19 +118,13 @@
       "0.1.5-alpha.2": "compatible",
       "0.1.5-rc.1": "compatible",
       "0.1.5-rc.2": "compatible",
-      "0.2.1-alpha.3": "unknown",
-      "0.2.1-alpha.4": "unknown",
-      "0.2.1-alpha.5": "unknown",
-      "0.2.1-rc.1": "unknown",
-      "0.2.1-rc.2": "unknown",
-      "0.2.1-rc.3": "unknown",
-      "0.2.1-rc.4": "unknown",
-      "0.2.2-alpha.2": "unknown",
-      "0.2.1-rc.5": "unknown",
-      "0.2.2-alpha.3": "unknown",
-      "0.2.2-rc.1": "unknown",
+      "0.2.0-rc.1": "compatible",
+      "0.2.1-rc.2": "compatible",
+      "0.2.1-rc.3": "compatible",
+      "0.2.1-rc.4": "compatible",
+      "0.2.1-rc.5": "compatible",
+      "0.2.2-rc.3": "compatible",
       "0.2.2-rc.2": "unknown",
-      "0.2.2-rc.3": "unknown",
       "0.2.2-rc.4": "unknown"
     },
     "dshOperations": {
@@ -254,25 +248,7 @@
         "uninstall": "unknown",
         "rollback": "unknown"
       },
-      "0.2.1-alpha.3": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.2.1-alpha.4": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.2.1-alpha.5": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.2.1-rc.1": {
+      "0.2.0-rc.1": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",
@@ -296,37 +272,19 @@
         "uninstall": "unknown",
         "rollback": "unknown"
       },
-      "0.2.2-alpha.2": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
       "0.2.1-rc.5": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",
         "rollback": "unknown"
       },
-      "0.2.2-alpha.3": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.2.2-rc.1": {
+      "0.2.2-rc.3": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",
         "rollback": "unknown"
       },
       "0.2.2-rc.2": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.2.2-rc.3": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",
