@@ -1,0 +1,61 @@
+{
+  "schemaVersion": 1,
+  "type": "author-feedback-review-policy-repair",
+  "planId": "dsh-author-feedback-review-policy-20261118",
+  "createdAt": "2026-11-18T03:46:07Z",
+  "authorization": {
+    "request": "你都处理了 该回复回复 该更新更新",
+    "scope": "Repair the fixed-source review lifecycle and bounded text coverage, then use CI-checked PR review. No author message, contact reservation, Catalog content change, or third-party code execution in this plan."
+  },
+  "baseCommit": "db189582fcf75a7a1d38585bd4b624e3cba9ae03",
+  "fileScope": {
+    "modify": [
+      "scripts/automate-catalog.mjs",
+      "src/catalog-update-review.mjs",
+      "src/package-source-surface.mjs",
+      "test/catalog-update-review.test.mjs",
+      "test/package-source-surface.test.mjs"
+    ],
+    "add": [
+      "docs/ops/fixed-source-review-policy-plan-20261118.json"
+    ]
+  },
+  "preconditions": {
+    "absent": [
+      "docs/ops/fixed-source-review-policy-plan-20261118.json"
+    ],
+    "sha256": {
+      "scripts/automate-catalog.mjs": "e59c28d03b07a02bc476df1f69d07f39b3e732b60acb2a97bc6b9af8262e20df",
+      "src/catalog-update-review.mjs": "563fcc7c87bdb9247735a9a2baee0a7e059510871b09336272049cc8decacaa4",
+      "src/package-source-surface.mjs": "8187d628f40f1565bd084fb5ce25d8262564cd08c2b91838e1024db1519a5a5f",
+      "test/catalog-update-review.test.mjs": "f08b6624e5bad082a7d294f7f69f6e6fc36ed08027543242dbf7525b5f958fdf",
+      "test/package-source-surface.test.mjs": "1ec234f3f2f68754b842390e907d5f8e7b3560117cd7b9317940a5a64984adaf"
+    }
+  },
+  "postconditions": {
+    "sha256": {
+      "scripts/automate-catalog.mjs": "4f82b96ca075729a80af7e6f8d0cf59b6c87a8c41ba99d56e7f64f7809e1dea7",
+      "src/catalog-update-review.mjs": "408ea198bfaa8d327446deffd716094c5209f339a06204b86f9d4a68cdb6bd26",
+      "src/package-source-surface.mjs": "3b809a867ff8beb4dad6d61abf18d8c79fa00294c753d194935ce5ebc3b2264c",
+      "test/catalog-update-review.test.mjs": "fc99bf7b3bcbe3443a55e20c72f5b5cacf59c80ca09f8e2fe861ac560f7409ee",
+      "test/package-source-surface.test.mjs": "c0d394ae00a1a9e22d1197dfd101965bcb3bd259d4299d1481973a5c3bafae9f"
+    }
+  },
+  "implementation": [
+    "Treat a changed full fixed Commit as a new admission decision so prior manual approvals or rejections cannot silently follow the source.",
+    "Recheck entries whose admission engine, policy digest, or review-registry digest is stale, and persist a refreshed binding even when the displayed status is unchanged.",
+    "Include bounded Lean source/templates, MANIFEST.sha256, and .gitkeep text files in fixed-source scan coverage."
+  ],
+  "gates": {
+    "npmRunCheck": "An initial full run passed 670 tests before the final exact-Commit recheck helper. The final full rerun was stopped by ENOSPC in a Marketplace static-build fixture; final focused tests passed 38/38. Full PR CI must pass before merge.",
+    "gitDiffCheck": "passed",
+    "fixedSourceScope": "No third-party source was executed or installed.",
+    "pr": "CI-checked auditable PR required before main changes."
+  },
+  "rollback": {
+    "type": "git-revert",
+    "baseCommit": "db189582fcf75a7a1d38585bd4b624e3cba9ae03",
+    "description": "Revert the scoped policy PR; no author-contact state or published Catalog content is changed by this plan."
+  },
+  "status": "local_focused_verified_pending_full_ci"
+}

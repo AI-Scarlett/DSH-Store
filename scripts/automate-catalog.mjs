@@ -16,6 +16,7 @@ import {
   assessUpstreamVersion,
   isAutomaticPolicyBlocked,
   isPendingAutomaticPolicyRecheck,
+  admissionReviewRegistryStaleForEntry,
   refreshAutomaticPolicyReview,
   buildCatalogVersionUpdate,
   catalogChangeReviewContract,
@@ -546,8 +547,15 @@ async function updateExistingEntries(catalog, policy, github, observedAt, report
       snapshot = await sourceSnapshot(entry)
       if (snapshot.blockedAuthor === true) return { index, entry, kind: 'blocked-author', ownerUserId: snapshot.ownerUserId }
       const pendingMigration = catalogMigrationTarget(entry, snapshot, catalogMigrations).record
+      const currentPolicyDigest = sha256(JSON.stringify({ sourceBounds: policy.sourceBounds, automaticApproval: policy.automaticApproval }))
+      const admissionAuthorityStale = entry.admission && (
+        entry.admission.engine !== SCAN_POLICY_VERSION
+        || admissionReviewRegistryStaleForEntry(entry, admissionReviews.reviews, admissionReviewDigest)
+        || entry.admission.policyDigest !== currentPolicyDigest
+      )
       const policyReviewStale = entry.status === 'approved'
         || isAutomaticPolicyBlocked(entry)
+        || admissionAuthorityStale
         || String(entry.statusReason ?? '').startsWith('DSH_LATEST_THREE_COMPATIBILITY_HOLD:')
       const recheckCurrent = snapshot.commit === entry.commit && (pendingMigration !== null
         || isPendingAutomaticPolicyRecheck(entry)
@@ -638,7 +646,8 @@ async function updateExistingEntries(catalog, policy, github, observedAt, report
       }
       // Avoid daily source rechecks rewriting identical unresolved records.
       if (recheckCurrent && reviewed.status === entry.status && reviewed.statusReason === entry.statusReason
-        && JSON.stringify(reviewed.details) === JSON.stringify(entry.details)) return { index, entry, kind: 'current' }
+        && JSON.stringify(reviewed.details) === JSON.stringify(entry.details)
+        && JSON.stringify(reviewed.admission) === JSON.stringify(entry.admission)) return { index, entry, kind: 'current' }
       const updated = buildCatalogVersionUpdate(reviewed, candidate, {
         ...analysis,
         sourceUpdatedAt: snapshot.sourceUpdatedAt ?? analysis.sourceUpdatedAt,

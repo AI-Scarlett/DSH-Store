@@ -261,11 +261,29 @@ export function isPendingAutomaticPolicyRecheck(entry) {
     && String(entry.statusReason ?? '').startsWith('Fixed-source recheck blocked installation:')
 }
 
+export function admissionReviewRegistryStaleForEntry(entry, reviews, registryDigest) {
+  if (!entry?.admission || !Array.isArray(reviews) || typeof registryDigest !== 'string'
+    || entry.admission.reviewRegistryDigest === registryDigest) return false
+  const repositoryUrl = String(entry.repositoryUrl ?? '').toLowerCase()
+  const commit = String(entry.commit ?? '').toLowerCase()
+  return /^[0-9a-f]{40}$/.test(commit) && reviews.some(review =>
+    String(review?.repositoryUrl ?? '').toLowerCase() === repositoryUrl
+      && String(review?.commit ?? '').toLowerCase() === commit)
+}
+
 export function refreshAutomaticPolicyReview(entry, reviewed) {
   const disconnectedHistory = entry.status === 'blocked'
     && entry.updatePolicy === 'external-only'
     && entry.risk?.review === 'disconnected-history-external-only'
-  if (entry.status !== 'approved' && !isAutomaticPolicyBlocked(entry) && !isRefreshableAutomaticReview(entry)
+  const reviewedCommit = String(reviewed?.commit ?? '').toLowerCase()
+  const fixedSourceChanged = COMMIT_SHA.test(reviewedCommit) && reviewedCommit !== String(entry.commit ?? '').toLowerCase()
+  const admissionReviewChanged = entry.admission && (
+    reviewed?.admission?.engine !== entry.admission.engine
+    || reviewed?.admission?.policyDigest !== entry.admission.policyDigest
+    || reviewed?.admission?.reviewRegistryDigest !== entry.admission.reviewRegistryDigest
+  )
+  if (!fixedSourceChanged && !admissionReviewChanged
+    && entry.status !== 'approved' && !isAutomaticPolicyBlocked(entry) && !isRefreshableAutomaticReview(entry)
     && !disconnectedHistory && !String(entry.statusReason ?? '').startsWith(COMPATIBILITY_HOLD_PREFIX)) return entry
   if (!reviewed || reviewed.commit !== entry.commit && !/^[0-9a-f]{40}$/.test(reviewed.commit ?? '')) throw new Error('reviewed fixed Commit is required')
   if (reviewed.assurance?.discovery?.method !== 'automated-fixed-source-policy-v1') throw new Error('complete automatic source review is required')

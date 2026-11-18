@@ -2,6 +2,7 @@ import assert from 'node:assert/strict'
 import test from 'node:test'
 import {
   assessUpstreamVersion,
+  admissionReviewRegistryStaleForEntry,
   buildCatalogVersionUpdate,
   catalogChangeReviewContract,
   catalogUpdateIdentityMatches,
@@ -315,6 +316,72 @@ test('a complete automatic scan refreshes review-required fixed-source decisions
   }
 
   assert.equal(refreshAutomaticPolicyReview(previous, reviewed).admission.binding, 'new-binding')
+})
+
+test('a new fixed Commit replaces the prior manual rejection with the current source decision', async () => {
+  const { refreshAutomaticPolicyReview } = await import('../src/catalog-update-review.mjs')
+  const previous = entry({
+    commit: 'a'.repeat(40),
+    status: 'blocked',
+    statusReason: 'FIXED_SOURCE_REVIEW_REJECTED: old fixed source had an unsafe trust boundary',
+    updatePolicy: 'external-only',
+    risk: { review: 'manual-rejection', installScripts: [] },
+    admission: { state: 'rejected', binding: 'old-binding', reviewRegistryDigest: 'old-registry' },
+  })
+  const reviewed = {
+    ...previous,
+    commit: 'b'.repeat(40),
+    status: 'blocked',
+    statusReason: 'Fixed-source recheck blocked installation: current source requires review',
+    updatePolicy: 'external-only',
+    risk: { review: 'automatic-policy-blocked-not-installable', installScripts: [] },
+    admission: { state: 'review-required', binding: 'new-binding', reviewRegistryDigest: 'new-registry' },
+    assurance: { discovery: { method: 'automated-fixed-source-policy-v1' } },
+  }
+
+  const refreshed = refreshAutomaticPolicyReview(previous, reviewed)
+  assert.equal(refreshed.commit, 'b'.repeat(40))
+  assert.equal(refreshed.admission.state, 'review-required')
+  assert.equal(refreshed.admission.binding, 'new-binding')
+  assert.match(refreshed.statusReason, /current source/)
+  assert.equal(refreshAutomaticPolicyReview(previous, {
+    ...reviewed,
+    commit: previous.commit,
+    admission: { ...reviewed.admission, reviewRegistryDigest: previous.admission.reviewRegistryDigest },
+  }), previous, 'an unchanged fixed-source decision does not erase a manual terminal state')
+})
+
+test('a new admission-review registry digest refreshes a manual decision for the same fixed Commit', async () => {
+  const { refreshAutomaticPolicyReview } = await import('../src/catalog-update-review.mjs')
+  const previous = entry({
+    status: 'blocked',
+    statusReason: 'FIXED_SOURCE_REVIEW_REJECTED: prior decision for this source',
+    updatePolicy: 'external-only',
+    risk: { review: 'manual-rejection', installScripts: [] },
+    admission: { state: 'rejected', binding: 'same-source-binding', reviewRegistryDigest: 'old-registry' },
+  })
+  const reviewed = {
+    ...previous,
+    statusReason: 'Fixed-source recheck blocked installation: current manual verdict',
+    admission: { state: 'reviewed', binding: 'same-source-binding', reviewRegistryDigest: 'new-registry' },
+    assurance: { discovery: { method: 'automated-fixed-source-policy-v1' } },
+  }
+
+  const refreshed = refreshAutomaticPolicyReview(previous, reviewed)
+  assert.equal(refreshed.admission.state, 'reviewed')
+  assert.equal(refreshed.admission.reviewRegistryDigest, 'new-registry')
+})
+
+test('a changed admission-review registry triggers only the matching fixed Commit recheck', () => {
+  const original = entry({
+    status: 'blocked',
+    admission: { state: 'rejected', reviewRegistryDigest: 'old-registry' },
+  })
+  const record = { repositoryUrl: original.repositoryUrl.toUpperCase(), commit: original.commit.toUpperCase() }
+  assert.equal(admissionReviewRegistryStaleForEntry(original, [record], 'new-registry'), true)
+  assert.equal(admissionReviewRegistryStaleForEntry(original, [{ ...record, commit: 'b'.repeat(40) }], 'new-registry'), false)
+  assert.equal(admissionReviewRegistryStaleForEntry(original, [record], 'old-registry'), false)
+  assert.equal(admissionReviewRegistryStaleForEntry({ ...original, admission: undefined }, [record], 'new-registry'), false)
 })
 
 test('a stale review-required fixed-source decision is selected for one automatic recheck', async () => {

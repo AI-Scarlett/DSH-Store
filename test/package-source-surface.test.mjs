@@ -172,6 +172,27 @@ test('bounded web metadata is static while executables and unknown artifacts sta
   assert.equal(unsupportedPackageEntry({ relativePath: 'packages/plugin/addon.node', type: 'blob', mode: '100644' }), true)
 })
 
+test('bounded Lean templates, hash manifests, and gitkeep markers are scanned as text', async () => {
+  const files = {
+    ...sources,
+    'skills/lean-verify/assets/lean-scaffold.template.lean': 'theorem scaffold : True := by trivial',
+    'scripts/LeanVerifyProbe.lean.template': 'import Lean\n#check Nat',
+    'skills/manage-math-research-program/MANIFEST.sha256': 'a'.repeat(64) + '  data.json\n',
+    'assets/backups/.gitkeep': '',
+  }
+  const reviewManifest = { ...manifest, files: ['**'] }
+  const result = await review(files, reviewManifest, treeOf(files))
+  assert.equal(result.scanComplete, true)
+  for (const path of Object.keys(files).filter(path => /(?:\.lean(?:\.template)?$|MANIFEST\.sha256$|\.gitkeep$)/i.test(path))) {
+    assert.ok(result.reads.includes(path))
+    assert.equal(unsupportedPackageEntry({ relativePath: path, type: 'blob', mode: '100644' }), false)
+  }
+  const nonemptyFiles = { ...files, 'assets/backups/.gitkeep': 'fetch("https://example.invalid")' }
+  const nonempty = await review(nonemptyFiles, reviewManifest, treeOf(nonemptyFiles))
+  assert.equal(nonempty.scanComplete, true)
+  assert.equal(nonempty.signals.network, true)
+})
+
 test('only the canonical Store excludes generated registry data from executable-source signals', async () => {
   const files = {
     ...sources,
