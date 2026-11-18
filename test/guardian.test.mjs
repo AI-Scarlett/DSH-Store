@@ -703,3 +703,65 @@ test('owned Guardian exchanges official 303 launch token and never writes the co
     assert.doesNotMatch(JSON.stringify(states),/fixture-secret|fixture-launch/)
   } finally { controller.abort(); await new Promise(done=>server.close(done)); await rm(root,{recursive:true,force:true}) }
 })
+
+// The DSH desktop host supplies its own Electron executable as the runtime to
+// relaunch. launchd does not inherit the host environment, so invoking that
+// executable without ELECTRON_RUN_AS_NODE starts the GUI application instead of
+// running the daemon script, and the install fails with GUARDIAN_BOOTSTRAP_UNVERIFIED.
+test('an Electron runtime is put into Node mode by the generated launchd plist', async () => {
+  const root = await mkdtemp(join(tmpdir(), 'dsh-guardian-'))
+  try {
+    const launchAgentsDir = join(root, 'LaunchAgents'); const daemonSource = join(root, 'daemon.mjs')
+    await mkdir(launchAgentsDir); await writeFile(daemonSource, 'export {}\n')
+    const electronPath = '/Applications/DeepSeek Harness.app/Contents/MacOS/DeepSeek Harness'
+    const service = createGuardianService({
+      dshHome: root, launchAgentsDir, daemonSource, allowNonDarwin: true,
+      restartSpec: profile => ({ nodePath: electronPath, runtimeArgs: [], cliPath: '/dsh.js', cwd: '/repo', profile, commandPath: '/usr/bin:/bin' }),
+      execFile: async (_file, args) => {
+        if (args[0] === 'bootstrap') {
+          await mkdir(join(root, 'dsh-safe-plugin-manager', 'guardian'), { recursive: true })
+          await writeFile(join(root, 'dsh-safe-plugin-manager', 'guardian', 'status.json'), JSON.stringify({
+            schemaVersion: 1, installed: true, available: false, state: 'external-dsh-detected',
+            heartbeatAt: new Date().toISOString(), profile: 'web', owner: 'external',
+          }))
+        }
+        if (args[0] === 'print') return { stdout: 'pid = 7101\n' }
+      },
+      schedule: () => {},
+    })
+    const plan = await service.createInstallPlan({ profile: 'web' })
+    await service.executeInstall({ planId: plan.planId, confirmation: plan.confirmation })
+    const plist = await readFile(join(launchAgentsDir, 'com.ai-scarlett.dsh-guardian.plist'), 'utf8')
+    assert.match(plist, /<key>EnvironmentVariables<\/key><dict><key>ELECTRON_RUN_AS_NODE<\/key><string>1<\/string><\/dict>/)
+    // The signature of the executable path must stay intact.
+    assert.match(plist, new RegExp(`<string>${electronPath.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}</string>`))
+  } finally { await rm(root, { recursive: true, force: true }) }
+})
+
+test('a plain Node runtime plist stays free of Electron-only environment keys', async () => {
+  const root = await mkdtemp(join(tmpdir(), 'dsh-guardian-'))
+  try {
+    const launchAgentsDir = join(root, 'LaunchAgents'); const daemonSource = join(root, 'daemon.mjs')
+    await mkdir(launchAgentsDir); await writeFile(daemonSource, 'export {}\n')
+    const service = createGuardianService({
+      dshHome: root, launchAgentsDir, daemonSource, allowNonDarwin: true,
+      restartSpec: profile => ({ nodePath: '/usr/local/bin/node', runtimeArgs: [], cliPath: '/dsh.js', cwd: '/repo', profile, commandPath: '/usr/bin:/bin' }),
+      execFile: async (_file, args) => {
+        if (args[0] === 'bootstrap') {
+          await mkdir(join(root, 'dsh-safe-plugin-manager', 'guardian'), { recursive: true })
+          await writeFile(join(root, 'dsh-safe-plugin-manager', 'guardian', 'status.json'), JSON.stringify({
+            schemaVersion: 1, installed: true, available: false, state: 'external-dsh-detected',
+            heartbeatAt: new Date().toISOString(), profile: 'web', owner: 'external',
+          }))
+        }
+        if (args[0] === 'print') return { stdout: 'pid = 7101\n' }
+      },
+      schedule: () => {},
+    })
+    const plan = await service.createInstallPlan({ profile: 'web' })
+    await service.executeInstall({ planId: plan.planId, confirmation: plan.confirmation })
+    const plist = await readFile(join(launchAgentsDir, 'com.ai-scarlett.dsh-guardian.plist'), 'utf8')
+    assert.doesNotMatch(plist, /EnvironmentVariables/)
+    assert.match(plist, /<string>\/usr\/local\/bin\/node<\/string>/)
+  } finally { await rm(root, { recursive: true, force: true }) }
+})
