@@ -131,7 +131,7 @@ test('scan bounds remain enforced against the entire selected source surface', a
   assert.match(result.reasons.join('\n'), /source-file-count/)
 })
 
-test('shipped native/executable, unknown artifacts, symlinks and submodules fail closed', async () => {
+test('shipped native and opaque executables, unknown artifacts, symlinks and submodules fail closed', async () => {
   for (const [path, mode, type] of [['lib/addon.node', '100644', 'blob'], ['lib/link.js', '120000', 'blob'], ['lib/module', '160000', 'commit'], ['lib/script', '100755', 'blob'], ['lib/unknown.dat', '100644', 'blob']]) {
     const files = { ...sources, [path]: 'not executable in tests' }
     const tree = treeOf(files, { [path]: mode })
@@ -139,7 +139,27 @@ test('shipped native/executable, unknown artifacts, symlinks and submodules fail
     const result = await review(files, manifest, tree)
     assert.equal(result.scanComplete, false, path)
     assert.ok(result.reasons.length > 0, path)
+    const expected = path === 'lib/addon.node' || path === 'lib/script' ? true : null
+    assert.equal(result.signals.nativeOrExecutableArtifacts, expected, path)
   }
+})
+
+test('executable text scripts are scanned as source while opaque executables stay blocked', async () => {
+  const textScript = 'scripts/deploy.sh'
+  const files = { ...sources, [textScript]: '#!/bin/sh\nprintf "reviewed source\\n"\n' }
+  const meta = { ...manifest, files: [...manifest.files, textScript] }
+  const result = await review(files, meta, treeOf(files, { [textScript]: '100755' }))
+  assert.equal(result.scanComplete, true)
+  assert.equal(result.unsupportedFiles, 0)
+  assert.equal(result.signals.nativeOrExecutableArtifacts, false)
+  assert.ok(result.sourceEvidence.some(item => item.file === textScript))
+
+  const opaquePath = 'scripts/deploy'
+  const opaqueFiles = { ...files, [opaquePath]: 'opaque executable bytes' }
+  const opaqueMeta = { ...meta, files: [...meta.files, opaquePath] }
+  const opaque = await review(opaqueFiles, opaqueMeta, treeOf(opaqueFiles, { [opaquePath]: '100755' }))
+  assert.equal(opaque.scanComplete, false)
+  assert.equal(opaque.signals.nativeOrExecutableArtifacts, true)
 })
 
 test('monorepo package scope stays relative to its fixed install directory', () => {
