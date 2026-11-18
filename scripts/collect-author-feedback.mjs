@@ -9,6 +9,9 @@ import { githubClient } from './author-contact-http.mjs'
 const MAX_ISSUES = 2500
 const MAX_ITEMS = 100
 const MAX_COMMENT_PAGES = 20
+// Only the repository owner and GitHub Actions are authoritative Store replies.
+// Match immutable account IDs so a login rename cannot revive old feedback.
+const STORE_REPLY_USER_IDS = new Set([264102358, 41898282])
 const STORE_CONTEXT_PATTERNS = [
   /dsh[\s-]*store/i,
   /automaticFollowups/i,
@@ -111,6 +114,18 @@ function commentTime(comment) {
   return Number.isFinite(value) ? value : 0
 }
 
+function isStoreReply(comment) {
+  return STORE_REPLY_USER_IDS.has(Number(comment?.user?.id))
+}
+
+function occursAfter(left, right) {
+  const leftTime = commentTime(left)
+  const rightTime = commentTime(right)
+  return leftTime === rightTime
+    ? Number(left?.id ?? 0) > Number(right?.id ?? 0)
+    : leftTime > rightTime
+}
+
 function isHumanAuthorComment(comment, recipient) {
   const user = comment?.user
   return user?.type === 'User'
@@ -172,6 +187,10 @@ export async function collectAuthorFeedback({ github, repository = 'AI-Scarlett/
       .sort((left, right) => commentTime(left) - commentTime(right) || Number(left.id) - Number(right.id))
       .at(-1)
     if (!latest) continue
+    // A still-open remediation Issue can retain an old author comment long
+    // after the Store has answered it. Do not republish that request as new
+    // work; a later author comment will still be selected above and reviewed.
+    if (comments.some(comment => isStoreReply(comment) && occursAfter(comment, latest))) continue
     const recheck = isAdmissionRecheckRequest(latest.body)
     if (!recheck && !isDshStoreProblem(latest.body)) continue
     if (resolutions.some(r => r.requestCommentId === latest.id && r.userId === recipient.id && r.requestBodySha256 === sha256(latest.body))) continue

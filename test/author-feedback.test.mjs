@@ -89,6 +89,65 @@ test('collector keeps the latest verified issue-author Store problem and never e
   assert.match(feedback.items[0].excerpt, /＠mention/)
 })
 
+test('collector suppresses feedback already answered by the Store and keeps a newer author request', async () => {
+  const first = {
+    id: 20,
+    body: 'Please recheck the fixed commit and report the final admission decision.',
+    user: author,
+    created_at: '2026-09-07T09:00:00Z',
+    html_url: 'https://github.com/AI-Scarlett/DSH-Store/issues/434#issuecomment-20',
+  }
+  const ownerReply = {
+    id: 21,
+    body: 'Reviewed the fixed source; the entry remains blocked.',
+    user: { id: 264102358, login: 'AI-Scarlett', node_id: 'U_kgDOAI', type: 'User' },
+    created_at: '2026-09-07T10:00:00Z',
+  }
+  const botReply = {
+    id: 22,
+    body: 'The issue was updated after review.',
+    user: { id: 41898282, login: 'github-actions[bot]', node_id: 'MDM6Qm90NDE4OTgyODI=', type: 'Bot' },
+    created_at: '2026-09-07T10:00:00Z',
+  }
+  for (const reply of [ownerReply, botReply]) {
+    const result = await collectAuthorFeedback({
+      github: mock([first, reply]),
+      issues: [issue],
+      observedAt: '2026-09-07T11:00:00Z',
+    })
+    assert.deepEqual(result.items, [])
+  }
+
+  const newer = {
+    ...first,
+    id: 23,
+    body: 'A new DSH Store problem remains; please recheck commit def456.',
+    created_at: '2026-09-07T11:00:00Z',
+    html_url: 'https://github.com/AI-Scarlett/DSH-Store/issues/434#issuecomment-23',
+  }
+  const result = await collectAuthorFeedback({
+    github: mock([first, ownerReply, newer]),
+    issues: [issue],
+    observedAt: '2026-09-07T12:00:00Z',
+  })
+  assert.equal(result.items.length, 1)
+  assert.equal(result.items[0].commentId, 23)
+})
+
+test('a non-Store commenter does not suppress a pending author request', async () => {
+  const body = 'Every push creates a repeated DSH Store mention; please fix this workflow problem.'
+  const result = await collectAuthorFeedback({
+    github: mock([
+      { id: 24, body, user: author, created_at: '2026-09-07T09:00:00Z', html_url: 'https://github.com/AI-Scarlett/DSH-Store/issues/434#issuecomment-24' },
+      { id: 25, body: 'Could you share the report?', user: { id: 44, login: 'maintainer', node_id: 'U_kgDOx', type: 'User' }, created_at: '2026-09-07T10:00:00Z' },
+    ]),
+    issues: [issue],
+    observedAt: '2026-09-07T11:00:00Z',
+  })
+  assert.equal(result.items.length, 1)
+  assert.equal(result.items[0].commentId, 24)
+})
+
 test('collector matches the verified notification target when the Issue was created by the bot', async () => {
   const body = 'Every push creates another automaticFollowups notice; this is a DSH Store workflow problem.'
   const feedback = await collectAuthorFeedback({
