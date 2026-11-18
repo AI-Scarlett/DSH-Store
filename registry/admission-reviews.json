@@ -2537,6 +2537,49 @@
         "https://github.com/xsoc1/math-research-dsh/blob/bd08ad3f71e394bd5aa4f38c4d9cf3ddc89459b2/skills/manage-math-research-program/runtime/blueprintctl.py",
         "https://github.com/AI-Scarlett/DSH-Store/issues/1185#issuecomment-6736970862"
       ]
+    },
+    {
+      "commit": "a55e5a12d2b22f971f5ca5e71b3b365b124a3031",
+      "binding": "c6271e2bba7709945be68f40013a56130a7e3b4a11af9cbeeb6054c2f116f436",
+      "repositoryUrl": "https://github.com/AI-Scarlett/DSH-Store",
+      "verdict": "approved",
+      "reviewer": "Codex on behalf of AI-Scarlett",
+      "reviewedAt": "2026-11-18T22:18:46.967Z",
+      "rationale": "Complete bounded review of this exact public MIT source commit scanned every distributable source file and found no protected DSH mutation, dynamic module loading, native executable artifact, lifecycle hook, or runtime dependency. The sole scanner self-match is the child_process detector regex in src/automation-source-policy.mjs and is hash-bound as a false positive. The remaining child-process warnings are actual execFile/spawn calls for the official DSH CLI, Node, and macOS launchctl, all using argument arrays without shell evaluation; these are retained as restricted command capability. The actual package writes manager-owned Profile Patch data, local operation/recovery files, and logs; it makes outbound requests to configured service endpoints, including user-configurable model URLs; and it handles API keys and DSH web-session tokens. These are accurately disclosed as high risk, file write, network any, restricted commands, and API-key/web-session-token credentials. This is an owner-authorized fixed-source review, not an independent security audit or real DSH/Profile acceptance. Disposable DSH CLI latest-three install/start/uninstall matrix passed on exact source Commit a55e5a12d2b22f971f5ca5e71b3b365b124a3031 in GitHub Actions run 44409333786; this does not claim a real user Profile installation.",
+      "permissions": {
+        "level": "high",
+        "files": "write",
+        "network": "any",
+        "commands": "restricted",
+        "credentials": [
+          "api-key",
+          "web-session-token"
+        ]
+      },
+      "dispositions": [
+        {
+          "kind": "false-positive",
+          "file": "src/automation-source-policy.mjs",
+          "rule": "child-process",
+          "line": 8,
+          "sha256": "a8c65f4461481daed1c6e0049fde71492839761d593c1a21d2aa69ea24268bbc",
+          "rationale": "This match is a regular-expression detector for the text child_process; this module does not launch a child process. The finding is an exact scanner self-match and is bound to this file hash."
+        }
+      ],
+      "evidenceUrls": [
+        "https://github.com/AI-Scarlett/DSH-Store/commit/a55e5a12d2b22f971f5ca5e71b3b365b124a3031",
+        "https://github.com/AI-Scarlett/DSH-Store/blob/a55e5a12d2b22f971f5ca5e71b3b365b124a3031/package.json",
+        "https://github.com/AI-Scarlett/DSH-Store/blob/a55e5a12d2b22f971f5ca5e71b3b365b124a3031/cordis.patch.yml",
+        "https://github.com/AI-Scarlett/DSH-Store/blob/a55e5a12d2b22f971f5ca5e71b3b365b124a3031/src/automation-source-policy.mjs#L8",
+        "https://github.com/AI-Scarlett/DSH-Store/blob/a55e5a12d2b22f971f5ca5e71b3b365b124a3031/src/dsh.mjs",
+        "https://github.com/AI-Scarlett/DSH-Store/blob/a55e5a12d2b22f971f5ca5e71b3b365b124a3031/src/guardian-daemon.mjs",
+        "https://github.com/AI-Scarlett/DSH-Store/blob/a55e5a12d2b22f971f5ca5e71b3b365b124a3031/src/guardian-upgrader.mjs",
+        "https://github.com/AI-Scarlett/DSH-Store/blob/a55e5a12d2b22f971f5ca5e71b3b365b124a3031/src/guardian.mjs",
+        "https://github.com/AI-Scarlett/DSH-Store/blob/a55e5a12d2b22f971f5ca5e71b3b365b124a3031/src/legacy-repair.mjs",
+        "https://github.com/AI-Scarlett/DSH-Store/blob/a55e5a12d2b22f971f5ca5e71b3b365b124a3031/src/ai-model-settings.mjs",
+        "https://github.com/AI-Scarlett/DSH-Store/blob/a55e5a12d2b22f971f5ca5e71b3b365b124a3031/marketplace/admin/admin.js",
+        "https://github.com/AI-Scarlett/DSH-Store/actions/runs/44409333786"
+      ]
     }
   ]
 }

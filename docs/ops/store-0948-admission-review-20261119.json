@@ -1,0 +1,82 @@
+{
+  "schemaVersion": 1,
+  "type": "first-party-fixed-source-admission-review",
+  "planId": "store-0948-admission-review-20261119",
+  "createdAt": "2026-11-18T22:22:41.910Z",
+  "baseCommit": "a55e5a12d2b22f971f5ca5e71b3b365b124a3031",
+  "scope": [
+    "docs/ops/store-0948-admission-review-20261119.json",
+    "docs/reviews/store-0948-source-review-20261119.json",
+    "registry/admission-reviews.json"
+  ],
+  "preconditions": {
+    "docs/ops/store-0948-admission-review-20261119.json": null,
+    "docs/reviews/store-0948-source-review-20261119.json": null,
+    "registry/admission-reviews.json": "b3662e202152c2042badcd3386cd224426ab044fc41acfdf03f1daa7dc922db3"
+  },
+  "postconditions": {
+    "docs/reviews/store-0948-source-review-20261119.json": "a3bb3981164542373e42cdfe3a03ef9be3f1a283f1ed4a9dd008cca81000ee5a",
+    "registry/admission-reviews.json": "b7a6713406cf4825cf694cd335009c67f32bc0ee3a08b97a546ef4cc8934dcfb"
+  },
+  "sourceIdentity": {
+    "repositoryUrl": "https://github.com/AI-Scarlett/DSH-Store",
+    "commit": "a55e5a12d2b22f971f5ca5e71b3b365b124a3031",
+    "sourceTree": "0fe42c26d24ec2d706382fca043b6074c651a52b",
+    "packageName": "dsh-safe-plugin-manager",
+    "version": "0.9.48",
+    "manifestPath": "package.json",
+    "installPath": null,
+    "entryIds": [
+      "dsh-safe-plugin-manager"
+    ]
+  },
+  "admissionDecision": {
+    "engine": "bounded-source-v3",
+    "binding": "c6271e2bba7709945be68f40013a56130a7e3b4a11af9cbeeb6054c2f116f436",
+    "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
+    "state": "reviewed",
+    "scanComplete": true,
+    "filesScanned": 92,
+    "runtimeBytes": 1723742,
+    "warningCount": 6,
+    "falsePositiveDispositions": 1,
+    "permissions": {
+      "level": "high",
+      "files": "write",
+      "network": "any",
+      "commands": "restricted",
+      "credentials": [
+        "api-key",
+        "web-session-token"
+      ]
+    }
+  },
+  "compatibilityEvidence": {
+    "authority": "official GitHub Releases and npm versions resolved by DSH upgrade matrix workflow",
+    "workflowRunId": 44409333786,
+    "workflowRunUrl": "https://github.com/AI-Scarlett/DSH-Store/actions/runs/44409333786",
+    "headCommit": "a55e5a12d2b22f971f5ca5e71b3b365b124a3031",
+    "latestVersion": "0.2.2-rc.5",
+    "latestThree": [
+      "0.2.2-rc.3",
+      "0.2.2-rc.4",
+      "0.2.2-rc.5"
+    ],
+    "conclusion": "success",
+    "profile": "disposable CI Profile only; no real user Profile touched"
+  },
+  "authorization": {
+    "source": "direct-user-request",
+    "request": "用户要求处理 GitHub 收录中高版本暂缓更新的插件，优先处理自研插件，并明确由 Codex 负责本次固定源码审查。",
+    "githubWriteCredential": "short-lived-token-required",
+    "mutationRoute": "auditable-ci-checked-pull-request-followed-by-dedicated-catalog-policy-workflow",
+    "deterministicPolicyVerdictRequired": true,
+    "catalogMutationInThisPlan": false,
+    "authorContact": false,
+    "realProfileMutation": false
+  },
+  "rollback": {
+    "type": "git-revert",
+    "description": "Revert only this exact merged review-record PR. The catalog updater remains an independent, hash-bound policy run."
+  }
+}
