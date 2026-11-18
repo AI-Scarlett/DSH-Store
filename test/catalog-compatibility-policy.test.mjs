@@ -2,6 +2,7 @@ import assert from 'node:assert/strict'
 import test from 'node:test'
 import {
   applyLatestDshCompatibilityPolicy,
+  bindFixedSourceLatestDshWindow,
   createManualCompatibilityCandidateScope,
   COMPATIBILITY_CANDIDATE_SOURCE,
   COMPATIBILITY_HOLD_PREFIX,
@@ -163,6 +164,26 @@ test('each policy run materializes the live latest-three fields without inventin
   assert.equal(report.compatibilityRecordsAdded, 4)
   assert.deepEqual(report.compatibilityEntriesUpdated.map(item => item.id), ['dsh-example'])
   assert.equal(report.catalogChanged, true)
+})
+
+test('a fixed-source author recheck binds official latest-three evidence without changing blocked external-only status', () => {
+  const value = entry({ status: 'blocked', updatePolicy: 'external-only', statusReason: 'permission review required' })
+  const evidence = bindFixedSourceLatestDshWindow(value, releaseWindow)
+  assert.equal(value.status, 'blocked')
+  assert.equal(value.updatePolicy, 'external-only')
+  assert.equal(evidence.compatibleReleasePresent, false)
+  assert.deepEqual(evidence.releaseStatuses, {
+    '0.1.2-alpha.3': 'unknown',
+    '0.1.2-alpha.4': 'unknown',
+    '0.1.2-alpha.5': 'unknown',
+  })
+  assert.deepEqual(value.compatibility.latestWindow, { state: 'recheck-required', releases: releaseWindow.releases })
+  assert.equal(evidence.recordsAdded, 6)
+  value.compatibility.dshReleases['0.1.2-alpha.4'] = 'compatible'
+  const supported = bindFixedSourceLatestDshWindow(value, releaseWindow)
+  assert.equal(supported.compatibleReleasePresent, true)
+  assert.deepEqual(value.compatibility.latestWindow, { state: 'current', releases: releaseWindow.releases })
+  assert.equal(value.status, 'blocked')
 })
 
 test('future official alpha releases advance the window without source constants', () => {

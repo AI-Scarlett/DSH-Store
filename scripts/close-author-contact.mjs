@@ -12,26 +12,84 @@ export function validateCloseGrant(plan) {
     || !Number.isSafeInteger(plan.userId) || plan.userId < 1
     || !Number.isSafeInteger(plan.requestCommentId) || plan.requestCommentId < 1
     || !/^[a-f0-9]{64}$/.test(plan.requestBodySha256 ?? '')
+    || plan.subjectRepositoryState !== undefined && !['present', 'not-found'].includes(plan.subjectRepositoryState)
     || plan.review?.decision !== 'explicit-request-to-close'
     || typeof plan.review.scope !== 'string' || !plan.review.scope.trim()
     || typeof plan.review.requestQuote !== 'string' || !/close|closing|关闭|关掉/i.test(plan.review.requestQuote)
     || !Number.isFinite(Date.parse(plan.requestUpdatedAt))
     || !['not_planned', 'completed'].includes(plan.stateReason)) throw new Error('reviewed explicit issue-closure request required')
+  if (plan.subjectRepositoryState === 'not-found' && !/deleted|已删除|不存在/i.test(plan.review.requestQuote)) {
+    throw new Error('a missing repository requires the author\'s exact deletion request')
+  }
+  if (plan.subjectRepositoryState === 'not-found') {
+    const withdrawal = plan.catalogWithdrawal
+    const expectedRequestUrl = `https://github.com/${plan.repository}/issues/${plan.issueNumber}#issuecomment-${plan.requestCommentId}`
+    if (!withdrawal || !/^[a-z0-9][a-z0-9-]{1,95}$/.test(withdrawal.catalogId ?? '')
+      || withdrawal.repositoryUrl !== `https://github.com/${plan.subjectRepository}`
+      || !/^[a-f0-9]{40}$/.test(withdrawal.catalogCommit ?? '')
+      || withdrawal.requestUrl !== expectedRequestUrl
+      || withdrawal.requestBodySha256 !== plan.requestBodySha256) {
+      throw new Error('closing a deleted-project Issue requires an exact Catalog withdrawal proof')
+    }
+  }
   requireRepository(plan.subjectRepository)
 }
+
+async function readMainJson(github, path) {
+  const file = await github.request('GET', `/repos/AI-Scarlett/DSH-Store/contents/${path}?ref=main`)
+  if (file?.encoding !== 'base64' || !Number.isSafeInteger(file.size) || file.size < 1 || file.size > 4 * 1024 * 1024) {
+    throw new Error(`main Catalog withdrawal proof has an invalid ${path} file`)
+  }
+  return JSON.parse(Buffer.from(file.content, 'base64').toString('utf8'))
+}
+
+async function verifyCatalogWithdrawal(github, plan) {
+  if (plan.subjectRepositoryState !== 'not-found') return
+  const proof = plan.catalogWithdrawal
+  const main = await github.request('GET', '/repos/AI-Scarlett/DSH-Store/commits/main')
+  if (!/^[a-f0-9]{40}$/.test(main?.sha ?? '')) throw new Error('current main Commit is unavailable for the Catalog withdrawal proof')
+  const comparison = await github.request('GET', `/repos/AI-Scarlett/DSH-Store/compare/${proof.catalogCommit}...${main.sha}`)
+  if (!['ahead', 'identical'].includes(comparison?.status)) throw new Error('Catalog withdrawal Commit is not on current main')
+  const [catalog, index, policy] = await Promise.all([
+    readMainJson(github, 'registry/catalog.json'),
+    readMainJson(github, 'registry/catalog-index.json'),
+    readMainJson(github, 'registry/automation-policy.json'),
+  ])
+  if (catalog.entries?.some(entry => entry.id === proof.catalogId || entry.repositoryUrl === proof.repositoryUrl)
+    || index.entries?.some(entry => entry.id === proof.catalogId || entry.repositoryUrl === proof.repositoryUrl)) {
+    throw new Error('withdrawn Catalog entry is still present on current main')
+  }
+  const repositoryUrlSha256 = digest(`github-repository:${proof.repositoryUrl.toLowerCase()}`)
+  const requestRefSha256 = digest(proof.requestUrl)
+  const record = (policy.withdrawnRepositories ?? []).find(item => item.repositoryUrlSha256 === repositoryUrlSha256
+    && item.requestRefSha256 === requestRefSha256 && item.requestBodySha256 === proof.requestBodySha256)
+  if (!record) throw new Error('current main does not preserve the author-bound permanent withdrawal policy')
+}
+
 export async function verifyCloseRequest(github, plan) {
   validateCloseGrant(plan)
   const issue = await github.request('GET', `/repos/${plan.repository}/issues/${plan.issueNumber}`)
-  if (issue.pull_request || !issue.body?.includes(`https://github.com/${plan.subjectRepository}`)) throw new Error('closure subject mismatch')
+  const noticeMarker = `<!-- dsh-author-notice:v1 key=${plan.subjectRepository}`
+  if (issue.pull_request || !issue.body?.includes(`https://github.com/${plan.subjectRepository}`)
+    || !issue.body.includes(noticeMarker)) throw new Error('closure subject mismatch')
   const comments = await github.paginate(`/repos/${plan.repository}/issues/${plan.issueNumber}/comments`)
   const latest = comments.filter(c => c.user?.id === plan.userId)
     .sort((a, b) => Date.parse(a.updated_at ?? a.created_at) - Date.parse(b.updated_at ?? b.created_at) || a.id - b.id).at(-1)
   if (latest?.id !== plan.requestCommentId || digest(latest.body) !== plan.requestBodySha256
     || latest.updated_at !== plan.requestUpdatedAt || !latest.body.includes(plan.review.requestQuote)) throw new Error('closure request changed, withdrawn or superseded')
   const person = humanIdentity(await github.request('GET', `/user/${plan.userId}`))
-  const repository = await github.request('GET', `/repos/${plan.subjectRepository}`)
-  if (!person || person.node_id !== latest.user.node_id || repository.owner?.id !== person.id
-    || repository.owner.node_id !== person.node_id) throw new Error('closure author identity or ownership mismatch')
+  let repository = null
+  try {
+    repository = await github.request('GET', `/repos/${plan.subjectRepository}`)
+  } catch (error) {
+    if (error.status !== 404 || plan.subjectRepositoryState !== 'not-found') throw error
+  }
+  if (plan.subjectRepositoryState === 'not-found' && repository !== null) throw new Error('subject repository is available; regenerate the closure plan')
+  if (!person || person.node_id !== latest.user.node_id
+    || repository && (repository.owner?.id !== person.id || repository.owner.node_id !== person.node_id)) {
+    throw new Error('closure author identity or ownership mismatch')
+  }
+  await verifyCatalogWithdrawal(github, plan)
   return { person, issue }
 }
 export async function closeReviewedIssue({ github, plan, seed }) {

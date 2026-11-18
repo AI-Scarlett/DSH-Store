@@ -59,6 +59,35 @@ export function supportsDshReleaseWindow(entry, releases) {
   return releases.some(version => catalogReleaseStatus(entry, version) === 'compatible')
 }
 
+export function bindFixedSourceLatestDshWindow(entry, window) {
+  if (!entry || typeof entry !== 'object' || !window || !Array.isArray(window.releases)
+    || window.releases.length !== window.releaseCount || window.releases.length < 1
+    || typeof window.latestVersion !== 'string' || typeof window.authority !== 'string'
+    || typeof window.registryUrl !== 'string') {
+    throw new Error('fixed-source compatibility evidence requires a complete official DSH release window')
+  }
+  const addedFields = ensureReleaseWindowFields(entry, window.releases)
+  const releaseStatuses = Object.fromEntries(window.releases.map(release => [release, catalogReleaseStatus(entry, release)]))
+  const latestWindow = {
+    state: supportsDshReleaseWindow(entry, window.releases) ? 'current' : 'recheck-required',
+    releases: [...window.releases],
+  }
+  const changed = JSON.stringify(entry.compatibility.latestWindow) !== JSON.stringify(latestWindow)
+  entry.compatibility.latestWindow = latestWindow
+  return {
+    authority: window.authority,
+    registryUrl: window.registryUrl,
+    latestVersion: window.latestVersion,
+    releases: [...window.releases],
+    releaseStatuses,
+    requiredCompatibleReleases: 1,
+    compatibleReleasePresent: supportsDshReleaseWindow(entry, window.releases),
+    latestWindow,
+    recordsAdded: addedFields.length,
+    changed: addedFields.length > 0 || changed,
+  }
+}
+
 export function compatibilityHoldReason(releases) {
   return boundedText(`${COMPATIBILITY_HOLD_PREFIX} Installation held because the Catalog has no compatible result for any declared DSH release; the official latest ${releases.length} releases need rechecking (${releases.join(', ')}). Add an exact compatible dshReleases record at a new fixed Commit; range-only or unknown compatibility is not installable evidence.`)
 }

@@ -86,3 +86,52 @@ test('manual scan plan rejects duplicate bundle IDs and noncanonical repositorie
   noncanonical.selected[0].repositoryUrl = 'https://github.com/example/dsh-plugin.git'
   assert.throws(() => validateManualScanPlan(noncanonical), /repository must be canonical/)
 })
+
+function authorRecheckPlan() {
+  return {
+    schemaVersion: 1,
+    type: 'author-requested-catalog-recheck',
+    planId: 'author-recheck-1653-20261118',
+    baseCommit: 'a'.repeat(40),
+    request: {
+      repository: 'AI-Scarlett/DSH-Store', issueNumber: 1653, commentId: 6967944300, userId: 4898852,
+      updatedAt: '2026-11-18T03:16:30Z', bodySha256: digest,
+      quote: '可以重新扫一次固定 commit 验证。',
+    },
+    catalog: {
+      id: 'dsh-deepseek-cost', repositoryUrl: 'https://github.com/skyrocks/dsh-deepseek-cost',
+      commit: 'b'.repeat(40), version: '0.2.0', status: 'blocked', updatePolicy: 'external-only',
+    },
+    source: { commit: 'c'.repeat(40), version: '0.2.5' },
+    withdrawal: {
+      catalogId: 'dsh-favorites', repositoryUrl: 'https://github.com/andyzhuang233/dsh-favorites',
+      issueNumber: 581, commentId: 6971546684, userId: 160030887,
+      updatedAt: '2026-11-18T07:00:18Z', bodySha256: 'd'.repeat(64),
+      requestUrl: 'https://github.com/AI-Scarlett/DSH-Store/issues/581#issuecomment-6971546684',
+      expectedRepositoryState: 'not-found',
+      quote: '仓库已删除。请关闭此修复单并下架对应条目。',
+    },
+    authorization: { source: 'direct-user-request', request: 'process current author feedback' },
+  }
+}
+
+test('author-requested Catalog recheck plans bind a blocked external-only listing, exact source, and deletion request', () => {
+  const validated = validateManualScanPlan(authorRecheckPlan())
+  assert.equal(validated.request.commentId, 6967944300)
+  assert.equal(validated.catalog.updatePolicy, 'external-only')
+  assert.equal(validated.withdrawal.commentId, 6971546684)
+})
+
+test('author-requested Catalog recheck plans fail closed on admission, source, or request scope changes', () => {
+  const admitted = authorRecheckPlan()
+  admitted.catalog.updatePolicy = 'source-verified'
+  assert.throws(() => validateManualScanPlan(admitted), /blocked external-only/)
+
+  const floating = authorRecheckPlan()
+  floating.source.commit = 'main'
+  assert.throws(() => validateManualScanPlan(floating), /source identity/)
+
+  const nonDeletion = authorRecheckPlan()
+  nonDeletion.withdrawal.quote = 'Please close this issue.'
+  assert.throws(() => validateManualScanPlan(nonDeletion), /close and unlist/)
+})

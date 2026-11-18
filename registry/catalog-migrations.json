@@ -170,6 +170,37 @@
           "dsh-tavily"
         ]
       }
+    },
+    {
+      "id": "dsh-deepseek-cost",
+      "repositoryUrl": "https://github.com/skyrocks/dsh-deepseek-cost",
+      "fromCommit": "75501933313f371313ad8d49ecfca89893a1e2df",
+      "toCommit": "2835b855d00685f29d5e2514ff471c4cbd89d01d",
+      "previousIdentityHash": "8f3efd1803d1e0da1d88bc88f4544f2bcf62485c398eb3ac90d92884588fa98d",
+      "reviewer": "Codex on behalf of AI-Scarlett",
+      "reviewedAt": "2026-11-18T09:48:16Z",
+      "rationale": "Repair the stale Catalog package identity against the author-requested fixed-Commit recheck. Preserve the old identity binding; this migration does not grant admission or installability.",
+      "evidenceUrls": [
+        "https://github.com/AI-Scarlett/DSH-Store/issues/1653#issuecomment-6967944300",
+        "https://github.com/skyrocks/dsh-deepseek-cost/commit/2835b855d00685f29d5e2514ff471c4cbd89d01d"
+      ],
+      "from": {
+        "packageName": "dsh-deepseek-cost",
+        "manifestPath": "package.json",
+        "license": "MIT",
+        "entryIds": [
+          "deepseek-cost"
+        ]
+      },
+      "to": {
+        "packageName": "@skyrocks/dsh-deepseek-cost",
+        "manifestPath": "package.json",
+        "installPath": null,
+        "license": "MIT",
+        "entryIds": [
+          "deepseek-cost"
+        ]
+      }
     }
   ]
 }
