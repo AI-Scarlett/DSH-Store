@@ -2506,6 +2506,37 @@
         "https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.2-rc.4/packages/host/open-in-app/src/index.ts",
         "https://github.com/AI-Scarlett/DSH-Store/issues/1321#issuecomment-6406848697"
       ]
+    },
+    {
+      "repositoryUrl": "https://github.com/xsoc1/math-research-dsh",
+      "commit": "bd08ad3f71e394bd5aa4f38c4d9cf3ddc89459b2",
+      "binding": "5d054ed571df64cb967d17c4b4fee4ea8e0863e07c337bd1dfe0a1c3782e8df2",
+      "verdict": "approved",
+      "reviewer": "Codex on behalf of AI-Scarlett",
+      "reviewedAt": "2026-11-18T06:09:30.564Z",
+      "rationale": "Complete bounded-source-v3 review of this exact MIT 2.0.5 Commit found complete static coverage, no protected DSH mutation, dynamic loading, runtime dependencies, lifecycle hooks, native artifacts, or security findings. Approve the declared file write, network, and shell capabilities only through user-reviewed install/update decisions. User-invoked Git may use existing local credentials; the Bundle does not collect or store credentials. Current DSH 0.2.2-rc.2/rc.3/rc.4 compatibility remains unknown; author-reported older Profile runs remain author evidence, not Store runtime acceptance.",
+      "permissions": {
+        "level": "high",
+        "files": "write",
+        "network": "any",
+        "commands": "shell",
+        "credentials": [
+          "none"
+        ]
+      },
+      "evidenceUrls": [
+        "https://github.com/xsoc1/math-research-dsh/commit/bd08ad3f71e394bd5aa4f38c4d9cf3ddc89459b2",
+        "https://github.com/xsoc1/math-research-dsh/blob/bd08ad3f71e394bd5aa4f38c4d9cf3ddc89459b2/package.json",
+        "https://github.com/xsoc1/math-research-dsh/blob/bd08ad3f71e394bd5aa4f38c4d9cf3ddc89459b2/cordis.patch.yml",
+        "https://github.com/xsoc1/math-research-dsh/blob/bd08ad3f71e394bd5aa4f38c4d9cf3ddc89459b2/index.mjs",
+        "https://github.com/xsoc1/math-research-dsh/blob/bd08ad3f71e394bd5aa4f38c4d9cf3ddc89459b2/docs/dsh-store-contract.md",
+        "https://github.com/xsoc1/math-research-dsh/blob/bd08ad3f71e394bd5aa4f38c4d9cf3ddc89459b2/docs/dsh-store-resource-review.md",
+        "https://github.com/xsoc1/math-research-dsh/blob/bd08ad3f71e394bd5aa4f38c4d9cf3ddc89459b2/skills/manage-math-research-program/scripts/sync_remotes.py",
+        "https://github.com/xsoc1/math-research-dsh/blob/bd08ad3f71e394bd5aa4f38c4d9cf3ddc89459b2/skills/lean-verify/scripts/verify_lean_project.py",
+        "https://github.com/xsoc1/math-research-dsh/blob/bd08ad3f71e394bd5aa4f38c4d9cf3ddc89459b2/skills/lean-verify/scripts/lean_runtime.py",
+        "https://github.com/xsoc1/math-research-dsh/blob/bd08ad3f71e394bd5aa4f38c4d9cf3ddc89459b2/skills/manage-math-research-program/runtime/blueprintctl.py",
+        "https://github.com/AI-Scarlett/DSH-Store/issues/1185#issuecomment-6736970862"
+      ]
     }
   ]
 }
