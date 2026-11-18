@@ -1,0 +1,76 @@
+{
+  "schemaVersion": 1,
+  "type": "owner-directed-source-security-correction",
+  "planId": "dsh-store-admin-auth-remediation-20261118",
+  "baseCommit": "fe35c4fbe63ff533b27dfe6b2cfb035f00be2038",
+  "artifactPath": "docs/ops/dsh-store-admin-auth-remediation-20261118.json",
+  "scope": [
+    "README.md",
+    "deploy/setup-model-service.sh",
+    "package.json",
+    "scripts/serve-marketplace.mjs",
+    "src/ai-model-settings.mjs",
+    "test/ai-model-settings.test.mjs",
+    "test/ai-serve-api.test.mjs",
+    "test/catalog.test.mjs",
+    "test/contracts.test.mjs",
+    "test/ranking-curation-deployment.test.mjs",
+    "test/upgrade-matrix.test.mjs"
+  ],
+  "preconditionsSha256": {
+    "README.md": "ac143db6e6caa3d40c32ff739aea743a210ed9298c6f5a5771ad7209a49a2ca6",
+    "deploy/setup-model-service.sh": "dabdf7dd0c6c2a48098bb26f8ef334f74151c580b2a81bc5410664a0e24505a4",
+    "package.json": "50cfb23053eae8df53fd28a7503d435f7a4028fab2f0ec1312816caa56ddb10d",
+    "scripts/serve-marketplace.mjs": "dd46f6f744612b6578985d8ca102386e35dc368a24cedafec1700c382990f0a1",
+    "src/ai-model-settings.mjs": "8c2d358712de0c960d94e3228ca23c56238b0c2aa0dc1b8e0f715c4a112a08e4",
+    "test/ai-model-settings.test.mjs": "4d19e850777c52b26e17d18464540b7c342cec8f1ec1c449aeb0b0eaa3c60488",
+    "test/ai-serve-api.test.mjs": "e297a4f5bf363c424c608894b9ee969f5b18ffe1ffb9ff205a17b420d57e0a0f",
+    "test/catalog.test.mjs": "ca169eb38e944b44e2256c85ceb24d3136647f3da40b4cf0580eaed99379b5b6",
+    "test/contracts.test.mjs": "80d09b10e69f26abc47a3fab8ea5e9bcc7c406f1b45076e3fefd321d7ff6f530",
+    "test/ranking-curation-deployment.test.mjs": "f8817bdf6fa9d58912e73fd270afdc6e5fea343de9d2c1bdc9c04a3d53e68e20",
+    "test/upgrade-matrix.test.mjs": "02135d100b5f7134116eb336f0599119c9b6b637eb14971eb8361a67c82896d3"
+  },
+  "postconditionsSha256": {
+    "README.md": "798edc1cfd52f0704378d0663eea2dd9e587eefb25c002c27067ae6ba4e2d0f4",
+    "deploy/setup-model-service.sh": "3379595291c7b55583097d4d22f24c74b8206f71900c464a1b7b1cb011069bb4",
+    "package.json": "854c35b1b02533b4d73baae913c7cd7e360a9a80836bdde765e309bd0e485dc0",
+    "scripts/serve-marketplace.mjs": "7ac029370f48e11072d69e77eb06e79fdc10f915cd5005273825bc543c1f4766",
+    "src/ai-model-settings.mjs": "4e96b355747e9c9f610c76642467c0099ac645909637b876af4e88d1ff57b66f",
+    "test/ai-model-settings.test.mjs": "cbd897369418269874600b423d560d942e5ab8b5ecf81ee93f0a0512b4e57fd6",
+    "test/ai-serve-api.test.mjs": "4b3745cc46baf71d1a969bb2f538cc62378f0155d250a5d8187aa71df9f4cdca",
+    "test/catalog.test.mjs": "0293ed26c5016b1d845fc06fcc09c45b66a7b04eeeb9357cfae7068e0f1a8400",
+    "test/contracts.test.mjs": "50beb6345a2203a9cf4d0faf5d8ee85b45651a6c8b159051a249e0b7f62a3ba6",
+    "test/ranking-curation-deployment.test.mjs": "bcfe6116ec51a73595a85b9b6427db44acbcf690f7fa64851188363e8c96208e",
+    "test/upgrade-matrix.test.mjs": "f2ab27301d2613a08c21eb3be9a7eb0288160bdb2271f84c93854c77ccbf4298"
+  },
+  "change": {
+    "package": "dsh-safe-plugin-manager",
+    "version": "0.9.48",
+    "summary": "Remove the public admin bootstrap password, fail closed when no password hash exists, invalidate unversioned legacy hashes and pre-v2 admin sessions, and configure the service with a root-only EnvironmentFile.",
+    "runtimeBehavior": "Settings marked adminCredentialVersion=1 retain their configured password hash. Unversioned legacy settings replace any old hash with DSH_ADMIN_PASSWORD or remain locked when it is absent; pre-v2 admin session tokens are rejected after upgrade."
+  },
+  "verification": {
+    "command": "npm run check",
+    "status": "passed",
+    "registry": "914 entries validated",
+    "tests": "681 passed, 0 failed",
+    "diffCheck": "passed",
+    "fixedDefaultCredentialSearch": "no matches in working tree",
+    "legacySessionInvalidation": "pre-v2 HMAC session token rejected",
+    "embeddedDeploymentBundle": "passed: standalone source bytes match repository files"
+  },
+  "sideEffects": {
+    "realDshProfile": "untouched",
+    "productionDeployment": "not performed",
+    "thirdPartyCodeExecuted": false
+  },
+  "recovery": {
+    "backup": "Git history at baseCommit and the signed CI-reviewed pull request provide exact recovery point.",
+    "rollback": "Revert the merged source commit; no production service or DSH Profile has been changed."
+  },
+  "acceptanceBoundary": {
+    "sourceAndTests": "verified locally",
+    "catalogUpdate": "not yet authorized by a fresh Catalog policy verdict; rerun dedicated workflow after source PR merges",
+    "realProfileAndDesktop": "unverified"
+  }
+}

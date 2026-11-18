@@ -1,6 +1,6 @@
 {
   "name": "dsh-safe-plugin-manager",
-  "version": "0.9.47",
+  "version": "0.9.48",
   "description": "GitHub-only marketplace and guarded lifecycle manager for DeepSeek Harness plugins",
   "repository": {
     "type": "git",
@@ -27,7 +27,13 @@
     "bin",
     "locale",
     "src",
-    "registry",
+    "registry/automation-policy.json",
+    "registry/candidates.json",
+    "registry/catalog-index.json",
+    "registry/catalog.json",
+    "registry/catalog/details/**",
+    "registry/community-recommendations.json",
+    "registry/discovery-index.json",
     "marketplace",
     "cordis.patch.yml",
     "README.md",

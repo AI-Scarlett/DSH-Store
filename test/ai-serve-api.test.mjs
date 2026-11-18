@@ -19,7 +19,7 @@ test('serve-marketplace API endpoints handle recommendations, admin settings, an
       MODEL_SETTINGS_CONFIG_PATH: join(dir, 'settings.json'),
       MODEL_SETTINGS_KEY_PATH: join(dir, 'test.key'),
       DSH_ADMIN_USERNAME: 'admin',
-      DSH_ADMIN_PASSWORD: 'dsh2026admin',
+      DSH_ADMIN_PASSWORD: 'fixture-admin-password',
     },
     stdio: ['ignore', 'pipe', 'pipe'],
   })
@@ -95,7 +95,7 @@ test('serve-marketplace API endpoints handle recommendations, admin settings, an
     const loginRes = await fetch(`${baseUrl}/api/admin/login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ username: 'admin', password: 'dsh2026admin' }),
+      body: JSON.stringify({ username: 'admin', password: 'fixture-admin-password' }),
     })
     assert.equal(loginRes.status, 200)
     const loginData = await loginRes.json()
@@ -175,7 +175,7 @@ test('serve-marketplace API endpoints handle recommendations, admin settings, an
     const oldLoginRes = await fetch(`${baseUrl}/api/admin/login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ username: 'admin', password: 'dsh2026admin' }),
+      body: JSON.stringify({ username: 'admin', password: 'fixture-admin-password' }),
     })
     assert.equal(oldLoginRes.status, 401)
 
