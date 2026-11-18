@@ -1,0 +1,67 @@
+{
+  "schemaVersion": 1,
+  "type": "fixed-source-review-coverage-repair",
+  "planId": "dsh-fixed-source-csv-tex-coverage-20261118",
+  "createdAt": "2026-11-18T04:40:11Z",
+  "authorization": {
+    "request": "你都处理了 该回复回复 该更新更新",
+    "scope": "Complete the bounded fixed-source scan coverage needed to formally resolve Issue #1185. This source PR only changes scanner and regression tests; it does not modify Catalog content, contact state, or send author messages."
+  },
+  "baseCommit": "9f87eb8ad1ac78bc9547c6cac90be8f3dcfacd24",
+  "fileScope": {
+    "modify": [
+      "src/package-source-surface.mjs",
+      "src/automation-source-policy.mjs",
+      "test/package-source-surface.test.mjs",
+      "test/automation-source-policy.test.mjs"
+    ],
+    "add": [
+      "docs/ops/fixed-source-csv-tex-coverage-plan-20261118.json"
+    ]
+  },
+  "preconditions": {
+    "absent": [
+      "docs/ops/fixed-source-csv-tex-coverage-plan-20261118.json"
+    ],
+    "sha256": {
+      "src/package-source-surface.mjs": "3b809a867ff8beb4dad6d61abf18d8c79fa00294c753d194935ce5ebc3b2264c",
+      "src/automation-source-policy.mjs": "c52fe934206ad5ccbf91a903d8da01c4707d717bd144531d114097d812ed4f30",
+      "test/package-source-surface.test.mjs": "c0d394ae00a1a9e22d1197dfd101965bcb3bd259d4299d1481973a5c3bafae9f",
+      "test/automation-source-policy.test.mjs": "31825edf641fdf1468e5caa815cf0aa674bc3302948857114d23748ed6f2fab9"
+    }
+  },
+  "postconditions": {
+    "sha256": {
+      "src/package-source-surface.mjs": "7246068100c2dceaa6c8b9149c4de29c68d74926bb589fa1b8b6eaccdb1b3275",
+      "src/automation-source-policy.mjs": "1733745a1e25cdb3085f1b143b9019e4ba2ec1d9eac8ed40988261821bd19675",
+      "test/package-source-surface.test.mjs": "586fc33f39163aa658c4e25aa6c0666a2804492e3cbad72058efdcc4c9df1d25",
+      "test/automation-source-policy.test.mjs": "c97c5510c0338a0a5ec1e1ff7e586724f0efc4941ef3612bdc7e86169d6ef935"
+    }
+  },
+  "implementation": [
+    "Include bounded CSV and TeX template files in the fixed-source text scanner.",
+    "Recognize active TeX file inclusion/read/write primitives and shell execution primitives as permission signals.",
+    "Ignore TeX comment content while honoring escaped percent signs; keep data-only CSV files from receiving file-access signals absent a matching active capability pattern."
+  ],
+  "verification": {
+    "focusedTests": "node --test test/automation-source-policy.test.mjs test/package-source-surface.test.mjs passed 28/28.",
+    "registry": "npm run validate:registry passed: REGISTRY_OK entries=915.",
+    "fullCheck": "npm run check completed registry validation and 671/673 tests; two unrelated static-copy fixtures failed with ENOSPC while copying large catalog/discovery files on the local volume with approximately 160 MiB free.",
+    "gitDiffCheck": "passed",
+    "fixedSourceScope": "No third-party code was executed, installed, built, or tested.",
+    "githubCi": {
+      "registryValidationRun": "44239287063: success",
+      "upgradeMatrixRun": "44239287202: resolve, previous-latest-three, and all 10 runtime matrix jobs passed; next-channel skipped by design"
+    }
+  },
+  "authorizationRecord": {
+    "githubWriteCredential": "short-lived-token-required",
+    "merge": "only after PR checks pass"
+  },
+  "rollback": {
+    "type": "git-revert",
+    "baseCommit": "9f87eb8ad1ac78bc9547c6cac90be8f3dcfacd24",
+    "description": "Revert only the bounded scanner and test changes. No Catalog entry or contact reservation is modified."
+  },
+  "status": "ci_passed_pending_merge"
+}

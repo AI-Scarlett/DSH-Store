@@ -35,6 +35,17 @@ test('script-loader examples remain prose and inline script creation is not clai
   assert.deepEqual(browserScriptSignals("const s = document.createElement('script'); s.textContent = code", 'client.js'), { dynamic: true, network: false })
 })
 
+test('TeX comments are ignored while active file and shell primitives remain permission signals', () => {
+  assert.equal(permissionSignals(String.raw`\input{local-macros.tex}`, 'template.tex').files, true)
+  assert.equal(permissionSignals(String.raw`% \write18{touch ignored}
+\emph{example}`, 'template.tex').commands, false)
+  assert.equal(permissionSignals(String.raw`\% \write18{touch active}`, 'template.tex').commands, true)
+  assert.equal(permissionSignals(String.raw`\\% \write18{touch commented}`, 'template.tex').commands, false)
+  assert.equal(permissionSignals(String.raw`\immediate\write18{curl https://example.invalid}`, 'template.tex').commands, true)
+  assert.equal(permissionSignals(String.raw`\directlua{os.execute("touch output.pdf")}`, 'template.tex').commands, true)
+  assert.equal(permissionSignals('result_id,title,scope\n', 'inventory.csv').files, false)
+})
+
 test('Git source cannot pass runtime artifact checks merely because package files names a generated directory', async () => {
   const { missingRuntimeEntryReasons } = await import('../src/automation-source-policy.mjs')
   const manifest = { main: './lib/index.js', files: ['lib'], exports: { '.': './lib/index.js' } }
