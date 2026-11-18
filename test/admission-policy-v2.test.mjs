@@ -395,16 +395,29 @@ test('the author-requested dsh-deepseek-cost recheck repairs the stale Catalog p
   const catalog = await loadCatalogFromFiles()
   const migrations = JSON.parse(await readFile(new URL('../registry/catalog-migrations.json', import.meta.url), 'utf8'))
   const entry = catalog.entries.find(item => item.id === 'dsh-deepseek-cost')
-  const snapshot = { commit: '2835b855d00685f29d5e2514ff471c4cbd89d01d', repositoryUrl: entry.repositoryUrl }
-  const migration = catalogMigrationTarget(entry, snapshot, migrations)
-  assert.equal(migration.manifestPath, 'package.json')
-  assert.equal(migration.record.from.packageName, 'dsh-deepseek-cost')
-  const result = migrateCatalogIdentity(entry, snapshot, { name: '@skyrocks/dsh-deepseek-cost', license: 'MIT' }, migrations)
+  const record = migrations.migrations.find(item => item.id === 'dsh-deepseek-cost')
+  assert.ok(entry)
+  assert.ok(record)
+  assert.equal(entry.status, 'blocked')
+  assert.equal(entry.updatePolicy, 'external-only')
+  // The policy workflow tests after applying the Catalog mutation; rebuild its exact pre-migration identity from the immutable record.
+  const sourceEntry = entry.commit === record.fromCommit && entry.packageName === record.from.packageName
+    ? entry
+    : { ...entry, id: record.id, repositoryUrl: record.repositoryUrl, commit: record.fromCommit,
+      packageName: record.from.packageName, manifestPath: record.from.manifestPath,
+      installPath: record.from.installPath ?? null, entryIds: [...record.from.entryIds],
+      details: { ...entry.details, license: record.from.license } }
+  const snapshot = { commit: record.toCommit, repositoryUrl: record.to.repositoryUrl ?? record.repositoryUrl }
+  assert.equal(catalogIdentityHash(sourceEntry), record.previousIdentityHash)
+  const migration = catalogMigrationTarget(sourceEntry, snapshot, migrations)
+  assert.equal(migration.manifestPath, record.to.manifestPath)
+  assert.equal(migration.record, record)
+  const result = migrateCatalogIdentity(sourceEntry, snapshot, { name: record.to.packageName, license: record.to.license }, migrations)
   assert.equal(result.applied, true)
-  assert.equal(result.entry.packageName, '@skyrocks/dsh-deepseek-cost')
+  assert.equal(result.entry.packageName, record.to.packageName)
   assert.equal(result.entry.status, 'blocked')
   assert.equal(result.entry.updatePolicy, 'external-only')
-  assert.equal(result.entry.commit, entry.commit)
+  assert.equal(result.entry.commit, record.fromCommit)
 })
 
 test('latest-three is a recheck window while exact historical host evidence controls installation', () => {
