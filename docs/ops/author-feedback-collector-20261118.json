@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "type": "author-feedback-resolution",
+  "phase": "collector-answer-suppression",
+  "baseCommit": "fc67d643a2b6cdb2d7d24ea939a701e27232f6dd",
+  "createdAt": "2026-11-18T00:00:00Z",
+  "scope": [
+    "docs/ops/author-feedback-collector-20261118.json",
+    "scripts/collect-author-feedback.mjs",
+    "test/author-feedback.test.mjs"
+  ],
+  "preconditions": {
+    "scripts/collect-author-feedback.mjs": "fb7a53f81196876d2704e2993f67b1a6a5ef53ff306858ab4b4c83f3afed1a6b",
+    "test/author-feedback.test.mjs": "5f9c6e0b683acf08e265c6859700bf6e3fd420255b409970b55cace113b8c5a0",
+    "docs/ops/author-feedback-collector-20261118.json": null
+  },
+  "postconditions": {
+    "scripts/collect-author-feedback.mjs": "477173b4a3ead323341b0838c1d2c0ec375677cc8cba6c7da48559b38b7ff2eb",
+    "test/author-feedback.test.mjs": "ea954fd537afa31271fb630af57b4f73feb74df5c006a29d1c08954bde0d60e9"
+  },
+  "authorization": {
+    "source": "direct-user-request",
+    "request": "你都处理了 该回复回复 该更新更新",
+    "githubWriteCredential": "short-lived-token-required"
+  },
+  "gates": [
+    "Use immutable GitHub user IDs for official Store replies.",
+    "Suppress only an official Store reply that occurs after the latest author comment; keep later author requests eligible for review.",
+    "Cover owner, Actions bot and unrelated commenter cases with disposable fixtures.",
+    "npm run check passes before the CI-checked PR.",
+    "No third-party source or runtime code is executed."
+  ],
+  "commitStrategy": "Create one atomic commit from the exact base and open a CI-checked pull request using the connected short-lived GitHub credential.",
+  "rollback": "Revert only this commit through Git history; no contact reservations or Catalog state are modified.",
+  "purpose": "Prevent answered author comments from reappearing as new feedback while preserving later explicit author requests."
+}
