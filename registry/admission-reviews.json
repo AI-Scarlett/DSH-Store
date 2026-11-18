@@ -2489,6 +2489,23 @@
         "https://github.com/AI-Scarlett/build-dsh-plugin/blob/81ff7c73cefe53091e8710ad8851fe5a1167cdb0/build-dsh-plugin/scripts/official-dsh-releases.mjs#L263",
         "https://github.com/AI-Scarlett/build-dsh-plugin/actions/runs/41634793467"
       ]
+    },
+    {
+      "repositoryUrl": "https://github.com/zgat/dsh-wechat",
+      "commit": "8213a830351753f128926b535693355b2f77763e",
+      "binding": "fe383ba7afe1d0a4045516948b879db142f836e0352e80fe73add2608c4b3b14",
+      "verdict": "rejected",
+      "reviewer": "Codex on behalf of AI-Scarlett",
+      "reviewedAt": "2026-11-18T00:57:42Z",
+      "rationale": "Complete fixed-source review rejected this source for AUTH001: raw webServer routes expose local state and mutate credentials without the supported request-trust check; and COMPAT001: the current DSH latest-three versions have no exact compatibility evidence. Current file, network and credential signals are real and remain blocked.",
+      "evidenceUrls": [
+        "https://github.com/zgat/dsh-wechat/commit/0776189bc200ddda2129a611ba6aeade44be380a",
+        "https://github.com/zgat/dsh-wechat/commit/8213a830351753f128926b535693355b2f77763e",
+        "https://github.com/zgat/dsh-wechat/blob/8213a830351753f128926b535693355b2f77763e/lib/index.js",
+        "https://github.com/zgat/dsh-wechat/blob/8213a830351753f128926b535693355b2f77763e/package.json",
+        "https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.2-rc.4/packages/host/open-in-app/src/index.ts",
+        "https://github.com/AI-Scarlett/DSH-Store/issues/1321#issuecomment-6406848697"
+      ]
     }
   ]
 }

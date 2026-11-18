@@ -1,0 +1,48 @@
+{
+  "schemaVersion": 1,
+  "type": "author-feedback-resolution",
+  "phase": "fixed-source-terminal-review",
+  "baseCommit": "72e45bc3427fee0acfff6ac0d64ab87db43fefc9",
+  "createdAt": "2026-11-18T00:57:42Z",
+  "scope": [
+    "docs/ops/author-feedback-zgat-dsh-wechat-20261118.json",
+    "docs/reviews/author-feedback-zgat-dsh-wechat-20261118.md",
+    "registry/admission-reviews.json",
+    "registry/author-replies/recheck-zgat-1321-20261118.json",
+    "registry/author-resolutions.json"
+  ],
+  "preconditions": {
+    "docs/ops/author-feedback-zgat-dsh-wechat-20261118.json": null,
+    "docs/reviews/author-feedback-zgat-dsh-wechat-20261118.md": null,
+    "registry/admission-reviews.json": "94d160b3284e63dbf4b0a667a32d91122ccc5765b7e88a365681c6683ba3782a",
+    "registry/author-replies/recheck-zgat-1321-20261118.json": null,
+    "registry/author-resolutions.json": "b035f0a190aa58d7666c2f560f0809754c48fe0ef99c041daf25046bbafc0aa4"
+  },
+  "postconditions": {
+    "docs/reviews/author-feedback-zgat-dsh-wechat-20261118.md": "63a34cd38eb06b144824de54c0e8d4c48d989aaec42140c98588717dd5bdd9d8",
+    "registry/admission-reviews.json": "6ec092f21d59b68d79e3fa4b48f1b5cce1171d5d7e2f140da758a87ea9ff27f1",
+    "registry/author-replies/recheck-zgat-1321-20261118.json": "e972c2f3f088cf9f913736ae753f7e64fad594c1e10e435a7411e4889a69fd3c",
+    "registry/author-resolutions.json": "a12074493d6b29fa2ca86be2f1e71f4f951f6777c016f0acfc1476210ca50228"
+  },
+  "authorization": {
+    "githubWriteCredential": "short-lived-token-required"
+  },
+  "gates": [
+    "fixed-source review is bound to author Issue #1321 and current immutable user ID 23634926",
+    "requested Commit 0776189bc200ddda2129a611ba6aeade44be380a and current Catalog Commit 8213a830351753f128926b535693355b2f77763e are separately identified",
+    "record a terminal admission verdict and exact actionable blockers in author-resolutions.json",
+    "the single reply plan cites the resolution SHA-256 and exact live author request",
+    "npm run check and CI-checked pull request",
+    "Catalog changes only through the dedicated Catalog policy workflow",
+    "reply only after this plan is merged to main and the dedicated workflow revalidates the request and CAS-reserves the central ledger",
+    "no third-party install, lifecycle, test, build or runtime code is executed",
+    "no real DSH Profile is modified"
+  ],
+  "rollback": {
+    "source": "revert the CI-checked PR through Git history",
+    "catalog": "retain the current blocked status unless the dedicated workflow verifies a new exact source decision",
+    "contactLedger": "Any successful CAS reservation remains permanent even if a later send fails; never retry an uncertain send or reset the ledger."
+  },
+  "purpose": "Record the requested dsh-wechat fixed-source review, terminal rejection, and one request-specific reply plan for the current live author request. The stale Catalog recheck defect was already repaired and the current Catalog source was refreshed.",
+  "commitStrategy": "Create one atomic Git tree commit on a short-lived-token GitHub branch and open a CI-checked PR against the exact base Commit; merge only after exact-head checks pass."
+}
