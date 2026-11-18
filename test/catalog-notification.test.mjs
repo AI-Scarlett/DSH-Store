@@ -40,7 +40,13 @@ test('Catalog notification separates additions, historical updates, and deferred
       id: 'failed-candidate', name: '失败候选（Failed Candidate）', repositoryUrl: 'https://github.com/example/failed-candidate',
       commit: 'c'.repeat(40), reason: 'other gate failed; no exact compatible declaration for official DSH releases',
     }],
-    deferredUpdates: [{ id: 'new-plugin', catalogVersion: '1.0.0', upstreamVersion: '1.1.0', reason: '证据不足' }],
+    deferredUpdates: [
+      { id: 'new-plugin', catalogVersion: '1.0.0', upstreamVersion: '1.1.0', reason: '证据不足' },
+      { id: 'same-plugin', catalogVersion: '1.0.0', upstreamVersion: '1.0.0', reason: '源码变化但版本未提升' },
+      { id: 'old-plugin', catalogVersion: '2.0.0', upstreamVersion: '1.9.0', reason: '上游版本低于 Catalog' },
+      { id: 'restored-compat', catalogVersion: '1.3.0', upstreamVersion: 'not-a-version', reason: '版本无效' },
+      { id: 'old-compat', reason: '缺少上游版本' },
+    ],
     transientFailures: [],
     postconditions: { catalogEntries: 481 },
   }
@@ -111,6 +117,9 @@ test('Catalog notification separates additions, historical updates, and deferred
   assert.match(output, /历史工具（History Tool）/)
   assert.match(output, /1\.0\.0 \| 2\.0\.0/)
   assert.match(output, /发现高版本但暂缓更新/)
+  const deferredVersionSection = output.split('### 发现高版本但暂缓更新\n')[1].split('\n### ')[0]
+  assert.match(deferredVersionSection, /通知助手（Notify Helper） \| 1\.0\.0 \| 1\.1\.0/)
+  assert.doesNotMatch(deferredVersionSection, /同版本工具（Same Version Tool）|历史工具（History Tool）|恢复兼容插件（Restored Compatibility）|旧版兼容插件（Old Compatibility）/)
   assert.match(output, /兼容性下架 1，恢复 1/)
   assert.match(output, /暂时下架并转入候选/)
   assert.match(output, /恢复兼容插件（Restored Compatibility）/)

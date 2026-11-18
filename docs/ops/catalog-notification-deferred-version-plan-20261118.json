@@ -1,0 +1,57 @@
+{
+  "schemaVersion": 1,
+  "type": "catalog-notification-classification-fix",
+  "planId": "catalog-notification-deferred-version-20261118",
+  "createdAt": "2026-11-18T12:30:00Z",
+  "authorization": {
+    "source": "direct-user-request",
+    "request": "修复 GitHub 收录报告中‘高版本但暂缓更新’的误分类，并处理高版本暂缓项。"
+  },
+  "baseCommit": "acbd216db6affca7cb750ef90ce6a1e4b32f1d98",
+  "fileScope": {
+    "modify": [
+      "scripts/render-catalog-automation-notification.mjs",
+      "test/catalog-notification.test.mjs"
+    ],
+    "add": [
+      "docs/ops/catalog-notification-deferred-version-plan-20261118.json"
+    ]
+  },
+  "preconditions": {
+    "absent": [
+      "docs/ops/catalog-notification-deferred-version-plan-20261118.json"
+    ],
+    "sha256": {
+      "scripts/render-catalog-automation-notification.mjs": "f49d5882cc8813ecef1abfe55eed526c81e27699c39835fb4c6721ded8ab0eae",
+      "test/catalog-notification.test.mjs": "f74e2796328df6aacfe93f6ae35ae3747fe737f8bb27ebad0ec90d1228b3104b"
+    }
+  },
+  "change": {
+    "summary": "Only entries whose upstream version strictly exceeds the Catalog version belong in the higher-version deferred table. Equal, lower, invalid, or missing versions remain outside that table and are still preserved in the machine report.",
+    "catalogContentMutation": false,
+    "authorContact": false,
+    "thirdPartyCodeExecution": false
+  },
+  "verification": {
+    "required": [
+      "npm run check",
+      "git diff --check",
+      "focused catalog notification regression test"
+    ],
+    "expected": "A deferred 1.1.0 candidate over Catalog 1.0.0 is shown; same-version, lower, invalid, and absent versions are not shown as higher versions.",
+    "result": "passed",
+    "npmRunCheck": "passed: REGISTRY_OK entries=915; 679 tests passed, 0 failed",
+    "gitDiffCheck": "passed"
+  },
+  "postconditions": {
+    "sha256": {
+      "scripts/render-catalog-automation-notification.mjs": "fea4ac099cd64af951ff49aef3dd5d71ca0e88c21f7960e192858ba082dae848",
+      "test/catalog-notification.test.mjs": "77efa79d5a465e3d03a90e8527711dd6c0f80d97f8aa266f8623e61be70aba5c"
+    }
+  },
+  "rollback": {
+    "type": "git-revert",
+    "description": "Revert the exact merged PR commit; the change only corrects report classification."
+  },
+  "status": "verified-pending-pr"
+}

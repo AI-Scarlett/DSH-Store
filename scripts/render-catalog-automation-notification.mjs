@@ -1,7 +1,7 @@
 import { readFile, writeFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import { fileURLToPath, pathToFileURL } from 'node:url'
-import { loadCatalogFromFiles } from '../src/catalog.mjs'
+import { compareVersions, loadCatalogFromFiles } from '../src/catalog.mjs'
 import { validateAuthorFeedback } from './collect-author-feedback.mjs'
 
 const statusLabels = {
@@ -96,7 +96,11 @@ export function renderCatalogAutomationNotification({
   const compatibilityPolicy = report?.compatibilityPolicy ?? {}
   const prunedCandidates = array(report?.prunedCandidates)
   const deferredUpdates = array(report?.deferredUpdates)
-  const higherVersionDeferred = deferredUpdates.filter(item => typeof item?.upstreamVersion === 'string')
+  const higherVersionDeferred = deferredUpdates.filter(item => {
+    if (typeof item?.upstreamVersion !== 'string') return false
+    const catalogVersion = item.catalogVersion ?? byId.get(item.id)?.version
+    return typeof catalogVersion === 'string' && compareVersions(item.upstreamVersion, catalogVersion) === 1
+  })
   const transientFailures = array(report?.transientFailures)
   const sourceChecks = report?.sourceVersionChecks ?? {}
   const surfaces = array(watchdog?.surfaces)
