@@ -21,7 +21,7 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "4420a91acdb81c76452077e7b6ada92ff413e597",
+  "commit": "8be2f5e74a119f383eb35e44283611ddb67d5dfc",
   "version": "1.6.4",
   "categories": [
     "ui"
@@ -29,16 +29,16 @@
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-11-17T19:07:04.000Z",
-    "observedAt": "2026-11-17T20:31:21.000Z",
+    "updatedAt": "2026-11-18T21:50:48.000Z",
+    "observedAt": "2026-11-18T22:37:31.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-11-17T20:31:21.000Z",
-      "evidenceUrl": "https://github.com/SpookySandwich/dsh-plugin-smooth-stream/commit/4420a91acdb81c76452077e7b6ada92ff413e597",
+      "checkedAt": "2026-11-18T22:37:31.000Z",
+      "evidenceUrl": "https://github.com/SpookySandwich/dsh-plugin-smooth-stream/commit/8be2f5e74a119f383eb35e44283611ddb67d5dfc",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -77,14 +77,14 @@
   },
   "admission": {
     "engine": "bounded-source-v3",
-    "binding": "e6f17e27907bf1895548ece0d325f4d92078ab3bea6b042aa83b74ef30475697",
+    "binding": "bfd1dad516892ba6e4854d07c89a645e0f20fa6ff957dbd13d22e1bf396c1d6f",
     "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
     "state": "review-required",
     "sourceContract": "unverified",
     "coverage": "complete",
     "capabilities": "review-required",
     "compatibility": "per-version-declaration",
-    "reviewRegistryDigest": "f40e4a10a2ae7f8d8dadbbde3a7a03e9f7d967caf114a14d6a7bbfe46a93efbf"
+    "reviewRegistryDigest": "6c289f3ac2f4eb799f1848d9b7fbc3c738a03fa7166e8e4212a6988fc568d27c"
   },
   "entryIds": [
     "smooth-stream"
@@ -93,7 +93,7 @@
   "status": "blocked",
   "statusReason": "Automatic policy blocked installation: Node.js compatibility is not explicitly declared; dynamic module loading or code evaluation requires separate review",
   "compatibility": {
-    "dsh": ">=0.2.0-rc.2 <0.3.0-0 || 0.2.1-rc.2 || 0.2.1-rc.5 || 0.2.2-rc.1 || 0.2.2-rc.3 || 0.2.2-rc.4",
+    "dsh": ">=0.2.0-rc.2 <0.3.0-0 || 0.2.1-rc.2 || 0.2.1-rc.5 || 0.2.2-rc.1 || 0.2.2-rc.3 || 0.2.2-rc.4 || 0.2.2-rc.5",
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
@@ -103,7 +103,6 @@
       "0.1.2-alpha.3": "unknown",
       "0.1.2-alpha.4": "unknown",
       "0.1.2-alpha.5": "unknown",
-      "0.2.2-rc.2": "unknown",
       "0.2.2-rc.3": "unknown",
       "0.2.2-rc.4": "unknown",
       "0.2.2-rc.5": "unknown"
@@ -152,12 +151,6 @@
         "rollback": "unknown"
       },
       "0.1.2-alpha.5": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.2.2-rc.2": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",
