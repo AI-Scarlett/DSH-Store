@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 1,
+  "operation": "requested-author-reply",
+  "repository": "AI-Scarlett/DSH-Store",
+  "issueNumber": 1321,
+  "requestCommentId": 6406848697,
+  "requestBodySha256": "ccde16ef7149b1d8b52077c67d420af645957b5971da78f062504ad8d490ade7",
+  "requestUpdatedAt": "2026-10-26T02:25:41Z",
+  "userId": 23634926,
+  "requestSource": "comment",
+  "review": {
+    "kind": "other-request",
+    "decision": "explicit-request-to-continue",
+    "scope": "One final reply to Issue #1321 covering the fixed-source terminal review and the reported stale-recheck defect. This exact request does not grant ongoing contact authorization.",
+    "requestQuote": "以下任一处理都可以，我们配合：",
+    "finalAdmissionDecision": true
+  },
+  "resolution": {
+    "path": "registry/author-resolutions.json",
+    "sha256": "a12074493d6b29fa2ca86be2f1e71f4f951f6777c016f0acfc1476210ca50228"
+  },
+  "responseBody": "已按你 2026-10-26 这条明确请求完成固定来源复核，并修复了你指出的商城复检问题。\n\n**商城复检修复**：PR #1927、#1929 已修复被固定来源阻断的外部托管条目不会重算审阅结论的问题；PR #1930 已刷新 Catalog。当前条目已读到 `dsh-wechat@0.3.7`、固定 Commit `8213a830351753f128926b535693355b2f77763e`，binding 已重算，旧的 `commands` 和 `nativeOrExecutableArtifacts` 结论已消失。\n\n**固定来源最终结论**：已分别检查你指定的 `0.3.5` Commit `0776189bc200ddda2129a611ba6aeade44be380a` 和当前 Catalog 的 `0.3.7` Commit `8213a830351753f128926b535693355b2f77763e`。最终判定为拒绝准入，条目保持 blocked。\n\n- **AUTH001 — `lib/index.js:173`**：`/dsh-wechat` 原始 `webServer` 路由在读取 bot 连接、登录、二维码和错误状态前没有验证调用方。请在所有私有状态读取和修改前使用 DSH 支持的 `connection.requestRejection` 或等价受信入口；缺少服务、请求上下文或检查异常时必须 fail closed。一次性 fixture 需证明跨站 Origin、缺失上下文/服务和检查异常均在读写前拒绝，受信请求仍可用。\n- **COMPAT001 — `package.json:53`**：当前 DSH latest-three `0.2.2-rc.2`、`0.2.2-rc.3`、`0.2.2-rc.4` 没有逐版本兼容状态。请只为实际验证过的版本声明 `compatible`，并提供绑定固定 Commit 的临时 Profile 安装、启动、卸载证据；未测版本保持 `unknown`。\n\n本次结论不需要更多材料；以上两项修复后提交新的固定 Commit 即可再次申请复核。Store 没有安装或启动真实 DSH Profile，该项运行验收仍为 unknown。完整审阅记录：[author-feedback-zgat-dsh-wechat-20261118.md](https://github.com/AI-Scarlett/DSH-Store/blob/main/docs/reviews/author-feedback-zgat-dsh-wechat-20261118.md)。"
+}

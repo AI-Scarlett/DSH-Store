@@ -789,6 +789,41 @@
       ],
       "evidenceUrl": "https://github.com/AI-Scarlett/DSH-Store/blob/main/docs/reviews/author-admission-decisions-20261028.md",
       "decidedAt": "2026-10-28T13:10:14Z"
+    },
+    {
+      "issueNumber": 1321,
+      "requestCommentId": 6406848697,
+      "userId": 23634926,
+      "requestBodySha256": "ccde16ef7149b1d8b52077c67d420af645957b5971da78f062504ad8d490ade7",
+      "repositoryUrl": "https://github.com/zgat/dsh-wechat",
+      "version": "0.3.7",
+      "commit": "8213a830351753f128926b535693355b2f77763e",
+      "binding": "fe383ba7afe1d0a4045516948b879db142f836e0352e80fe73add2608c4b3b14",
+      "catalogId": "dsh-wechat",
+      "decision": "rejected",
+      "summary": "AUTH001: the fixed-source webServer routes expose local bot state without a verified caller-trust check. COMPAT001: the current DSH latest-three versions have no exact compatibility evidence. The Store's stale-recheck defect is fixed; the Catalog remains blocked.",
+      "blockers": [
+        {
+          "code": "AUTH001",
+          "owner": "author",
+          "file": "lib/index.js",
+          "line": 173,
+          "finding": "The /dsh-wechat raw webServer handler reads bot connection, login, QR, and error state before any connection.requestRejection or equivalent caller-trust check. GET/HEAD method filtering does not authenticate the caller or establish a cross-site request boundary.",
+          "requiredChange": "Before any route reads or mutates bot state or credentials, use the supported DSH request-trust/authentication seam and fail closed when the service or request context is missing or the check errors. Keep the existing capability disclosures; the features do not need to be removed.",
+          "acceptance": "Disposable fixtures reject untrusted Origin, missing request context, missing trust service, and trust-check exceptions before state or credential access; trusted DSH card requests still work and invalid methods remain rejected."
+        },
+        {
+          "code": "COMPAT001",
+          "owner": "author",
+          "file": "package.json",
+          "line": 53,
+          "finding": "The manifest declares old DSH versions, but has no per-version status for the current official latest-three 0.2.2-rc.2, 0.2.2-rc.3, and 0.2.2-rc.4. A broad engines.dsh range is not compatibility evidence.",
+          "requiredChange": "Declare exact compatibility only for current DSH versions that have been verified, and bind each compatible declaration to fixed-Commit install, start, and uninstall evidence. Keep untested versions unknown.",
+          "acceptance": "At least one current latest-three release has a reviewable exact compatible declaration and matching disposable-Profile install/start/uninstall evidence; other untested releases remain unknown."
+        }
+      ],
+      "evidenceUrl": "https://github.com/AI-Scarlett/DSH-Store/blob/main/docs/reviews/author-feedback-zgat-dsh-wechat-20261118.md",
+      "decidedAt": "2026-11-18T00:57:42Z"
     }
   ]
 }
