@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "planId": "admin-save-missing-backup-temperature-20261105",
   "operation": "repair-admin-settings-save-before-fetch",
-  "status": "validated-pending-pr-and-deployment",
+  "status": "deployed-static-ui-readback-verified",
   "createdAt": "2026-11-05",
   "repository": "AI-Scarlett/DSH-Store",
   "baseCommit": "2ca8a4fc09d7099ae38cbc57d32d12d227b100dd",
@@ -56,10 +56,24 @@
   },
   "rollback": "Revert the single HTML change through an audited pull request; no model settings or server data are changed by this fix.",
   "authorization": "The user reported that saving model configuration on the production admin page sends no request and asked to continue resolving the live issue. This repair is limited to the static admin UI; it does not publish backend code or credentials.",
+  "finalization": {
+    "baseCommit": "641908ebbe536de8f25b654f008b94cc54c6152b",
+    "planFilePreconditionSha256": "f1a79d8fbf859fcdb33c67c5ab437b1ca4afb912590a0ca9b620b2c6636e6108",
+    "exactFileScope": [
+      "docs/ops/admin-save-missing-backup-temperature-plan-20261105.json"
+    ],
+    "sourcePrAlreadyMerged": true,
+    "finalizationKind": "record-public-static-readback-only"
+  },
   "execution": {
-    "status": "validated-pending-pr-and-deployment",
-    "pullRequest": null,
-    "sourceCommit": null,
+    "status": "deployed-static-ui-readback-verified",
+    "pullRequest": {
+      "number": 1759,
+      "url": "https://github.com/AI-Scarlett/DSH-Store/pull/1759",
+      "state": "MERGED",
+      "mergedAt": "2026-11-04T23:23:06Z"
+    },
+    "sourceCommit": "641908ebbe536de8f25b654f008b94cc54c6152b",
     "checks": {
       "domIds": "passed; all 54 literal admin.js DOM selectors exist in the HTML; backup-temperature occurs once.",
       "npmRunCheck": "passed; registry validation and 604 tests passed.",
@@ -67,6 +81,22 @@
       "domesticStaticBuild": "passed; STATIC_MARKETPLACE_OK; generated admin page contains the backup-temperature control once.",
       "internationalStaticBuild": "passed; STATIC_MARKETPLACE_OK; generated admin page contains the backup-temperature control once."
     },
-    "deploymentReadback": {}
+    "deploymentReadback": {
+      "verifiedAt": "2026-11-05",
+      "international": {
+        "url": "https://dsh.store/admin/",
+        "httpStatus": 200,
+        "htmlSha256": "df74effeed561af700ed235bcfabcac9bd9924ad40fd9a751c4aa7737fbbefd3",
+        "backupTemperatureOccurrences": 1
+      },
+      "domestic": {
+        "url": "https://dsh-store.cn/admin/",
+        "httpStatus": 200,
+        "htmlSha256": "df74effeed561af700ed235bcfabcac9bd9924ad40fd9a751c4aa7737fbbefd3",
+        "backupTemperatureOccurrences": 1
+      },
+      "authenticatedModelSettingsSaveRequestSubmitted": false,
+      "modelServiceOrConfigurationChanged": false
+    }
   }
 }
