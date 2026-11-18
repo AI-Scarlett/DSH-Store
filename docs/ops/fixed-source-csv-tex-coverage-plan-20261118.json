@@ -48,7 +48,11 @@
     "registry": "npm run validate:registry passed: REGISTRY_OK entries=915.",
     "fullCheck": "npm run check completed registry validation and 671/673 tests; two unrelated static-copy fixtures failed with ENOSPC while copying large catalog/discovery files on the local volume with approximately 160 MiB free.",
     "gitDiffCheck": "passed",
-    "fixedSourceScope": "No third-party code was executed, installed, built, or tested."
+    "fixedSourceScope": "No third-party code was executed, installed, built, or tested.",
+    "githubCi": {
+      "registryValidationRun": "44239287063: success",
+      "upgradeMatrixRun": "44239287202: resolve, previous-latest-three, and all 10 runtime matrix jobs passed; next-channel skipped by design"
+    }
   },
   "authorizationRecord": {
     "githubWriteCredential": "short-lived-token-required",
@@ -59,5 +63,5 @@
     "baseCommit": "9f87eb8ad1ac78bc9547c6cac90be8f3dcfacd24",
     "description": "Revert only the bounded scanner and test changes. No Catalog entry or contact reservation is modified."
   },
-  "status": "local_focused_verified_full_check_limited_by_enospc_pending_ci"
+  "status": "ci_passed_pending_merge"
 }
