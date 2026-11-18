@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict'
 import { createHash } from 'node:crypto'
+import { readFile } from 'node:fs/promises'
 import test from 'node:test'
 import { packageSourceSurface, missingLocalModuleReasons, unsupportedPackageEntry } from '../src/package-source-surface.mjs'
 import { reviewFixedSource } from '../src/fixed-source-review.mjs'
@@ -14,6 +15,22 @@ const policy = {
 }
 const manifest = { files: ['index.js', 'lib/', 'cordis.patch.yml'], main: 'index.js', dsh: { bundle: { patch: './cordis.patch.yml' } } }
 const sources = { 'package.json': JSON.stringify(manifest), 'index.js': 'export const demo = true', 'lib/client.js': 'export const client = true', 'cordis.patch.yml': '- insert: []', 'README.md': '# demo', LICENSE: 'MIT' }
+
+test('DSH package includes runtime Registry data without maintenance or author-contact ledgers', async () => {
+  const packageJson = JSON.parse(await readFile(new URL('../package.json', import.meta.url), 'utf8'))
+  const registryFiles = packageJson.files.filter(path => path.startsWith('registry/')).sort()
+  assert.deepEqual(registryFiles, [
+    'registry/automation-policy.json',
+    'registry/candidates.json',
+    'registry/catalog-index.json',
+    'registry/catalog.json',
+    'registry/catalog/details/**',
+    'registry/community-recommendations.json',
+    'registry/discovery-index.json',
+  ].sort())
+  assert.ok(!packageJson.files.includes('registry'))
+})
+
 function treeOf(files, modes = {}) {
   return { truncated: false, tree: Object.entries(files).map(([path, source]) => {
     const bytes = Buffer.byteLength(source)

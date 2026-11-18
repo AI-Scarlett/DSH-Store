@@ -1,0 +1,74 @@
+{
+  "schemaVersion": 1,
+  "type": "owner-directed-source-security-correction",
+  "planId": "dsh-store-package-boundary-review-20261119",
+  "createdAt": "2026-11-19T00:00:00Z",
+  "authorization": {
+    "source": "direct-user-request",
+    "request": "Review the deferred DSH Store update and resolve confirmed self-scan false positives and unnecessary author-contact records in the package."
+  },
+  "baseCommit": "269429cde3abc7eb08f512cca1f075202dbd4dd1",
+  "fileScope": {
+    "modify": [
+      "package.json",
+      "deploy/setup-model-service.sh",
+      "src/automation-source-policy.mjs",
+      "src/submission-security-scan.mjs",
+      "test/package-source-surface.test.mjs",
+      "test/plugin-submission.test.mjs"
+    ],
+    "add": [
+      "docs/ops/dsh-store-package-boundary-review-20261119.json"
+    ]
+  },
+  "preconditionsSha256": {
+    "package.json": "854c35b1b02533b4d73baae913c7cd7e360a9a80836bdde765e309bd0e485dc0",
+    "deploy/setup-model-service.sh": "3379595291c7b55583097d4d22f24c74b8206f71900c464a1b7b1cb011069bb4",
+    "src/automation-source-policy.mjs": "1733745a1e25cdb3085f1b143b9019e4ba2ec1d9eac8ed40988261821bd19675",
+    "src/submission-security-scan.mjs": "f1e353af9a34bc50f69f67231ae6f73aedf3ad62d218e105acab22f1c3258371",
+    "test/package-source-surface.test.mjs": "586fc33f39163aa658c4e25aa6c0666a2804492e3cbad72058efdcc4c9df1d25",
+    "test/plugin-submission.test.mjs": "89b7187fbf7889cc2fcc2115871b95cbcb4ad40571dbe35fa1d0fa2479674859"
+  },
+  "preconditionsAbsent": [
+    "docs/ops/dsh-store-package-boundary-review-20261119.json"
+  ],
+  "change": {
+    "packageBoundary": "Include runtime-required Catalog, index, candidate, policy, recommendations, and discovery data plus npm's automatically included Registry README; do not package author-contact history, reply plans, resolution plans, or maintenance ledgers.",
+    "securityScan": "Mask JavaScript regex literals before line-signature matching while retaining strings and executable code, so a scanner does not flag its own detection patterns.",
+    "deploymentBundle": "Keep the embedded standalone setup archive's package.json byte-identical to the repository package.json.",
+    "catalogContentMutation": false,
+    "authorContact": false,
+    "thirdPartyCodeExecution": false,
+    "realDshProfile": "untouched",
+    "productionDeployment": "not performed"
+  },
+  "verification": {
+    "required": [
+      "npm run check",
+      "npm pack --dry-run --ignore-scripts --json: required runtime registry assets present and no author-contact data included",
+      "standalone deployment archive embeds the current package.json byte-for-byte",
+      "git diff --check",
+      "scanner regression: own rule literals are ignored and malicious executable samples remain detected"
+    ],
+    "result": "passed",
+    "npmRunCheck": "passed: REGISTRY_OK entries=914; 683 tests passed, 0 failed",
+    "npmPackDryRun": "passed: 1039 files, 26680624 unpacked bytes, all required runtime Registry assets included, no author-contact or admission-review Registry files included",
+    "selfScan": "passed: 0 findings in src/submission-security-scan.mjs; regression fixtures retain miner, download-execution, child-process, and shell-mode detection",
+    "embeddedDeploymentPackage": "passed: standalone setup bundle contains package.json byte-identical to the repository package.json",
+    "gitDiffCheck": "passed"
+  },
+  "postconditionsSha256": {
+    "package.json": "aee0d98a3a6bcaf72bb31f9d4420d193166f01826e0296f96f2d44f4f7169c45",
+    "deploy/setup-model-service.sh": "1b4769de42870d21796088f913e496264bf56bca1cc42d1b6569f032da62acb1",
+    "src/automation-source-policy.mjs": "a8c65f4461481daed1c6e0049fde71492839761d593c1a21d2aa69ea24268bbc",
+    "src/submission-security-scan.mjs": "4d4feb9e57d2ddd765fb5e66ed89e85d97f52adc7fa5cf52fe605a7b5a51046c",
+    "test/package-source-surface.test.mjs": "731f0bafe87c07f7c68009f8d5c31c19696a59e00893c54a37083dd1e84e2fc6",
+    "test/plugin-submission.test.mjs": "ff0cfe2f11da220e12fc287247e83b67d9da18ce62b7e51c5b73caf9c5fd313f"
+  },
+  "recovery": {
+    "type": "git-revert",
+    "recoverableBase": "269429cde3abc7eb08f512cca1f075202dbd4dd1",
+    "description": "Revert the atomic source correction; no Catalog, real Profile, or production service is changed by this plan."
+  },
+  "status": "verified-pending-pr"
+}

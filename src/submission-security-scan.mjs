@@ -1,4 +1,5 @@
 import { SOURCE_SCAN_BOUNDS } from './source-scan-policy.mjs'
+import { javascriptCode } from './automation-source-policy.mjs'
 export const SUBMISSION_SCAN_BOUNDS = Object.freeze({
   maxFiles: SOURCE_SCAN_BOUNDS.maxRuntimeFiles,
   maxFileBytes: SOURCE_SCAN_BOUNDS.maxFileBytes,
@@ -6,6 +7,7 @@ export const SUBMISSION_SCAN_BOUNDS = Object.freeze({
 })
 
 const REVIEW_ONLY_PATH = /(?:^|\/)(?:docs?|examples?|fixtures?|tests?|__tests__)(?:\/|$)|(?:^|\/)[^/]+\.(?:test|spec)\.[^/]+$/i
+const JAVASCRIPT_SOURCE_FILE = /\.(?:[cm]?[jt]sx?|[cm]?ts)$/i
 
 const RULES = Object.freeze([
   {
@@ -114,7 +116,10 @@ export function scanSubmissionSources(files, options = {}) {
 
   for (const file of sortedFiles) {
     const reviewOnly = options.packaged !== true && REVIEW_ONLY_PATH.test(file.path)
-    const lines = file.source.split(/\r?\n/)
+    const source = JAVASCRIPT_SOURCE_FILE.test(file.path)
+      ? javascriptCode(file.source, { keepStrings: true })
+      : file.source
+    const lines = source.split(/\r?\n/)
     for (let index = 0; index < lines.length; index += 1) {
       const line = lines[index].slice(0, SUBMISSION_SCAN_BOUNDS.maxFileBytes)
       for (const rule of RULES) {

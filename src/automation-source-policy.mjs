@@ -71,7 +71,7 @@ function blankNonCode(source, start, end, output) {
 // A deliberately small JavaScript/TypeScript lexer, not a parser. It retains
 // code positions (including `${...}` expressions) and blanks comments, quoted
 // strings, template raw text, and regex literals without changing offsets.
-function javascriptCode(source, { keepStrings = false } = {}) {
+export function javascriptCode(source, { keepStrings = false } = {}) {
   // Keep UTF-16 indexing aligned with RegExp match.index.
   const output = source.split('')
   const templates = []
