@@ -22,24 +22,24 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "8a50d6576ab4727ea4654a6fb65821465e5ec60a",
-  "version": "0.4.5",
+  "commit": "52ec5dc8b2b7cbe46239e89aadc444a955a2e6e9",
+  "version": "0.5.0",
   "categories": [
     "themes"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-11-13T17:35:09.000Z",
-    "observedAt": "2026-11-13T20:27:56.000Z",
+    "updatedAt": "2026-11-18T19:24:26.000Z",
+    "observedAt": "2026-11-18T20:13:09.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-11-13T20:27:56.000Z",
-      "evidenceUrl": "https://github.com/Tkingxiao/dsh-any-background/commit/8a50d6576ab4727ea4654a6fb65821465e5ec60a",
+      "checkedAt": "2026-11-18T20:13:09.000Z",
+      "evidenceUrl": "https://github.com/Tkingxiao/dsh-any-background/commit/52ec5dc8b2b7cbe46239e89aadc444a955a2e6e9",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -78,14 +78,14 @@
   },
   "admission": {
     "engine": "bounded-source-v3",
-    "binding": "6d1b70aac5597a67e088a92a4d9a8493531b95dd5156289a25947f0b21d8806b",
+    "binding": "69b0a69b0931a4d05ba735c6f407fbf621d7f5a285ce1e0f02161486a65cf47b",
     "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
     "state": "review-required",
     "sourceContract": "unverified",
     "coverage": "complete",
     "capabilities": "review-required",
     "compatibility": "per-version-declaration",
-    "reviewRegistryDigest": "f40e4a10a2ae7f8d8dadbbde3a7a03e9f7d967caf114a14d6a7bbfe46a93efbf"
+    "reviewRegistryDigest": "53f07e3235a16f227a00b0c2a6a21e0c47a7b4bbdff17d8dd3a06a8005edc36a"
   },
   "entryIds": [
     "dsh-any-background"
@@ -94,7 +94,7 @@
   "status": "blocked",
   "statusReason": "Automatic policy blocked installation: Node.js compatibility is not explicitly declared; runtime or optional dependencies require a separate supply-chain review; runtime source contains the files permission signal; runtime source contains the network permission signal",
   "compatibility": {
-    "dsh": "0.2.0-rc.1 || 0.2.0-rc.2 || 0.2.1-alpha.1 || 0.2.1-alpha.2 || 0.2.1-alpha.3 || 0.2.1-alpha.4 || 0.2.1-alpha.5 || 0.2.1-rc.1 || 0.2.1-rc.2 || 0.2.1-rc.3 || 0.2.1-rc.4 || 0.2.1-rc.5 || 0.2.2-alpha.2 || 0.2.2-rc.1 || 0.2.2-rc.2 || 0.2.2-rc.3 || >=0.2.0-rc.1",
+    "dsh": "0.2.1-alpha.1 || 0.2.1-alpha.2 || 0.2.1-alpha.3 || 0.2.1-alpha.4 || 0.2.1-alpha.5 || 0.2.1-rc.1 || 0.2.1-rc.2 || 0.2.1-rc.3 || 0.2.1-rc.4 || 0.2.1-rc.5 || 0.2.2-alpha.2 || 0.2.2-rc.1 || 0.2.2-rc.2 || 0.2.2-rc.3 || >=0.2.1-alpha.1",
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
@@ -104,22 +104,20 @@
       "0.1.2-alpha.3": "unknown",
       "0.1.2-alpha.4": "unknown",
       "0.1.2-alpha.5": "unknown",
-      "0.2.0-rc.1": "unknown",
-      "0.2.0-rc.2": "unknown",
-      "0.2.1-alpha.1": "unknown",
-      "0.2.1-alpha.2": "unknown",
-      "0.2.1-alpha.3": "unknown",
-      "0.2.1-alpha.4": "unknown",
-      "0.2.1-alpha.5": "unknown",
-      "0.2.1-rc.1": "unknown",
-      "0.2.1-rc.2": "unknown",
-      "0.2.1-rc.3": "unknown",
-      "0.2.1-rc.4": "unknown",
-      "0.2.1-rc.5": "unknown",
-      "0.2.2-alpha.2": "unknown",
-      "0.2.2-rc.1": "unknown",
-      "0.2.2-rc.2": "unknown",
-      "0.2.2-rc.3": "unknown",
+      "0.2.1-alpha.1": "compatible",
+      "0.2.1-alpha.2": "compatible",
+      "0.2.1-alpha.3": "compatible",
+      "0.2.1-alpha.4": "compatible",
+      "0.2.1-alpha.5": "compatible",
+      "0.2.1-rc.1": "compatible",
+      "0.2.1-rc.2": "compatible",
+      "0.2.1-rc.3": "compatible",
+      "0.2.1-rc.4": "compatible",
+      "0.2.1-rc.5": "compatible",
+      "0.2.2-alpha.2": "compatible",
+      "0.2.2-rc.1": "compatible",
+      "0.2.2-rc.2": "compatible",
+      "0.2.2-rc.3": "compatible",
       "0.2.2-rc.4": "unknown",
       "0.2.2-rc.5": "unknown"
     },
@@ -167,18 +165,6 @@
         "rollback": "unknown"
       },
       "0.1.2-alpha.5": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.2.0-rc.1": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.2.0-rc.2": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",
