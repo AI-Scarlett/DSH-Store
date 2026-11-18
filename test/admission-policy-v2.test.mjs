@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict'
+import { readFile } from 'node:fs/promises'
 import test from 'node:test'
 import { createHash } from 'node:crypto'
 import { bundlePatchContract, patchPackageExports } from '../src/bundle-patch-contract.mjs'
@@ -9,7 +10,7 @@ import { catalogIdentityHash, catalogMigrationTarget, migrateCatalogIdentity, va
 import { missingLocalModuleReasons, packageSourceSurface, SCANNABLE_SOURCE, unsupportedPackageEntry } from '../src/package-source-surface.mjs'
 import { permissionSignals } from '../src/automation-source-policy.mjs'
 import { applyLatestDshCompatibilityPolicy } from '../src/catalog-compatibility-policy.mjs'
-import { exactHostCompatibility } from '../src/catalog.mjs'
+import { exactHostCompatibility, loadCatalogFromFiles } from '../src/catalog.mjs'
 import { reassessCatalog } from '../scripts/reassess-admission.mjs'
 
 const candidate = { id: 'demo', repositoryUrl: 'https://github.com/example/demo', commit: 'a'.repeat(40), manifestPath: 'package.json', packageName: 'dsh-demo', version: '1.0.0', entryIds: ['demo'] }
@@ -388,6 +389,22 @@ test('identity migration binds old identity, exact pair and new source; migratio
   assert.throws(() => migrateCatalogIdentity(entry, snapshot, { name: 'wrong', license: 'MIT' }, registry), /preconditions/)
   registry.migrations[0].to.manifestPath = '../outside'
   assert.throws(() => validateCatalogMigrations(registry))
+})
+
+test('the author-requested dsh-deepseek-cost recheck repairs the stale Catalog package identity without admitting it', async () => {
+  const catalog = await loadCatalogFromFiles()
+  const migrations = JSON.parse(await readFile(new URL('../registry/catalog-migrations.json', import.meta.url), 'utf8'))
+  const entry = catalog.entries.find(item => item.id === 'dsh-deepseek-cost')
+  const snapshot = { commit: '2835b855d00685f29d5e2514ff471c4cbd89d01d', repositoryUrl: entry.repositoryUrl }
+  const migration = catalogMigrationTarget(entry, snapshot, migrations)
+  assert.equal(migration.manifestPath, 'package.json')
+  assert.equal(migration.record.from.packageName, 'dsh-deepseek-cost')
+  const result = migrateCatalogIdentity(entry, snapshot, { name: '@skyrocks/dsh-deepseek-cost', license: 'MIT' }, migrations)
+  assert.equal(result.applied, true)
+  assert.equal(result.entry.packageName, '@skyrocks/dsh-deepseek-cost')
+  assert.equal(result.entry.status, 'blocked')
+  assert.equal(result.entry.updatePolicy, 'external-only')
+  assert.equal(result.entry.commit, entry.commit)
 })
 
 test('latest-three is a recheck window while exact historical host evidence controls installation', () => {

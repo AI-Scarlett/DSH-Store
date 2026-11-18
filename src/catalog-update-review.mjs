@@ -266,9 +266,16 @@ export function admissionReviewRegistryStaleForEntry(entry, reviews, registryDig
     || entry.admission.reviewRegistryDigest === registryDigest) return false
   const repositoryUrl = String(entry.repositoryUrl ?? '').toLowerCase()
   const commit = String(entry.commit ?? '').toLowerCase()
-  return /^[0-9a-f]{40}$/.test(commit) && reviews.some(review =>
-    String(review?.repositoryUrl ?? '').toLowerCase() === repositoryUrl
-      && String(review?.commit ?? '').toLowerCase() === commit)
+  if (!/^[0-9a-f]{40}$/.test(commit)) return false
+  const matching = reviews.filter(review => String(review?.repositoryUrl ?? '').toLowerCase() === repositoryUrl
+    && String(review?.commit ?? '').toLowerCase() === commit)
+  const compatibilityHold = entry.status === 'unlisted'
+    && String(entry.statusReason ?? '').startsWith(COMPATIBILITY_HOLD_PREFIX)
+  const currentVerdict = matching.some(review => review.binding === entry.admission.binding
+    && (review.verdict === 'approved' && (entry.status === 'approved' || compatibilityHold)
+      || review.verdict === 'rejected' && entry.status === 'blocked'))
+  if (currentVerdict) return false
+  return matching.length > 0
 }
 
 export function refreshAutomaticPolicyReview(entry, reviewed) {

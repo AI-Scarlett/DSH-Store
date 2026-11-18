@@ -10,8 +10,54 @@ function fail(message) {
   throw new TypeError(`invalid manual DSH scan plan: ${message}`)
 }
 
+function validateAuthorRequestedRecheck(value) {
+  if (value.schemaVersion !== 1 || value.type !== 'author-requested-catalog-recheck') fail('unsupported author recheck plan type')
+  if (typeof value.planId !== 'string' || !/^[a-z0-9][a-z0-9-]{5,100}$/.test(value.planId)) fail('author recheck plan ID is invalid')
+  if (!FULL_SHA.test(value.baseCommit ?? '')) fail('author recheck base Commit must be a full Git SHA')
+  const request = value.request
+  if (!request || request.repository !== 'AI-Scarlett/DSH-Store'
+    || !Number.isSafeInteger(request.issueNumber) || request.issueNumber < 1
+    || !Number.isSafeInteger(request.commentId) || request.commentId < 1
+    || !Number.isSafeInteger(request.userId) || request.userId < 1
+    || !Number.isFinite(Date.parse(request.updatedAt)) || !SHA256.test(request.bodySha256 ?? '')
+    || typeof request.quote !== 'string' || request.quote.length < 8
+    || !/recheck|re-review|fixed.commit|复扫|复检|重新扫|重新检查/i.test(request.quote)) {
+    fail('an exact live author recheck request is required')
+  }
+  const catalog = value.catalog
+  let repositoryUrl
+  try { repositoryUrl = canonicalGithubRepository(catalog?.repositoryUrl) } catch { fail('Catalog repository is invalid') }
+  if (repositoryUrl !== catalog.repositoryUrl || typeof catalog.id !== 'string' || !/^[a-z0-9][a-z0-9-]{1,95}$/.test(catalog.id)
+    || !FULL_SHA.test(catalog.commit ?? '') || !RELEASE.test(catalog.version ?? '')
+    || catalog.status !== 'blocked' || catalog.updatePolicy !== 'external-only') {
+    fail('author rechecks may refresh only the exact blocked external-only Catalog entry')
+  }
+  if (!FULL_SHA.test(value.source?.commit ?? '') || !RELEASE.test(value.source?.version ?? '')) fail('author recheck source identity is invalid')
+  if (value.authorization?.source !== 'direct-user-request' || typeof value.authorization.request !== 'string'
+    || !value.authorization.request.trim()) fail('direct user authorization is required')
+
+  if (value.withdrawal !== undefined) {
+    const withdrawal = value.withdrawal
+    let withdrawalRepository
+    try { withdrawalRepository = canonicalGithubRepository(withdrawal.repositoryUrl) } catch { fail('withdrawal repository is invalid') }
+    const expectedUrl = `https://github.com/AI-Scarlett/DSH-Store/issues/${withdrawal.issueNumber}#issuecomment-${withdrawal.commentId}`
+    if (withdrawalRepository !== withdrawal.repositoryUrl || typeof withdrawal.catalogId !== 'string'
+      || !Number.isSafeInteger(withdrawal.issueNumber) || withdrawal.issueNumber < 1
+      || !Number.isSafeInteger(withdrawal.commentId) || withdrawal.commentId < 1
+      || !Number.isSafeInteger(withdrawal.userId) || withdrawal.userId < 1
+      || !Number.isFinite(Date.parse(withdrawal.updatedAt)) || !SHA256.test(withdrawal.bodySha256 ?? '')
+      || withdrawal.requestUrl !== expectedUrl || withdrawal.expectedRepositoryState !== 'not-found'
+      || typeof withdrawal.quote !== 'string' || !/deleted|已删除|不存在/i.test(withdrawal.quote)
+      || !/close|关闭/i.test(withdrawal.quote) || !/unlist|下架/i.test(withdrawal.quote)) {
+      fail('withdrawal requires a hash-bound author request to close and unlist the missing repository')
+    }
+  }
+  return value
+}
+
 export function validateManualScanPlan(value) {
   if (!value || typeof value !== 'object' || Array.isArray(value)) fail('object is required')
+  if (value.type === 'author-requested-catalog-recheck') return validateAuthorRequestedRecheck(value)
   if (value.schemaVersion !== 1 || value.type !== 'manual-dsh-known-plugin-rescan') fail('unsupported plan type')
   const scan = value.scan
   if (!scan || typeof scan !== 'object' || scan.status !== 'complete') fail('complete scan evidence is required')

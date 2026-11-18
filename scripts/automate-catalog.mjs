@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import { createCatalogGithubReader, sameCommitLineage } from './catalog-github-reader.mjs'
 import { admissionDecision, LICENSE_METADATA_REVIEW_REASON, validateAdmissionReviews } from '../src/admission-review.mjs'
-import { validateCatalogMigrations, migrateCatalogIdentity, catalogMigrationTarget, catalogMigrationSource, verifyMigrationRepositories } from '../src/catalog-migration.mjs'
+import { catalogIdentityHash, validateCatalogMigrations, migrateCatalogIdentity, catalogMigrationTarget, catalogMigrationSource, verifyMigrationRepositories } from '../src/catalog-migration.mjs'
 import { SOURCE_SCAN_BOUNDS, SCAN_POLICY_VERSION, MANIFEST_MAX_BYTES } from '../src/source-scan-policy.mjs'
 
 import { reviewFixedSource } from '../src/fixed-source-review.mjs'
@@ -42,6 +42,7 @@ import { isBoundedSourceLineage, isNoCommonAncestorError } from '../src/automati
 import { assertNoExcludedRecommendations, isBlockedAuthor, isWithdrawnRepository, pruneExcludedRecommendations } from '../src/author-exclusions.mjs'
 import { validateCommunityRecommendations } from '../marketplace/lib/community-recommendations.js'
 import {
+  bindFixedSourceLatestDshWindow,
   applyLatestDshCompatibilityPolicy,
   createManualCompatibilityCandidateScope,
   supportsDshReleaseWindow,
@@ -67,6 +68,7 @@ const admissionReviews = validateAdmissionReviews(JSON.parse(await readFile(reso
 const admissionReviewDigest = sha256(JSON.stringify(admissionReviews))
 const catalogMigrations = validateCatalogMigrations(JSON.parse(await readFile(resolve(root, 'registry/catalog-migrations.json'), 'utf8')))
 const LIFECYCLE_SCRIPTS = ['preinstall', 'install', 'postinstall', 'prepare']
+const STORE_REPLY_USER_IDS = new Set([264102358, 41898282])
 const INFRASTRUCTURE_CODES = new Set([
   'SUBMISSION_FETCH_UNAVAILABLE', 'SUBMISSION_GITHUB_HTTP', 'SUBMISSION_GITHUB_TIMEOUT',
   'SUBMISSION_GITHUB_NETWORK', 'SUBMISSION_REPOSITORY_HTTP', 'SUBMISSION_COMMIT_HTTP',
@@ -320,6 +322,214 @@ function stableJson(value) {
   return `{${Object.keys(value).sort().map(key => `${JSON.stringify(key)}:${stableJson(value[key])}`).join(',')}}`
 }
 
+function authorCommentTime(comment) {
+  const time = Date.parse(comment?.updated_at ?? comment?.created_at ?? '')
+  return Number.isFinite(time) ? time : 0
+}
+
+async function verifyAuthorRequest(github, request, repositoryUrl, expectedRepositoryState = 'present') {
+  const central = 'AI-Scarlett/DSH-Store'
+  const canonicalRepository = canonicalGithubRepository(repositoryUrl)
+  const { owner, repository } = repositoryParts(canonicalRepository)
+  const issue = await github.api(`repos/${central}/issues/${request.issueNumber}`)
+  const noticeMarker = `<!-- dsh-author-notice:v1 key=${owner}/${repository}`
+  if (issue.pull_request || issue.state !== 'open' || !issue.body?.includes(canonicalRepository)
+    || !issue.body.includes(noticeMarker)) throw new Error('author request no longer matches the open managed remediation Issue')
+  const comments = await github.api(`repos/${central}/issues/${request.issueNumber}/comments?per_page=100`)
+  if (!Array.isArray(comments) || comments.length >= 100) throw new Error('author request comment snapshot is incomplete')
+  const authors = comments.filter(comment => Number(comment.user?.id) === request.userId && comment.user?.type === 'User')
+    .sort((left, right) => authorCommentTime(left) - authorCommentTime(right) || Number(left.id) - Number(right.id))
+  const latest = authors.at(-1)
+  if (latest?.id !== request.commentId || latest.updated_at !== request.updatedAt
+    || sha256(String(latest.body ?? '')) !== request.bodySha256
+    || !String(latest.body ?? '').includes(request.quote)) throw new Error('author request changed, was withdrawn, or was superseded')
+  if (comments.some(comment => STORE_REPLY_USER_IDS.has(Number(comment.user?.id))
+    && (authorCommentTime(comment) > authorCommentTime(latest)
+      || authorCommentTime(comment) === authorCommentTime(latest) && Number(comment.id) > Number(latest.id)))) {
+    throw new Error('author request already has a later Store response')
+  }
+  if (String(latest.user?.login ?? '').toLowerCase() !== owner.toLowerCase()) {
+    throw new Error('author request identity does not match the canonical repository owner')
+  }
+  let repositoryMetadata
+  try {
+    repositoryMetadata = await github.api(`repos/${owner}/${repository}`)
+  } catch (error) {
+    if (expectedRepositoryState !== 'not-found' || error?.status !== 404) throw error
+    return { issue, comment: latest, repository: null }
+  }
+  if (expectedRepositoryState === 'not-found') throw new Error('withdrawn repository is available; regenerate the source plan')
+  const ownerId = requiredOwnerUserId(repositoryMetadata, 'author request source verification')
+  if (ownerId !== request.userId || repositoryMetadata?.private === true || repositoryMetadata?.archived === true
+    || repositoryMetadata?.disabled === true) throw new Error('author request source is not the same active public owner repository')
+  return { issue, comment: latest, repository: repositoryMetadata }
+}
+
+async function applyAuthorWithdrawalPlan(catalog, policy, plan, originalCatalogIndex, github, report) {
+  if (!plan.withdrawal) return []
+  const request = plan.withdrawal
+  await verifyAuthorRequest(github, request, request.repositoryUrl, request.expectedRepositoryState)
+  const repositoryUrl = canonicalGithubRepository(request.repositoryUrl)
+  const repositoryHash = sha256(`github-repository:${repositoryUrl.toLowerCase()}`)
+  const policyRecord = (policy.withdrawnRepositories ?? []).find(record =>
+    record.repositoryUrlSha256 === repositoryHash
+      && record.requestRefSha256 === sha256(request.requestUrl)
+      && record.requestBodySha256 === request.bodySha256)
+  if (!policyRecord) throw new Error('withdrawal request is not present in the reviewed Catalog policy')
+  const entry = catalog.entries.find(item => item.id === request.catalogId)
+  if (!entry || canonicalGithubRepository(entry.repositoryUrl) !== repositoryUrl || !isWithdrawnRepository(entry.repositoryUrl, policy)) {
+    throw new Error('withdrawal Catalog target changed or has already been removed')
+  }
+  const indexDocument = JSON.parse(originalCatalogIndex.toString('utf8'))
+  const indexEntry = indexDocument.entries?.find(item => item.id === entry.id && item.repositoryUrl === repositoryUrl)
+  const detailPath = indexEntry?.detailPath
+  if (typeof detailPath !== 'string' || !/^catalog\/details\/[a-z0-9][a-z0-9-]*\.json$/.test(detailPath)) {
+    throw new Error('withdrawn Catalog entry has no exact bounded detail path')
+  }
+  catalog.entries = catalog.entries.filter(item => item !== entry)
+  report.removedEntries.push({
+    recordFingerprint: sha256(`${entry.id}\n${entry.repositoryUrl.toLowerCase()}`),
+    reason: 'author-requested-permanent-withdrawal',
+  })
+  return [`registry/${detailPath}`]
+}
+
+async function inspectAuthorCatalogRecheck(catalog, policy, github, observedAt, report, plan, dshReleaseWindow) {
+  const entry = catalog.entries.find(item => item.id === plan.catalog.id)
+  if (!entry || entry.repositoryUrl !== plan.catalog.repositoryUrl || entry.commit !== plan.catalog.commit
+    || entry.version !== plan.catalog.version || entry.status !== 'blocked' || entry.updatePolicy !== 'external-only') {
+    throw new Error('author recheck Catalog identity or blocked external-only precondition changed')
+  }
+  await verifyAuthorRequest(github, plan.request, plan.catalog.repositoryUrl, 'present')
+  const { owner, repository } = repositoryParts(plan.catalog.repositoryUrl)
+  const metadata = await github.api(`repos/${owner}/${repository}`)
+  const defaultBranch = metadata.default_branch
+  if (typeof defaultBranch !== 'string' || !defaultBranch) throw new Error('author recheck source has no verified default branch')
+  const head = await github.api(`repos/${owner}/${repository}/commits/${encodeURIComponent(defaultBranch)}`)
+  if (head?.sha !== plan.source.commit) throw new Error('author recheck source Commit changed; regenerate the plan')
+
+  const withoutCurrent = { ...catalog, entries: catalog.entries.filter(item => item.id !== entry.id) }
+  const result = await retryInfrastructure(() => checkRepository(plan.catalog.repositoryUrl, entry.installPath ?? '.', {
+    catalogDocument: withoutCurrent,
+    token: process.env.GITHUB_TOKEN,
+    timeoutMs: 12_000,
+    fetch: github.fetch,
+    fixedCommit: plan.source.commit,
+  }))
+  const candidate = result.candidate
+  if (candidate.commit !== plan.source.commit || candidate.defaultBranch !== defaultBranch
+    || candidate.version !== plan.source.version || compareVersions(candidate.version, entry.version) <= 0
+    || normalizedLicense(candidate.details?.license) !== normalizedLicense(entry.details?.license)) {
+    throw new Error('author recheck fixed source no longer matches the approved Catalog identity and version scope')
+  }
+  let reviewEntry = entry
+  const migration = catalogMigrationTarget(entry, { commit: candidate.commit, repositoryUrl: candidate.repositoryUrl }, catalogMigrations)
+  if (migration.record) {
+    const manifest = JSON.parse(await github.raw(candidate.repositoryUrl, candidate.commit, candidate.manifestPath, { maxBytes: MANIFEST_MAX_BYTES }))
+    reviewEntry = migrateCatalogIdentity(entry, { commit: candidate.commit, repositoryUrl: candidate.repositoryUrl }, manifest, catalogMigrations).entry
+  }
+  if (!catalogUpdateIdentityMatches(reviewEntry, candidate)) {
+    throw new Error('author recheck fixed source identity differs from the Catalog entry and its reviewed migration')
+  }
+
+  let lineage = sameCommitLineage(entry.commit, candidate.commit)
+  let disconnectedHistory = false
+  if (!lineage) {
+    try {
+      lineage = await retryInfrastructure(() => github.api(
+        `repos/${owner}/${repository}/compare/${entry.commit}...${candidate.commit}`,
+        { maxBytes: 4 * 1024 * 1024, captureNoCommonAncestor: true },
+      ))
+    } catch (error) {
+      disconnectedHistory = isNoCommonAncestorError(error, entry.commit, candidate.commit)
+      if (!disconnectedHistory) throw error
+    }
+  }
+  if (!disconnectedHistory && !isBoundedSourceLineage(lineage, policy.updates?.maxCommitSpan ?? 200)) {
+    throw new Error('author recheck source is not a bounded descendant of the Catalog Commit')
+  }
+
+  const analysis = await retryInfrastructure(() => analyzeFixedSource(candidate, policy, github))
+  let reviewed = refreshAutomaticPolicyReview(reviewEntry, automatedEntry(candidate, analysis, observedAt))
+  if (reviewed.status !== 'blocked') {
+    reviewed = {
+      ...reviewed,
+      status: 'blocked',
+      statusReason: 'Automatic policy blocked installation: this Catalog entry is permanently external-only and cannot be auto-approved.',
+      updatePolicy: 'external-only',
+      risk: { ...reviewed.risk, review: 'automatic-policy-blocked-not-installable' },
+    }
+  }
+  if (reviewed.updatePolicy !== 'external-only') throw new Error('author recheck attempted to change external-only policy')
+  if (disconnectedHistory) reviewed = holdExternalOnlyAfterDisconnectedHistory(reviewed, entry.commit, candidate.commit, analysis.reasons)
+  const updated = buildCatalogVersionUpdate(reviewed, candidate, {
+    ...analysis,
+    sourceUpdatedAt: head?.commit?.committer?.date ?? head?.commit?.author?.date ?? metadata?.pushed_at ?? null,
+  }, observedAt, 'external-only')
+  if (updated.status !== 'blocked' || updated.updatePolicy !== 'external-only') {
+    throw new Error('author recheck did not preserve the non-installable external-only boundary')
+  }
+  const compatibility = bindFixedSourceLatestDshWindow(updated, dshReleaseWindow)
+  const index = catalog.entries.findIndex(item => item.id === entry.id)
+  catalog.entries[index] = updated
+  const review = {
+    catalogId: entry.id,
+    repositoryUrl: entry.repositoryUrl,
+    fromCommit: entry.commit,
+    toCommit: updated.commit,
+    fromVersion: entry.version,
+    toVersion: updated.version,
+    status: updated.status,
+    updatePolicy: updated.updatePolicy,
+    admissionBinding: updated.admission?.binding ?? null,
+    permissionSignals: analysis.signals,
+    sourceReview: {
+      engine: analysis.engine,
+      contractVerified: analysis.contractVerified,
+      contractReasons: analysis.contractReasons,
+      scanComplete: analysis.scanComplete,
+      filesScanned: analysis.filesScanned,
+      runtimeFiles: analysis.runtimeFiles,
+      runtimeBytes: analysis.runtimeBytes,
+      scope: analysis.scope,
+      capabilityEvidence: analysis.capabilityEvidence,
+      securityScan: analysis.securityScan,
+      runtimeDependencies: analysis.runtimeDependencies ?? {},
+      licenseEvidence: analysis.licenseEvidence ?? null,
+      budgetFindings: analysis.budgetFindings ?? [],
+    },
+    identityMigration: migration.record ? {
+      fromPackageName: migration.record.from.packageName,
+      toPackageName: migration.record.to.packageName,
+      previousIdentityHash: migration.record.previousIdentityHash,
+      currentIdentityHash: catalogIdentityHash(entry),
+    } : null,
+    reasons: analysis.reasons,
+    sourceDigest: analysis.sourceDigest,
+    disconnectedHistory,
+    compatibility,
+  }
+  report.manualScan = {
+    planId: sha256(stableJson({ baseCommit: report.baseCommit, inputPlanSha256: report.preconditions.manualScanPlanSha256,
+      catalog: plan.catalog, source: plan.source, request: plan.request })).slice(0, 24),
+    status: 'passed',
+    type: plan.type,
+    request: { issueNumber: plan.request.issueNumber, commentId: plan.request.commentId, userId: plan.request.userId, bodySha256: plan.request.bodySha256 },
+    selected: [{ repositoryUrl: candidate.repositoryUrl, commit: candidate.commit, packageName: candidate.packageName, version: candidate.version }],
+    latestDshReleasesAtPolicyRun: [...dshReleaseWindow.releases],
+    admitted: [],
+    authorRecheck: review,
+    withdrawnCatalogIds: [],
+  }
+  report.updatedEntries.push({ id: entry.id, from: entry.commit, to: updated.commit, fromVersion: entry.version,
+    toVersion: updated.version, version: updated.version, changeKind: 'author-requested-fixed-source-recheck',
+    policy: 'external-only', lineageReview: disconnectedHistory ? 'disconnected-history-external-only' : 'bounded-descendant' })
+  report.updateReviews.push({ id: entry.id, repositoryUrl: entry.repositoryUrl, manifestPath: entry.manifestPath,
+    catalogVersion: entry.version, upstreamVersion: updated.version, candidateCommit: updated.commit,
+    policy: 'external-only', lineageReview: disconnectedHistory ? 'disconnected-history-external-only' : 'bounded-descendant',
+    decision: 'catalog-updated-blocked', warnings: analysis.reasons })
+}
+
 async function inspectManualAdmissions(catalog, candidates, policy, github, observedAt, report, dshReleaseWindow, scanPlan) {
   const manualReport = {
     scanPlanId: scanPlan.scan.planId,
@@ -560,7 +770,7 @@ async function updateExistingEntries(catalog, policy, github, observedAt, report
       const recheckCurrent = snapshot.commit === entry.commit && (pendingMigration !== null
         || isPendingAutomaticPolicyRecheck(entry)
         || (policyReviewStale && (entry.admission?.engine !== SCAN_POLICY_VERSION
-          || entry.admission?.reviewRegistryDigest !== admissionReviewDigest
+          || admissionReviewRegistryStaleForEntry(entry, admissionReviews.reviews, admissionReviewDigest)
           || entry.admission?.policyDigest !== sha256(JSON.stringify({ sourceBounds: policy.sourceBounds, automaticApproval: policy.automaticApproval })))))
       if (snapshot.commit === entry.commit && !recheckCurrent) return { index, entry, kind: 'current' }
       let manifest
@@ -951,7 +1161,7 @@ async function restoreCatalogDetails(path) {
   await cp(path, catalogDetailsPath, { recursive: true, force: true })
 }
 
-async function writeCatalogFiles(bridgeBuffer, indexBuffer, details, { pruneUnlisted = true } = {}) {
+async function writeCatalogFiles(bridgeBuffer, indexBuffer, details, { pruneUnlisted = true, prunePaths = [] } = {}) {
   await mkdir(catalogDetailsPath, { recursive: true })
   const expected = new Set()
   for (const detail of details) {
@@ -971,6 +1181,14 @@ async function writeCatalogFiles(bridgeBuffer, indexBuffer, details, { pruneUnli
       const target = resolve(catalogDetailsPath, name)
       if (!expected.has(target)) await rm(target, { recursive: true, force: true })
     }
+  }
+  for (const path of prunePaths) {
+    if (typeof path !== 'string' || !/^registry\/catalog\/details\/[a-z0-9][a-z0-9-]*\.json$/.test(path)) {
+      throw new Error('manual Catalog withdrawal contains an unsafe detail path')
+    }
+    const target = resolve(root, path)
+    if (!target.startsWith(`${catalogDetailsPath}/`) || expected.has(target)) throw new Error('manual Catalog withdrawal detail path is outside its exact scope')
+    await rm(target, { force: true })
   }
   let existingIndex = null
   try { existingIndex = await readFile(catalogIndexPath) } catch (error) {
@@ -1073,6 +1291,9 @@ const recommendations = validateCommunityRecommendations(JSON.parse(originalReco
 failureContext.stage = 'validate-authority'
 const baseCommit = process.env.CATALOG_BASE_COMMIT ?? process.env.GITHUB_SHA ?? null
 if (baseCommit !== null && !/^[0-9a-f]{40}$/.test(baseCommit)) throw new Error('automation base Commit must be a full Git SHA')
+if (manualScanPlan?.type === 'author-requested-catalog-recheck' && manualScanPlan.baseCommit !== baseCommit) {
+  throw new Error('author recheck plan was not created against the current Catalog base Commit')
+}
 validateCatalog(catalog)
 assertLegacyCatalogCompatibility(catalog)
 assertCatalogLocalization(catalog)
@@ -1092,7 +1313,8 @@ const report = {
   planId: sha256(manualScanPlan
     ? `${baseCommit ?? 'local'}:${catalogSha}:${catalogIndexSha}:${candidatesSha}:${recommendationsSha}:${dshReleaseWindowSha}:${manualScanPlanSha}:${observedAt}`
     : `catalog-only:${baseCommit ?? 'local'}:${catalogSha}:${catalogIndexSha}:${candidatesSha}:${recommendationsSha}:${dshReleaseWindowSha}:${observedAt}`).slice(0, 24),
-  ...(manualScanPlan ? { mode: 'manual-fixed-source-batch-admission' } : {}),
+  ...(manualScanPlan ? { mode: manualScanPlan.type === 'author-requested-catalog-recheck'
+    ? 'manual-author-feedback-catalog-recheck' : 'manual-fixed-source-batch-admission' } : {}),
   ...(options.catalogOnly ? { mode: 'catalog-only-periodic-recheck', scanScope: 'catalog-only' } : {}),
   baseCommit,
   observedAt,
@@ -1147,9 +1369,44 @@ const report = {
 failureContext.report = report
 const github = createCatalogGithubReader()
 report.apiUsage = github.statistics
+let manualWithdrawalDetailPaths = []
 if (manualScanPlan) {
-  failureContext.stage = 'inspect-manual-fixed-source-admissions'
-  await inspectManualAdmissions(catalog, candidates, policy, github, observedAt, report, dshReleaseWindow, manualScanPlan)
+  if (manualScanPlan.type === 'author-requested-catalog-recheck') {
+    failureContext.stage = 'verify-author-requested-catalog-recheck'
+    manualWithdrawalDetailPaths = await applyAuthorWithdrawalPlan(catalog, policy, manualScanPlan, originalCatalogIndex, github, report)
+    await inspectAuthorCatalogRecheck(catalog, policy, github, observedAt, report, manualScanPlan, dshReleaseWindow)
+    report.manualScan.withdrawnCatalogIds = manualScanPlan.withdrawal ? [manualScanPlan.withdrawal.catalogId] : []
+    report.manualScan.withdrawalRequest = manualScanPlan.withdrawal
+      ? { issueNumber: manualScanPlan.withdrawal.issueNumber, commentId: manualScanPlan.withdrawal.commentId,
+        userId: manualScanPlan.withdrawal.userId, bodySha256: manualScanPlan.withdrawal.bodySha256 }
+      : null
+    report.manualScan.withdrawnDetailPaths = manualWithdrawalDetailPaths
+    report.manualScan.planId = sha256(stableJson({ planId: manualScanPlan.planId,
+      inputPlanSha256: manualScanPlanSha, preconditions: report.preconditions,
+      catalog: manualScanPlan.catalog, source: manualScanPlan.source,
+      request: manualScanPlan.request, withdrawal: manualScanPlan.withdrawal ?? null,
+    })).slice(0, 24)
+    report.compatibilityPolicy = {
+      authority: dshReleaseWindow.authority,
+      registryUrl: dshReleaseWindow.registryUrl,
+      latestVersion: dshReleaseWindow.latestVersion,
+      latestReleases: [...dshReleaseWindow.releases],
+      requiredCompatibleReleases: 1,
+      checkedCatalogEntries: 1,
+      compatibilityRecordsAdded: report.manualScan.authorRecheck.compatibility.recordsAdded,
+      catalogChanged: report.manualScan.authorRecheck.compatibility.changed,
+      candidatesChanged: false,
+      unlisted: [],
+      restored: [],
+      refreshed: [],
+      authorRecheck: [{ id: manualScanPlan.catalog.id,
+        releaseStatuses: report.manualScan.authorRecheck.compatibility.releaseStatuses,
+        compatibleReleasePresent: report.manualScan.authorRecheck.compatibility.compatibleReleasePresent }],
+    }
+  } else {
+    failureContext.stage = 'inspect-manual-fixed-source-admissions'
+    await inspectManualAdmissions(catalog, candidates, policy, github, observedAt, report, dshReleaseWindow, manualScanPlan)
+  }
 } else {
 // The scheduled path is deliberately Catalog-only. Candidate discovery,
 // Candidate Registry source reads, and retention cleanup require a separate
@@ -1209,11 +1466,17 @@ if (!recommendationsChanged && !canonicalRecommendationsBuffer.equals(originalRe
   throw new Error('Community recommendation serialization changed without a write decision')
 }
 if (manualScanPlan) {
-  if (candidatesChanged || recommendationsChanged) throw new Error('manual Catalog admission cannot mutate Candidate or Community registries')
+  if (candidatesChanged || recommendationsChanged) throw new Error('manual Catalog policy run cannot mutate Candidate or Community registries')
   const admittedIds = new Set(report.manualScan.admitted.map(entry => entry.id))
-  const changedDetails = split.details.filter(detail => admittedIds.has(detail.entry.id))
+  const recheckedIds = manualScanPlan.type === 'author-requested-catalog-recheck'
+    ? new Set([manualScanPlan.catalog.id]) : new Set()
+  const changedDetails = split.details.filter(detail => admittedIds.has(detail.entry.id) || recheckedIds.has(detail.entry.id))
+  const scopedFiles = new Set([
+    ...changedDetails.map(detail => `registry/${detail.path}`),
+    ...manualWithdrawalDetailPaths,
+  ])
   const scope = catalogChanged
-    ? [...new Set(['registry/catalog.json', 'registry/catalog-index.json', ...changedDetails.map(detail => `registry/${detail.path}`)])].sort()
+    ? [...new Set(['registry/catalog.json', 'registry/catalog-index.json', ...scopedFiles])].sort()
     : []
   const scopePreconditions = {}
   const scopePostconditions = {}
@@ -1229,16 +1492,29 @@ if (manualScanPlan) {
       try { existing = await readFile(resolve(root, file)) } catch (error) {
         if (error?.code !== 'ENOENT') throw error
       }
-      if (existing !== null) throw new Error(`manual Catalog admission detail path already exists: ${file}`)
       const detail = changedDetails.find(item => `registry/${item.path}` === file)
-      if (!detail) throw new Error(`manual Catalog admission plan lost detail path: ${file}`)
-      scopePreconditions[file] = null
-      scopePostconditions[file] = sha256(Buffer.from(`${JSON.stringify(detail.entry, null, 2)}\n`))
+      if (detail) {
+        if (manualScanPlan.type === 'manual-dsh-known-plugin-rescan' && existing !== null) {
+          throw new Error(`manual Catalog admission detail path already exists: ${file}`)
+        }
+        if (manualScanPlan.type === 'author-requested-catalog-recheck' && existing === null) {
+          throw new Error(`author recheck detail path is missing from the current Catalog: ${file}`)
+        }
+        scopePreconditions[file] = existing === null ? null : sha256(existing)
+        scopePostconditions[file] = sha256(Buffer.from(`${JSON.stringify(detail.entry, null, 2)}\n`))
+      } else {
+        if (!manualWithdrawalDetailPaths.includes(file) || existing === null) {
+          throw new Error(`manual Catalog withdrawal detail path is not present in the exact removal scope: ${file}`)
+        }
+        scopePreconditions[file] = sha256(existing)
+        scopePostconditions[file] = null
+      }
     }
   }
   report.mutationPlan = {
     schemaVersion: 1,
-    type: 'manual-fixed-source-catalog-admission',
+    type: manualScanPlan.type === 'author-requested-catalog-recheck'
+      ? 'manual-author-feedback-catalog-recheck' : 'manual-fixed-source-catalog-admission',
     planId: report.manualScan.planId,
     baseCommit,
     inputScanPlanSha256: manualScanPlanSha,
@@ -1285,7 +1561,10 @@ await backupCatalogDetails(catalogDetailsBackup)
 await copyFile(candidatesPath, candidatesBackup)
 await copyFile(recommendationsPath, recommendationsBackup)
 try {
-  if (catalogChanged) await writeCatalogFiles(catalogBuffer, catalogIndexBuffer, split.details, { pruneUnlisted: !manualScanPlan })
+  if (catalogChanged) await writeCatalogFiles(catalogBuffer, catalogIndexBuffer, split.details, {
+    pruneUnlisted: !manualScanPlan,
+    prunePaths: manualWithdrawalDetailPaths,
+  })
   if (candidatesChanged) await atomicWrite(candidatesPath, candidatesBuffer)
   if (recommendationsChanged) await atomicWrite(recommendationsPath, canonicalRecommendationsBuffer)
 } catch (error) {

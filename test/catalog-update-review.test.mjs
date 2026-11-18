@@ -384,6 +384,22 @@ test('a changed admission-review registry triggers only the matching fixed Commi
   assert.equal(admissionReviewRegistryStaleForEntry({ ...original, admission: undefined }, [record], 'new-registry'), false)
 })
 
+test('an unrelated admission-review addition preserves an exact current decision for the same fixed Commit', () => {
+  const current = entry({
+    status: 'approved',
+    admission: { state: 'reviewed', binding: 'same-binding', reviewRegistryDigest: 'old-registry' },
+  })
+  const exact = {
+    repositoryUrl: current.repositoryUrl.toUpperCase(),
+    commit: current.commit.toUpperCase(),
+    binding: 'same-binding',
+    verdict: 'approved',
+  }
+  assert.equal(admissionReviewRegistryStaleForEntry(current, [exact], 'new-registry'), false)
+  assert.equal(admissionReviewRegistryStaleForEntry(current, [{ ...exact, binding: 'new-binding' }], 'new-registry'), true)
+  assert.equal(admissionReviewRegistryStaleForEntry(current, [{ ...exact, verdict: 'rejected' }], 'new-registry'), true)
+})
+
 test('a stale review-required fixed-source decision is selected for one automatic recheck', async () => {
   const { isPendingAutomaticPolicyRecheck } = await import('../src/catalog-update-review.mjs')
   const stale = entry({

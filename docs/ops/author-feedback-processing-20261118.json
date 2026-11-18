@@ -1,0 +1,135 @@
+{
+  "schemaVersion": 1,
+  "id": "author-feedback-processing-20261118",
+  "type": "author-feedback-resolution",
+  "status": "proposed-source-policy-pr",
+  "createdAt": "2026-11-18",
+  "repository": "AI-Scarlett/DSH-Store",
+  "branch": "codex/author-feedback-1653-20261118",
+  "baseCommit": "40f46271b00b22ece9310856f4e8d18491610d83",
+  "authorization": {
+    "source": "direct-user-request",
+    "request": "你都处理了，该回复回复，该更新更新",
+    "githubWriteCredential": "short-lived-token-required"
+  },
+  "feedback": [
+    {
+      "issueNumber": 1653,
+      "commentId": 6967944300,
+      "userId": 4898852,
+      "updatedAt": "2026-11-18T03:16:30Z",
+      "bodySha256": "2202189d4edecf4d746d4aa780c52d2eed34ab89ae0ce417b0db82cd0aa2bb60",
+      "repositoryUrl": "https://github.com/skyrocks/dsh-deepseek-cost",
+      "sourceCommit": "2835b855d00685f29d5e2514ff471c4cbd89d01d",
+      "sourceVersion": "0.2.5",
+      "catalogId": "dsh-deepseek-cost"
+    },
+    {
+      "issueNumber": 581,
+      "commentId": 6971546684,
+      "userId": 160030887,
+      "updatedAt": "2026-11-18T07:00:18Z",
+      "bodySha256": "ca9610bf025fda577cbd92d8c15dbcd5b8b96bc60b63cb48fc0c1283e4c2ecf7",
+      "repositoryUrl": "https://github.com/andyzhuang233/dsh-favorites",
+      "catalogId": "dsh-favorites",
+      "request": "author-confirmed repository deletion, unlist, and close"
+    }
+  ],
+  "reviewArtifact": "docs/reviews/author-feedback-skyrocks-dsh-deepseek-cost-20261118.md",
+  "scope": [
+    ".github/workflows/catalog-automation.yml",
+    "docs/ops/author-feedback-processing-20261118.json",
+    "docs/reviews/author-feedback-skyrocks-dsh-deepseek-cost-20261118.md",
+    "registry/automation-policy.json",
+    "registry/catalog-migrations.json",
+    "scripts/automate-catalog.mjs",
+    "scripts/close-author-contact.mjs",
+    "scripts/verify-manual-scan-plan.mjs",
+    "src/catalog-compatibility-policy.mjs",
+    "src/catalog-update-review.mjs",
+    "src/manual-scan-plan.mjs",
+    "test/admission-policy-v2.test.mjs",
+    "test/author-close-policy.test.mjs",
+    "test/catalog-automation.test.mjs",
+    "test/catalog-compatibility-policy.test.mjs",
+    "test/catalog-update-review.test.mjs",
+    "test/manual-scan-plan.test.mjs"
+  ],
+  "preconditions": {
+    ".github/workflows/catalog-automation.yml": "41801c811d13cb167fae00495d6ca9c206999581208b9a95257abf7f3d7bb397",
+    "docs/ops/author-feedback-processing-20261118.json": null,
+    "docs/reviews/author-feedback-skyrocks-dsh-deepseek-cost-20261118.md": null,
+    "registry/automation-policy.json": "655d44335d588718afeed1f2b61900700d6b2df880e334c94d38bc619e3d24ec",
+    "registry/catalog-migrations.json": "bcfa86c2269d7303ffd3cc2939c63bb59947a7699b1e64927a4284475d541a5e",
+    "scripts/automate-catalog.mjs": "4f82b96ca075729a80af7e6f8d0cf59b6c87a8c41ba99d56e7f64f7809e1dea7",
+    "scripts/close-author-contact.mjs": "2909c59fe3ac32894e161a8acbd13d427f958d2f9969429972af5adfc6278b0b",
+    "scripts/verify-manual-scan-plan.mjs": "65f26ad86c78464ddff8fbf90f6cebd51fbaf8d2699e5a005ffe6e433c85aa90",
+    "src/catalog-compatibility-policy.mjs": "8aabcf2f216fed774f841c571c364af3aca440760a1efbbb84c53c67d4e2d0ec",
+    "src/catalog-update-review.mjs": "408ea198bfaa8d327446deffd716094c5209f339a06204b86f9d4a68cdb6bd26",
+    "src/manual-scan-plan.mjs": "1f764851ddde47c3841f982161785456e144f2613c7c8f40f69e1823ff3baac5",
+    "test/admission-policy-v2.test.mjs": "37491174e92c65d52aaa70e8a5484ae3451d7776e41a10177140a0462f7ba039",
+    "test/author-close-policy.test.mjs": "cd7fb032aa73660154fcb2fb4339c16732490460b99c8a650cbd968b8b58aa49",
+    "test/catalog-automation.test.mjs": "c2bdf96901d4a0617343dff1de0f0630081928405c16a2ad48483ddd13a15e6b",
+    "test/catalog-compatibility-policy.test.mjs": "bcf971be42a21f6d59aaa04771b510e5d75205e4b9a67268a5431d20c7ec376f",
+    "test/catalog-update-review.test.mjs": "fc99bf7b3bcbe3443a55e20c72f5b5cacf59c80ca09f8e2fe861ac560f7409ee",
+    "test/manual-scan-plan.test.mjs": "9809395724bd5602b5acc702806375125758d97f24aeabcd1cafaaebf3a24907"
+  },
+  "deterministicGates": [
+    {
+      "id": "base-scope-hashes",
+      "required": "Current main equals the full base Commit; every scope path matches its SHA-256 or null precondition; no out-of-scope file changes."
+    },
+    {
+      "id": "request-and-identity",
+      "required": "Both managed Issues and exact latest author comments match the IDs, timestamps, immutable GitHub user IDs, and body hashes above; the repositories are respectively the same active public owner repository and a live 404."
+    },
+    {
+      "id": "contact-history",
+      "required": "Load full author-contact-state history before any message. No notification-producing action occurs before a request-specific Contents API SHA CAS reservation; uncertainty permanently consumes the reservation and is never retried."
+    },
+    {
+      "id": "fixed-source-review",
+      "required": "Bounded-source-v3 scans all files from fixed Commit 2835b855d00685f29d5e2514ff471c4cbd89d01d; package identity migration is bound to the exact old Catalog identity hash; preserve blocked/external-only and record exact latest-three DSH compatibility."
+    },
+    {
+      "id": "repository-check",
+      "command": "npm run check",
+      "required": "Pass before source PR merge; tests use disposable fixtures and never write to ~/.dsh or a real Profile."
+    },
+    {
+      "id": "catalog-write",
+      "required": "Only catalog-automation.yml applies the fresh main-bound machine plan, writes the exact Catalog update/removal scope, records precondition and postcondition hashes, validates the full repository, and creates the auditable Catalog PR."
+    },
+    {
+      "id": "public-readback",
+      "required": "After Catalog merge, independently verify the GitHub raw Catalog, GitHub Pages, dsh.store, and dsh-store.cn; confirm dsh-favorites is absent and dsh-deepseek-cost is pinned to the reviewed blocked/external-only Commit."
+    },
+    {
+      "id": "author-resolution",
+      "required": "After public readback, bind the #1653 terminal decision to the Catalog Commit, admission binding, status, and exact resolution SHA; use only the request-specific reply workflow and central ledger CAS."
+    },
+    {
+      "id": "requested-close",
+      "required": "Close #581 only through a main-reviewed closure plan after a live repository 404, permanent withdrawal policy on current main, the exact Catalog entry is absent on main, and public surfaces have been read back."
+    }
+  ],
+  "rollback": "Generated Catalog changes retain signed Git history and workflow backups. Never reset or delete contact history, replay a sender, or retry an uncertain reservation, reply, or close request.",
+  "postconditions": {
+    ".github/workflows/catalog-automation.yml": "44842a6ab2c5c407821e3271c8e07e97dcdee670365458aeada3662902fdcbb1",
+    "docs/reviews/author-feedback-skyrocks-dsh-deepseek-cost-20261118.md": "586cc418e825a2d3035b00edbf6ec02b1eea8efcee5a9d879e4eae6f6159f498",
+    "registry/automation-policy.json": "c82f70e42606651fd6bbe6bc0fadb843237ea85716161b7c5d5934539d335431",
+    "registry/catalog-migrations.json": "899d47d126f2ab50007ecd8119af495b207a33ae4d1be0f3c2e7662a2e60ffc6",
+    "scripts/automate-catalog.mjs": "ef678d082089d25530a44183e1eee019909d9ed59d4348cd6c8195bda77d1623",
+    "scripts/close-author-contact.mjs": "5cb66dcb33564a22b5872ee0327df3d2ecba70b78c4e801013c910716de63581",
+    "scripts/verify-manual-scan-plan.mjs": "06ccc50323ed9efab01ce5359398306474387b6fa2e634a348775eaaba81a49b",
+    "src/catalog-compatibility-policy.mjs": "30d82d8d77dd6f73a9171771b8d8f611589b4bc9bcca7226cee094882202bf14",
+    "src/catalog-update-review.mjs": "7a0e055537fe92db1ac9c335320af8c0cc45ff6eaba192684c1caa2e90161601",
+    "src/manual-scan-plan.mjs": "b9510b15715b5173ce936fb35f84a336f1ed928d1001823836215eddee19132e",
+    "test/admission-policy-v2.test.mjs": "07cd5f74ad3d041cceecf7100a99adb81b01eb1becb6a746f45e13ef90da5b8b",
+    "test/author-close-policy.test.mjs": "3b57b2e4ee8b959fb135eef10d1d6583e36a4996426d453a737e1549d03d193b",
+    "test/catalog-automation.test.mjs": "1028e6e2a965824bde34214a9b65ac71c9406cd23f776e77205bf75731b95237",
+    "test/catalog-compatibility-policy.test.mjs": "00c7ea59761cc14bfc40785fe6fdf70cfaa2124f22c40d0653cdc08222aedb2f",
+    "test/catalog-update-review.test.mjs": "9cad33584837ba28112c0b8efae3dff6f6173bd535792e16e94fdc9befb8d8e1",
+    "test/manual-scan-plan.test.mjs": "fd5de43604b89c0af63e7144f2fbaab6f23e9a67b900daeecae5ec716548ce48"
+  }
+}
