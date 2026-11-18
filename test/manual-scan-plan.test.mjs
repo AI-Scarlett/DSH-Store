@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
-import { validateManualScanPlan } from '../src/manual-scan-plan.mjs'
+import { validateManualScanPlan } from '../scripts/manual-scan-plan.mjs'
 
 const digest = 'a'.repeat(64)
 const releases = ['0.2.2-rc.1', '0.2.2-rc.2', '0.2.2-rc.3']
@@ -115,6 +115,65 @@ function authorRecheckPlan() {
   }
 }
 
+function reviewedFixedSourceUpdatePlan() {
+  return {
+    schemaVersion: 1,
+    type: 'reviewed-fixed-source-catalog-update',
+    planId: 'store-0948-reviewed-update-20261119',
+    baseCommit: 'a'.repeat(40),
+    target: {
+      id: 'dsh-safe-plugin-manager',
+      repositoryUrl: 'https://github.com/AI-Scarlett/DSH-Store',
+      commit: 'b'.repeat(40),
+      version: '0.9.44',
+      detailPath: 'registry/catalog/details/dsh-safe-plugin-manager.json',
+    },
+    source: {
+      repositoryUrl: 'https://github.com/AI-Scarlett/DSH-Store',
+      commit: 'c'.repeat(40),
+      sourceTree: 'd'.repeat(40),
+      packageName: 'dsh-safe-plugin-manager',
+      version: '0.9.48',
+      manifestPath: 'package.json',
+      entryIds: ['dsh-safe-plugin-manager'],
+      sourceBinding: 'e'.repeat(64),
+      sourceDigest: 'f'.repeat(64),
+    },
+    review: {
+      commit: 'c'.repeat(40),
+      binding: 'e'.repeat(64),
+      verdict: 'approved',
+      documentPath: 'docs/reviews/store-0948-source-review-20261119.json',
+      documentSha256: digest,
+    },
+    scope: [
+      'registry/catalog-index.json',
+      'registry/catalog.json',
+      'registry/catalog/details/dsh-safe-plugin-manager.json',
+    ],
+    preconditions: {
+      files: {
+        'registry/catalog-index.json': '1'.repeat(64),
+        'registry/catalog.json': '2'.repeat(64),
+        'registry/catalog/details/dsh-safe-plugin-manager.json': '3'.repeat(64),
+        'registry/admission-reviews.json': '4'.repeat(64),
+        'docs/reviews/store-0948-source-review-20261119.json': digest,
+      },
+    },
+    authorization: {
+      source: 'direct-user-request',
+      request: '用户要求处理自研插件高版本暂缓更新并由 Codex 负责本次审查。',
+      reviewer: 'Codex on behalf of AI-Scarlett',
+      reviewedAt: '2026-11-19T00:00:00Z',
+      rationale: 'The exact fixed source was completely reviewed and the approved registry record is hash-bound.',
+    },
+    rollback: {
+      type: 'git-revert',
+      description: 'Revert only this exact Catalog policy PR and preserve the review history.',
+    },
+  }
+}
+
 test('author-requested Catalog recheck plans bind a blocked external-only listing, exact source, and deletion request', () => {
   const validated = validateManualScanPlan(authorRecheckPlan())
   assert.equal(validated.request.commentId, 6967944300)
@@ -134,4 +193,21 @@ test('author-requested Catalog recheck plans fail closed on admission, source, o
   const nonDeletion = authorRecheckPlan()
   nonDeletion.withdrawal.quote = 'Please close this issue.'
   assert.throws(() => validateManualScanPlan(nonDeletion), /close and unlist/)
+})
+
+test('reviewed fixed-source Catalog updates bind first-party identity, review, file hashes, and exact scope', () => {
+  const plan = reviewedFixedSourceUpdatePlan()
+  assert.equal(validateManualScanPlan(plan).source.commit, 'c'.repeat(40))
+
+  const thirdParty = reviewedFixedSourceUpdatePlan()
+  thirdParty.target.repositoryUrl = 'https://github.com/example/DSH-Store'
+  assert.throws(() => validateManualScanPlan(thirdParty), /exact first-party DSH-Store/)
+
+  const unboundDocument = reviewedFixedSourceUpdatePlan()
+  unboundDocument.review.documentSha256 = '9'.repeat(64)
+  assert.throws(() => validateManualScanPlan(unboundDocument), /document hash differs/)
+
+  const expandedScope = reviewedFixedSourceUpdatePlan()
+  expandedScope.scope.push('registry/candidates.json')
+  assert.throws(() => validateManualScanPlan(expandedScope), /exact Catalog bridge, index, and detail/)
 })

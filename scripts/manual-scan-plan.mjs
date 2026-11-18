@@ -1,4 +1,4 @@
-import { canonicalGithubRepository } from './catalog.mjs'
+import { canonicalGithubRepository } from '../src/catalog.mjs'
 
 const FULL_SHA = /^[a-f0-9]{40}$/
 const SHA256 = /^[a-f0-9]{64}$/
@@ -55,9 +55,76 @@ function validateAuthorRequestedRecheck(value) {
   return value
 }
 
+function validateReviewedFixedSourceUpdate(value) {
+  if (value.schemaVersion !== 1 || value.type !== 'reviewed-fixed-source-catalog-update') fail('unsupported reviewed fixed-source update plan type')
+  if (typeof value.planId !== 'string' || !/^[a-z0-9][a-z0-9-]{5,100}$/.test(value.planId)) fail('reviewed update plan ID is invalid')
+  if (!FULL_SHA.test(value.baseCommit ?? '')) fail('reviewed update base Commit must be full')
+
+  const target = value.target
+  let repositoryUrl
+  try { repositoryUrl = canonicalGithubRepository(target?.repositoryUrl) } catch { fail('reviewed update Catalog repository is invalid') }
+  if (repositoryUrl !== 'https://github.com/AI-Scarlett/DSH-Store' || target.repositoryUrl !== repositoryUrl
+    || target.id !== 'dsh-safe-plugin-manager' || !FULL_SHA.test(target.commit ?? '')
+    || !RELEASE.test(target.version ?? '') || target.detailPath !== 'registry/catalog/details/dsh-safe-plugin-manager.json') {
+    fail('reviewed updates are limited to the exact first-party DSH-Store Catalog entry')
+  }
+
+  const source = value.source
+  if (!source || source.repositoryUrl !== repositoryUrl || !FULL_SHA.test(source.commit ?? '')
+    || !FULL_SHA.test(source.sourceTree ?? '') || source.packageName !== 'dsh-safe-plugin-manager'
+    || !RELEASE.test(source.version ?? '') || source.manifestPath !== 'package.json'
+    || !Array.isArray(source.entryIds) || source.entryIds.length !== 1 || source.entryIds[0] !== target.id
+    || !SHA256.test(source.sourceBinding ?? '') || !SHA256.test(source.sourceDigest ?? '')) {
+    fail('reviewed source identity and immutable scan binding are required')
+  }
+
+  const review = value.review
+  if (!review || review.commit !== source.commit || review.binding !== source.sourceBinding
+    || review.verdict !== 'approved' || review.documentPath !== 'docs/reviews/store-0948-source-review-20261119.json'
+    || !SHA256.test(review.documentSha256 ?? '')) {
+    fail('reviewed update must match the exact first-party source review record')
+  }
+
+  const expectedScope = [
+    'registry/catalog-index.json',
+    'registry/catalog.json',
+    target.detailPath,
+  ].sort()
+  if (!Array.isArray(value.scope) || JSON.stringify([...value.scope].sort()) !== JSON.stringify(expectedScope)) {
+    fail('reviewed update scope must contain only the exact Catalog bridge, index, and detail')
+  }
+
+  const files = value.preconditions?.files
+  if (!files || typeof files !== 'object' || Array.isArray(files)) fail('reviewed update file preconditions are required')
+  const requiredFiles = [
+    ...expectedScope,
+    'registry/admission-reviews.json',
+    review.documentPath,
+  ].sort()
+  if (JSON.stringify(Object.keys(files).sort()) !== JSON.stringify(requiredFiles)
+    || Object.entries(files).some(([file, digest]) => !/^[a-zA-Z0-9._/-]+$/.test(file) || file.includes('..')
+      || !SHA256.test(digest ?? ''))) {
+    fail('reviewed update must hash-bind its complete Catalog scope and review authority')
+  }
+  if (files[review.documentPath] !== review.documentSha256) fail('reviewed source document hash differs from its file precondition')
+
+  const authorization = value.authorization
+  if (!authorization || authorization.source !== 'direct-user-request'
+    || typeof authorization.request !== 'string' || authorization.request.length < 20
+    || authorization.reviewer !== 'Codex on behalf of AI-Scarlett'
+    || !Number.isFinite(Date.parse(authorization.reviewedAt))
+    || typeof authorization.rationale !== 'string' || authorization.rationale.length < 20) {
+    fail('reviewed update requires the exact owner request and completed fixed-source review')
+  }
+  if (value.rollback?.type !== 'git-revert' || typeof value.rollback.description !== 'string'
+    || value.rollback.description.length < 20) fail('reviewed update rollback must use recoverable Git history')
+  return value
+}
+
 export function validateManualScanPlan(value) {
   if (!value || typeof value !== 'object' || Array.isArray(value)) fail('object is required')
   if (value.type === 'author-requested-catalog-recheck') return validateAuthorRequestedRecheck(value)
+  if (value.type === 'reviewed-fixed-source-catalog-update') return validateReviewedFixedSourceUpdate(value)
   if (value.schemaVersion !== 1 || value.type !== 'manual-dsh-known-plugin-rescan') fail('unsupported plan type')
   const scan = value.scan
   if (!scan || typeof scan !== 'object' || scan.status !== 'complete') fail('complete scan evidence is required')

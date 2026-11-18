@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import { createCatalogGithubReader, sameCommitLineage } from './catalog-github-reader.mjs'
-import { admissionDecision, LICENSE_METADATA_REVIEW_REASON, validateAdmissionReviews } from '../src/admission-review.mjs'
+import { admissionBinding, admissionDecision, LICENSE_METADATA_REVIEW_REASON, validateAdmissionReviews } from '../src/admission-review.mjs'
 import { catalogIdentityHash, validateCatalogMigrations, migrateCatalogIdentity, catalogMigrationTarget, catalogMigrationSource, verifyMigrationRepositories } from '../src/catalog-migration.mjs'
 import { SOURCE_SCAN_BOUNDS, SCAN_POLICY_VERSION, MANIFEST_MAX_BYTES } from '../src/source-scan-policy.mjs'
 
@@ -50,7 +50,7 @@ import {
   DSH_REGISTRY_URL,
   fetchOfficialDshReleaseWindow,
 } from '../src/catalog-compatibility-policy.mjs'
-import { validateManualScanPlan } from '../src/manual-scan-plan.mjs'
+import { validateManualScanPlan } from './manual-scan-plan.mjs'
 import {
   inspectRejectedCandidateCompatibility,
   isDurableRejectedCandidateDecision,
@@ -64,7 +64,9 @@ const catalogIndexPath = resolve(root, 'registry/catalog-index.json')
 const candidatesPath = resolve(root, 'registry/candidates.json')
 const recommendationsPath = resolve(root, 'registry/community-recommendations.json')
 const policyPath = resolve(root, 'registry/automation-policy.json')
-const admissionReviews = validateAdmissionReviews(JSON.parse(await readFile(resolve(root, 'registry/admission-reviews.json'), 'utf8')))
+const admissionReviewsPath = resolve(root, 'registry/admission-reviews.json')
+const admissionReviewsBytes = await readFile(admissionReviewsPath)
+const admissionReviews = validateAdmissionReviews(JSON.parse(admissionReviewsBytes.toString('utf8')))
 const admissionReviewDigest = sha256(JSON.stringify(admissionReviews))
 const catalogMigrations = validateCatalogMigrations(JSON.parse(await readFile(resolve(root, 'registry/catalog-migrations.json'), 'utf8')))
 const LIFECYCLE_SCRIPTS = ['preinstall', 'install', 'postinstall', 'prepare']
@@ -623,6 +625,115 @@ async function inspectManualAdmissions(catalog, candidates, policy, github, obse
     added: report.manualScan.admitted,
   })).slice(0, 24)
   report.manualScan.status = 'passed'
+}
+
+async function inspectManualReviewedFixedSourceUpdate(catalog, policy, github, observedAt, report, plan, dshReleaseWindow) {
+  const target = plan.target
+  const source = plan.source
+  const index = catalog.entries.findIndex(entry => entry.id === target.id)
+  const entry = catalog.entries[index]
+  if (!entry || entry.repositoryUrl !== target.repositoryUrl || entry.commit !== target.commit || entry.version !== target.version) {
+    throw new Error('reviewed fixed-source update no longer matches the exact Catalog entry precondition')
+  }
+  const reviewRecord = admissionReviews.reviews.find(review => review.repositoryUrl === source.repositoryUrl
+    && review.commit === source.commit && review.binding === source.sourceBinding && review.verdict === 'approved')
+  if (!reviewRecord) throw new Error('reviewed fixed-source update has no matching approved admission record on main')
+
+  const { owner, repository } = repositoryParts(source.repositoryUrl)
+  let lineage = sameCommitLineage(entry.commit, source.commit)
+  if (!lineage) {
+    lineage = await retryInfrastructure(() => github.api(
+      `repos/${owner}/${repository}/compare/${entry.commit}...${source.commit}`,
+      { maxBytes: 4 * 1024 * 1024 },
+    ))
+  }
+  if (!isBoundedSourceLineage(lineage, policy.updates?.maxCommitSpan ?? 200)) {
+    throw new Error('reviewed fixed source is not a bounded descendant of the current Catalog pin')
+  }
+
+  const checked = await retryInfrastructure(() => checkRepository(source.repositoryUrl, '', {
+    catalogDocument: catalog,
+    token: process.env.GITHUB_TOKEN,
+    timeoutMs: 12_000,
+    fetch: github.fetch,
+    fixedCommit: source.commit,
+  }))
+  const candidate = checked.candidate
+  if (candidate.repositoryUrl !== source.repositoryUrl || candidate.commit !== source.commit
+    || candidate.packageName !== source.packageName || candidate.version !== source.version
+    || candidate.manifestPath !== source.manifestPath
+    || stableJson(candidate.entryIds) !== stableJson(source.entryIds)) {
+    throw new Error('reviewed fixed source no longer matches its immutable package identity')
+  }
+  const commit = await retryInfrastructure(() => github.api(`repos/${owner}/${repository}/commits/${source.commit}`))
+  if (commit?.commit?.tree?.sha !== source.sourceTree) throw new Error('reviewed fixed-source tree changed')
+
+  const analysis = await retryInfrastructure(() => analyzeFixedSource(candidate, policy, github))
+  if (!analysis.scanComplete || analysis.sourceDigest !== source.sourceDigest
+    || admissionBinding(candidate, analysis) !== source.sourceBinding) {
+    throw new Error('reviewed fixed-source scan binding no longer matches the approved record')
+  }
+  if (compareVersions(candidate.version, entry.version) <= 0) {
+    throw new Error('reviewed fixed source is not a higher version than the Catalog entry')
+  }
+  if (!catalogUpdateIdentityMatches(entry, candidate)) {
+    throw new Error('reviewed fixed-source package identity differs from the Catalog entry')
+  }
+
+  const candidateEntry = automatedEntry(candidate, analysis, observedAt)
+  if (candidateEntry.status !== 'approved' || candidateEntry.admission?.state !== 'reviewed'
+    || candidateEntry.admission?.binding !== source.sourceBinding) {
+    throw new Error('the approved fixed-source review did not produce a reviewed Catalog admission')
+  }
+  if (!supportsDshReleaseWindow(candidateEntry, dshReleaseWindow.releases)) {
+    throw new Error('reviewed fixed source has no compatible result in the official latest-three DSH release window')
+  }
+
+  const reviewed = refreshAutomaticPolicyReview(entry, candidateEntry)
+  const updated = buildCatalogVersionUpdate(reviewed, candidate, analysis, observedAt, catalogUpdatePolicy(reviewed))
+  if (updated.status !== 'approved' || updated.admission?.state !== 'reviewed'
+    || updated.admission?.binding !== source.sourceBinding) {
+    throw new Error('manual fixed-source update failed to preserve the exact reviewed admission')
+  }
+  catalog.entries[index] = updated
+
+  report.manualScan = {
+    planId: sha256(stableJson({
+      baseCommit: report.baseCommit,
+      inputPlanSha256: report.preconditions.manualScanPlanSha256,
+      preconditions: report.preconditions,
+      target,
+      source,
+      review: plan.review,
+      latestDshReleases: dshReleaseWindow.releases,
+    })).slice(0, 24),
+    type: plan.type,
+    status: 'passed',
+    target,
+    selected: source,
+    reviewBinding: source.sourceBinding,
+    latestDshReleasesAtPolicyRun: [...dshReleaseWindow.releases],
+    updated: { id: updated.id, commit: updated.commit, version: updated.version, status: updated.status },
+  }
+  report.updatedEntries.push({ id: updated.id, from: entry.commit, to: updated.commit,
+    fromVersion: entry.version, toVersion: updated.version, version: updated.version,
+    changeKind: 'manual-reviewed-fixed-source-update', policy: updated.updatePolicy,
+    lineageReview: 'bounded-descendant' })
+  report.updateReviews.push({ id: updated.id, repositoryUrl: updated.repositoryUrl,
+    catalogVersion: entry.version, upstreamVersion: updated.version, candidateCommit: updated.commit,
+    policy: updated.updatePolicy, decision: 'manual-reviewed-update', sourceBinding: source.sourceBinding,
+    warnings: analysis.reasons })
+  report.compatibilityPolicy = {
+    authority: dshReleaseWindow.authority,
+    registryUrl: dshReleaseWindow.registryUrl,
+    latestVersion: dshReleaseWindow.latestVersion,
+    latestReleases: [...dshReleaseWindow.releases],
+    requiredCompatibleReleases: 1,
+    checkedCatalogEntries: 1,
+    catalogChanged: true,
+    candidatesChanged: false,
+    unlisted: [], restored: [], refreshed: [],
+  }
 }
 
 async function discoverRepositories(policy, github) {
@@ -1294,6 +1405,13 @@ if (baseCommit !== null && !/^[0-9a-f]{40}$/.test(baseCommit)) throw new Error('
 if (manualScanPlan?.type === 'author-requested-catalog-recheck' && manualScanPlan.baseCommit !== baseCommit) {
   throw new Error('author recheck plan was not created against the current Catalog base Commit')
 }
+if (manualScanPlan?.type === 'reviewed-fixed-source-catalog-update') {
+  if (manualScanPlan.baseCommit !== baseCommit) throw new Error('reviewed update plan was not created against the current Catalog base Commit')
+  for (const [file, expectedSha] of Object.entries(manualScanPlan.preconditions.files)) {
+    const bytes = await readFile(resolve(root, file))
+    if (sha256(bytes) !== expectedSha) throw new Error(`reviewed update precondition changed: ${file}`)
+  }
+}
 validateCatalog(catalog)
 assertLegacyCatalogCompatibility(catalog)
 assertCatalogLocalization(catalog)
@@ -1314,7 +1432,9 @@ const report = {
     ? `${baseCommit ?? 'local'}:${catalogSha}:${catalogIndexSha}:${candidatesSha}:${recommendationsSha}:${dshReleaseWindowSha}:${manualScanPlanSha}:${observedAt}`
     : `catalog-only:${baseCommit ?? 'local'}:${catalogSha}:${catalogIndexSha}:${candidatesSha}:${recommendationsSha}:${dshReleaseWindowSha}:${observedAt}`).slice(0, 24),
   ...(manualScanPlan ? { mode: manualScanPlan.type === 'author-requested-catalog-recheck'
-    ? 'manual-author-feedback-catalog-recheck' : 'manual-fixed-source-batch-admission' } : {}),
+    ? 'manual-author-feedback-catalog-recheck'
+    : manualScanPlan.type === 'reviewed-fixed-source-catalog-update'
+      ? 'manual-reviewed-fixed-source-catalog-update' : 'manual-fixed-source-batch-admission' } : {}),
   ...(options.catalogOnly ? { mode: 'catalog-only-periodic-recheck', scanScope: 'catalog-only' } : {}),
   baseCommit,
   observedAt,
@@ -1403,6 +1523,9 @@ if (manualScanPlan) {
         releaseStatuses: report.manualScan.authorRecheck.compatibility.releaseStatuses,
         compatibleReleasePresent: report.manualScan.authorRecheck.compatibility.compatibleReleasePresent }],
     }
+  } else if (manualScanPlan.type === 'reviewed-fixed-source-catalog-update') {
+    failureContext.stage = 'verify-manual-reviewed-fixed-source-update'
+    await inspectManualReviewedFixedSourceUpdate(catalog, policy, github, observedAt, report, manualScanPlan, dshReleaseWindow)
   } else {
     failureContext.stage = 'inspect-manual-fixed-source-admissions'
     await inspectManualAdmissions(catalog, candidates, policy, github, observedAt, report, dshReleaseWindow, manualScanPlan)
@@ -1467,10 +1590,13 @@ if (!recommendationsChanged && !canonicalRecommendationsBuffer.equals(originalRe
 }
 if (manualScanPlan) {
   if (candidatesChanged || recommendationsChanged) throw new Error('manual Catalog policy run cannot mutate Candidate or Community registries')
-  const admittedIds = new Set(report.manualScan.admitted.map(entry => entry.id))
+  const admittedIds = new Set((report.manualScan.admitted ?? []).map(entry => entry.id))
   const recheckedIds = manualScanPlan.type === 'author-requested-catalog-recheck'
     ? new Set([manualScanPlan.catalog.id]) : new Set()
-  const changedDetails = split.details.filter(detail => admittedIds.has(detail.entry.id) || recheckedIds.has(detail.entry.id))
+  const manuallyUpdatedIds = manualScanPlan.type === 'reviewed-fixed-source-catalog-update'
+    ? new Set([manualScanPlan.target.id]) : new Set()
+  const changedDetails = split.details.filter(detail => admittedIds.has(detail.entry.id)
+    || recheckedIds.has(detail.entry.id) || manuallyUpdatedIds.has(detail.entry.id))
   const scopedFiles = new Set([
     ...changedDetails.map(detail => `registry/${detail.path}`),
     ...manualWithdrawalDetailPaths,
@@ -1500,6 +1626,9 @@ if (manualScanPlan) {
         if (manualScanPlan.type === 'author-requested-catalog-recheck' && existing === null) {
           throw new Error(`author recheck detail path is missing from the current Catalog: ${file}`)
         }
+        if (manualScanPlan.type === 'reviewed-fixed-source-catalog-update' && existing === null) {
+          throw new Error(`reviewed fixed-source detail path is missing from the current Catalog: ${file}`)
+        }
         scopePreconditions[file] = existing === null ? null : sha256(existing)
         scopePostconditions[file] = sha256(Buffer.from(`${JSON.stringify(detail.entry, null, 2)}\n`))
       } else {
@@ -1514,7 +1643,9 @@ if (manualScanPlan) {
   report.mutationPlan = {
     schemaVersion: 1,
     type: manualScanPlan.type === 'author-requested-catalog-recheck'
-      ? 'manual-author-feedback-catalog-recheck' : 'manual-fixed-source-catalog-admission',
+      ? 'manual-author-feedback-catalog-recheck'
+      : manualScanPlan.type === 'reviewed-fixed-source-catalog-update'
+        ? 'manual-reviewed-fixed-source-catalog-update' : 'manual-fixed-source-catalog-admission',
     planId: report.manualScan.planId,
     baseCommit,
     inputScanPlanSha256: manualScanPlanSha,
