@@ -1,6 +1,6 @@
 import { posix } from 'node:path'
 
-export const SCANNABLE_SOURCE = /\.(?:[cm]?[jt]sx?|mmd|jsonl?|ya?ml|sh|bash|zsh|fish|py|rb|php|go|rs|java|kt|kts|swift|cs|c|cc|cpp|h|hpp|ps1|psm1|cmd|bat|html?|vue|svelte)$|(?:^|\/)(?:NOTICE|UPSTREAM_LICENSE)(?:\.[^/]*)?$/i
+export const SCANNABLE_SOURCE = /\.(?:[cm]?[jt]sx?|mmd|jsonl?|ya?ml|sh|bash|zsh|fish|py|rb|php|go|rs|java|kt|kts|swift|cs|c|cc|cpp|h|hpp|ps1|psm1|cmd|bat|html?|vue|svelte|lean(?:\.template)?)$|(?:^|\/)(?:MANIFEST\.sha256|\.gitkeep|NOTICE|UPSTREAM_LICENSE)(?:\.[^/]*)?$/i
 export const NATIVE_ARTIFACT = /\.(?:node|wasm|dll|dylib|so|exe|bin)$/i
 const STATIC_ASSET = /\.(?:md|txt|rst|png|jpe?g|webp|gif|ico|svg|css|woff2?|ttf|otf|map|webmanifest|xml)$/i
 const METADATA = /^(?:package\.json|npm-shrinkwrap\.json|readme(?:\..*)?|licen[cs]e(?:\..*)?|copying(?:\..*)?|notice(?:\..*)?|upstream_license(?:\..*)?)$/i
