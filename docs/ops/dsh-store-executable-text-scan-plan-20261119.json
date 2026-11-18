@@ -1,0 +1,58 @@
+{
+  "schemaVersion": 1,
+  "type": "fixed-source-executable-text-classification",
+  "planId": "dsh-store-executable-text-scan-20261119",
+  "createdAt": "2026-11-18T20:32:01Z",
+  "authorization": {
+    "source": "direct-user-request",
+    "request": "处理高版本暂缓项，特别是我们自己开发的插件；负责固定源码审查。"
+  },
+  "baseCommit": "16077f30ef250eadd02d2a056ae745bab743f0d1",
+  "fileScope": {
+    "modify": [
+      "src/fixed-source-review.mjs",
+      "test/package-source-surface.test.mjs"
+    ],
+    "add": [
+      "docs/ops/dsh-store-executable-text-scan-plan-20261119.json"
+    ]
+  },
+  "preconditions": {
+    "absent": [
+      "docs/ops/dsh-store-executable-text-scan-plan-20261119.json"
+    ],
+    "sha256": {
+      "src/fixed-source-review.mjs": "5813c4b3502b97a3b5fcf8f5a2ae7f6794f657825618baa55bbc47d5b3d5ccf2",
+      "test/package-source-surface.test.mjs": "731f0bafe87c07f7c68009f8d5c31c19696a59e00893c54a37083dd1e84e2fc6"
+    }
+  },
+  "change": {
+    "summary": "Treat bounded, scannable text files with executable Git mode as reviewed source rather than opaque native/executable artifacts. Continue scanning their permissions and security signals. Keep native binaries and opaque executable files blocked.",
+    "catalogContentMutation": false,
+    "authorContact": false,
+    "thirdPartyCodeExecution": false,
+    "realDshProfile": "untouched",
+    "productionDeployment": "not performed"
+  },
+  "verification": {
+    "required": [
+      "focused package-source-surface regression tests (23/23 passed)",
+      "npm run check (REGISTRY_OK entries=914; 684/684 tests passed)",
+      "git diff --check",
+      "precondition and postcondition SHA-256 comparison"
+    ],
+    "expected": "A mode-100755 bounded text script is fully scanned without raising nativeOrExecutableArtifacts; a native binary and an opaque executable remain blocked.",
+    "status": "passed"
+  },
+  "rollback": {
+    "type": "git-revert",
+    "description": "Revert the scoped scanner classification change through a CI-checked PR."
+  },
+  "status": "verified-ready-for-pr",
+  "postconditions": {
+    "sha256": {
+      "src/fixed-source-review.mjs": "504030bc2a0714b605a85402f23e8935c83bd59232d27f3f3e8faa30271ab5cf",
+      "test/package-source-surface.test.mjs": "fa433b34cf4f5c640d09fcd6521681d5c560d3ded91551e5eca22201c545f3b3"
+    }
+  }
+}

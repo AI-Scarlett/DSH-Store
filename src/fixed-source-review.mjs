@@ -116,7 +116,12 @@ export async function reviewFixedSource(candidate, manifest, tree, policy, readS
   const unsupported = surface.entries.filter(item => unsupportedPackageEntry(item)
     && !isGeneratedSelfManagerRegistryData(candidate, item.relativePath))
   if (unsupported.length) reasons.push(`package contains unsupported artifacts requiring review: ${unsupported.slice(0, 5).map(item => item.relativePath).join(', ')}`)
-  signals.nativeOrExecutableArtifacts = surface.entries.some(item => item.mode === '100755' || NATIVE_ARTIFACT.test(item.relativePath))
+  // Executable mode on bounded text source is reviewed as source; its file,
+  // network, and command capabilities are still scanned below. Keep the
+  // separate artifact signal for native binaries and opaque executable files.
+  signals.nativeOrExecutableArtifacts = surface.entries.some(item =>
+    NATIVE_ARTIFACT.test(item.relativePath)
+      || (item.mode === '100755' && !SCANNABLE_SOURCE.test(item.relativePath)))
   const runtimeFiles = surface.entries.filter(item => {
     const relativePath = item.relativePath
     // These exact canonical-manager JSON paths are schema-validated by the
