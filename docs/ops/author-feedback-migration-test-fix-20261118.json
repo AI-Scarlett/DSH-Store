@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "type": "author-feedback-resolution",
+  "createdAt": "2026-11-18",
+  "baseCommit": "8bb4b91c8b333c5b120eb09a92e91460d475aa52",
+  "scope": [
+    "test/admission-policy-v2.test.mjs",
+    "docs/ops/author-feedback-migration-test-fix-20261118.json"
+  ],
+  "preconditions": {
+    "test/admission-policy-v2.test.mjs": "07cd5f74ad3d041cceecf7100a99adb81b01eb1becb6a746f45e13ef90da5b8b",
+    "docs/ops/author-feedback-migration-test-fix-20261118.json": null
+  },
+  "postconditions": {
+    "test/admission-policy-v2.test.mjs": "c98a1d8be912f16d956b141a1be1b98059e35be9db96b43512ba7ed0911db137"
+  },
+  "authorization": {
+    "source": "direct-user-request",
+    "request": "修复已授权的作者复核流程在Catalog状态更新后全量测试失败的问题，并继续完成复核与Catalog更新。",
+    "githubWriteCredential": "short-lived-token-required"
+  },
+  "purpose": "Keep the dsh-deepseek-cost identity migration regression test valid before and after the authorized Catalog recheck applies the migration, while preserving blocked and external-only policy.",
+  "gates": [
+    "Reconstruct the source identity only from the migration record and assert its immutable previousIdentityHash.",
+    "The migration test passes against both the pre-update and policy-updated Catalog states.",
+    "npm run check passes before commit.",
+    "CI-checked pull request with exact declared scope and recoverable Git history."
+  ],
+  "rollback": "Revert the CI-checked pull request if validation fails; do not change the migration record or author contact history."
+}
