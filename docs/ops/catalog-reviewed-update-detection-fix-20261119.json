@@ -1,0 +1,62 @@
+{
+  "schemaVersion": 1,
+  "type": "catalog-reviewed-update-detection-fix",
+  "planId": "catalog-reviewed-update-detection-fix-20261119",
+  "createdAt": "2026-11-19T05:28:00.889Z",
+  "authorization": {
+    "source": "direct-user-request",
+    "request": "Process deferred high-version GitHub Catalog entries, prioritize first-party plugins, and perform the review; fix the false block for the approved DSH Store 0.9.48 fixed source."
+  },
+  "baseCommit": "21a7893c2e0048ad5ae913f0ac91b5628e884b79",
+  "fileScope": {
+    "modify": [
+      "scripts/automate-catalog.mjs",
+      "scripts/check-plugin-submission.mjs",
+      "test/catalog-automation.test.mjs",
+      "test/plugin-submission.test.mjs"
+    ],
+    "add": [
+      "docs/ops/catalog-reviewed-update-detection-fix-20261119.json"
+    ]
+  },
+  "preconditionsSha256": {
+    "scripts/automate-catalog.mjs": "b2efe21f7d2012aa6ffa97cab5f03644a6598c8588816637431a2b2386bbeee2",
+    "scripts/check-plugin-submission.mjs": "62104678fe6bbd0beb9dd4061f4df50c9c1a33cc2356ee858a3ec4e17a5a8bae",
+    "test/catalog-automation.test.mjs": "c268a69f7bc4f7bc0d5e69ad82627c396f20a8b2fcde8a794e8495a366bd685a",
+    "test/plugin-submission.test.mjs": "b2feed1ea6f64753867d734bb8374a33b634208d954e99360e6d73dbf60c0e01"
+  },
+  "preconditionsAbsent": [
+    "docs/ops/catalog-reviewed-update-detection-fix-20261119.json"
+  ],
+  "change": {
+    "summary": "Use the reviewed source tree SHA with Git Trees API and preserve exact per-release compatibility declarations when a long engines.dsh range cannot be parsed; explicit incompatibility still wins.",
+    "catalogMutation": false,
+    "authorContact": false,
+    "thirdPartyCodeExecution": false,
+    "realDshProfile": "untouched",
+    "productionDeployment": "not performed"
+  },
+  "verification": {
+    "required": [
+      "npm run check",
+      "git diff --check",
+      "PR CI",
+      "post-merge dedicated Catalog policy run and public-surface readback"
+    ],
+    "result": "passed",
+    "npmRunCheck": "passed: REGISTRY_OK entries=914; 686 tests passed, 0 failed",
+    "gitDiffCheck": "passed"
+  },
+  "postconditionsSha256": {
+    "scripts/automate-catalog.mjs": "ee4bf53eb921770bd6076806d023fe570e2fcc86392260c5a86c2a41b217478e",
+    "scripts/check-plugin-submission.mjs": "21a0a2c835e7b2675991bce546b13939462c684b69450f5db94c085b2684fe7f",
+    "test/catalog-automation.test.mjs": "ef418314b4a50c3571a08cb9aee3e30c8ee04f7c2ffe606e26ecd117f5c54990",
+    "test/plugin-submission.test.mjs": "8e85932bea8b88393f084a12a808f823618edd06ab346f2f50414f999c3276aa"
+  },
+  "recovery": {
+    "type": "git-revert",
+    "recoverableBase": "21a7893c2e0048ad5ae913f0ac91b5628e884b79",
+    "description": "Revert the exact source-fix PR commit; Catalog and production surfaces are unchanged by this PR."
+  },
+  "status": "verified-pending-pr"
+}
