@@ -264,6 +264,8 @@ test('scheduled automation uses a policy PR and never executes third-party packa
   const reviewedUpdate = source.split('async function inspectManualReviewedFixedSourceUpdate')[1]?.split('\nasync function discoverRepositories')[0]
   assert.ok(reviewedUpdate, 'reviewed fixed-source update flow remains bounded in one function')
   assert.match(reviewedUpdate, /allowProtectedManager: isSelfManagerEntry\(entry\)/)
+  assert.match(reviewedUpdate, /git\/trees\/\$\{source\.commit\}\?recursive=1/)
+  assert.match(reviewedUpdate, /sourceTree\?\.sha !== source\.sourceTree/)
   assert.match(source, /manual-reviewed-fixed-source-catalog-update/)
   assert.match(source, /const manualCompatibilityCandidates = createManualCompatibilityCandidateScope\(candidates\)/)
   assert.match(source, /applyLatestDshCompatibilityPolicy\([\s\S]+manualCompatibilityCandidates/)

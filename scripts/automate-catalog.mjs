@@ -666,8 +666,11 @@ async function inspectManualReviewedFixedSourceUpdate(catalog, policy, github, o
     || stableJson(candidate.entryIds) !== stableJson(source.entryIds)) {
     throw new Error('reviewed fixed source no longer matches its immutable package identity')
   }
-  const commit = await retryInfrastructure(() => github.api(`repos/${owner}/${repository}/commits/${source.commit}`))
-  if (commit?.commit?.tree?.sha !== source.sourceTree) throw new Error('reviewed fixed-source tree changed')
+  const sourceTree = await retryInfrastructure(() => github.api(
+    `repos/${owner}/${repository}/git/trees/${source.commit}?recursive=1`,
+    { maxBytes: 8 * 1024 * 1024 },
+  ))
+  if (sourceTree?.sha !== source.sourceTree) throw new Error('reviewed fixed-source tree changed')
 
   const analysis = await retryInfrastructure(() => analyzeFixedSource(candidate, policy, github))
   if (!analysis.scanComplete || analysis.sourceDigest !== source.sourceDigest
