@@ -554,6 +554,13 @@ test('official engines.dsh wins over peers and legacy declarations without inven
   })
   const narrow = inferredCompatibility({ engines: { dsh: '^0.0.2' }, dsh: { compatibility: { dshReleases: { '0.0.3': 'compatible' } } } })
   assert.equal(narrow.dshReleases['0.0.3'], 'incompatible')
+  const longEngineRange = Array.from({ length: 17 }, (_, index) => `0.1.${index}-rc.1`).join(' || ')
+  const explicitlyCompatible = inferredCompatibility({
+    engines: { dsh: longEngineRange },
+    dsh: { compatibility: { dshReleases: { '0.2.2-rc.3': 'compatible' } } },
+  })
+  assert.equal(explicitlyCompatible.dshReleases['0.2.2-rc.3'], 'compatible')
+  assert.equal(explicitlyCompatible.dshReleases['0.2.2-rc.5'], undefined)
   assert.equal(value.dsh, '0.2.1-alpha.4')
   assert.deepEqual(value.dshReleases, { '0.2.1-alpha.4': 'compatible', '0.2.1-alpha.3': 'incompatible' })
   assert.deepEqual(value.dshOperations, {})
