@@ -1,0 +1,58 @@
+{
+  "schemaVersion": 1,
+  "type": "reviewed-fixed-source-catalog-update",
+  "planId": "store-0948-reviewed-update-20261119-r5",
+  "baseCommit": "b4b6c5d9ba7252819bfef5db59d6709f0a3de09f",
+  "target": {
+    "id": "dsh-safe-plugin-manager",
+    "repositoryUrl": "https://github.com/AI-Scarlett/DSH-Store",
+    "commit": "7496798b1e05f758a9f4d6287d7186d09570014d",
+    "version": "0.9.44",
+    "detailPath": "registry/catalog/details/dsh-safe-plugin-manager.json"
+  },
+  "source": {
+    "repositoryUrl": "https://github.com/AI-Scarlett/DSH-Store",
+    "commit": "a55e5a12d2b22f971f5ca5e71b3b365b124a3031",
+    "sourceTree": "0fe42c26d24ec2d706382fca043b6074c651a52b",
+    "packageName": "dsh-safe-plugin-manager",
+    "version": "0.9.48",
+    "manifestPath": "package.json",
+    "entryIds": [
+      "dsh-safe-plugin-manager"
+    ],
+    "sourceBinding": "c6271e2bba7709945be68f40013a56130a7e3b4a11af9cbeeb6054c2f116f436",
+    "sourceDigest": "400f927dac958c7f1f97d7077ae3f9ce80990b1c5f9335676c5377f5e6eda0a7"
+  },
+  "review": {
+    "commit": "a55e5a12d2b22f971f5ca5e71b3b365b124a3031",
+    "binding": "c6271e2bba7709945be68f40013a56130a7e3b4a11af9cbeeb6054c2f116f436",
+    "verdict": "approved",
+    "documentPath": "docs/reviews/store-0948-source-review-20261119.json",
+    "documentSha256": "a3bb3981164542373e42cdfe3a03ef9be3f1a283f1ed4a9dd008cca81000ee5a"
+  },
+  "scope": [
+    "registry/catalog-index.json",
+    "registry/catalog.json",
+    "registry/catalog/details/dsh-safe-plugin-manager.json"
+  ],
+  "preconditions": {
+    "files": {
+      "docs/reviews/store-0948-source-review-20261119.json": "a3bb3981164542373e42cdfe3a03ef9be3f1a283f1ed4a9dd008cca81000ee5a",
+      "registry/admission-reviews.json": "b7a6713406cf4825cf694cd335009c67f32bc0ee3a08b97a546ef4cc8934dcfb",
+      "registry/catalog-index.json": "9ebfd19079a2cd19b83ca4b945a1f50796de6f0ff08f9a04f0245685f73090a1",
+      "registry/catalog.json": "f58044ee14d87f27c0dd1b6fde3e3a1fdb3eea345f28be8abc64d7857d58afde",
+      "registry/catalog/details/dsh-safe-plugin-manager.json": "170f77aa598118972f4573b975da7111889672f126fe0af33cb1d513ed873776"
+    }
+  },
+  "authorization": {
+    "source": "direct-user-request",
+    "request": "处理 GitHub 收录中的高版本暂缓更新项，优先处理自研插件；用户明确授权 Codex 负责本次审查与 Catalog 更新。",
+    "reviewer": "Codex on behalf of AI-Scarlett",
+    "reviewedAt": "2026-11-18T22:18:46.967Z",
+    "rationale": "The exact public MIT source Commit 0.9.48 is bound to a complete fixed-source review with an approved admission record. The review accounted for declared file, network, restricted command, API-key, and web-session-token capabilities; disposable DSH CLI latest-three install/start/uninstall passed. This updates only the existing first-party Catalog entry and does not claim real Profile or independent security acceptance."
+  },
+  "rollback": {
+    "type": "git-revert",
+    "description": "Revert only the exact policy-generated Catalog PR and preserve the immutable admission review record."
+  }
+}
