@@ -259,7 +259,9 @@ export function inferredCompatibility(manifest) {
     dshReleases: Object.fromEntries(Object.entries(declared.dshReleases ?? {}).map(([release, status]) => {
       const requirements = hasDshEngine ? [manifest.engines.dsh] : peerRanges
       const matches = requirements.map(range => dshVersionCompatibility(range, dshReleaseVersion(release)))
-      return [release, matches.includes('incompatible') ? 'incompatible' : matches.includes('unknown') ? 'unknown' : status]
+      return [release, matches.includes('incompatible') ? 'incompatible'
+        : matches.includes('unknown') ? hasDshEngine ? status ?? 'unknown' : 'unknown'
+          : status]
     })),
     dshOperations: Object.hasOwn(declared, 'dshOperations') ? declared.dshOperations : {},
     node: typeof manifest.engines?.node === 'string' ? manifest.engines.node : null,
