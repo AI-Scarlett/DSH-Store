@@ -1,0 +1,58 @@
+{
+  "schemaVersion": 1,
+  "type": "reviewed-fixed-source-catalog-update",
+  "planId": "store-0948-reviewed-update-20261119-postfix",
+  "baseCommit": "99fef49c5a75f53dc2d5c51d4718206780901702",
+  "target": {
+    "id": "dsh-safe-plugin-manager",
+    "repositoryUrl": "https://github.com/AI-Scarlett/DSH-Store",
+    "commit": "7496798b1e05f758a9f4d6287d7186d09570014d",
+    "version": "0.9.44",
+    "detailPath": "registry/catalog/details/dsh-safe-plugin-manager.json"
+  },
+  "source": {
+    "repositoryUrl": "https://github.com/AI-Scarlett/DSH-Store",
+    "commit": "a55e5a12d2b22f971f5ca5e71b3b365b124a3031",
+    "sourceTree": "0fe42c26d24ec2d706382fca043b6074c651a52b",
+    "packageName": "dsh-safe-plugin-manager",
+    "version": "0.9.48",
+    "manifestPath": "package.json",
+    "entryIds": [
+      "dsh-safe-plugin-manager"
+    ],
+    "sourceBinding": "c6271e2bba7709945be68f40013a56130a7e3b4a11af9cbeeb6054c2f116f436",
+    "sourceDigest": "400f927dac958c7f1f97d7077ae3f9ce80990b1c5f9335676c5377f5e6eda0a7"
+  },
+  "review": {
+    "commit": "a55e5a12d2b22f971f5ca5e71b3b365b124a3031",
+    "binding": "c6271e2bba7709945be68f40013a56130a7e3b4a11af9cbeeb6054c2f116f436",
+    "verdict": "approved",
+    "documentPath": "docs/reviews/store-0948-source-review-20261119.json",
+    "documentSha256": "a3bb3981164542373e42cdfe3a03ef9be3f1a283f1ed4a9dd008cca81000ee5a"
+  },
+  "scope": [
+    "registry/catalog-index.json",
+    "registry/catalog.json",
+    "registry/catalog/details/dsh-safe-plugin-manager.json"
+  ],
+  "preconditions": {
+    "files": {
+      "docs/reviews/store-0948-source-review-20261119.json": "a3bb3981164542373e42cdfe3a03ef9be3f1a283f1ed4a9dd008cca81000ee5a",
+      "registry/admission-reviews.json": "b7a6713406cf4825cf694cd335009c67f32bc0ee3a08b97a546ef4cc8934dcfb",
+      "registry/catalog-index.json": "7b8f2c14b222c2e80038ae65e24373b078956835772cf19777b174f86c257862",
+      "registry/catalog.json": "d6f7a1b5b9cfe6d8aa32e61cbab661aea82ce3ae2ffa985d5801a05ebb1df84a",
+      "registry/catalog/details/dsh-safe-plugin-manager.json": "170f77aa598118972f4573b975da7111889672f126fe0af33cb1d513ed873776"
+    }
+  },
+  "authorization": {
+    "source": "direct-user-request",
+    "request": "用户要求处理 GitHub 收录里的高版本暂缓更新项，优先处理自研插件，并明确由 Codex 负责本次审查。",
+    "reviewer": "Codex on behalf of AI-Scarlett",
+    "reviewedAt": "2026-11-19T00:06:32.468Z",
+    "rationale": "Complete bounded review of this exact public MIT source commit scanned every distributable source file and found no protected DSH mutation, dynamic module loading, native executable artifact, lifecycle hook, or runtime dependency. The sole scanner self-match is the child_process detector regex in src/automation-source-policy.mjs and is hash-bound as a false positive. The remaining child-process warnings are actual execFile/spawn calls for the official DSH CLI, Node, and macOS launchctl, all using argument arrays without shell evaluation; these are retained as restricted command capability. The actual package writes manager-owned Profile Patch data, local operation/recovery files, and logs; it makes outbound requests to configured service endpoints, including user-configurable model URLs; and it handles API keys and DSH web-session tokens. These are accurately disclosed as high risk, file write, network any, restricted commands, and API-key/web-session-token credentials. This is an owner-authorized fixed-source review, not an independent security audit or real DSH/Profile acceptance. Disposable DSH CLI latest-three install/start/uninstall matrix passed on exact source Commit a55e5a12d2b22f971f5ca5e71b3b365b124a3031 in GitHub Actions run 44409333786; this does not claim a real user Profile installation."
+  },
+  "rollback": {
+    "type": "git-revert",
+    "description": "Revert only this exact reviewed Catalog policy PR and preserve the immutable admission review history."
+  }
+}
