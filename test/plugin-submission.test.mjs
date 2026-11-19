@@ -53,6 +53,8 @@ function catalog(entries = []) {
 }
 
 function sourceFetch(options = {}) {
+  const repositoryOwner = options.repositoryOwner ?? 'example'
+  const repositoryName = options.repositoryName ?? 'dsh-demo'
   const packages = options.packages ?? { 'package.json': manifest(options.manifest) }
   const patches = options.patches ?? Object.fromEntries(Object.keys(packages).map(path => {
     const directory = path === 'package.json' ? '' : `${path.slice(0, -'package.json'.length)}`
@@ -62,7 +64,7 @@ function sourceFetch(options = {}) {
   const blobPaths = [...new Set([...Object.keys(packages), ...Object.keys(patches), ...Object.keys(sources)])]
   return async url => {
     const parsed = new URL(url)
-    if (parsed.hostname === 'api.github.com' && parsed.pathname === '/repos/example/dsh-demo') {
+    if (parsed.hostname === 'api.github.com' && parsed.pathname === `/repos/${repositoryOwner}/${repositoryName}`) {
       return new Response(JSON.stringify({
         private: options.private === true, archived: options.archived === true, default_branch: 'main',
         owner: { id: options.ownerUserId ?? 1234 },
@@ -89,7 +91,7 @@ function sourceFetch(options = {}) {
       }))
     }
     if (parsed.hostname === 'raw.githubusercontent.com') {
-      const prefix = `/example/dsh-demo/${SHA}/`
+      const prefix = `/${repositoryOwner}/${repositoryName}/${SHA}/`
       const path = decodeURIComponent(parsed.pathname.slice(prefix.length))
       if (Object.hasOwn(packages, path)) return new Response(JSON.stringify(packages[path]))
       if (Object.hasOwn(patches, path)) return new Response(patches[path])
@@ -136,6 +138,35 @@ test('submission accepts a second component exported by the same fixed package',
   assert.deepEqual(result.candidate.entryIds, ['dsh-demo', 'dsh-demo-gate'])
   assert.equal(result.candidate.packageName, 'dsh-demo')
   assert.equal(result.source.status, 'verified')
+})
+
+test('first-party manager exception permits only its own protected insertion', async () => {
+  const patch = '- insert:\n    - id: dsh-safe-plugin-manager\n      name: dsh-safe-plugin-manager\n'
+  const options = {
+    catalogDocument: catalog(),
+    fetch: sourceFetch({
+      repositoryOwner: 'AI-Scarlett', repositoryName: 'DSH-Store',
+      manifest: manifest({ name: 'dsh-safe-plugin-manager' }), patch,
+    }),
+    allowProtectedManager: true,
+    retryDelaysMs: [],
+  }
+  const accepted = await checkRepository('https://github.com/AI-Scarlett/DSH-Store', '', options)
+  assert.deepEqual(accepted.candidate.entryIds, ['dsh-safe-plugin-manager'])
+
+  await assert.rejects(checkRepository('https://github.com/example/dsh-demo', '', {
+    ...options,
+    fetch: sourceFetch({ manifest: manifest({ name: 'dsh-safe-plugin-manager' }), patch }),
+  }), { code: 'SUBMISSION_ENTRY_PROTECTED' })
+
+  const override = '- insert:\n    - id: dsh-safe-plugin-manager\n      name: dsh-safe-plugin-manager\n- id: ui-settings-plugin-inventory\n  config:\n    enabled: true\n'
+  await assert.rejects(checkRepository('https://github.com/AI-Scarlett/DSH-Store', '', {
+    ...options,
+    fetch: sourceFetch({
+      repositoryOwner: 'AI-Scarlett', repositoryName: 'DSH-Store',
+      manifest: manifest({ name: 'dsh-safe-plugin-manager' }), patch: override,
+    }),
+  }), { code: 'SUBMISSION_ENTRY_PROTECTED' })
 })
 
 test('submission rejects a subpath without an exact safe manifest export', async () => {
