@@ -375,7 +375,7 @@ test('static marketplace derives manager identity and catalog cards without muta
     assert.match(sourceNote, /From public third-party records/)
     assert.doesNotMatch(sourceNote, /dsh\.so|dsh-store\.cn|href=|CC BY/i)
     assert.match(plugins, /<summary data-i18n="directory\.sourceDisclosureTitle">关于来源与许可<\/summary>/)
-    assert.match(plugins, /https:\/\/www\.dsh\.so\/plugins-index\.json/)
+    assert.match(plugins, /https:\/\/raw\.githubusercontent\.com\/AI-Scarlett\/DSH-Store\/main\/registry\/discovery-index\.json/)
     assert.match(plugins, /CC BY 4\.0/)
     assert.match(plugins, />GitHub ↗<\/a>/)
     assert.doesNotMatch(plugins, />GH ↗<\/a>/)
@@ -732,7 +732,7 @@ test('static marketplace accepts a domestic origin and renders the ICP record', 
     const domesticSourceNote = domesticPlugins.match(/<p id="directory-source-note"[^>]*>([\s\S]*?)<\/p>/)?.[1] || ''
     assert.match(domesticSourceNote, /来自第三方公开记录/)
     assert.doesNotMatch(domesticSourceNote, /dsh\.so|dsh-store\.cn|href=|CC BY/i)
-    assert.match(domesticPlugins, /https:\/\/www\.dsh\.so\/plugins-index\.json/)
+    assert.match(domesticPlugins, /https:\/\/raw\.githubusercontent\.com\/AI-Scarlett\/DSH-Store\/main\/registry\/discovery-index\.json/)
     assert.match(domesticPlugins, />GitHub ↗<\/a>/)
     assert.doesNotMatch(sitemap, /\/articles\//)
     assert.match(domesticArticle, /<html lang="zh-CN" data-default-locale="zh" data-fixed-locale="zh-CN">/)

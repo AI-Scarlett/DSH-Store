@@ -6,6 +6,8 @@ import { fileURLToPath } from 'node:url'
 const projectRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const SOURCE_URL = 'https://www.dsh.so/plugins-index.json'
 const ATTRIBUTION = 'dsh.so — DSH Developer Hub (https://www.dsh.so)'
+const PUBLISHED_SOURCE_NAME = 'AI-Scarlett/DSH-Store public discovery index'
+const PUBLISHED_SOURCE_URL = 'https://raw.githubusercontent.com/AI-Scarlett/DSH-Store/main/registry/discovery-index.json'
 const MAX_INPUT_BYTES = 64 * 1024 * 1024
 const MAX_RECORDS = 50_000
 const DESCRIPTION_LIMIT = 220
@@ -43,16 +45,6 @@ function repositoryFromInstall(value) {
   return safeGithubUrl(`https://github.com/${match[1]}`)
 }
 
-function safeArtifactUrl(value, id) {
-  if (typeof value === 'string') {
-    try {
-      const url = new URL(value)
-      if (url.protocol === 'https:' && url.hostname.toLowerCase() === 'www.dsh.so'
-        && url.pathname.startsWith('/artifact/') && !url.username && !url.password) return url.href
-    } catch {}
-  }
-  return `https://www.dsh.so/artifact/${encodeURIComponent(id)}/`
-}
 
 function normalizeCategory(value) {
   if (typeof value !== 'string') return null
@@ -97,15 +89,14 @@ export function projectDiscoveryIndex(payload) {
       categories,
       kind: boundedText(row.kind, 'dsh-plugin', 80),
       repositoryUrl,
-      detailUrl: safeArtifactUrl(row.url, sourceId),
     }
   })
 
   return {
     schemaVersion: 1,
     source: {
-      name: 'dsh.so public discovery index',
-      url: SOURCE_URL,
+      name: PUBLISHED_SOURCE_NAME,
+      url: PUBLISHED_SOURCE_URL,
       generatedAt: new Date(payload.generatedAt).toISOString(),
       recordCount: payload.count,
       license: {

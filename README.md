@@ -29,6 +29,8 @@ DSH STORE 是一个运行在 DeepSeek Harness（DSH）设置页中的第三方
 > [GitHub Pages](https://ai-scarlett.github.io/DSH-Store/marketplace/repair/)
 > 查看官方修复/升级方案；修复页只有在 Catalog 固定到包含修复器的完整 Commit 后才会生成命令。
 
+> **DSH Store 0.9.50 源码候选：**完整目录（公开发现索引）的数据源改为 GitHub 项目 `AI-Scarlett/DSH-Store`，运行时从 `raw.githubusercontent.com` 读取 `registry/discovery-index.json`；不再把 dsh.so 网站标为数据来源，也移除了每条记录的「官网详情」外链。上游快照的 CC BY 4.0 署名仍保留在许可字段。0.9.49 已验证的 DSH 0.2.2-rc.3–rc.5 兼容窗口与 Node.js `>=24.9.0` 声明不变。
+
 > **DSH Store 0.9.49：**适配 DSH 0.2.2-rc.3 至 rc.5 并声明 Node.js `>=24.9.0`；官方 UI peer 包版本已核对。一次性 Web Profile 矩阵已在 DSH 0.2.2-rc.3 / rc.4 / rc.5 全部通过（3 平台 × 3 pnpm 的 runtime 任务与两个 previous-latest-three 任务均为 success），对应逐版 `install/start/uninstall` = passed、`rollback` = unknown。真实 Desktop UI 未验收。
 
 > **DSH Store 0.9.45 源码候选：**修复 Desktop「推荐榜」和「必装榜」读取失败（报 DESKTOP_RANKING_UNAVAILABLE_DESKTOP_RANKING_ENTRY_0_INVALID）的问题。此前榜单数据模型在 0.9.42 增加了 packageName 属性用于后台管理，但客户端校验白名单未同步收纳该字段，导致榜单首条条目即被拒绝。现已扩展桌面端白名单并接入 packageName 校验与展示。Catalog 固定版本仍为 0.9.44；真实 Desktop Profile 更新和 UI 验收尚未完成。
@@ -118,7 +120,7 @@ Bundle 启停通过 DSH 官方 `inspect`、`installBundle`、`removeBundle`、`s
 
 | 项目 | 当前状态 |
 | --- | --- |
-| Catalog 固定版本 | `0.9.49`（适配 DSH 0.2.2-rc.3–rc.5，Node.js `>=24.9.0`；RC.3–RC.5 一次性 Web Profile 矩阵通过，真实 Desktop UI 与回滚未验收） |
+| Catalog 固定版本 | `0.9.49`（当前线上 pin；0.9.50 的 GitHub 数据源修复待源码 PR 合并后由独立 Catalog pin PR 与公网回读确认） |
 | 收录条目 | 以 GitHub `registry/catalog-index.json` 的实时 `entries.length` 为准 |
 | Catalog 审核通过 | 以实时 Catalog 中 `status: approved` 的条目数为准 |
 | Desktop 可交由 DSH 检查 | Catalog 项使用固定 Commit；公开 DSH 插件目录项使用规范 GitHub 仓库；每次操作经明确确认，Store 审核状态与兼容建议不决定 DSH 的最终结果 |

@@ -2,10 +2,10 @@ import { gunzipSync } from 'node:zlib'
 
 const MAX_DISCOVERY_BYTES = 64 * 1024 * 1024
 const MAX_DISCOVERY_RECORDS = 50_000
-const SOURCE_NAME = 'dsh.so public discovery index'
-const SOURCE_URL = 'https://www.dsh.so/plugins-index.json'
+const SOURCE_NAME = 'AI-Scarlett/DSH-Store public discovery index'
+const SOURCE_URL = 'https://raw.githubusercontent.com/AI-Scarlett/DSH-Store/main/registry/discovery-index.json'
 const ATTRIBUTION = 'dsh.so — DSH Developer Hub (https://www.dsh.so)'
-const ENTRY_KEYS = ['sourceIndex', 'sourceId', 'alias', 'name', 'description', 'stars', 'categories', 'kind', 'repositoryUrl', 'detailUrl']
+const ENTRY_KEYS = ['sourceIndex', 'sourceId', 'alias', 'name', 'description', 'stars', 'categories', 'kind', 'repositoryUrl']
 
 function exactKeys(value, expected) {
   if (!value || typeof value !== 'object' || Array.isArray(value)) return false
@@ -34,18 +34,6 @@ function validRepository(value) {
   }
 }
 
-function validDetail(value) {
-  if (!boundedString(value, { min: 1, max: 2_000 })) return false
-  try {
-    const url = new URL(value)
-    return url.protocol === 'https:' && url.hostname === 'www.dsh.so'
-      && url.pathname.startsWith('/artifact/') && url.pathname.endsWith('/')
-      && !url.username && !url.password && !url.search && !url.hash
-      && value === url.href
-  } catch {
-    return false
-  }
-}
 
 function validateEntry(entry, index) {
   if (!exactKeys(entry, ENTRY_KEYS)) throw new Error(`discovery entry ${index} has an unexpected shape`)
@@ -60,8 +48,7 @@ function validateEntry(entry, index) {
       || !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(category))
     || new Set(entry.categories).size !== entry.categories.length
     || !boundedString(entry.kind, { min: 1, max: 80 })
-    || !validRepository(entry.repositoryUrl)
-    || !validDetail(entry.detailUrl)) {
+    || !validRepository(entry.repositoryUrl)) {
     throw new Error(`discovery entry ${index} failed bounded field validation`)
   }
 }
