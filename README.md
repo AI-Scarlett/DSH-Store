@@ -29,7 +29,7 @@ DSH STORE 是一个运行在 DeepSeek Harness（DSH）设置页中的第三方
 > [GitHub Pages](https://ai-scarlett.github.io/DSH-Store/marketplace/repair/)
 > 查看官方修复/升级方案；修复页只有在 Catalog 固定到包含修复器的完整 Commit 后才会生成命令。
 
-> **DSH Store 0.9.50 源码候选：**完整目录（公开发现索引）的数据源改为 GitHub 项目 `AI-Scarlett/DSH-Store`，运行时从 `raw.githubusercontent.com` 读取 `registry/discovery-index.json`；不再把 dsh.so 网站标为数据来源，也移除了每条记录的「官网详情」外链。上游快照的 CC BY 4.0 署名仍保留在许可字段。0.9.49 已验证的 DSH 0.2.2-rc.3–rc.5 兼容窗口与 Node.js `>=24.9.0` 声明不变。
+> **DSH Store 0.9.50：**完整目录（公开发现索引）的数据源改为 GitHub 项目 `AI-Scarlett/DSH-Store`，运行时从 `raw.githubusercontent.com` 读取 `registry/discovery-index.json`；不再把 dsh.so 网站标为数据来源，也移除了每条记录的「官网详情」外链。上游快照的 CC BY 4.0 署名仍保留在许可字段。0.9.49 已验证的 DSH 0.2.2-rc.3–rc.5 兼容窗口与 Node.js `>=24.9.0` 声明不变。
 
 > **DSH Store 0.9.49：**适配 DSH 0.2.2-rc.3 至 rc.5 并声明 Node.js `>=24.9.0`；官方 UI peer 包版本已核对。一次性 Web Profile 矩阵已在 DSH 0.2.2-rc.3 / rc.4 / rc.5 全部通过（3 平台 × 3 pnpm 的 runtime 任务与两个 previous-latest-three 任务均为 success），对应逐版 `install/start/uninstall` = passed、`rollback` = unknown。真实 Desktop UI 未验收。
 
@@ -73,10 +73,10 @@ DSH 从此版本优先读取插件的 `engines.dsh`，缺少它时才检查所�
 - 源码 `0.9.33` 已由 PR [#1728](https://github.com/AI-Scarlett/DSH-Store/pull/1728) 合并：响应式铺开商城导航，提供 DSH 官方组件与已安装插件只读视图；审核建议改为白话说明、技术原因可展开查看，最终安装结果仍以 DSH Desktop 官方管理器为准；必装榜补位项显示类别、可核对星标顺序和未知星标提示。源码 `0.9.34` 将官方插件与已安装插件收纳到“本机插件”下的两个子 Tab，并进一步拉开主导航间距。源码 `0.9.34` 已由 PR [#1729](https://github.com/AI-Scarlett/DSH-Store/pull/1729) 合并并于此前固定到 Catalog；源码 `0.9.35` 已由 PR [#1731](https://github.com/AI-Scarlett/DSH-Store/pull/1731) 合并，本次 Catalog 固定该版本。真实 Desktop 的新界面仍需加载后单独验收。
 - 源码 `0.9.35` 修正 `0.9.34` 导航在宽屏被等分拉伸、入口散开的布局；标签改为固定间距并按屏幕宽度换行。“本机插件”中的官方插件与已安装插件使用单独的二级 Tab。完整目录、推荐榜与必装榜恢复 DSH Desktop 适配声明筛选，明确区分“已声明适配”与“未声明”，未声明不表示不兼容。该版本已固定到 Catalog；真实 Desktop 中的筛选和导航仍需回归验收。
 源码 `0.9.28` 修复旧版商城无法提交自身更新的问题：只要 DSH 清单确认安装的是同一 Store 仓库且当前版本低于 Catalog 固定版本，更新入口就会把目标固定 Commit 直接交给 DSH `installBundle()`，不要求旧安装来源可解析为完整 Commit，也不调用 `removeBundle()`。DSH 明确拒绝时保留其错误；不确定结果只核对一次，不会重试。该修复包含在源码 `0.9.29` 中，并已通过独立 Catalog 发布；截至本次发布，Catalog 固定至 `0.9.44`。
-通过 DSH 官方 CLI 安装 Catalog 当前固定的 `0.9.49` Commit：
+通过 DSH 官方 CLI 安装 Catalog 当前固定的 `0.9.50` Commit：
 
 ```bash
-dsh plugin --profile web add --ignore-scripts --config.auto-install-peers=false 'git+https://github.com/AI-Scarlett/DSH-Store.git#af4bf3a6a3b3edc1a5495421b0fa383bb7de3196'
+dsh plugin --profile web add --ignore-scripts --config.auto-install-peers=false 'git+https://github.com/AI-Scarlett/DSH-Store.git#2c77452d245eccfb909205d7b520d7f39a30775e'
 ```
 
 这条命令会修改目标 Profile 的依赖、锁文件、工作区文件、`node_modules` 和 Bundle 列表。
@@ -120,7 +120,7 @@ Bundle 启停通过 DSH 官方 `inspect`、`installBundle`、`removeBundle`、`s
 
 | 项目 | 当前状态 |
 | --- | --- |
-| Catalog 固定版本 | `0.9.49`（当前线上 pin；0.9.50 的 GitHub 数据源修复待源码 PR 合并后由独立 Catalog pin PR 与公网回读确认） |
+| Catalog 固定版本 | `0.9.50`（完整目录数据源改为 GitHub 项目，去掉网站来源与官网外链；DSH 0.2.2-rc.3–rc.5 与 Node.js `>=24.9.0` 不变，真实 Desktop UI 与回滚未验收） |
 | 收录条目 | 以 GitHub `registry/catalog-index.json` 的实时 `entries.length` 为准 |
 | Catalog 审核通过 | 以实时 Catalog 中 `status: approved` 的条目数为准 |
 | Desktop 可交由 DSH 检查 | Catalog 项使用固定 Commit；公开 DSH 插件目录项使用规范 GitHub 仓库；每次操作经明确确认，Store 审核状态与兼容建议不决定 DSH 的最终结果 |
