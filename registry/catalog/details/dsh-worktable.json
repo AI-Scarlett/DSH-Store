@@ -18,24 +18,24 @@
   "manifestPath": "01_content/package.json",
   "installPath": "01_content",
   "updatePolicy": "external-only",
-  "commit": "5e4419bed157876a69dbe825824c745e10c9fc25",
-  "version": "0.5.1",
+  "commit": "0f8cd2d5a1a4f67e9607883108e6d881a25367de",
+  "version": "0.6.0",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-11-19T16:10:31.000Z",
-    "observedAt": "2026-11-19T17:07:54.000Z",
+    "updatedAt": "2026-11-19T18:14:58.000Z",
+    "observedAt": "2026-11-20T02:28:55.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-11-19T17:07:54.000Z",
-      "evidenceUrl": "https://github.com/Aisland-SJL/dsh-worktable/commit/5e4419bed157876a69dbe825824c745e10c9fc25",
+      "checkedAt": "2026-11-20T02:28:55.000Z",
+      "evidenceUrl": "https://github.com/Aisland-SJL/dsh-worktable/commit/0f8cd2d5a1a4f67e9607883108e6d881a25367de",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -74,7 +74,7 @@
   },
   "admission": {
     "engine": "bounded-source-v3",
-    "binding": "0a957e050b2a1c7cdf4e10ba64c23e202c24e4a2d0720653075acea713e35761",
+    "binding": "f9edb41d45abd751b9acb42cc8f4606409dcbe924cd326339f36cc9bf4f9b3db",
     "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
     "state": "review-required",
     "sourceContract": "verified",
@@ -90,7 +90,7 @@
   "status": "blocked",
   "statusReason": "Automatic policy blocked installation: fixed-source security warnings require review; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal",
   "compatibility": {
-    "dsh": "0.2.0-rc.2 || 0.2.1-rc.3 || 0.2.1-rc.5 || 0.2.2-rc.1",
+    "dsh": "0.2.0-rc.2 || 0.2.1-rc.3 || 0.2.1-rc.5 || 0.2.2-rc.1 || 0.2.2-rc.5",
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
@@ -104,9 +104,9 @@
       "0.2.1-rc.3": "compatible",
       "0.2.1-rc.5": "compatible",
       "0.2.2-rc.1": "compatible",
+      "0.2.2-rc.5": "compatible",
       "0.2.2-rc.3": "unknown",
-      "0.2.2-rc.4": "unknown",
-      "0.2.2-rc.5": "unknown"
+      "0.2.2-rc.4": "unknown"
     },
     "dshOperations": {
       "rc.7": {
@@ -181,6 +181,12 @@
         "uninstall": "unknown",
         "rollback": "unknown"
       },
+      "0.2.2-rc.5": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
       "0.2.2-rc.3": {
         "install": "unknown",
         "start": "unknown",
@@ -188,12 +194,6 @@
         "rollback": "unknown"
       },
       "0.2.2-rc.4": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.2.2-rc.5": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",
