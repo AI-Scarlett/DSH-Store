@@ -2,7 +2,7 @@
   "id": "dsh-safe-plugin-manager",
   "name": "安全插件商城（DSH-Store）",
   "packageName": "dsh-safe-plugin-manager",
-  "description": "DSH Store 0.9.49 适配 DSH 0.2.2-rc.3、0.2.2-rc.4、0.2.2-rc.5，并把 Node.js 最低版本提高到 >=24.9.0。三个版本的安装、启动、卸载已在一次性 Web Profile CI 矩阵通过，回滚仍未验证；Desktop 界面未验收。",
+  "description": "DSH Store 0.9.50 把完整目录的数据源改为 GitHub 项目 AI-Scarlett/DSH-Store（raw.githubusercontent.com），不再把 dsh.so 网站标为数据来源，并移除每条记录的官网详情外链；保留上游 CC BY 4.0 署名。DSH 0.2.2-rc.3 至 rc.5 的兼容窗口与 Node.js >=24.9.0 声明不变。",
   "searchTerms": [
     "安全插件商城",
     "DSH-Store",
@@ -41,8 +41,8 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "user-reviewed",
-  "commit": "af4bf3a6a3b3edc1a5495421b0fa383bb7de3196",
-  "version": "0.9.49",
+  "commit": "2c77452d245eccfb909205d7b520d7f39a30775e",
+  "version": "0.9.50",
   "categories": [
     "marketplace",
     "management"
@@ -58,8 +58,8 @@
     "discovery": {
       "status": "verified",
       "method": "first-party-fixed-source-release-review",
-      "checkedAt": "2026-11-20T18:20:00.000Z",
-      "evidenceUrl": "https://github.com/AI-Scarlett/DSH-Store/commit/af4bf3a6a3b3edc1a5495421b0fa383bb7de3196",
+      "checkedAt": "2026-11-20T20:55:00.000Z",
+      "evidenceUrl": "https://github.com/AI-Scarlett/DSH-Store/commit/2c77452d245eccfb909205d7b520d7f39a30775e",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -68,8 +68,8 @@
     "installability": {
       "status": "verified",
       "method": "official-cli-disposable-profile-ci",
-      "checkedAt": "2026-11-20T18:20:00.000Z",
-      "evidenceUrl": "https://github.com/AI-Scarlett/DSH-Store/actions/runs/44715038596",
+      "checkedAt": "2026-11-20T20:55:00.000Z",
+      "evidenceUrl": "https://github.com/AI-Scarlett/DSH-Store/actions/runs/44738507460",
       "dshRelease": "0.2.2-rc.5",
       "systems": [],
       "profiles": [],
@@ -78,8 +78,8 @@
     "runtime": {
       "status": "verified",
       "method": "official-cli-disposable-profile-runtime-matrix",
-      "checkedAt": "2026-11-20T18:20:00.000Z",
-      "evidenceUrl": "https://github.com/AI-Scarlett/DSH-Store/actions/runs/44715038596",
+      "checkedAt": "2026-11-20T20:55:00.000Z",
+      "evidenceUrl": "https://github.com/AI-Scarlett/DSH-Store/actions/runs/44738507460",
       "dshRelease": "0.2.2-rc.5",
       "systems": [],
       "profiles": [],
@@ -88,8 +88,8 @@
     "securityReview": {
       "status": "unknown",
       "method": "owner-reviewed-bounded-static-fixed-source-analysis",
-      "checkedAt": "2026-11-20T18:20:00.000Z",
-      "evidenceUrl": "https://github.com/AI-Scarlett/DSH-Store/commit/af4bf3a6a3b3edc1a5495421b0fa383bb7de3196",
+      "checkedAt": "2026-11-20T20:55:00.000Z",
+      "evidenceUrl": "https://github.com/AI-Scarlett/DSH-Store/commit/2c77452d245eccfb909205d7b520d7f39a30775e",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
