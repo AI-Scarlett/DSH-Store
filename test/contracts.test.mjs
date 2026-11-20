@@ -58,6 +58,12 @@ test('package exposes a standard DSH bundle and client', async () => {
   assert.deepEqual(pkg.dsh.compatibility.dshOperations['0.2.2-rc.1'], {
     install: 'passed', start: 'passed', uninstall: 'passed', rollback: 'unknown',
   })
+  for (const release of ['0.2.2-rc.3', '0.2.2-rc.4', '0.2.2-rc.5']) {
+    assert.equal(pkg.dsh.compatibility.dshReleases[release], 'compatible')
+    assert.deepEqual(pkg.dsh.compatibility.dshOperations[release], {
+      install: 'passed', start: 'passed', uninstall: 'passed', rollback: 'unknown',
+    })
+  }
   assert.equal(pkg.engines.node, '>=24.9.0')
   assert.match(pkg.scripts.check, /src\/guardian-upgrader\.mjs/)
   const legacyClientRange = '0.0.1-rc.5 || >=0.1.0-rc.6 <0.2.0 || 0.1.5-alpha.1 || 0.1.5-alpha.2'
