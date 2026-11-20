@@ -99,7 +99,8 @@ const candidateRegistry = validateCandidateRegistry(JSON.parse(await readFile(re
 const discoveryIndexBytes = await readFile(resolve(projectRoot, 'registry/discovery-index.json'))
 if (discoveryIndexBytes.byteLength > 12 * 1024 * 1024) throw new Error('Public discovery index exceeds the static-build byte bound')
 const discoveryIndex = JSON.parse(discoveryIndexBytes.toString('utf8'))
-if (discoveryIndex?.schemaVersion !== 1 || discoveryIndex.source?.url !== 'https://www.dsh.so/plugins-index.json'
+if (discoveryIndex?.schemaVersion !== 1
+  || discoveryIndex.source?.url !== 'https://raw.githubusercontent.com/AI-Scarlett/DSH-Store/main/registry/discovery-index.json'
   || discoveryIndex.source?.license?.spdx !== 'CC-BY-4.0'
   || discoveryIndex.source?.license?.attribution !== 'dsh.so — DSH Developer Hub (https://www.dsh.so)'
   || !Number.isInteger(discoveryIndex.source?.recordCount)

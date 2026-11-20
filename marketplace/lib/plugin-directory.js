@@ -20,7 +20,7 @@ function gzipUrl(url) {
 
 function validateDiscoveryPayload(payload, integrity) {
   if (payload?.schemaVersion !== 1 || !Array.isArray(payload.entries) || !payload.source
-    || payload.source.url !== 'https://www.dsh.so/plugins-index.json'
+    || payload.source.url !== 'https://raw.githubusercontent.com/AI-Scarlett/DSH-Store/main/registry/discovery-index.json'
     || payload.source.license?.spdx !== 'CC-BY-4.0'
     || payload.source.license?.attribution !== 'dsh.so — DSH Developer Hub (https://www.dsh.so)'
     || !Number.isInteger(payload.source.recordCount) || payload.source.recordCount !== payload.entries.length
@@ -95,17 +95,6 @@ function repositoryUrl(value) {
   }
 }
 
-function publicDetailUrl(value) {
-  if (typeof value !== 'string') return null
-  try {
-    const url = new URL(value)
-    return url.protocol === 'https:' && url.hostname.toLowerCase() === 'www.dsh.so'
-      && url.pathname.startsWith('/artifact/') && !url.username && !url.password
-      ? url.href : null
-  } catch {
-    return null
-  }
-}
 
 function categoriesFor(values, allowedCategories = null) {
   const categories = [...new Set((Array.isArray(values) ? values : [])
@@ -226,7 +215,7 @@ export function createKnownPluginDirectory(catalogEntries, candidateEntries, { d
       categories: categoriesFor(entry.categories, allowedCategories),
       searchTerms: [sourceId, alias, ...(Array.isArray(entry.categories) ? entry.categories : [])],
       description: cleanText(entry.description, '', 2_000),
-      detailUrl: publicDetailUrl(entry.detailUrl || entry.url),
+      detailUrl: null,
       sourceUrl: repository,
       stars: Number.isSafeInteger(entry.stars) && entry.stars >= 0 ? entry.stars : 0,
       kind: cleanText(entry.kind, 'dsh-plugin', 80),

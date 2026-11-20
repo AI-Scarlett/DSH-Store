@@ -7,8 +7,8 @@ function snapshot() {
   return {
     schemaVersion: 1,
     source: {
-      name: 'dsh.so public discovery index',
-      url: 'https://www.dsh.so/plugins-index.json',
+      name: 'AI-Scarlett/DSH-Store public discovery index',
+      url: 'https://raw.githubusercontent.com/AI-Scarlett/DSH-Store/main/registry/discovery-index.json',
       generatedAt: '2026-10-13T00:19:35.310Z',
       recordCount: 1,
       license: { spdx: 'CC-BY-4.0', attribution: 'dsh.so — DSH Developer Hub (https://www.dsh.so)' },
@@ -16,7 +16,7 @@ function snapshot() {
     entries: [{
       sourceIndex: 0, sourceId: 'plugin-one', alias: '@example/plugin-one', name: 'Plugin One',
       description: 'A bounded description.', stars: 12, categories: ['developer-tools'], kind: 'dsh-plugin',
-      repositoryUrl: 'https://github.com/example/plugin-one', detailUrl: 'https://www.dsh.so/artifact/plugin-one/',
+      repositoryUrl: 'https://github.com/example/plugin-one',
     }],
   }
 }

@@ -16,7 +16,7 @@ function publicIndex(count) {
   return {
     schemaVersion: 1,
     source: {
-      url: 'https://www.dsh.so/plugins-index.json',
+      url: 'https://raw.githubusercontent.com/AI-Scarlett/DSH-Store/main/registry/discovery-index.json',
       generatedAt: '2026-10-13T00:19:35.310Z',
       recordCount: count,
       license: { spdx: 'CC-BY-4.0', attribution: 'dsh.so — DSH Developer Hub (https://www.dsh.so)' },
@@ -32,7 +32,6 @@ function publicIndex(count) {
         : sourceIndex === 1 ? 'https://github.com/example/two'
           : `https://github.com/example/repo-${sourceIndex}`,
       stars: sourceIndex,
-      detailUrl: `https://www.dsh.so/artifact/record-${sourceIndex}/`,
     })),
   }
 }

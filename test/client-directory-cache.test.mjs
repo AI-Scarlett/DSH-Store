@@ -154,14 +154,14 @@ const CATALOG_INDEX_DOCUMENT = {
 const DISCOVERY_DOCUMENT = {
   schemaVersion: 1,
   source: {
-    name: 'dsh.so public discovery index', url: 'https://www.dsh.so/plugins-index.json',
+    name: 'AI-Scarlett/DSH-Store public discovery index', url: 'https://raw.githubusercontent.com/AI-Scarlett/DSH-Store/main/registry/discovery-index.json',
     generatedAt: '2026-01-01T00:00:00.000Z', recordCount: 1,
     license: { spdx: 'CC-BY-4.0', attribution: 'dsh.so — DSH Developer Hub (https://www.dsh.so)' },
   },
   entries: [{
     sourceIndex: 0, sourceId: 'demo', alias: 'demo', name: 'Demo Plugin', description: 'demo plugin',
     stars: 12, categories: ['developer'], kind: 'plugin',
-    repositoryUrl: 'https://github.com/AI-Scarlett/demo-plugin', detailUrl: 'https://www.dsh.so/artifact/demo/',
+    repositoryUrl: 'https://github.com/AI-Scarlett/demo-plugin',
   }],
 }
 

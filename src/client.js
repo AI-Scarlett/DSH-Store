@@ -2105,8 +2105,8 @@ window.__ModuleLoader__.load({
     function validateDesktopDiscoveryIndex(value) {
       if (!desktopExactObjectKeys(value, ['schemaVersion', 'source', 'entries']) || value.schemaVersion !== 1
         || !desktopExactObjectKeys(value.source, ['name', 'url', 'generatedAt', 'recordCount', 'license'])
-        || value.source.name !== 'dsh.so public discovery index'
-        || value.source.url !== 'https://www.dsh.so/plugins-index.json'
+        || value.source.name !== 'AI-Scarlett/DSH-Store public discovery index'
+        || value.source.url !== 'https://raw.githubusercontent.com/AI-Scarlett/DSH-Store/main/registry/discovery-index.json'
         || typeof value.source.generatedAt !== 'string' || !Number.isFinite(Date.parse(value.source.generatedAt))
         || !desktopExactObjectKeys(value.source.license, ['spdx', 'attribution'])
         || value.source.license.spdx !== 'CC-BY-4.0'
@@ -2115,7 +2115,7 @@ window.__ModuleLoader__.load({
         || value.entries.length > DESKTOP_DISCOVERY_MAX_RECORDS
         || value.source.recordCount !== value.entries.length) throw desktopFailure('DESKTOP_DISCOVERY_SCHEMA_INVALID')
       for (const [index, entry] of value.entries.entries()) {
-        if (!desktopExactObjectKeys(entry, ['sourceIndex', 'sourceId', 'alias', 'name', 'description', 'stars', 'categories', 'kind', 'repositoryUrl', 'detailUrl'])
+        if (!desktopExactObjectKeys(entry, ['sourceIndex', 'sourceId', 'alias', 'name', 'description', 'stars', 'categories', 'kind', 'repositoryUrl'])
           || entry.sourceIndex !== index
           || !desktopBoundedString(entry.sourceId, 1, 240)
           || !desktopBoundedString(entry.alias, 0, 500)
@@ -2126,14 +2126,7 @@ window.__ModuleLoader__.load({
           || entry.categories.some(category => !desktopBoundedString(category, 1, 48) || !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(category))
           || new Set(entry.categories).size !== entry.categories.length
           || !desktopBoundedString(entry.kind, 1, 80)
-          || !desktopSafeRepositoryUrl(entry.repositoryUrl)
-          || !desktopBoundedString(entry.detailUrl, 1, 2_000)) throw desktopFailure(`DESKTOP_DISCOVERY_ENTRY_${index}_INVALID`)
-        try {
-          const url = new URL(entry.detailUrl)
-          if (url.protocol !== 'https:' || url.hostname !== 'www.dsh.so' || !url.pathname.startsWith('/artifact/')
-            || !url.pathname.endsWith('/') || url.username || url.password || url.search || url.hash
-            || entry.detailUrl !== url.href) throw new Error('invalid detail URL')
-        } catch { throw desktopFailure(`DESKTOP_DISCOVERY_ENTRY_${index}_DETAIL_URL_INVALID`) }
+          || !desktopSafeRepositoryUrl(entry.repositoryUrl)) throw desktopFailure(`DESKTOP_DISCOVERY_ENTRY_${index}_INVALID`)
       }
       return value
     }
@@ -2677,7 +2670,7 @@ window.__ModuleLoader__.load({
           id: `discovery:${entry.sourceIndex}:${sourceId}`, source: 'discovery', sourceId,
           sourceIndex: entry.sourceIndex, alias, packageName: alias, name: entry.name,
           description: entry.description, categories: desktopDirectoryCategories(entry.categories, allowedCategories),
-          stars: entry.stars, kind: entry.kind, repositoryUrl: repository, detailUrl: entry.detailUrl,
+          stars: entry.stars, kind: entry.kind, repositoryUrl: repository, detailUrl: null,
           order: Number.isSafeInteger(entry.sourceIndex) ? entry.sourceIndex : index,
           catalogIndexEntry: matchedCatalog, catalogEntry: trustedCatalogEntry(matchedCatalog), candidateEntry: null,
         })
@@ -3937,7 +3930,6 @@ window.__ModuleLoader__.load({
                     : githubInstallButton || React.createElement('span', { style: styles.muted },
                       installedBundle?.installed ? '已由 DSH Desktop 安装' : '目录记录仅供浏览 · 无安装操作')),
               row.repositoryUrl ? React.createElement('a', { href: row.repositoryUrl, target: '_blank', rel: 'noreferrer', style: styles.link }, 'GitHub 源码 ↗') : null,
-              row.detailUrl ? React.createElement('a', { href: row.detailUrl, target: '_blank', rel: 'noreferrer', style: styles.link }, '官网详情 ↗') : null,
               rankingEntry?.communityRecommendation ? React.createElement('a', {
                 href: rankingEntry.communityRecommendation.evidenceUrl, target: '_blank', rel: 'noreferrer', style: styles.link,
               }, '推荐依据 ↗') : null))
@@ -3947,7 +3939,7 @@ window.__ModuleLoader__.load({
           hasPrevious: directoryCurrentPage > 1, hasNext: directoryCurrentPage < directoryPageCount,
         }, loading: directoryState.status === 'loading' || rankingState.status === 'loading', onPageChange: setPage }),
         directoryState.status === 'ready' ? React.createElement('div', { style: styles.muted },
-          `公开索引生成于 ${directoryState.snapshot.discovery.source.generatedAt.slice(0, 10)} · 数据来源 dsh.so（CC BY 4.0，保留署名） · Catalog 收录状态不代表审核通过。`) : null)
+          `公开索引生成于 ${directoryState.snapshot.discovery.source.generatedAt.slice(0, 10)} · 数据来源 AI-Scarlett/DSH-Store（GitHub，CC BY 4.0，上游署名保留） · Catalog 收录状态不代表审核通过。`) : null)
 
       const catalogViewContent = React.createElement(React.Fragment, null,
         view === 'official' ? React.createElement('div', { style: styles.notice, role: 'note' },

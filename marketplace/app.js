@@ -787,7 +787,7 @@ function safeDirectoryUrl(value) {
   if (typeof value !== 'string') return null
   try {
     const url = new URL(value)
-    return url.protocol === 'https:' && ['github.com', 'www.dsh.so'].includes(url.hostname.toLowerCase())
+    return url.protocol === 'https:' && url.hostname.toLowerCase() === 'github.com'
       && !url.username && !url.password ? url.href : null
   } catch {
     return null

@@ -181,11 +181,11 @@ function desktopDirectoryDocuments(catalog, { extraCandidates = [] } = {}) {
   const entries = catalog.entries.filter(entry => entry.status !== 'unlisted').map((entry, sourceIndex) => ({
     sourceIndex, sourceId: entry.id, alias: entry.packageName, name: entry.name,
     description: entry.description, stars: 25 - sourceIndex, categories: ['ai'], kind: 'dsh-plugin',
-    repositoryUrl: entry.repositoryUrl, detailUrl: `https://www.dsh.so/artifact/${entry.id}/`,
+    repositoryUrl: entry.repositoryUrl,
   }))
   entries.push({ sourceIndex: entries.length, sourceId: 'public-only', alias: '@acme/public-only', name: 'Public only plugin',
     description: 'Listed in the public discovery index only.', stars: 3, categories: ['ai'], kind: 'dsh-plugin',
-    repositoryUrl: 'https://github.com/acme/public-only', detailUrl: 'https://www.dsh.so/artifact/public-only/' })
+    repositoryUrl: 'https://github.com/acme/public-only' })
   const candidates = [{ id: 'build-dsh-plugin', name: 'DSH Build candidate', description: 'Candidate review metadata for a Catalog entry.',
     repositoryUrl: 'https://github.com/acme/build-dsh-plugin', status: 'reviewing', latestCommit: '9'.repeat(40), topics: ['ai'] },
   ...extraCandidates]
@@ -194,7 +194,7 @@ function desktopDirectoryDocuments(catalog, { extraCandidates = [] } = {}) {
     catalogIndexRaw: JSON.stringify(desktopCatalogIndex(catalog.entries)),
     discovery: {
       schemaVersion: 1,
-      source: { name: 'dsh.so public discovery index', url: 'https://www.dsh.so/plugins-index.json',
+      source: { name: 'AI-Scarlett/DSH-Store public discovery index', url: 'https://raw.githubusercontent.com/AI-Scarlett/DSH-Store/main/registry/discovery-index.json',
         generatedAt: '2026-10-13T00:19:35.310Z', recordCount: entries.length,
         license: { spdx: 'CC-BY-4.0', attribution: 'dsh.so — DSH Developer Hub (https://www.dsh.so)' } },
       entries,
@@ -714,7 +714,6 @@ test('Desktop directory keeps records beyond the former 700-item range searchabl
       sourceIndex, sourceId: id, alias: `@acme/${id}`, name: `Bulk DSH plugin ${index}`,
       description: `Large directory fixture ${index}`, stars: additionalRecords - index, categories: ['ai'],
       kind: 'dsh-plugin', repositoryUrl: `https://github.com/acme/${id}`,
-      detailUrl: `https://www.dsh.so/artifact/${id}/`,
     })
   }
   directoryDocuments.discovery.source.recordCount = directoryDocuments.discovery.entries.length

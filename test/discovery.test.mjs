@@ -19,7 +19,6 @@ function entry(index = 0) {
     categories: ['ai'],
     kind: 'dsh-plugin',
     repositoryUrl: `https://github.com/example/demo-${index}`,
-    detailUrl: `https://www.dsh.so/artifact/demo-${index}/`,
   }
 }
 
@@ -28,8 +27,8 @@ function document(count = 1) {
   return {
     schemaVersion: 1,
     source: {
-      name: 'dsh.so public discovery index',
-      url: 'https://www.dsh.so/plugins-index.json',
+      name: 'AI-Scarlett/DSH-Store public discovery index',
+      url: 'https://raw.githubusercontent.com/AI-Scarlett/DSH-Store/main/registry/discovery-index.json',
       generatedAt: '2026-11-02T00:31:49.941Z',
       recordCount: entries.length,
       license: { spdx: 'CC-BY-4.0', attribution: 'dsh.so — DSH Developer Hub (https://www.dsh.so)' },
