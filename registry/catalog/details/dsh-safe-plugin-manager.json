@@ -2,7 +2,7 @@
   "id": "dsh-safe-plugin-manager",
   "name": "安全插件商城（DSH-Store）",
   "packageName": "dsh-safe-plugin-manager",
-  "description": "DSH Store 0.9.44 修复 Desktop「官网完整目录」在慢速网络下的读取问题，增加宿主落盘缓存（6小时 TTL）并提供本地高速接口，目录读取中即时展示 Catalog 记录与等待秒数。",
+  "description": "DSH Store 0.9.49 适配 DSH 0.2.2-rc.3、0.2.2-rc.4、0.2.2-rc.5，并把 Node.js 最低版本提高到 >=24.9.0。三个版本的安装、启动、卸载已在一次性 Web Profile CI 矩阵通过，回滚仍未验证；Desktop 界面未验收。",
   "searchTerms": [
     "安全插件商城",
     "DSH-Store",
@@ -41,8 +41,8 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "user-reviewed",
-  "commit": "7496798b1e05f758a9f4d6287d7186d09570014d",
-  "version": "0.9.44",
+  "commit": "af4bf3a6a3b3edc1a5495421b0fa383bb7de3196",
+  "version": "0.9.49",
   "categories": [
     "marketplace",
     "management"
@@ -58,8 +58,8 @@
     "discovery": {
       "status": "verified",
       "method": "first-party-fixed-source-release-review",
-      "checkedAt": "2026-11-08T09:55:00.000Z",
-      "evidenceUrl": "https://github.com/AI-Scarlett/DSH-Store/commit/7496798b1e05f758a9f4d6287d7186d09570014d",
+      "checkedAt": "2026-11-20T18:20:00.000Z",
+      "evidenceUrl": "https://github.com/AI-Scarlett/DSH-Store/commit/af4bf3a6a3b3edc1a5495421b0fa383bb7de3196",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -68,32 +68,32 @@
     "installability": {
       "status": "verified",
       "method": "official-cli-disposable-profile-ci",
-      "checkedAt": "2026-11-08T09:55:00.000Z",
-      "evidenceUrl": "https://github.com/AI-Scarlett/DSH-Store/actions/runs/42467344545",
-      "dshRelease": "0.2.2-rc.1",
+      "checkedAt": "2026-11-20T18:20:00.000Z",
+      "evidenceUrl": "https://github.com/AI-Scarlett/DSH-Store/actions/runs/44715038596",
+      "dshRelease": "0.2.2-rc.5",
       "systems": [],
       "profiles": [],
-      "summary": "Install, start and uninstall passed in the disposable official DSH release matrix; rollback remains unknown."
+      "summary": "Install, start and uninstall passed for DSH 0.2.2-rc.3, 0.2.2-rc.4 and 0.2.2-rc.5 in disposable profiles; rollback remains unknown."
     },
     "runtime": {
       "status": "verified",
       "method": "official-cli-disposable-profile-runtime-matrix",
-      "checkedAt": "2026-11-08T09:55:00.000Z",
-      "evidenceUrl": "https://github.com/AI-Scarlett/DSH-Store/actions/runs/42467344545",
-      "dshRelease": "0.2.2-rc.1",
+      "checkedAt": "2026-11-20T18:20:00.000Z",
+      "evidenceUrl": "https://github.com/AI-Scarlett/DSH-Store/actions/runs/44715038596",
+      "dshRelease": "0.2.2-rc.5",
       "systems": [],
       "profiles": [],
-      "summary": "The fixed source tree passed the disposable DSH 0.2.2-rc.1 runtime matrix; the PR head tree and merged source tree are identical."
+      "summary": "The fixed source tree passed the disposable runtime matrix on the exact latest-three DSH window; Desktop UI is still unverified."
     },
     "securityReview": {
       "status": "unknown",
       "method": "owner-reviewed-bounded-static-fixed-source-analysis",
-      "checkedAt": "2026-11-08T09:55:00.000Z",
-      "evidenceUrl": "https://github.com/AI-Scarlett/DSH-Store/commit/7496798b1e05f758a9f4d6287d7186d09570014d",
+      "checkedAt": "2026-11-20T18:20:00.000Z",
+      "evidenceUrl": "https://github.com/AI-Scarlett/DSH-Store/commit/af4bf3a6a3b3edc1a5495421b0fa383bb7de3196",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
-      "summary": "Complete bounded scan; existing elevated permissions and known scanner false-positive retained. No independent audit performed."
+      "summary": "Complete bounded scan of the fixed commit; existing elevated permissions retained and no independent audit performed."
     }
   },
   "entryIds": [
@@ -102,7 +102,7 @@
   "status": "approved",
   "statusReason": null,
   "compatibility": {
-    "dsh": "0.0.1-rc.5 || >=0.1.0-rc.6 <0.2.0 || 0.1.5-alpha.1 || 0.1.5-alpha.2 || 0.1.5-rc.1 || 0.1.5-rc.2 || 0.2.0-rc.1 || 0.2.0-rc.2 || 0.2.1-alpha.1 || 0.2.1-alpha.2 || 0.2.1-alpha.3 || 0.2.1-alpha.4 || 0.2.1-alpha.5 || 0.2.1-rc.1 || 0.2.1-rc.2 || 0.2.1-rc.3 || 0.2.1-rc.4 || 0.2.1-rc.5 || 0.2.2-alpha.2 || 0.2.2-alpha.3 || 0.2.2-rc.1",
+    "dsh": "0.0.1-rc.5 || >=0.1.0-rc.6 <0.2.0 || 0.1.5-alpha.1 || 0.1.5-alpha.2 || 0.1.5-rc.1 || 0.1.5-rc.2 || 0.2.0-rc.1 || 0.2.0-rc.2 || 0.2.1-alpha.1 || 0.2.1-alpha.2 || 0.2.1-alpha.3 || 0.2.1-alpha.4 || 0.2.1-alpha.5 || 0.2.1-rc.1 || 0.2.1-rc.2 || 0.2.1-rc.3 || 0.2.1-rc.4 || 0.2.1-rc.5 || 0.2.2-alpha.2 || 0.2.2-alpha.3 || 0.2.2-rc.1 || 0.2.2-rc.2 || 0.2.2-rc.3 || 0.2.2-rc.4 || 0.2.2-rc.5",
     "dshReleases": {
       "rc.7": "compatible",
       "rc.8": "compatible",
@@ -113,10 +113,12 @@
       "0.1.2-alpha.4": "compatible",
       "0.1.2-alpha.5": "compatible",
       "0.1.3-alpha.1": "compatible",
+      "0.1.3-alpha.2": "unknown",
       "0.1.5-alpha.1": "compatible",
       "0.1.5-alpha.2": "compatible",
       "0.1.5-rc.1": "compatible",
       "0.1.5-rc.2": "compatible",
+      "0.1.6-alpha.1": "unknown",
       "0.1.7-alpha.1": "compatible",
       "0.1.7-alpha.2": "compatible",
       "0.1.7-rc.1": "compatible",
@@ -136,58 +138,112 @@
       "0.2.2-alpha.2": "compatible",
       "0.2.2-alpha.3": "compatible",
       "0.2.2-rc.1": "compatible",
-      "0.2.2-rc.2": "unknown",
-      "0.2.2-rc.3": "unknown",
-      "0.2.2-rc.4": "unknown",
-      "0.2.2-rc.5": "unknown"
+      "0.2.2-rc.2": "compatible",
+      "0.2.2-rc.3": "compatible",
+      "0.2.2-rc.4": "compatible",
+      "0.2.2-rc.5": "compatible"
     },
     "dshOperations": {
-      "rc.7": {
+      "0.2.2-rc.1": {
+        "install": "passed",
+        "start": "passed",
+        "uninstall": "passed",
+        "rollback": "unknown"
+      },
+      "0.1.7-alpha.1": {
+        "install": "passed",
+        "start": "passed",
+        "uninstall": "passed",
+        "rollback": "passed"
+      },
+      "0.1.7-alpha.2": {
+        "install": "passed",
+        "start": "passed",
+        "uninstall": "passed",
+        "rollback": "passed"
+      },
+      "0.1.7-rc.1": {
+        "install": "passed",
+        "start": "passed",
+        "uninstall": "passed",
+        "rollback": "passed"
+      },
+      "0.1.7-rc.2": {
+        "install": "passed",
+        "start": "passed",
+        "uninstall": "passed",
+        "rollback": "passed"
+      },
+      "0.2.0-rc.1": {
+        "install": "passed",
+        "start": "passed",
+        "uninstall": "passed",
+        "rollback": "passed"
+      },
+      "0.2.0-rc.2": {
+        "install": "passed",
+        "start": "passed",
+        "uninstall": "passed",
+        "rollback": "passed"
+      },
+      "0.2.1-alpha.1": {
+        "install": "passed",
+        "start": "passed",
+        "uninstall": "passed",
+        "rollback": "passed"
+      },
+      "0.2.1-alpha.2": {
+        "install": "passed",
+        "start": "passed",
+        "uninstall": "passed",
+        "rollback": "passed"
+      },
+      "0.2.1-alpha.3": {
+        "install": "passed",
+        "start": "passed",
+        "uninstall": "passed",
+        "rollback": "unknown"
+      },
+      "0.2.1-alpha.4": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",
         "rollback": "unknown"
       },
-      "rc.8": {
+      "0.2.1-alpha.5": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",
         "rollback": "unknown"
       },
-      "0.1.1-rc.1": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
+      "0.2.1-rc.1": {
+        "install": "passed",
+        "start": "passed",
+        "uninstall": "passed",
         "rollback": "unknown"
       },
-      "0.1.1-rc.2": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
+      "0.2.1-rc.2": {
+        "install": "passed",
+        "start": "passed",
+        "uninstall": "passed",
         "rollback": "unknown"
       },
-      "0.1.2-alpha.2": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
+      "0.2.1-rc.3": {
+        "install": "passed",
+        "start": "passed",
+        "uninstall": "passed",
         "rollback": "unknown"
       },
-      "0.1.2-alpha.3": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
+      "0.2.1-rc.4": {
+        "install": "passed",
+        "start": "passed",
+        "uninstall": "passed",
         "rollback": "unknown"
       },
-      "0.1.2-alpha.4": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.1.2-alpha.5": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
+      "0.2.1-rc.5": {
+        "install": "passed",
+        "start": "passed",
+        "uninstall": "passed",
         "rollback": "unknown"
       },
       "0.2.2-alpha.2": {
@@ -202,46 +258,40 @@
         "uninstall": "passed",
         "rollback": "unknown"
       },
-      "0.2.2-rc.1": {
-        "install": "passed",
-        "start": "passed",
-        "uninstall": "passed",
-        "rollback": "unknown"
-      },
       "0.2.2-rc.2": {
-        "install": "unknown",
+        "install": "passed",
         "start": "unknown",
         "uninstall": "unknown",
         "rollback": "unknown"
       },
       "0.2.2-rc.3": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
+        "install": "passed",
+        "start": "passed",
+        "uninstall": "passed",
         "rollback": "unknown"
       },
       "0.2.2-rc.4": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
+        "install": "passed",
+        "start": "passed",
+        "uninstall": "passed",
         "rollback": "unknown"
       },
       "0.2.2-rc.5": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
+        "install": "passed",
+        "start": "passed",
+        "uninstall": "passed",
         "rollback": "unknown"
       }
     },
     "latestWindow": {
-      "state": "recheck-required",
+      "state": "current",
       "releases": [
         "0.2.2-rc.3",
         "0.2.2-rc.4",
         "0.2.2-rc.5"
       ]
     },
-    "node": "^22.19.0 || >=24.0.0",
+    "node": ">=24.9.0",
     "systems": [],
     "profiles": [
       "web"
