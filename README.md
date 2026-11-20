@@ -29,7 +29,7 @@ DSH STORE 是一个运行在 DeepSeek Harness（DSH）设置页中的第三方
 > [GitHub Pages](https://ai-scarlett.github.io/DSH-Store/marketplace/repair/)
 > 查看官方修复/升级方案；修复页只有在 Catalog 固定到包含修复器的完整 Commit 后才会生成命令。
 
-> **DSH Store 0.9.48 源码候选：**移除公开默认管理员口令，旧设置在首次升级时改用部署环境提供的口令或保持锁定，并使升级前签发的管理员会话失效。该版本尚待 CI、固定源码复审和 Catalog 流程确认。
+> **DSH Store 0.9.49 源码候选：**适配 DSH 0.2.2-rc.3 至 rc.5 并声明 Node.js `>=24.9.0`；官方 UI peer 包版本已核对。一次性 Web Profile 矩阵已在 DSH 0.2.2-rc.3 / rc.4 / rc.5 全部通过（3 平台 × 3 pnpm 的 runtime 任务与两个 previous-latest-three 任务均为 success），对应逐版 `install/start/uninstall` = passed、`rollback` = unknown。真实 Desktop UI 未验收。
 
 > **DSH Store 0.9.45 源码候选：**修复 Desktop「推荐榜」和「必装榜」读取失败（报 DESKTOP_RANKING_UNAVAILABLE_DESKTOP_RANKING_ENTRY_0_INVALID）的问题。此前榜单数据模型在 0.9.42 增加了 packageName 属性用于后台管理，但客户端校验白名单未同步收纳该字段，导致榜单首条条目即被拒绝。现已扩展桌面端白名单并接入 packageName 校验与展示。Catalog 固定版本仍为 0.9.44；真实 Desktop Profile 更新和 UI 验收尚未完成。
 
@@ -65,7 +65,7 @@ DSH 从此版本优先读取插件的 `engines.dsh`，缺少它时才检查所�
 ### 使用固定 GitHub Commit 安装
 
 优先使用上方的原生索引，或从[当前修复入口](https://dsh.store/repair/)核对受审的固定源码。
-Catalog 当前固定 DSH Store 0.9.44、Commit `7496798b1e05f758a9f4d6287d7186d09570014d`。此版本修复 Desktop 目录读取故障，并保留 0.9.42 的 Client Remote 依赖更正与推荐榜后台管理。官方 DSH 0.2.2-rc.1 的一次性 Profile 矩阵安装、启动和卸载通过，回滚仍未验证。Catalog 只声明 `web` Profile；真实 Desktop UI 尚未验收。
+0.9.49 固定源码通过官方 DSH 0.2.2-rc.3、0.2.2-rc.4、0.2.2-rc.5 三个版本的一次性 Web Profile 安装、配置检查、启动/API 冒烟及卸载还原（[run 44714105224](https://github.com/AI-Scarlett/DSH-Store/actions/runs/44714105224)）；对应逐版 `install/start/uninstall` 为 passed、`rollback` 为 unknown。实际 Catalog pin 仍需待本次固定源码 PR 合并后独立更新，真实 Desktop UI 尚未验收。
 - 源码 `0.9.31` 修复推荐榜和必装榜切换时两个标签共用当前榜单数量的问题；榜单计数分别绑定各自榜单，商城主内容增加响应式左右留白并略微扩大卡片间距。
 - 源码 `0.9.32` 已由 PR [#1727](https://github.com/AI-Scarlett/DSH-Store/pull/1727) 合并，修复完整目录搜索误命中审核原因和其他内部说明的问题：两字及更短的查询只匹配插件标识、GitHub 仓库和搜索词；较长查询再匹配用途描述；结果按名称、包名、仓库和关键词相关度排序。该修复包含在本次固定到 Catalog 的 `0.9.35` 中。
 - 源码 `0.9.33` 已由 PR [#1728](https://github.com/AI-Scarlett/DSH-Store/pull/1728) 合并：响应式铺开商城导航，提供 DSH 官方组件与已安装插件只读视图；审核建议改为白话说明、技术原因可展开查看，最终安装结果仍以 DSH Desktop 官方管理器为准；必装榜补位项显示类别、可核对星标顺序和未知星标提示。源码 `0.9.34` 将官方插件与已安装插件收纳到“本机插件”下的两个子 Tab，并进一步拉开主导航间距。源码 `0.9.34` 已由 PR [#1729](https://github.com/AI-Scarlett/DSH-Store/pull/1729) 合并并于此前固定到 Catalog；源码 `0.9.35` 已由 PR [#1731](https://github.com/AI-Scarlett/DSH-Store/pull/1731) 合并，本次 Catalog 固定该版本。真实 Desktop 的新界面仍需加载后单独验收。
@@ -118,7 +118,7 @@ Bundle 启停通过 DSH 官方 `inspect`、`installBundle`、`removeBundle`、`s
 
 | 项目 | 当前状态 |
 | --- | --- |
-| Catalog 固定版本 | `0.9.44`（修复 Desktop 官网完整目录慢网加载，增加宿主落盘缓存；官方 DSH 0.2.2-rc.1 一次性 Profile 矩阵通过，真实 Desktop UI 未验收） |
+| Catalog 固定版本 | `0.9.44`（当前线上 pin；0.9.49 固定源码与 RC.3–RC.5 Web 矩阵已通过 CI，待源码 PR 合并后由独立 Catalog pin PR 和公网回读确认） |
 | 收录条目 | 以 GitHub `registry/catalog-index.json` 的实时 `entries.length` 为准 |
 | Catalog 审核通过 | 以实时 Catalog 中 `status: approved` 的条目数为准 |
 | Desktop 可交由 DSH 检查 | Catalog 项使用固定 Commit；公开 DSH 插件目录项使用规范 GitHub 仓库；每次操作经明确确认，Store 审核状态与兼容建议不决定 DSH 的最终结果 |

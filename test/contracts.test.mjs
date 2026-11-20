@@ -7,7 +7,7 @@ const project = new URL('../', import.meta.url)
 test('package exposes a standard DSH bundle and client', async () => {
   const pkg = JSON.parse(await readFile(new URL('package.json', project), 'utf8'))
   assert.equal(pkg.name, 'dsh-safe-plugin-manager')
-  assert.equal(pkg.version, '0.9.48')
+  assert.equal(pkg.version, '0.9.49')
   assert.equal(pkg.engines.dsh, pkg.dsh.compatibility.dsh)
   for (const release of ['0.1.7-alpha.1', '0.1.7-alpha.2', '0.1.7-rc.1', '0.1.7-rc.2']) {
     assert.equal(pkg.dsh.compatibility.dshReleases[release], 'compatible')
@@ -58,12 +58,18 @@ test('package exposes a standard DSH bundle and client', async () => {
   assert.deepEqual(pkg.dsh.compatibility.dshOperations['0.2.2-rc.1'], {
     install: 'passed', start: 'passed', uninstall: 'passed', rollback: 'unknown',
   })
-  assert.equal(pkg.engines.node, '^22.19.0 || >=24.0.0')
+  for (const release of ['0.2.2-rc.3', '0.2.2-rc.4', '0.2.2-rc.5']) {
+    assert.equal(pkg.dsh.compatibility.dshReleases[release], 'compatible')
+    assert.deepEqual(pkg.dsh.compatibility.dshOperations[release], {
+      install: 'passed', start: 'passed', uninstall: 'passed', rollback: 'unknown',
+    })
+  }
+  assert.equal(pkg.engines.node, '>=24.9.0')
   assert.match(pkg.scripts.check, /src\/guardian-upgrader\.mjs/)
   const legacyClientRange = '0.0.1-rc.5 || >=0.1.0-rc.6 <0.2.0 || 0.1.5-alpha.1 || 0.1.5-alpha.2'
   const rcClientRange = `${legacyClientRange} || 0.1.5-rc.1`
   const nextClientRange = `${rcClientRange} || 0.2.0-rc.1`
-  const currentClientRange = `${nextClientRange} || 0.2.0-rc.2 || 0.2.1-alpha.1 || 0.2.1-alpha.2 || 0.2.1-alpha.3 || 0.2.1-alpha.4 || 0.2.1-alpha.5 || 0.2.1-rc.1 || 0.2.1-rc.2 || 0.2.1-rc.3 || 0.2.1-rc.4 || 0.2.1-rc.5 || 0.2.2-alpha.2 || 0.2.2-alpha.3 || 0.2.2-rc.1 || 0.2.2-rc.2 || 0.2.2-rc.3`
+  const currentClientRange = `${nextClientRange} || 0.2.0-rc.2 || 0.2.1-alpha.1 || 0.2.1-alpha.2 || 0.2.1-alpha.3 || 0.2.1-alpha.4 || 0.2.1-alpha.5 || 0.2.1-rc.1 || 0.2.1-rc.2 || 0.2.1-rc.3 || 0.2.1-rc.4 || 0.2.1-rc.5 || 0.2.2-alpha.2 || 0.2.2-alpha.3 || 0.2.2-rc.1 || 0.2.2-rc.2 || 0.2.2-rc.3 || 0.2.2-rc.4 || 0.2.2-rc.5`
   const desktopClientRange = [...currentClientRange.split(' || '), '0.1.5-rc.2'].sort()
   assert.equal(pkg.peerDependencies['@deepseek-ai/dsh-api-remotes'], currentClientRange)
   for (const dependency of [
@@ -84,7 +90,7 @@ test('package exposes a standard DSH bundle and client', async () => {
     '@deepseek-ai/dsh-client-ui-layout',
     '@deepseek-ai/dsh-client-ui-sidebar',
     '@deepseek-ai/dsh-client-ui-slots',
-  ]) assert.match(pkg.peerDependencies[dependency], /\|\| 0\.2\.0-rc\.1 \|\| 0\.2\.0-rc\.2 \|\| 0\.2\.1-alpha\.1 \|\| 0\.2\.1-alpha\.2 \|\| 0\.2\.1-alpha\.3 \|\| 0\.2\.1-alpha\.4 \|\| 0\.2\.1-alpha\.5 \|\| 0\.2\.1-rc\.1 \|\| 0\.2\.1-rc\.2 \|\| 0\.2\.1-rc\.3 \|\| 0\.2\.1-rc\.4 \|\| 0\.2\.1-rc\.5 \|\| 0\.2\.2-alpha\.2 \|\| 0\.2\.2-alpha\.3 \|\| 0\.2\.2-rc\.1 \|\| 0\.2\.2-rc\.2 \|\| 0\.2\.2-rc\.3$/)
+  ]) assert.match(pkg.peerDependencies[dependency], /\|\| 0\.2\.0-rc\.1 \|\| 0\.2\.0-rc\.2 \|\| 0\.2\.1-alpha\.1 \|\| 0\.2\.1-alpha\.2 \|\| 0\.2\.1-alpha\.3 \|\| 0\.2\.1-alpha\.4 \|\| 0\.2\.1-alpha\.5 \|\| 0\.2\.1-rc\.1 \|\| 0\.2\.1-rc\.2 \|\| 0\.2\.1-rc\.3 \|\| 0\.2\.1-rc\.4 \|\| 0\.2\.1-rc\.5 \|\| 0\.2\.2-alpha\.2 \|\| 0\.2\.2-alpha\.3 \|\| 0\.2\.2-rc\.1 \|\| 0\.2\.2-rc\.2 \|\| 0\.2\.2-rc\.3 \|\| 0\.2\.2-rc\.4 \|\| 0\.2\.2-rc\.5$/)
   assert.equal(pkg.private, true)
 })
 
