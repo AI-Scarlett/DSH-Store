@@ -49,10 +49,17 @@ export function validateStoreRelease(plan, changes, readBase, readCurrent, sourc
     if (digest(sourceFile(source.file)) !== source.sha256) throw new Error(`Fixed source changed: ${source.file}`)
   }
   if (digest(sourceFile('package.json')) !== digest(Buffer.from(JSON.stringify(review.manifest, null, 2) + '\n'))) throw new Error('Manifest evidence changed')
+  // The bounded scanner no longer matches its own inert rule text, so a
+  // complete review normally reports no critical finding. Any critical finding
+  // that does appear must be the exact hash-bound scanner-literal disposition;
+  // every other critical result stays unresolved and fails closed.
   const critical = analysis.securityScan.findings.filter(f => f.severity === 'critical')
-  if (critical.length !== 1 || critical[0].rule !== 'crypto-miner' || critical[0].file !== 'src/submission-security-scan.mjs' || critical[0].line !== 58
-    || review.disposition?.kind !== 'scanner-rule-literal'
-    || review.disposition.sha256 !== digest(sourceFile('src/submission-security-scan.mjs'))) throw new Error('Unresolved critical source finding')
+  if (critical.length > 0
+    && (critical.length !== 1 || critical[0].rule !== 'crypto-miner' || critical[0].file !== 'src/submission-security-scan.mjs' || critical[0].line !== 58
+      || review.disposition?.kind !== 'scanner-rule-literal'
+      || review.disposition.file !== 'src/submission-security-scan.mjs'
+      || review.disposition.rule !== 'crypto-miner' || review.disposition.line !== 58
+      || review.disposition.sha256 !== digest(sourceFile('src/submission-security-scan.mjs')))) throw new Error('Unresolved critical source finding')
   if (!Array.isArray(review.findingReviews) || review.findingReviews.length !== analysis.securityScan.findings.length
     || review.findingReviews.some((row, index) => row.file !== analysis.securityScan.findings[index].file
       || row.rule !== analysis.securityScan.findings[index].rule || row.line !== analysis.securityScan.findings[index].line

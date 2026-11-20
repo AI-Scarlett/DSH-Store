@@ -43,7 +43,7 @@ test('Store release gate binds fixed source, exact latest-three compatibility an
       securityScan: { findings: [finding], findingsTruncated: false },
       toolViewEvidence: [], runtimeEntryFiles: [], binEntryFiles: [],
     },
-    disposition: { kind: 'scanner-rule-literal', sha256: hash(scanner) },
+    disposition: { kind: 'scanner-rule-literal', file: finding.file, rule: finding.rule, line: finding.line, sha256: hash(scanner) },
     findingReviews: [{ ...finding, sha256: hash(scanner), rationale: 'Disposable fixture of an inert scanner rule signature, not a mining implementation.' }],
     sourceChecks: ['ubuntu-latest', 'macos-latest', 'windows-latest'].flatMap(os =>
       ['10', '11', '12'].map(pnpm => ({ name: 'runtime (' + os + ', ' + pnpm + ')', state: 'SUCCESS' }))),
@@ -92,6 +92,19 @@ test('Store release gate binds fixed source, exact latest-three compatibility an
   longLivedCredential.authorization.githubWriteCredential = 'existing-credential-explicitly-authorized'
   assert.throws(() => validateStoreRelease(longLivedCredential, Object.keys(current), readBase, readCurrent, sourceFile), /Invalid first-party/)
   assert.throws(() => run(['registry/other.json']), /Outside/)
+  const withoutCritical = structuredClone(review)
+  delete withoutCritical.disposition
+  withoutCritical.analysis.securityScan.findings = []
+  withoutCritical.findingReviews = []
+  const clearCurrent = { ...current, [reviewPath]: json(withoutCritical) }
+  const clearPlan = { ...plan, postconditions: { ...plan.postconditions, [reviewPath]: hash(clearCurrent[reviewPath]) } }
+  validateStoreRelease(clearPlan, Object.keys(current), readBase, path => clearCurrent[path] ?? readCurrent(path), sourceFile)
+  const unresolved = structuredClone(review)
+  unresolved.analysis.securityScan.findings = [{ ...finding, rule: 'private-key', file: 'src/keys.mjs' }]
+  const unresolvedCurrent = { ...current, [reviewPath]: json(unresolved) }
+  const unresolvedPlan = { ...plan, postconditions: { ...plan.postconditions, [reviewPath]: hash(unresolvedCurrent[reviewPath]) } }
+  assert.throws(() => validateStoreRelease(unresolvedPlan, Object.keys(current), readBase,
+    path => unresolvedCurrent[path] ?? readCurrent(path), sourceFile), /Unresolved critical source finding/)
   assert.throws(() => validateStoreRelease(plan, Object.keys(current), readBase, readCurrent, () => Buffer.from('changed')), /Fixed source/)
   assert.throws(() => validateStoreRelease(plan, Object.keys(current), readBase,
     path => path === 'registry/catalog.json' ? Buffer.from('changed') : readCurrent(path), sourceFile), /Reviewed content/)
