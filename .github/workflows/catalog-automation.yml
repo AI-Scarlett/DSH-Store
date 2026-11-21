@@ -3,6 +3,10 @@ name: Scheduled Catalog source and compatibility recheck
 on:
   schedule:
     - cron: "5 */8 * * *"
+  push:
+    branches: [main]
+    paths:
+      - registry/candidates.json
   workflow_dispatch:
     inputs:
       request_id:
