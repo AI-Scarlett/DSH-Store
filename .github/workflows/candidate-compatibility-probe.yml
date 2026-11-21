@@ -71,7 +71,7 @@ jobs:
                 if timeout 300 node "$cli" plugin --profile probe add "github:$REPOSITORY#$COMMIT" --ignore-scripts >"$work/add.log" 2>&1; then
                   if timeout 120 node "$cli" --profile probe --dump-config >"$work/dump.txt" 2>"$work/dump.err"; then
                     if timeout 300 node "$cli" plugin --profile probe add "@deepseek-ai/dsh-web-app@$version" --ignore-scripts >>"$work/add.log" 2>&1; then
-                      node "$cli" --profile probe web --host 127.0.0.1 --port 0 --no-open >"$work/boot.log" 2>&1 &
+                      node "$cli" --profile probe --host 127.0.0.1 --port 0 --no-open >"$work/boot.log" 2>&1 &
                       boot_pid=$!
                       boot_ok=false
                       for _ in $(seq 1 60); do
