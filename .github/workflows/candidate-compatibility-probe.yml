@@ -70,9 +70,33 @@ jobs:
                 export DSH_HOME="$work/home"
                 if timeout 300 node "$cli" plugin --profile probe add "github:$REPOSITORY#$COMMIT" --ignore-scripts >"$work/add.log" 2>&1; then
                   if timeout 120 node "$cli" --profile probe --dump-config >"$work/dump.txt" 2>"$work/dump.err"; then
-                    status="compatible"
-                    method="dump-config-only"
-                    detail="candidate bundle composed into the profile; runtime host boot was not executed"
+                    if timeout 300 node "$cli" plugin --profile probe add "@deepseek-ai/dsh-web-app@$version" --ignore-scripts >>"$work/add.log" 2>&1; then
+                      node "$cli" --profile probe web --host 127.0.0.1 --port 0 --no-open >"$work/boot.log" 2>&1 &
+                      boot_pid=$!
+                      boot_ok=false
+                      for _ in $(seq 1 60); do
+                        if grep -q "dsh web:" "$work/boot.log" 2>/dev/null && kill -0 "$boot_pid" 2>/dev/null; then
+                          sleep 5
+                          kill -0 "$boot_pid" 2>/dev/null && boot_ok=true
+                          break
+                        fi
+                        kill -0 "$boot_pid" 2>/dev/null || break
+                        sleep 1
+                      done
+                      kill "$boot_pid" 2>/dev/null || true
+                      wait "$boot_pid" 2>/dev/null || true
+                      if [ "$boot_ok" = true ]; then
+                        status="compatible"
+                        method="host-boot"
+                        detail="candidate bundle loaded in a real DSH host for this version"
+                      else
+                        status="incompatible"
+                        detail="host boot failed: $(tail -c 400 "$work/boot.log" | tr '\n' ' ')"
+                      fi
+                    else
+                      status="incompatible"
+                      detail="web-app bundle install failed: $(tail -c 400 "$work/add.log" | tr '\n' ' ')"
+                    fi
                   else
                     status="incompatible"
                     detail="--dump-config failed: $(tail -c 400 "$work/dump.err" | tr '\n' ' ')"
