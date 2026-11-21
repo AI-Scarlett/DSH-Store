@@ -22,24 +22,24 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "21f2f11c3066bbd783e8190156e6fd439d7f40e6",
-  "version": "1.13.1",
+  "commit": "4395260b70e356c8e892ffe39a49b8b4b3bb1a30",
+  "version": "1.13.3",
   "categories": [
     "tools"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-10-10T04:52:19.000Z",
-    "observedAt": "2026-10-17T01:45:36.000Z",
+    "updatedAt": "2026-11-05T17:22:40.000Z",
+    "observedAt": "2026-11-21T15:56:20.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
-      "method": "automated-fixed-source-update-v3",
-      "checkedAt": "2026-10-17T01:45:36.000Z",
-      "evidenceUrl": "https://github.com/seven282/oss-prompt-optimizer/commit/21f2f11c3066bbd783e8190156e6fd439d7f40e6",
+      "method": "automated-fixed-source-recheck-v1",
+      "checkedAt": "2026-11-21T15:56:20.000Z",
+      "evidenceUrl": "https://github.com/seven282/oss-prompt-optimizer/commit/4395260b70e356c8e892ffe39a49b8b4b3bb1a30",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -78,14 +78,14 @@
   },
   "admission": {
     "engine": "bounded-source-v3",
-    "binding": "1010217ba4c12be0dbc8039be991d174fa8243d4c4c3cca9427473cbd570be21",
+    "binding": "f41d3dc966f90e62544020556d76e0e65158b77f94b0172a1598c30cf265f002",
     "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
     "state": "review-required",
     "sourceContract": "verified",
     "coverage": "complete",
     "capabilities": "review-required",
     "compatibility": "per-version-declaration",
-    "reviewRegistryDigest": "d23b593eac9261fdbb9de78d469344a9cf81e42ddc9402ad3cbf627b8940b138"
+    "reviewRegistryDigest": "6c289f3ac2f4eb799f1848d9b7fbc3c738a03fa7166e8e4212a6988fc568d27c"
   },
   "entryIds": [
     "prompt-optimizer"
@@ -94,7 +94,7 @@
   "status": "blocked",
   "statusReason": "Automatic policy blocked installation: runtime or optional dependencies require a separate supply-chain review; runtime source contains the files permission signal",
   "compatibility": {
-    "dsh": "^0.2.0-rc.2",
+    "dsh": "^0.2.0-rc.2 || ^0.2.1-rc.3 || ^0.2.2-rc.1",
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
@@ -105,18 +105,8 @@
       "0.1.2-alpha.4": "unknown",
       "0.1.2-alpha.5": "unknown",
       "0.2.0-rc.2": "compatible",
-      "0.2.1-alpha.3": "unknown",
-      "0.2.1-alpha.4": "unknown",
-      "0.2.1-alpha.5": "unknown",
-      "0.2.1-rc.1": "unknown",
-      "0.2.1-rc.2": "unknown",
-      "0.2.1-rc.3": "unknown",
-      "0.2.1-rc.4": "unknown",
-      "0.2.2-alpha.2": "unknown",
-      "0.2.1-rc.5": "unknown",
-      "0.2.2-alpha.3": "unknown",
-      "0.2.2-rc.1": "unknown",
-      "0.2.2-rc.2": "unknown",
+      "0.2.1-rc.3": "compatible",
+      "0.2.2-rc.1": "compatible",
       "0.2.2-rc.3": "unknown",
       "0.2.2-rc.4": "unknown",
       "0.2.2-rc.5": "unknown"
@@ -176,73 +166,13 @@
         "uninstall": "unknown",
         "rollback": "unknown"
       },
-      "0.2.1-alpha.3": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.2.1-alpha.4": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.2.1-alpha.5": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.2.1-rc.1": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.2.1-rc.2": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
       "0.2.1-rc.3": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",
         "rollback": "unknown"
       },
-      "0.2.1-rc.4": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.2.2-alpha.2": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.2.1-rc.5": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.2.2-alpha.3": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
       "0.2.2-rc.1": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.2.2-rc.2": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",
