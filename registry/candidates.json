@@ -3,7 +3,7 @@
   "registry": {
     "name": "DSH STORE Candidate Discovery Registry",
     "repositoryUrl": "https://github.com/AI-Scarlett/DSH-Store",
-    "updatedAt": "2026-11-14T20:28:28.000Z",
+    "updatedAt": "2026-11-21T08:18:35.105Z",
     "trustBoundary": {
       "installActionsDisabled": true,
       "catalogPromotionRequired": true,
@@ -20930,6 +20930,117 @@
       "status": "rejected",
       "route": "blocked",
       "statusReason": "SUBMISSION_MANIFEST_LIMIT: Repository has more than 48 package manifests; edit the Issue and provide Plugin path"
+    },
+    {
+      "id": "erkinalp-dsh-decisions-classifiers",
+      "name": "erkinalp/dsh-decisions-classifiers",
+      "description": "A DeepSeek Harness plugin to use OpenAI decisions API",
+      "repositoryUrl": "https://github.com/erkinalp/dsh-decisions-classifiers",
+      "defaultBranch": "main",
+      "latestCommit": "3858e1533f8fef9c4db19b2308445f2bc682ef8a",
+      "sourceUpdatedAt": "2026-10-07T20:23:58.000Z",
+      "discoveredAt": "2026-11-20T13:42:28.160Z",
+      "discoverySources": [
+        "github-plugin-scout-scan",
+        "fixed-commit:3858e1533f8f"
+      ],
+      "topics": [
+        "classification-model",
+        "decisions-api",
+        "dsh-plugin",
+        "openai"
+      ],
+      "status": "discovered",
+      "route": "direct-review",
+      "statusReason": "插件雷达规则预检通过；仍需 DSH STORE 固定源码审阅、兼容与安装证据，候选不可安装，未进入 Catalog。"
+    },
+    {
+      "id": "zehank-dsh-find-plugin",
+      "name": "zehank/dsh-find-plugin",
+      "description": "Find DeepSeek Harness plugins inside the agent — live GitHub dsh-plugin topic search, ranked by stars. (Fork of awesome-dsh-plugin/dsh-find-plugin with the peer range widened for dsh 0.2.0.)",
+      "repositoryUrl": "https://github.com/zehank/dsh-find-plugin",
+      "defaultBranch": "main",
+      "latestCommit": "18b297ea156bdde085926c915e966a72bc7142ca",
+      "sourceUpdatedAt": "2026-10-07T19:53:56.000Z",
+      "discoveredAt": "2026-11-20T13:42:28.160Z",
+      "discoverySources": [
+        "github-plugin-scout-scan",
+        "fixed-commit:18b297ea156b"
+      ],
+      "topics": [],
+      "status": "discovered",
+      "route": "direct-review",
+      "statusReason": "插件雷达规则预检通过；仍需 DSH STORE 固定源码审阅、兼容与安装证据，候选不可安装，未进入 Catalog。"
+    },
+    {
+      "id": "gemchance-dsh-chinese-minimal-mode",
+      "name": "GemChance/dsh-chinese-minimal-mode",
+      "description": "DeepSeek Harness Minimal preset with an editable Markdown system prompt",
+      "repositoryUrl": "https://github.com/GemChance/dsh-chinese-minimal-mode",
+      "defaultBranch": "main",
+      "latestCommit": "c0941a7d3901e339fc6f5174fc3f74391fe89a69",
+      "sourceUpdatedAt": "2026-10-07T18:16:03.000Z",
+      "discoveredAt": "2026-11-20T13:42:28.160Z",
+      "discoverySources": [
+        "github-plugin-scout-scan",
+        "fixed-commit:c0941a7d3901"
+      ],
+      "topics": [
+        "deepseek-harness",
+        "dsh-plugin",
+        "minimal-mode",
+        "system-prompt"
+      ],
+      "status": "discovered",
+      "route": "direct-review",
+      "statusReason": "插件雷达规则预检通过；仍需 DSH STORE 固定源码审阅、兼容与安装证据，候选不可安装，未进入 Catalog。"
+    },
+    {
+      "id": "jerrywang21-debug-dsh-session-delete",
+      "name": "jerrywang21-debug/dsh-session-delete",
+      "description": "Sidebar delete action for the DeepSeek Harness (DSH) web client: removes a conversation from the Harness and moves its log + projection cache to the system Trash.",
+      "repositoryUrl": "https://github.com/jerrywang21-debug/dsh-session-delete",
+      "defaultBranch": "main",
+      "latestCommit": "12bb639b26e98b733c8b896b107654e5d8914c07",
+      "sourceUpdatedAt": "2026-10-07T17:45:29.000Z",
+      "discoveredAt": "2026-11-20T13:42:28.160Z",
+      "discoverySources": [
+        "github-plugin-scout-scan",
+        "fixed-commit:12bb639b26e9"
+      ],
+      "topics": [
+        "cordis",
+        "deepseek-harness",
+        "dsh",
+        "dsh-plugin",
+        "plugin",
+        "session-management"
+      ],
+      "status": "discovered",
+      "route": "direct-review",
+      "statusReason": "插件雷达规则预检通过；仍需 DSH STORE 固定源码审阅、兼容与安装证据，候选不可安装，未进入 Catalog。"
+    },
+    {
+      "id": "uio-o-dsh-plugin-operation-log",
+      "name": "uio-o/dsh-plugin-operation-log",
+      "description": "DeepSeek Harness 会话面板插件：按轮次/步骤统计 Skill、MCP 调用与文件读写，含失败详情、按来源筛选、文件删除标注。",
+      "repositoryUrl": "https://github.com/uio-o/dsh-plugin-operation-log",
+      "defaultBranch": "main",
+      "latestCommit": "5a695e4586469e6e050aea000b74146720618e6e",
+      "sourceUpdatedAt": "2026-10-07T17:35:24.000Z",
+      "discoveredAt": "2026-11-20T13:42:28.160Z",
+      "discoverySources": [
+        "github-plugin-scout-scan",
+        "fixed-commit:5a695e458646"
+      ],
+      "topics": [
+        "cordis",
+        "deepseek-harness",
+        "dsh-plugin"
+      ],
+      "status": "discovered",
+      "route": "direct-review",
+      "statusReason": "插件雷达规则预检通过；仍需 DSH STORE 固定源码审阅、兼容与安装证据，候选不可安装，未进入 Catalog。"
     }
   ]
 }
