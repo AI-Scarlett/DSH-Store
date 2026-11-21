@@ -90,10 +90,15 @@ jobs:
             results=$(node -e 'const fs=require("fs");const rows=JSON.parse(process.argv[1]);rows.push({version:process.argv[2],status:process.argv[3],method:process.argv[4],detail:process.argv[5]});process.stdout.write(JSON.stringify(rows))' "$results" "$version" "$status" "$method" "$detail")
           done
           node -e 'const fs=require("fs");const rows=JSON.parse(process.argv[1]);fs.writeFileSync(process.argv[2],JSON.stringify({schemaVersion:1,repository:process.argv[3],commit:process.argv[4],probedAt:new Date().toISOString(),mode:"dump-config-dry-run",results:rows},null,2)+"\n")' "$results" "$RUNNER_TEMP/probe/compatibility.json" "$REPOSITORY" "$COMMIT"
-      - name: Upload probe artifact
+      - name: Print compatibility result
+        run: cat "$RUNNER_TEMP/probe/compatibility.json"
+      - name: Upload compact probe artifact
         uses: actions/upload-artifact@v4
         with:
           name: candidate-compatibility-probe
-          path: ${{ runner.temp }}/probe
+          path: |
+            ${{ runner.temp }}/probe/compatibility.json
+            ${{ runner.temp }}/probe/**/*.log
+            ${{ runner.temp }}/probe/**/*.err
           if-no-files-found: error
           retention-days: 14
