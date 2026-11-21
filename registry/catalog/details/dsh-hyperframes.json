@@ -25,8 +25,8 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "c6e63c7a6dffb8e2dafa85f6e31d9c471becb49e",
-  "version": "0.13.7",
+  "commit": "d3e312f342f6e2e6f080710333b013a5397eacf8",
+  "version": "0.13.8",
   "categories": [
     "workflow",
     "tools"
@@ -34,16 +34,16 @@
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-11-20T16:28:48.000Z",
-    "observedAt": "2026-11-20T16:46:07.000Z",
+    "updatedAt": "2026-11-20T17:20:35.000Z",
+    "observedAt": "2026-11-21T02:39:02.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-11-20T16:46:07.000Z",
-      "evidenceUrl": "https://github.com/STARDUSTLC666/dsh-hyperframes/commit/c6e63c7a6dffb8e2dafa85f6e31d9c471becb49e",
+      "checkedAt": "2026-11-21T02:39:02.000Z",
+      "evidenceUrl": "https://github.com/STARDUSTLC666/dsh-hyperframes/commit/d3e312f342f6e2e6f080710333b013a5397eacf8",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -82,12 +82,12 @@
   },
   "admission": {
     "engine": "bounded-source-v3",
-    "binding": "44f61d80c88181b311d36d1ed6179163d61acc6f10cab0b78ebe1c5fbb6b179a",
+    "binding": "e1d7b77bb91eeafccc6191ba529996b99f06419243abd80fe96a808080d2267f",
     "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
-    "state": "rejected",
+    "state": "incomplete",
     "sourceContract": "verified",
     "coverage": "incomplete",
-    "capabilities": "prohibited",
+    "capabilities": "review-required",
     "compatibility": "per-version-declaration",
     "reviewRegistryDigest": "6c289f3ac2f4eb799f1848d9b7fbc3c738a03fa7166e8e4212a6988fc568d27c"
   },
@@ -96,7 +96,7 @@
   ],
   "configOverrides": [],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: runtime or optional dependencies require a separate supply-chain review; package ignore rules require artifact review; package contains unsupported artifacts requiring review: skills/media-use/.gitignore, skills/media-use/UPSTREAM.gitignore, skills/media-use/audio/assets/sfx/chime.mp3, skills/media-use/audio/assets/sfx/click-soft.mp3, skills/media-use/audio/assets/sfx/click.mp3; local module is missing from the distributable surface: skills/remotion-to-hyperframes/assets/test-corpus/tier-1-title-card/remotion-src/src/Root.tsx -> ./TitleCard; local module",
+  "statusReason": "Automatic policy blocked installation: runtime or optional dependencies require a separate supply-chain review; package ignore rules require artifact review; package contains unsupported artifacts requiring review: skills/media-use/audio/assets/sfx/chime.mp3, skills/media-use/audio/assets/sfx/click-soft.mp3, skills/media-use/audio/assets/sfx/click.mp3, skills/media-use/audio/assets/sfx/error.mp3, skills/media-use/audio/assets/sfx/glitch-1.mp3; local module is missing from the distributable surface: skills/remotion-to-hyperframes/assets/test-corpus/tier-1-title-card/remotion-src/src/Root.tsx ->",
   "compatibility": {
     "dsh": ">=0.2.2-rc.3",
     "dshReleases": {
