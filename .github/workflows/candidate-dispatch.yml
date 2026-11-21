@@ -1,6 +1,9 @@
 name: Dispatch candidate compatibility probes
 
 on:
+  schedule:
+    - cron: "*/15 * * * *"
+  workflow_dispatch:
   push:
     branches: [main]
     paths:
@@ -16,31 +19,20 @@ jobs:
       matrix: ${{ steps.find.outputs.matrix }}
     steps:
       - uses: actions/checkout@v4
-        with:
-          fetch-depth: 2
-      - name: Find newly added candidates
+      - name: Select candidates awaiting a probe
         id: find
-        env:
-          BEFORE: ${{ github.event.before }}
-          AFTER: ${{ github.sha }}
         run: |
           node - <<'NODE'
-          const { execFileSync } = require('node:child_process')
           const fs = require('node:fs')
-          const before = process.env.BEFORE
-          const read = ref => {
-            try { return JSON.parse(execFileSync('git', ['show', `${ref}:registry/candidates.json`], { encoding: 'utf8' })) }
-            catch { return { entries: [] } }
-          }
-          const head = read(process.env.AFTER)
-          const base = read(before)
-          const known = new Set((base.entries || []).map(entry => String(entry?.repositoryUrl || '').toLowerCase()).filter(Boolean))
-          const added = (head.entries || [])
-            .filter(entry => entry && typeof entry.repositoryUrl === 'string' && /^[0-9a-f]{40}$/.test(String(entry.latestCommit)) && !known.has(entry.repositoryUrl.toLowerCase()))
+          const registry = JSON.parse(fs.readFileSync('registry/candidates.json', 'utf8'))
+          const selected = (registry.entries || [])
+            .filter(entry => entry && entry.status === 'discovered'
+              && typeof entry.repositoryUrl === 'string'
+              && /^[0-9a-f]{40}$/.test(String(entry.latestCommit)))
             .slice(0, 3)
             .map(entry => ({ repository: entry.name, commit: entry.latestCommit }))
-          fs.appendFileSync(process.env.GITHUB_OUTPUT, `matrix=${JSON.stringify({ include: added })}\n`)
-          console.log(`new candidates: ${added.length}`)
+          fs.appendFileSync(process.env.GITHUB_OUTPUT, `matrix=${JSON.stringify({ include: selected })}\n`)
+          console.log(`candidates awaiting probe: ${selected.length}`)
           NODE
 
   dispatch:
@@ -51,6 +43,7 @@ jobs:
       actions: write
     strategy:
       matrix: ${{ fromJSON(needs.prepare.outputs.matrix) }}
+      max-parallel: 1
     steps:
       - name: Dispatch probe
         env:
