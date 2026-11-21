@@ -1573,6 +1573,7 @@ const report = {
   addedEntries: [], deferredUpdates: [], rejectedCandidates: [], promotedCandidates: [], removedEntries: [],
   removedRecommendations: [],
   compatibilityUnlisted: [], compatibilityRestored: [], compatibilityRefreshed: [],
+  compatibilityPolicy: { catalogChanged: false, candidatesChanged: false, unlisted: [], restored: [], refreshed: [] },
   prunedCandidates: [],
   candidateRetention: {
     authority: REJECTED_CANDIDATE_RETENTION_AUTHORITY,
