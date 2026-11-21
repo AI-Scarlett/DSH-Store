@@ -23,24 +23,24 @@
   "manifestPath": "packages/deepblend/bundle/package.json",
   "installPath": "packages/deepblend/bundle",
   "updatePolicy": "external-only",
-  "commit": "06b67e04d77de3bc701990f522cc22ce75e2365d",
-  "version": "0.25.0",
+  "commit": "0dc8c4112c81a19daa577057a5ee47e05000e333",
+  "version": "0.27.0",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-11-11T13:50:37.000Z",
-    "observedAt": "2026-11-11T15:54:26.000Z",
+    "updatedAt": "2026-11-21T15:56:08.000Z",
+    "observedAt": "2026-11-21T15:56:20.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-11-11T15:54:26.000Z",
-      "evidenceUrl": "https://github.com/pearjelly/deep-blend/commit/06b67e04d77de3bc701990f522cc22ce75e2365d",
+      "checkedAt": "2026-11-21T15:56:20.000Z",
+      "evidenceUrl": "https://github.com/pearjelly/deep-blend/commit/0dc8c4112c81a19daa577057a5ee47e05000e333",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -79,14 +79,14 @@
   },
   "admission": {
     "engine": "bounded-source-v3",
-    "binding": "ee26481fcce68ae92f4bffed021819bc22f16b3506933f3da39139055bfcaa68",
+    "binding": "8e2d0313a917bcfd4e96f9f30519cdeb5002378a8d51fddead39a8bff9339a5e",
     "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
     "state": "review-required",
     "sourceContract": "verified",
     "coverage": "complete",
     "capabilities": "review-required",
     "compatibility": "per-version-declaration",
-    "reviewRegistryDigest": "f40e4a10a2ae7f8d8dadbbde3a7a03e9f7d967caf114a14d6a7bbfe46a93efbf"
+    "reviewRegistryDigest": "6c289f3ac2f4eb799f1848d9b7fbc3c738a03fa7166e8e4212a6988fc568d27c"
   },
   "entryIds": [
     "deepblend-blender-runtime",
@@ -96,7 +96,7 @@
   ],
   "configOverrides": [],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: runtime or optional dependencies require a separate supply-chain review; runtime dependencies do not have one unambiguous fixed lockfile for supply-chain review; fixed-source security warnings require review; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal; runtime source contains the nativeOrExecutableArtifacts permission signal; Tool-view extension requires key ownership review; reg",
+  "statusReason": "Automatic policy blocked installation: runtime or optional dependencies require a separate supply-chain review; runtime dependencies do not have one unambiguous fixed lockfile for supply-chain review; fixed-source security warnings require review; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal; Tool-view extension requires key ownership review; registration alone is not a protected component mutation",
   "compatibility": {
     "dsh": "0.1.5-rc.2 || 0.2.1-rc.1",
     "dshReleases": {
@@ -108,9 +108,6 @@
       "0.1.2-alpha.3": "unknown",
       "0.1.2-alpha.4": "unknown",
       "0.1.2-alpha.5": "unknown",
-      "0.2.2-alpha.3": "unknown",
-      "0.2.2-rc.1": "unknown",
-      "0.2.2-rc.2": "unknown",
       "0.2.2-rc.3": "unknown",
       "0.2.2-rc.4": "unknown",
       "0.2.2-rc.5": "unknown"
@@ -159,24 +156,6 @@
         "rollback": "unknown"
       },
       "0.1.2-alpha.5": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.2.2-alpha.3": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.2.2-rc.1": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.2.2-rc.2": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",
