@@ -22,24 +22,24 @@
   "manifestPath": "plugin/dsh-voice-mode/package.json",
   "installPath": "plugin/dsh-voice-mode",
   "updatePolicy": "external-only",
-  "commit": "8439e24df05092703d646af259fcd0beebcbe92e",
-  "version": "0.7.39",
+  "commit": "d830b1b76f35fa0c76df0017ffe6f35318361ad3",
+  "version": "0.7.41",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-11-19T01:17:00.000Z",
-    "observedAt": "2026-11-19T02:30:52.000Z",
+    "updatedAt": "2026-11-21T02:16:04.000Z",
+    "observedAt": "2026-11-21T02:39:02.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-11-19T02:30:52.000Z",
-      "evidenceUrl": "https://github.com/qishuilalala/dsh-voice-mode/commit/8439e24df05092703d646af259fcd0beebcbe92e",
+      "checkedAt": "2026-11-21T02:39:02.000Z",
+      "evidenceUrl": "https://github.com/qishuilalala/dsh-voice-mode/commit/d830b1b76f35fa0c76df0017ffe6f35318361ad3",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -78,10 +78,10 @@
   },
   "admission": {
     "engine": "bounded-source-v3",
-    "binding": "482a209e9dd92cbc03ad909b648e7d17a38d3faeeeadaa3752a29c77185ac703",
+    "binding": "f446937ee2f35e8c2d87a78624c8353e24274bcb5b67d22798f662904aca9aa7",
     "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
     "state": "review-required",
-    "sourceContract": "verified",
+    "sourceContract": "unverified",
     "coverage": "complete",
     "capabilities": "review-required",
     "compatibility": "per-version-declaration",
@@ -92,7 +92,7 @@
   ],
   "configOverrides": [],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: runtime or optional dependencies require a separate supply-chain review; fixed-source security warnings require review; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal; dynamic module loading or code evaluation requires separate review",
+  "statusReason": "Automatic policy blocked installation: GitHub repository license metadata is NOASSERTION; fixed-source license evidence needs manual review; runtime or optional dependencies require a separate supply-chain review; fixed-source security warnings require review; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal; dynamic module loading or code evaluation requires separate review",
   "compatibility": {
     "dsh": ">=0.1.1-rc.2 <0.3.0-0",
     "dshReleases": {
