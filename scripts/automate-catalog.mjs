@@ -88,7 +88,7 @@ function parseArgs(argv) {
     expectedRecommendationsSha: null,
     catalogBackup: null, catalogIndexBackup: null, catalogDetailsBackup: null,
     candidatesBackup: null, recommendationsBackup: null, observedAt: null, report: null,
-    manualScanPlan: null, catalogOnly: false,
+    manualScanPlan: null, catalogOnly: false, candidateAutoAdmission: false, candidateProbe: null,
   }
   for (let index = 0; index < argv.length; index += 1) {
     const value = argv[index]
@@ -106,6 +106,8 @@ function parseArgs(argv) {
     else if (value === '--report') options.report = argv[++index]
     else if (value === '--manual-scan-plan') options.manualScanPlan = argv[++index]
     else if (value === '--catalog-only') options.catalogOnly = true
+    else if (value === '--candidate-auto-admission') options.candidateAutoAdmission = true
+    else if (value === '--candidate-probe') options.candidateProbe = argv[++index]
     else throw new Error(`unknown argument: ${value}`)
   }
   return options
@@ -530,6 +532,27 @@ async function inspectAuthorCatalogRecheck(catalog, policy, github, observedAt, 
     catalogVersion: entry.version, upstreamVersion: updated.version, candidateCommit: updated.commit,
     policy: 'external-only', lineageReview: disconnectedHistory ? 'disconnected-history-external-only' : 'bounded-descendant',
     decision: 'catalog-updated-blocked', warnings: analysis.reasons })
+}
+
+function validateCandidateProbe(bytes) {
+  if (!bytes || bytes.length > 256 * 1024) throw new Error('candidate probe exceeds the bounded input size')
+  const value = JSON.parse(bytes.toString('utf8'))
+  if (value.schemaVersion !== 1 || typeof value.repository !== 'string'
+    || !/^https:\/\/github\.com\/[^/]+\/[^/]+$/i.test(value.repository)
+    || !/^[0-9a-f]{40}$/.test(value.commit ?? '')
+    || !Array.isArray(value.results) || value.results.length < 1 || value.results.length > 3) {
+    throw new Error('invalid candidate probe document')
+  }
+  const versions = new Set()
+  for (const row of value.results) {
+    if (!row || !/^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?$/.test(row.version ?? '') || versions.has(row.version)) {
+      throw new Error('candidate probe has invalid or duplicate versions')
+    }
+    if (!['compatible', 'incompatible', 'unknown'].includes(row.status)) throw new Error('candidate probe status is invalid')
+    if (row.status === 'compatible' && row.method !== 'host-boot') throw new Error('compatible candidate probe requires host-boot evidence')
+    versions.add(row.version)
+  }
+  return value
 }
 
 async function inspectManualAdmissions(catalog, candidates, policy, github, observedAt, report, dshReleaseWindow, scanPlan) {
@@ -1096,6 +1119,75 @@ async function updateExistingEntries(catalog, policy, github, observedAt, report
   if (removedCatalogIds.size) catalog.entries = catalog.entries.filter(entry => !removedCatalogIds.has(entry.id))
 }
 
+async function inspectCandidateAutoAdmissions(catalog, candidates, policy, github, observedAt, report, dshReleaseWindow, probe) {
+  const candidate = candidates.entries.find(entry => entry
+    && typeof entry.repositoryUrl === 'string'
+    && entry.repositoryUrl.toLowerCase() === probe.repository.toLowerCase()
+    && entry.latestCommit === probe.commit)
+  if (!candidate) throw new Error('candidate probe does not match an entry in the Candidate Registry')
+  if (candidate.status === 'rejected') throw new Error('candidate was already rejected; a new fixed Commit needs a new probe')
+  if (isWithdrawnRepository(candidate.repositoryUrl, policy)
+    || excludedRepositoryKeys(policy).has(candidate.repositoryUrl.toLowerCase())) {
+    throw new Error('candidate repository is excluded from admission')
+  }
+  const releases = {}
+  for (const release of dshReleaseWindow.releases) {
+    const row = probe.results.find(item => item.version === release)
+    releases[release] = !row ? 'unknown'
+      : row.status === 'compatible' && row.method === 'host-boot' ? 'compatible'
+        : row.status === 'incompatible' ? 'incompatible' : 'unknown'
+  }
+  report.candidateAutoAdmission = {
+    repository: candidate.repositoryUrl,
+    commit: candidate.commit,
+    probeSha256: report.preconditions.candidateProbeSha256,
+    latestDshReleases: [...dshReleaseWindow.releases],
+    releaseStatuses: releases,
+    admitted: [],
+    rejected: [],
+  }
+  let checked
+  try {
+    const result = await retryInfrastructure(() => checkRepository(candidate.repositoryUrl, '', {
+      catalogDocument: catalog, token: process.env.GITHUB_TOKEN, timeoutMs: 12_000, fetch: github.fetch, fixedCommit: candidate.commit,
+    }))
+    checked = result.candidate
+  } catch (error) {
+    candidate.status = 'rejected'
+    candidate.route = routeForFailure(error?.code)
+    candidate.statusReason = `${error?.code ?? 'CANDIDATE_PRECHECK_FAILED'}: ${boundedText(error?.message, 'candidate fixed-source precheck failed')}`
+    report.candidateAutoAdmission.rejected.push({ repository: candidate.repositoryUrl, reason: candidate.statusReason })
+    report.rejectedCandidates.push({ repository: candidate.repositoryUrl, commit: candidate.commit, reason: candidate.statusReason })
+    return
+  }
+  if (checked.repositoryUrl.toLowerCase() !== candidate.repositoryUrl.toLowerCase() || checked.commit !== candidate.commit) {
+    throw new Error('candidate fixed source identity changed while admitting')
+  }
+  checked.compatibility = {
+    ...(checked.compatibility ?? {}),
+    dsh: checked.compatibility?.dsh ?? candidate.compatibility?.dsh ?? '',
+    dshReleases: releases,
+  }
+  const analysis = await retryInfrastructure(() => analyzeFixedSource(checked, policy, github))
+  const entry = automatedEntry(checked, analysis, observedAt)
+  if (entry.status !== 'approved' || !supportsDshReleaseWindow(entry, dshReleaseWindow.releases)) {
+    candidate.status = 'rejected'
+    candidate.route = routeForFailure('AUTOMATIC_POLICY_REJECTED')
+    candidate.statusReason = boundedText(
+      `Candidate auto-admission blocked: ${entry.statusReason ?? (analysis.reasons.join('; ') || 'no compatible latest-three host-boot result')}`,
+      'Candidate auto-admission did not prove an installable entry under the current policy.',
+    )
+    report.candidateAutoAdmission.rejected.push({ repository: candidate.repositoryUrl, reason: candidate.statusReason })
+    report.rejectedCandidates.push({ repository: candidate.repositoryUrl, commit: candidate.commit, reason: candidate.statusReason })
+    return
+  }
+  catalog.entries.push(entry)
+  candidates.entries = candidates.entries.filter(item => item !== candidate)
+  report.addedEntries.push({ id: entry.id, status: entry.status, commit: entry.commit, reasons: analysis.reasons })
+  report.promotedCandidates.push({ repository: candidate.repositoryUrl, catalogId: entry.id })
+  report.candidateAutoAdmission.admitted.push({ repository: candidate.repositoryUrl, id: entry.id, commit: entry.commit })
+}
+
 async function inspectDiscoveries(catalog, candidates, policy, github, observedAt, report, dshReleaseWindow) {
   let repositories = []
   try {
@@ -1393,8 +1485,13 @@ const originalRecommendations = await readFile(recommendationsPath)
 const manualScanPlanBytes = options.manualScanPlan ? await readFile(resolve(options.manualScanPlan)) : null
 if (manualScanPlanBytes && manualScanPlanBytes.length > 2 * 1024 * 1024) throw new Error('manual scan plan exceeds the bounded input size')
 const manualScanPlan = manualScanPlanBytes ? validateManualScanPlan(JSON.parse(manualScanPlanBytes.toString('utf8'))) : null
+const candidateMode = options.candidateAutoAdmission === true
+const candidateProbeBytes = candidateMode && options.candidateProbe ? await readFile(resolve(options.candidateProbe)) : null
+if (candidateMode && !candidateProbeBytes) throw new Error('--candidate-auto-admission requires --candidate-probe')
+const candidateProbe = candidateProbeBytes ? validateCandidateProbe(candidateProbeBytes) : null
 if (manualScanPlan && options.catalogOnly) throw new Error('--manual-scan-plan and --catalog-only are mutually exclusive')
-if (!manualScanPlan && !options.catalogOnly) throw new Error('select a verified --manual-scan-plan or the bounded --catalog-only scope')
+if (candidateMode && (manualScanPlan || options.catalogOnly)) throw new Error('candidate auto admission cannot be combined with a manual plan or catalog-only scope')
+if (!manualScanPlan && !options.catalogOnly && !candidateMode) throw new Error('select a verified --manual-scan-plan, a candidate probe, or the bounded --catalog-only scope')
 const manualScanPlanSha = manualScanPlanBytes ? sha256(manualScanPlanBytes) : null
 const catalogSha = sha256(originalCatalog)
 const catalogIndexSha = sha256(originalCatalogIndex)
@@ -1432,14 +1529,17 @@ const report = {
   status: 'running',
   completed: false,
   statisticsAvailable: false,
-  planId: sha256(manualScanPlan
-    ? `${baseCommit ?? 'local'}:${catalogSha}:${catalogIndexSha}:${candidatesSha}:${recommendationsSha}:${dshReleaseWindowSha}:${manualScanPlanSha}:${observedAt}`
-    : `catalog-only:${baseCommit ?? 'local'}:${catalogSha}:${catalogIndexSha}:${candidatesSha}:${recommendationsSha}:${dshReleaseWindowSha}:${observedAt}`).slice(0, 24),
+  planId: sha256(candidateMode
+    ? `candidate-auto:${baseCommit ?? 'local'}:${catalogSha}:${catalogIndexSha}:${candidatesSha}:${recommendationsSha}:${dshReleaseWindowSha}:${sha256(candidateProbeBytes)}:${observedAt}`
+    : manualScanPlan
+      ? `${baseCommit ?? 'local'}:${catalogSha}:${catalogIndexSha}:${candidatesSha}:${recommendationsSha}:${dshReleaseWindowSha}:${manualScanPlanSha}:${observedAt}`
+      : `catalog-only:${baseCommit ?? 'local'}:${catalogSha}:${catalogIndexSha}:${candidatesSha}:${recommendationsSha}:${dshReleaseWindowSha}:${observedAt}`).slice(0, 24),
   ...(manualScanPlan ? { mode: manualScanPlan.type === 'author-requested-catalog-recheck'
     ? 'manual-author-feedback-catalog-recheck'
     : manualScanPlan.type === 'reviewed-fixed-source-catalog-update'
       ? 'manual-reviewed-fixed-source-catalog-update' : 'manual-fixed-source-batch-admission' } : {}),
   ...(options.catalogOnly ? { mode: 'catalog-only-periodic-recheck', scanScope: 'catalog-only' } : {}),
+  ...(candidateMode ? { mode: 'candidate-auto-admission' } : {}),
   baseCommit,
   observedAt,
   preconditions: {
@@ -1452,6 +1552,7 @@ const report = {
     admissionReviewsSha256: sha256(JSON.stringify(admissionReviews)),
     catalogMigrationsSha256: sha256(JSON.stringify(catalogMigrations)),
     ...(manualScanPlan ? { manualScanPlanSha256: manualScanPlanSha } : {}),
+    ...(candidateProbeBytes ? { candidateProbeSha256: sha256(candidateProbeBytes) } : {}),
   },
   policy: 'registry/automation-policy.json',
   sourceVersionChecks: {
@@ -1534,6 +1635,9 @@ if (manualScanPlan) {
     failureContext.stage = 'inspect-manual-fixed-source-admissions'
     await inspectManualAdmissions(catalog, candidates, policy, github, observedAt, report, dshReleaseWindow, manualScanPlan)
   }
+} else if (candidateMode) {
+  failureContext.stage = 'candidate-auto-admission'
+  await inspectCandidateAutoAdmissions(catalog, candidates, policy, github, observedAt, report, dshReleaseWindow, candidateProbe)
 } else {
 // The scheduled path is deliberately Catalog-only. Candidate discovery,
 // Candidate Registry source reads, and retention cleanup require a separate
@@ -1553,7 +1657,7 @@ report.compatibilityRestored = report.compatibilityPolicy.restored
 report.compatibilityRefreshed = report.compatibilityPolicy.refreshed
 }
 failureContext.stage = 'refresh-catalog-localization'
-if (!manualScanPlan) {
+if (!manualScanPlan && !candidateMode) {
   const localized = relocalizeCatalogEntries(catalog.entries, catalog.registry.categories)
   catalog.entries = localized.entries
   report.relocalizedEntries = localized.changes
