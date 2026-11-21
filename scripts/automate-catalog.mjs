@@ -1162,7 +1162,12 @@ async function inspectCandidateAutoAdmissions(catalog, candidates, policy, githu
     return
   }
   if (checked.repositoryUrl.toLowerCase() !== candidate.repositoryUrl.toLowerCase() || checked.commit !== candidate.commit) {
-    throw new Error('candidate fixed source identity changed while admitting')
+    candidate.status = 'rejected'
+    candidate.route = routeForFailure('CANDIDATE_COMMIT_UNAVAILABLE')
+    candidate.statusReason = 'Candidate auto-admission blocked: the probed fixed Commit is no longer the source returned by the canonical repository manifest.'
+    report.candidateAutoAdmission.rejected.push({ repository: candidate.repositoryUrl, reason: candidate.statusReason })
+    report.rejectedCandidates.push({ repository: candidate.repositoryUrl, commit: candidate.commit, reason: candidate.statusReason })
+    return
   }
   checked.compatibility = {
     ...(checked.compatibility ?? {}),
