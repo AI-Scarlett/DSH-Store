@@ -1,0 +1,97 @@
+name: Candidate compatibility probe (dry run)
+
+on:
+  workflow_dispatch:
+    inputs:
+      repository:
+        description: Candidate repository in owner/repo form
+        required: true
+        type: string
+      commit:
+        description: Full 40-character fixed commit
+        required: true
+        type: string
+      versions:
+        description: Comma-separated official DSH versions (default latest-three)
+        required: false
+        default: 0.2.2-rc.5,0.2.2-rc.4,0.2.2-rc.3
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    name: Config-composition probe
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Validate inputs
+        env:
+          REPOSITORY: ${{ inputs.repository }}
+          COMMIT: ${{ inputs.commit }}
+          VERSIONS: ${{ inputs.versions }}
+        run: |
+          node - <<'NODE'
+          const repository = process.env.REPOSITORY || ''
+          const commit = process.env.COMMIT || ''
+          const versions = (process.env.VERSIONS || '').split(',').map(v => v.trim()).filter(Boolean)
+          if (!/^[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+$/.test(repository)) throw new Error('repository must be owner/repo')
+          if (!/^[0-9a-f]{40}$/.test(commit)) throw new Error('commit must be a full 40-character SHA')
+          if (versions.length < 1 || versions.length > 3) throw new Error('versions must contain 1 to 3 values')
+          if (versions.some(v => !/^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?$/.test(v))) throw new Error('invalid DSH version')
+          NODE
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Probe each DSH version
+        env:
+          REPOSITORY: ${{ inputs.repository }}
+          COMMIT: ${{ inputs.commit }}
+          VERSIONS: ${{ inputs.versions }}
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/probe"
+          results='[]'
+          IFS=',' read -r -a versions <<< "$VERSIONS"
+          for raw in "${versions[@]}"; do
+            version="$(echo "$raw" | xargs)"
+            [ -z "$version" ] && continue
+            work="$RUNNER_TEMP/probe/$version"
+            mkdir -p "$work/home" "$work/runtime"
+            status="unknown"
+            method="none"
+            detail=""
+            if timeout 300 npm install --no-audit --no-fund --prefix "$work/runtime" "@deepseek-ai/dsh@$version" >"$work/install.log" 2>&1; then
+              cli="$work/runtime/node_modules/@deepseek-ai/dsh/lib/bin.js"
+              if [ -f "$cli" ] && node "$cli" --version >"$work/version.log" 2>&1; then
+                export DSH_HOME="$work/home"
+                if timeout 300 node "$cli" plugin --profile probe add "github:$REPOSITORY#$COMMIT" --ignore-scripts >"$work/add.log" 2>&1; then
+                  if timeout 120 node "$cli" --profile probe --dump-config >"$work/dump.txt" 2>"$work/dump.err"; then
+                    status="compatible"
+                    method="dump-config-only"
+                    detail="candidate bundle composed into the profile; runtime host boot was not executed"
+                  else
+                    status="incompatible"
+                    detail="--dump-config failed"
+                  fi
+                else
+                  status="incompatible"
+                  detail="plugin add failed"
+                fi
+              else
+                detail="official DSH CLI unavailable"
+              fi
+            else
+              detail="official DSH install failed"
+            fi
+            results=$(node -e 'const fs=require("fs");const rows=JSON.parse(process.argv[1]);rows.push({version:process.argv[2],status:process.argv[3],method:process.argv[4],detail:process.argv[5]});process.stdout.write(JSON.stringify(rows))' "$results" "$version" "$status" "$method" "$detail")
+          done
+          node -e 'const fs=require("fs");const rows=JSON.parse(process.argv[1]);fs.writeFileSync(process.argv[2],JSON.stringify({schemaVersion:1,repository:process.argv[3],commit:process.argv[4],probedAt:new Date().toISOString(),mode:"dump-config-dry-run",results:rows},null,2)+"\n")' "$results" "$RUNNER_TEMP/probe/compatibility.json" "$REPOSITORY" "$COMMIT"
+      - name: Upload probe artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: candidate-compatibility-probe
+          path: ${{ runner.temp }}/probe/compatibility.json
+          if-no-files-found: error
+          retention-days: 14

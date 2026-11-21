@@ -37,6 +37,12 @@ every change:
     runtime code. It may read bounded GitHub metadata and fixed-Commit source.
     It must update through CI-checked PRs and verify GitHub, Pages, and both
     production storefronts every three hours, retrying recoverable failures.
+    Narrow exception: the `Candidate compatibility probe (dry run)` workflow may
+    install one bounded candidate with `--ignore-scripts` and run a read-only
+    config-composition probe on an ephemeral runner. That job has no secrets and
+    no write permission, never writes the repository, and its output is an
+    artifact only; it is not Catalog admission evidence until a separately
+    reviewed plan is produced.
 
 
 13. 作者联系规则（2026-09-07 用户明确要求）：对于所有项目，先核实对应的人，
