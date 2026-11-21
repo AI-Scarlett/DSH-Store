@@ -44,14 +44,7 @@ jobs:
           mkdir -p "$RUNNER_TEMP/probe"
           gh run download "$PROBE_RUN_ID" -n candidate-compatibility-probe -D "$RUNNER_TEMP/probe"
           test -f "$RUNNER_TEMP/probe/compatibility.json"
-          node - <<'NODE'
-          const fs = require('node:fs')
-          const probe = JSON.parse(fs.readFileSync(process.env.RUNNER_TEMP + '/probe/compatibility.json', 'utf8'))
-          if (probe.schemaVersion !== 1 || !/^[0-9a-f]{40}$/.test(probe.commit || '') || !Array.isArray(probe.results)) {
-            throw new Error('invalid probe artifact')
-          }
-          console.log(`probe ${probe.repository}@${probe.commit}`)
-          NODE
+          node -e 'const fs=require("node:fs");const p=JSON.parse(fs.readFileSync(process.env.RUNNER_TEMP+"/probe/compatibility.json","utf8"));console.log(`probe ${p.repository}@${p.commit} ${Array.isArray(p.results)?p.results.length:0} results`)'
       - name: Validate the current authority before admission
         run: npm run validate:registry
       - name: Apply candidate auto admission

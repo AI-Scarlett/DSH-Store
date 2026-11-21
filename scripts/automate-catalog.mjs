@@ -537,8 +537,9 @@ async function inspectAuthorCatalogRecheck(catalog, policy, github, observedAt, 
 function validateCandidateProbe(bytes) {
   if (!bytes || bytes.length > 256 * 1024) throw new Error('candidate probe exceeds the bounded input size')
   const value = JSON.parse(bytes.toString('utf8'))
-  if (value.schemaVersion !== 1 || typeof value.repository !== 'string'
-    || !/^https:\/\/github\.com\/[^/]+\/[^/]+$/i.test(value.repository)
+  if (value.schemaVersion !== 1 || typeof value.repository !== 'string') throw new Error('invalid candidate probe document')
+  if (/^[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+$/.test(value.repository)) value.repository = `https://github.com/${value.repository}`
+  if (!/^https:\/\/github\.com\/[^/]+\/[^/]+$/i.test(value.repository)
     || !/^[0-9a-f]{40}$/.test(value.commit ?? '')
     || !Array.isArray(value.results) || value.results.length < 1 || value.results.length > 3) {
     throw new Error('invalid candidate probe document')
