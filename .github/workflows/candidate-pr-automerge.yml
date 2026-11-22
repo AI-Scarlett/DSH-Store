@@ -1,0 +1,21 @@
+name: Auto-merge plugin scout candidate PRs
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize, ready_for_review]
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  enable:
+    if: startsWith(github.head_ref, 'plugin-scout/candidates-')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Enable squash auto-merge after required checks
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR_URL: ${{ github.event.pull_request.html_url }}
+        run: |
+          gh pr merge --auto --squash --delete-branch "$PR_URL" || true
