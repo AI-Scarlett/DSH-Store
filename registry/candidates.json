@@ -3,7 +3,7 @@
   "registry": {
     "name": "DSH STORE Candidate Discovery Registry",
     "repositoryUrl": "https://github.com/AI-Scarlett/DSH-Store",
-    "updatedAt": "2026-11-22T01:21:29.000Z",
+    "updatedAt": "2026-11-22T01:55:21.802Z",
     "trustBoundary": {
       "installActionsDisabled": true,
       "catalogPromotionRequired": true,
@@ -21527,6 +21527,520 @@
         "model-manager",
         "model-selector",
         "plugin"
+      ],
+      "status": "discovered",
+      "route": "direct-review",
+      "statusReason": "插件雷达规则预检通过；仍需 DSH STORE 固定源码审阅、兼容与安装证据，候选不可安装，未进入 Catalog。"
+    },
+    {
+      "id": "jyh20030112-dsh-visual-plugin",
+      "name": "jyh20030112/dsh-visual-plugin",
+      "description": "Local-first visual media plugin for DeepSeek Harness: local video preprocessing, native vision, copyable image history, and video playback.",
+      "repositoryUrl": "https://github.com/jyh20030112/dsh-visual-plugin",
+      "defaultBranch": "main",
+      "latestCommit": "f4f9e8fd54e135e01d44518e9ee0b00ce0e22685",
+      "sourceUpdatedAt": "2026-10-07T14:53:17.000Z",
+      "discoveredAt": "2026-11-20T13:42:32.726Z",
+      "discoverySources": [
+        "github-plugin-scout-scan",
+        "fixed-commit:f4f9e8fd54e1"
+      ],
+      "topics": [
+        "deepseek",
+        "deepseek-harness",
+        "dsh-plugin",
+        "image-description",
+        "llm",
+        "multimodal",
+        "openai-compatible",
+        "typescript",
+        "vision"
+      ],
+      "status": "discovered",
+      "route": "direct-review",
+      "statusReason": "插件雷达规则预检通过；仍需 DSH STORE 固定源码审阅、兼容与安装证据，候选不可安装，未进入 Catalog。"
+    },
+    {
+      "id": "117bs-dsh-perlica-ding",
+      "name": "117BS/dsh-perlica-ding",
+      "description": "「我们不是理想的陈述者，而是理想的践行者。」 佩丽卡主题 DeepSeek Harness 分级任务提示音插件：计划出方案 / 任务完成 / 需要你回应 / 出错四档提示音，普通问答静音，音效可自定义。 Perlica-themed tiered sound notifications for DeepSeek Harness.",
+      "repositoryUrl": "https://github.com/117BS/dsh-perlica-ding",
+      "defaultBranch": "master",
+      "latestCommit": "f9db75c3cff13919659e81311a2b3d62f9af8aab",
+      "sourceUpdatedAt": "2026-10-07T13:38:52.000Z",
+      "discoveredAt": "2026-11-20T13:42:32.727Z",
+      "discoverySources": [
+        "github-plugin-scout-scan",
+        "fixed-commit:f9db75c3cff1"
+      ],
+      "topics": [
+        "arknights",
+        "deepseek",
+        "deepseek-harness",
+        "dsh",
+        "dsh-plugin",
+        "endfield",
+        "notification",
+        "perlica",
+        "plugin",
+        "sound",
+        "task-complete"
+      ],
+      "status": "discovered",
+      "route": "direct-review",
+      "statusReason": "插件雷达规则预检通过；仍需 DSH STORE 固定源码审阅、兼容与安装证据，候选不可安装，未进入 Catalog。"
+    },
+    {
+      "id": "tikzen-dsh-agent-arena",
+      "name": "Tikzen/dsh-agent-arena",
+      "description": "Interactive multi-agent collaboration, meetings, group chats, and task execution for DeepSeek Harness.",
+      "repositoryUrl": "https://github.com/Tikzen/dsh-agent-arena",
+      "defaultBranch": "main",
+      "latestCommit": "0e7f87ae2781b018571cd5cfe8ede7ae621707a2",
+      "sourceUpdatedAt": "2026-10-07T05:39:39.000Z",
+      "discoveredAt": "2026-11-20T14:28:01.777Z",
+      "discoverySources": [
+        "github-plugin-scout-scan",
+        "fixed-commit:0e7f87ae2781"
+      ],
+      "topics": [
+        "agent-arena",
+        "agent-orchestration",
+        "agentic-workflow",
+        "ai-agents",
+        "ai-chat",
+        "ai-collaboration",
+        "ai-meeting",
+        "collaborative-ai",
+        "decision-support",
+        "deepseek-harness",
+        "dsh",
+        "dsh-plugin"
+      ],
+      "status": "discovered",
+      "route": "direct-review",
+      "statusReason": "插件雷达规则预检通过；仍需 DSH STORE 固定源码审阅、兼容与安装证据，候选不可安装，未进入 Catalog。"
+    },
+    {
+      "id": "maozhuoshushu-dsh-local-host-guard",
+      "name": "maozhuoshushu/dsh-local-host-guard",
+      "description": "DSH 宿主内哨兵：同步调用打点 + 主线程卡死取证 + 内存三闸（写闸 / 冷回填闸 / 闲置会话下放）+ 队列哨兵。零依赖，全中文。",
+      "repositoryUrl": "https://github.com/maozhuoshushu/dsh-local-host-guard",
+      "defaultBranch": "main",
+      "latestCommit": "81f8dfc2290c225476d06017f8cb537e955520c2",
+      "sourceUpdatedAt": "2026-10-07T04:04:54.000Z",
+      "discoveredAt": "2026-11-20T14:28:01.777Z",
+      "discoverySources": [
+        "github-plugin-scout-scan",
+        "fixed-commit:81f8dfc2290c"
+      ],
+      "topics": [
+        "deepseek-harness",
+        "dsh",
+        "dsh-plugin",
+        "host-guard",
+        "oom",
+        "watchdog"
+      ],
+      "status": "discovered",
+      "route": "direct-review",
+      "statusReason": "插件雷达规则预检通过；仍需 DSH STORE 固定源码审阅、兼容与安装证据，候选不可安装，未进入 Catalog。"
+    },
+    {
+      "id": "aigisx-dsh-plugin-whale-girl",
+      "name": "aigisx/dsh-plugin-whale-girl",
+      "description": "修改应用内的图标，并调整尺寸大小。",
+      "repositoryUrl": "https://github.com/aigisx/dsh-plugin-whale-girl",
+      "defaultBranch": "main",
+      "latestCommit": "07d8a3223fe676487226606cf7ee8a47a078638b",
+      "sourceUpdatedAt": "2026-10-07T03:32:48.000Z",
+      "discoveredAt": "2026-11-20T14:28:01.777Z",
+      "discoverySources": [
+        "github-plugin-scout-scan",
+        "fixed-commit:07d8a3223fe6"
+      ],
+      "topics": [
+        "cordis-plugin",
+        "deepseek-harness",
+        "dsh-plugin",
+        "icons",
+        "theme"
+      ],
+      "status": "discovered",
+      "route": "direct-review",
+      "statusReason": "插件雷达规则预检通过；仍需 DSH STORE 固定源码审阅、兼容与安装证据，候选不可安装，未进入 Catalog。"
+    },
+    {
+      "id": "gh-gongjin-dsh-plugin-modelwatch",
+      "name": "gh-gongjin/dsh-plugin-modelwatch",
+      "description": "DSH (DeepSeek Harness) OpenRouter 模型监控插件：新上模型 / 热门周榜 / 变化流水。全程只读 GET，不推外部通知。",
+      "repositoryUrl": "https://github.com/gh-gongjin/dsh-plugin-modelwatch",
+      "defaultBranch": "main",
+      "latestCommit": "6a6d7cf9dce085f6ece9c825e25b8ae74702c0eb",
+      "sourceUpdatedAt": "2026-10-07T03:23:51.000Z",
+      "discoveredAt": "2026-11-20T14:28:05.880Z",
+      "discoverySources": [
+        "github-plugin-scout-scan",
+        "fixed-commit:6a6d7cf9dce0"
+      ],
+      "topics": [
+        "cordis",
+        "deepseek-harness",
+        "dsh",
+        "dsh-plugin",
+        "model-monitor",
+        "openrouter",
+        "rankings"
+      ],
+      "status": "discovered",
+      "route": "direct-review",
+      "statusReason": "插件雷达规则预检通过；仍需 DSH STORE 固定源码审阅、兼容与安装证据，候选不可安装，未进入 Catalog。"
+    },
+    {
+      "id": "peanutcd2005-dsh-plugin-pdf-text",
+      "name": "peanutcd2005/dsh-plugin-pdf-text",
+      "description": "Read text out of local PDF files inside DeepSeek Harness: page-by-page text, page statistics, scanned-PDF detection, no Python, no network.",
+      "repositoryUrl": "https://github.com/peanutcd2005/dsh-plugin-pdf-text",
+      "defaultBranch": "main",
+      "latestCommit": "bddd37984ee6e58001bb2ebbd05d6aa14edf64e8",
+      "sourceUpdatedAt": "2026-10-07T02:04:14.000Z",
+      "discoveredAt": "2026-11-20T14:28:05.880Z",
+      "discoverySources": [
+        "github-plugin-scout-scan",
+        "fixed-commit:bddd37984ee6"
+      ],
+      "topics": [
+        "cordis-plugin",
+        "deepseek-harness",
+        "dsh",
+        "dsh-plugin",
+        "dsh-plugins",
+        "pdf"
+      ],
+      "status": "discovered",
+      "route": "direct-review",
+      "statusReason": "插件雷达规则预检通过；仍需 DSH STORE 固定源码审阅、兼容与安装证据，候选不可安装，未进入 Catalog。"
+    },
+    {
+      "id": "gxpppp-dsh-boot-anim",
+      "name": "gxpppp/dsh-boot-anim",
+      "description": "DSH 桌面版启动动画（SteamOS 风格七段分镜）+ UI 由外向内分层入场过渡。宿主侧插件，经 webserver/index-inject 注入，零依赖、零源码改动。",
+      "repositoryUrl": "https://github.com/gxpppp/dsh-boot-anim",
+      "defaultBranch": "main",
+      "latestCommit": "2c292f31c11d5f66320d3f02f3ff630c0acff18f",
+      "sourceUpdatedAt": "2026-10-07T01:55:51.000Z",
+      "discoveredAt": "2026-11-20T14:28:05.880Z",
+      "discoverySources": [
+        "github-plugin-scout-scan",
+        "fixed-commit:2c292f31c11d"
+      ],
+      "topics": [
+        "boot-animation",
+        "deepseek-harness",
+        "dsh",
+        "dsh-plugin",
+        "electron",
+        "splash-screen",
+        "steamos",
+        "svg-animation",
+        "ui-animation",
+        "web-animations-api"
+      ],
+      "status": "discovered",
+      "route": "direct-review",
+      "statusReason": "插件雷达规则预检通过；仍需 DSH STORE 固定源码审阅、兼容与安装证据，候选不可安装，未进入 Catalog。"
+    },
+    {
+      "id": "blackangel242-dsh-locale-fr",
+      "name": "BlackAngel242/dsh-locale-fr",
+      "description": "BlackAngel242/dsh-locale-fr（由插件雷达发现，待固定源码审阅）",
+      "repositoryUrl": "https://github.com/BlackAngel242/dsh-locale-fr",
+      "defaultBranch": "master",
+      "latestCommit": "10dc31db969a6f9e779eda925e42a158b5e62864",
+      "sourceUpdatedAt": "2026-10-07T01:48:19.000Z",
+      "discoveredAt": "2026-11-20T14:28:05.880Z",
+      "discoverySources": [
+        "github-plugin-scout-scan",
+        "fixed-commit:10dc31db969a"
+      ],
+      "topics": [
+        "deepseek-harness",
+        "dsh-plugin",
+        "i18n"
+      ],
+      "status": "discovered",
+      "route": "direct-review",
+      "statusReason": "插件雷达规则预检通过；仍需 DSH STORE 固定源码审阅、兼容与安装证据，候选不可安装，未进入 Catalog。"
+    },
+    {
+      "id": "neutronstar714-dsh-budget-watcher",
+      "name": "NeutronStar714/dsh-budget-watcher",
+      "description": "适配 DeepSeek Harness 的预算监视器插件，让 API 花费变透明。通过图标展示账户余额、当前轮/会话的花费、以及任务花钱速率，提醒或帮助用户阻断突发性大量烧钱（例如未经过协商发放几十个 Subagent 等等）A Deepseek Harness plugin that makes cost transparent: floating window showing balance left on your API account, what the turns you ran actually cost, and how fast is your agent using you",
+      "repositoryUrl": "https://github.com/NeutronStar714/dsh-budget-watcher",
+      "defaultBranch": "main",
+      "latestCommit": "e7a251f24ef6b9b906a672cf3300d2bf45ede1c4",
+      "sourceUpdatedAt": "2026-10-07T01:27:48.000Z",
+      "discoveredAt": "2026-11-20T14:28:05.880Z",
+      "discoverySources": [
+        "github-plugin-scout-scan",
+        "fixed-commit:e7a251f24ef6"
+      ],
+      "topics": [
+        "balance-checker",
+        "budget-tracker",
+        "dsh-plugin",
+        "dsh-plugin-desktop",
+        "money-saving"
+      ],
+      "status": "discovered",
+      "route": "direct-review",
+      "statusReason": "插件雷达规则预检通过；仍需 DSH STORE 固定源码审阅、兼容与安装证据，候选不可安装，未进入 Catalog。"
+    },
+    {
+      "id": "lpeixin-dsh-xiangqi-mate",
+      "name": "lpeixin/dsh-xiangqi-mate",
+      "description": "A human-vs-AI Chinese Chess (Xiangqi) plugin for DeepSeek Harness. 一款运行在 DeepSeek Harness 中的中国象棋人机对弈插件。",
+      "repositoryUrl": "https://github.com/lpeixin/dsh-xiangqi-mate",
+      "defaultBranch": "main",
+      "latestCommit": "f86aabde8ec183a4bc783e32d559562856d719c4",
+      "sourceUpdatedAt": "2026-10-07T01:23:17.000Z",
+      "discoveredAt": "2026-11-20T14:28:05.881Z",
+      "discoverySources": [
+        "github-plugin-scout-scan",
+        "fixed-commit:f86aabde8ec1"
+      ],
+      "topics": [
+        "chess-ai",
+        "chess-game",
+        "deepseek-harness",
+        "dsh-plugin",
+        "dsh-plugin-desktop",
+        "dsh-plugin-market",
+        "dsh-plugins"
+      ],
+      "status": "discovered",
+      "route": "direct-review",
+      "statusReason": "插件雷达规则预检通过；仍需 DSH STORE 固定源码审阅、兼容与安装证据，候选不可安装，未进入 Catalog。"
+    },
+    {
+      "id": "soh4c4759-dsh-plugin-skill-autoroute",
+      "name": "SOH4C4759/dsh-plugin-skill-autoroute",
+      "description": "Automatic skill routing for DeepSeek Harness: one deterministic routing pass per user instruction, injected as a ranked brief, an auto-loaded SKILL.md body, or a forced router-skill call.",
+      "repositoryUrl": "https://github.com/SOH4C4759/dsh-plugin-skill-autoroute",
+      "defaultBranch": "main",
+      "latestCommit": "57bad3012931f21cb1756f1c559fef57783e0a04",
+      "sourceUpdatedAt": "2026-10-07T00:43:24.000Z",
+      "discoveredAt": "2026-11-20T14:28:05.881Z",
+      "discoverySources": [
+        "github-plugin-scout-scan",
+        "fixed-commit:57bad3012931"
+      ],
+      "topics": [
+        "agent",
+        "cordis",
+        "deepseek-harness",
+        "dsh",
+        "dsh-plugin",
+        "skill-routing"
+      ],
+      "status": "discovered",
+      "route": "direct-review",
+      "statusReason": "插件雷达规则预检通过；仍需 DSH STORE 固定源码审阅、兼容与安装证据，候选不可安装，未进入 Catalog。"
+    },
+    {
+      "id": "diaryofuranus-dsh-second-brain",
+      "name": "DiaryOfUranus/dsh-second-brain",
+      "description": "DeepSeek Harness（DSH）第二大脑载入器：把有硬上限、带时间戳的脑快照（身份＋状态指纹＋未决项＋指针与边界）注入每个新会话；只读、零写入、fail-loud、零依赖。 | Second Brain loader for DSH — a bounded, timestamped snapshot of your local brain in every session prompt; read-only, zero-dependency.",
+      "repositoryUrl": "https://github.com/DiaryOfUranus/dsh-second-brain",
+      "defaultBranch": "main",
+      "latestCommit": "6ce072f9f4f07aa99ae796f6f0346cfe8e374bfd",
+      "sourceUpdatedAt": "2026-10-07T00:33:47.000Z",
+      "discoveredAt": "2026-11-20T14:28:05.881Z",
+      "discoverySources": [
+        "github-plugin-scout-scan",
+        "fixed-commit:6ce072f9f4f0"
+      ],
+      "topics": [
+        "agentic-ai",
+        "ai-agent",
+        "ai-agents",
+        "ai-memory",
+        "context-injection",
+        "cordis",
+        "deepseek-harness",
+        "dsh",
+        "dsh-plugin",
+        "knowledge-management",
+        "llm",
+        "local-first"
+      ],
+      "status": "discovered",
+      "route": "direct-review",
+      "statusReason": "插件雷达规则预检通过；仍需 DSH STORE 固定源码审阅、兼容与安装证据，候选不可安装，未进入 Catalog。"
+    },
+    {
+      "id": "chenzi666-dsh-account-switch",
+      "name": "chenzi666/dsh-account-switch",
+      "description": "DSH 多账号插件：热切换、额度耗尽自动换号并原地重跑。官方新用户首登送 6 元额度，接码 0.2-0.3 元/号，账号池就是连续可用的额度池。",
+      "repositoryUrl": "https://github.com/chenzi666/dsh-account-switch",
+      "defaultBranch": "main",
+      "latestCommit": "3207248ae5bd33c31a41612bf4ea931ca3fe65d9",
+      "sourceUpdatedAt": "2026-10-06T21:56:06.000Z",
+      "discoveredAt": "2026-11-20T14:28:05.881Z",
+      "discoverySources": [
+        "github-plugin-scout-scan",
+        "fixed-commit:3207248ae5bd"
+      ],
+      "topics": [
+        "account-switch",
+        "cli",
+        "credentials",
+        "deepseek-harness",
+        "dsh",
+        "dsh-plugin",
+        "hot-swap",
+        "multi-account",
+        "quota"
+      ],
+      "status": "discovered",
+      "route": "direct-review",
+      "statusReason": "插件雷达规则预检通过；仍需 DSH STORE 固定源码审阅、兼容与安装证据，候选不可安装，未进入 Catalog。"
+    },
+    {
+      "id": "zzstar101-dsh-sandbox-noop-escalation",
+      "name": "zzstar101/dsh-sandbox-noop-escalation",
+      "description": "DSH plugin: drop sandbox_permissions that cannot widen the current sandbox mode, fixing 'not strictly wider' errors from GPT models",
+      "repositoryUrl": "https://github.com/zzstar101/dsh-sandbox-noop-escalation",
+      "defaultBranch": "main",
+      "latestCommit": "6bcc773b85f4ab37a75169c8fa251b483fb4ee9a",
+      "sourceUpdatedAt": "2026-10-06T21:03:22.000Z",
+      "discoveredAt": "2026-11-20T14:28:05.881Z",
+      "discoverySources": [
+        "github-plugin-scout-scan",
+        "fixed-commit:6bcc773b85f4"
+      ],
+      "topics": [
+        "deepseek-harness",
+        "dsh",
+        "dsh-plugin"
+      ],
+      "status": "discovered",
+      "route": "direct-review",
+      "statusReason": "插件雷达规则预检通过；仍需 DSH STORE 固定源码审阅、兼容与安装证据，候选不可安装，未进入 Catalog。"
+    },
+    {
+      "id": "ripls56-dsh-voice-ru",
+      "name": "ripls56/dsh-voice-ru",
+      "description": "Local Russian speech-to-text provider for DeepSeek Harness voice input: NVIDIA Nemotron 3.5 ASR 0.6B (GGUF) on transcribe.cpp. Model and native runtime download on first use, sha256-verified.",
+      "repositoryUrl": "https://github.com/ripls56/dsh-voice-ru",
+      "defaultBranch": "main",
+      "latestCommit": "468d8a0d0e743e182398ef0bf474a133013d4048",
+      "sourceUpdatedAt": "2026-10-06T20:55:46.000Z",
+      "discoveredAt": "2026-11-20T14:28:05.881Z",
+      "discoverySources": [
+        "github-plugin-scout-scan",
+        "fixed-commit:468d8a0d0e74"
+      ],
+      "topics": [
+        "asr",
+        "deepseek-harness",
+        "dsh",
+        "dsh-plugin",
+        "gguf",
+        "nemotron",
+        "russian",
+        "speech-to-text",
+        "voice-input"
+      ],
+      "status": "discovered",
+      "route": "direct-review",
+      "statusReason": "插件雷达规则预检通过；仍需 DSH STORE 固定源码审阅、兼容与安装证据，候选不可安装，未进入 Catalog。"
+    },
+    {
+      "id": "weisofns-dsh-print3d",
+      "name": "weisofns/dsh-print3d",
+      "description": "3D printing & additive manufacturing plugin for DeepSeek Harness — parametric STL, calibration G-code, STL/G-code analysis, toolpath rendering, PrusaSlicer bridge, 5 skills, and a concise persona optimized for local models./面向 DeepSeek Harness 的 3D 打印与增材制造插件：参数化建模、校准 G-code、STL/G-code 分析、刀路可视化、Prusa",
+      "repositoryUrl": "https://github.com/weisofns/dsh-print3d",
+      "defaultBranch": "main",
+      "latestCommit": "37a69ab6eae1a300e58fe31290dc68699aef07af",
+      "sourceUpdatedAt": "2026-10-06T19:05:46.000Z",
+      "discoveredAt": "2026-11-20T14:28:10.609Z",
+      "discoverySources": [
+        "github-plugin-scout-scan",
+        "fixed-commit:37a69ab6eae1"
+      ],
+      "topics": [
+        "3d-printing",
+        "additive-manufacturing",
+        "dsh-plugin",
+        "gcode",
+        "slicing",
+        "stl"
+      ],
+      "status": "discovered",
+      "route": "direct-review",
+      "statusReason": "插件雷达规则预检通过；仍需 DSH STORE 固定源码审阅、兼容与安装证据，候选不可安装，未进入 Catalog。"
+    },
+    {
+      "id": "new-256-dsh-session-cleaner",
+      "name": "new-256/dsh-session-cleaner",
+      "description": "DSH 会话清理宿主插件：侧边栏原生「移入回收站」+ 回收站管理页 + HTTP API（两级可恢复删除、同名防删错、活跃会话保护）",
+      "repositoryUrl": "https://github.com/new-256/dsh-session-cleaner",
+      "defaultBranch": "main",
+      "latestCommit": "7a4768492e402997e39d00a5ba9616ad55fe571b",
+      "sourceUpdatedAt": "2026-10-06T18:42:53.000Z",
+      "discoveredAt": "2026-11-20T14:28:10.609Z",
+      "discoverySources": [
+        "github-plugin-scout-scan",
+        "fixed-commit:7a4768492e40"
+      ],
+      "topics": [
+        "deepseek-harness",
+        "dsh-plugin",
+        "session-cleaner",
+        "trash"
+      ],
+      "status": "discovered",
+      "route": "direct-review",
+      "statusReason": "插件雷达规则预检通过；仍需 DSH STORE 固定源码审阅、兼容与安装证据，候选不可安装，未进入 Catalog。"
+    },
+    {
+      "id": "new-256-dsh-web-search",
+      "name": "new-256/dsh-web-search",
+      "description": "DSH (DeepSeek Harness) 网页搜索增强宿主插件：11 引擎 web_search_multi（DDG/Bing/百度/360/Brave/Wikipedia + Serper/Tavily/Brave API/Exa）+ web_fetch_url 抓取 + 设置页卡片。Multi-engine web search & URL fetch Cordis host plugin.",
+      "repositoryUrl": "https://github.com/new-256/dsh-web-search",
+      "defaultBranch": "master",
+      "latestCommit": "1327d80292e55c5a2f548edbb0b0ef076705a63d",
+      "sourceUpdatedAt": "2026-10-06T18:41:59.000Z",
+      "discoveredAt": "2026-11-20T14:28:10.609Z",
+      "discoverySources": [
+        "github-plugin-scout-scan",
+        "fixed-commit:1327d80292e5"
+      ],
+      "topics": [],
+      "status": "discovered",
+      "route": "direct-review",
+      "statusReason": "插件雷达规则预检通过；仍需 DSH STORE 固定源码审阅、兼容与安装证据，候选不可安装，未进入 Catalog。"
+    },
+    {
+      "id": "2nf-dsh-profile-bridge",
+      "name": "2NF/dsh-profile-bridge",
+      "description": "桌面版看不到你在别的 profile 里装的插件？一键让 DeepSeek Harness 桌面版改用你已有的 profile（目录链接 + 自动备份 + 随时还原）｜Make the DSH Desktop app use an existing plugin profile — one click, fully reversible.",
+      "repositoryUrl": "https://github.com/2NF/dsh-profile-bridge",
+      "defaultBranch": "main",
+      "latestCommit": "6917177806fcff7d9def83a881c47f8936a70278",
+      "sourceUpdatedAt": "2026-10-06T18:06:09.000Z",
+      "discoveredAt": "2026-11-20T14:28:10.609Z",
+      "discoverySources": [
+        "github-plugin-scout-scan",
+        "fixed-commit:6917177806fc"
+      ],
+      "topics": [
+        "deepseek-harness",
+        "desktop",
+        "dsh",
+        "dsh-plugin",
+        "profile"
       ],
       "status": "discovered",
       "route": "direct-review",
