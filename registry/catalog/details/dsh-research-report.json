@@ -22,24 +22,24 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "10121b0245edcfe1f1758a6424a7b311673731db",
-  "version": "0.4.3",
+  "commit": "95b9ad8b8143c0c4f0bb5e13bf686ac6d3d4bce3",
+  "version": "0.4.4",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-11-21T10:58:36.000Z",
-    "observedAt": "2026-11-21T15:56:20.000Z",
+    "updatedAt": "2026-11-22T07:57:03.000Z",
+    "observedAt": "2026-11-22T15:59:19.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-11-21T15:56:20.000Z",
-      "evidenceUrl": "https://github.com/PerryLink/dsh-research-report/commit/10121b0245edcfe1f1758a6424a7b311673731db",
+      "checkedAt": "2026-11-22T15:59:19.000Z",
+      "evidenceUrl": "https://github.com/PerryLink/dsh-research-report/commit/95b9ad8b8143c0c4f0bb5e13bf686ac6d3d4bce3",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -78,7 +78,7 @@
   },
   "admission": {
     "engine": "bounded-source-v3",
-    "binding": "9c8d18a90b64c13be85acd803a43443f82a97a7e31d83bedbb7096640841cc08",
+    "binding": "a5650ffd825a5120c6555bca46531ac9dfd29ce18045cf4b0d0d378db4eb4588",
     "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
     "state": "incomplete",
     "sourceContract": "verified",
@@ -94,7 +94,7 @@
   "status": "blocked",
   "statusReason": "Automatic policy blocked installation: install lifecycle scripts are present: prepare; runtime artifact is missing from the distributable surface: ./lib/index.js; runtime artifact is missing from the distributable surface: ./lib/types/index.d.ts; runtime artifact is missing from the distributable surface: ./lib/cli.js; fixed-source scan is incomplete; unobserved capability signals are unknown; runtime source contains the files permission signal; runtime source contains the network permission signal",
   "compatibility": {
-    "dsh": ">=0.1.6-0 <0.2.0 || >=0.2.0-0 <0.3.0 || >=0.2.1-0 <0.3.0 || >=0.2.2-0 <0.3.0",
+    "dsh": ">=0.1.6-0 <0.2.0 || >=0.2.0-0 <0.3.0 || >=0.2.1-0 <0.3.0 || >=0.2.2-0 <0.3.0 || >=0.2.3-0 <0.3.0-0",
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
@@ -104,10 +104,9 @@
       "0.1.2-alpha.3": "unknown",
       "0.1.2-alpha.4": "unknown",
       "0.1.2-alpha.5": "unknown",
-      "0.2.2-rc.3": "unknown",
-      "0.2.2-rc.4": "unknown",
       "0.2.2-rc.5": "unknown",
-      "0.2.3-alpha.1": "unknown"
+      "0.2.3-alpha.1": "unknown",
+      "0.2.3-alpha.2": "unknown"
     },
     "dshOperations": {
       "rc.7": {
@@ -158,18 +157,6 @@
         "uninstall": "unknown",
         "rollback": "unknown"
       },
-      "0.2.2-rc.3": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.2.2-rc.4": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
       "0.2.2-rc.5": {
         "install": "unknown",
         "start": "unknown",
@@ -177,6 +164,12 @@
         "rollback": "unknown"
       },
       "0.2.3-alpha.1": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.2.3-alpha.2": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",

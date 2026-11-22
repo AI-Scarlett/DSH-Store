@@ -22,24 +22,24 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "56e89f8daf2a9e2c7f750f03ce4acd7c0e79a2e5",
-  "version": "0.5.32",
+  "commit": "563e5565ecb91cf264cac4f3acc16794e509aa23",
+  "version": "0.5.33",
   "categories": [
     "memory"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-11-21T10:57:38.000Z",
-    "observedAt": "2026-11-21T15:56:20.000Z",
+    "updatedAt": "2026-11-22T07:56:07.000Z",
+    "observedAt": "2026-11-22T15:59:19.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-11-21T15:56:20.000Z",
-      "evidenceUrl": "https://github.com/PerryLink/dsh-memento/commit/56e89f8daf2a9e2c7f750f03ce4acd7c0e79a2e5",
+      "checkedAt": "2026-11-22T15:59:19.000Z",
+      "evidenceUrl": "https://github.com/PerryLink/dsh-memento/commit/563e5565ecb91cf264cac4f3acc16794e509aa23",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -78,7 +78,7 @@
   },
   "admission": {
     "engine": "bounded-source-v3",
-    "binding": "d8a313261948eaabb5568c6d9d8683c99c4304b7b28e63b309f2333bac1d8778",
+    "binding": "c87b1ba56ce75ee5bf963391bf05159c57b0080d31022000f6ea06076a37f940",
     "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
     "state": "review-required",
     "sourceContract": "verified",
@@ -94,7 +94,7 @@
   "status": "blocked",
   "statusReason": "Automatic policy blocked installation: runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the credentials permission signal",
   "compatibility": {
-    "dsh": ">=0.1.2-rc.1 <0.2.0 || >=0.1.5-alpha.1 <0.2.0 || >=0.1.6-0 <0.2.0 || >=0.1.7-0 <0.2.0 || >=0.2.0-0 <0.3.0 || >=0.2.1-0 <0.3.0 || >=0.2.2-0 <0.3.0",
+    "dsh": ">=0.1.2-rc.1 <0.2.0 || >=0.1.5-alpha.1 <0.2.0 || >=0.1.6-0 <0.2.0 || >=0.1.7-0 <0.2.0 || >=0.2.0-0 <0.3.0 || >=0.2.1-0 <0.3.0 || >=0.2.2-0 <0.3.0 || >=0.2.3-0 <0.3.0-0",
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
@@ -104,10 +104,9 @@
       "0.1.2-alpha.3": "unknown",
       "0.1.2-alpha.4": "unknown",
       "0.1.2-alpha.5": "unknown",
-      "0.2.2-rc.3": "unknown",
-      "0.2.2-rc.4": "unknown",
       "0.2.2-rc.5": "unknown",
-      "0.2.3-alpha.1": "unknown"
+      "0.2.3-alpha.1": "unknown",
+      "0.2.3-alpha.2": "unknown"
     },
     "dshOperations": {
       "rc.7": {
@@ -158,18 +157,6 @@
         "uninstall": "unknown",
         "rollback": "unknown"
       },
-      "0.2.2-rc.3": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.2.2-rc.4": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
       "0.2.2-rc.5": {
         "install": "unknown",
         "start": "unknown",
@@ -177,6 +164,12 @@
         "rollback": "unknown"
       },
       "0.2.3-alpha.1": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.2.3-alpha.2": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",
