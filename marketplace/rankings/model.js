@@ -6,6 +6,13 @@ export const POPULAR_LIMIT = 100
 export const MAX_RANKING_DESCRIPTION_CHARS = 64
 export const MAX_RANKING_SNAPSHOT_BYTES = 2 * 1024 * 1024
 export const RANKING_TYPES = ['popular', 'listed', 'recommended', 'essential']
+// Editorial curation is allowed on every published board. The list limits keep
+// the committed storefront file small and match each board's public page size.
+export const CURATION_LIMITS = Object.freeze({ popular: 100, listed: 30, recommended: 30, essential: 30 })
+export const MAX_CURATION_EXTRAS = 100
+export const MAX_FEATURED_PICKS = 4
+const CURATION_ID_PATTERN = /^[A-Za-z0-9][A-Za-z0-9._:-]{0,119}$/
+const MANUAL_CURATION_ID_PATTERN = /^manual-[A-Za-z0-9][A-Za-z0-9._:-]{0,112}$/
 export const escapeHtml = value => String(value ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c])
 const validStars = value => Number.isSafeInteger(value) && value >= 0
 const validRepository = value => typeof value === 'string' && /^https:\/\/github\.com\/[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+$/.test(value)
@@ -354,47 +361,271 @@ export function rankingEntries(data, type) {
   return withOfficialDshToolSlots(result, data, type)
 }
 
+function isoOrNull(value, label) {
+  if (value === null || value === undefined) return null
+  if (typeof value !== 'string' || !Number.isFinite(Date.parse(value))) throw new Error(`Invalid curation ${label}`)
+  return new Date(Date.parse(value)).toISOString()
+}
+
+function boundedCurationText(value, max, label, { required = true } = {}) {
+  if (typeof value !== 'string') {
+    if (!required && (value === null || value === undefined)) return ''
+    throw new Error(`Invalid curation ${label}`)
+  }
+  const text = value.trim()
+  if (required ? text.length < 1 : text.length > max) throw new Error(`Invalid curation ${label}`)
+  if (text.length > max || /[\u0000-\u001f\u007f]/.test(text)) throw new Error(`Invalid curation ${label}`)
+  return text
+}
+
+function canonicalRepositoryUrl(value) {
+  if (typeof value !== 'string') return null
+  const text = value.trim().replace(/\/+$/, '')
+  if (!/^https:\/\/github\.com\/[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+$/.test(text)) return null
+  return text
+}
+
+function normalizeCurationExtra(value) {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) throw new Error('Invalid curation extra')
+  const id = boundedCurationText(value.id, 120, 'extra id')
+  if (!MANUAL_CURATION_ID_PATTERN.test(id)) throw new Error('Invalid curation extra id')
+  const repositoryUrl = canonicalRepositoryUrl(value.repositoryUrl)
+  if (!repositoryUrl) throw new Error('Invalid curation extra repository')
+  const stars = value.stars === null || value.stars === undefined ? null : value.stars
+  if (stars !== null && (!Number.isSafeInteger(stars) || stars < 0)) throw new Error('Invalid curation extra stars')
+  const categories = Array.isArray(value.categories) ? value.categories.slice(0, 8) : []
+  if (categories.some(category => typeof category !== 'string' || !/^[a-z0-9-]+$/.test(category))) throw new Error('Invalid curation extra categories')
+  return {
+    id,
+    repositoryUrl,
+    nameZh: boundedCurationText(value.nameZh, 160, 'extra nameZh'),
+    nameEn: boundedCurationText(value.nameEn, 160, 'extra nameEn'),
+    description: boundedCurationText(value.description, 200, 'extra description', { required: false }),
+    packageName: value.packageName === null || value.packageName === undefined
+      ? null
+      : boundedCurationText(value.packageName, 214, 'extra packageName'),
+    version: boundedCurationText(value.version, 80, 'extra version', { required: false }),
+    stars,
+    starsObservedAt: isoOrNull(value.starsObservedAt, 'extra starsObservedAt'),
+    categories: [...new Set(categories)],
+    addedAt: isoOrNull(value.addedAt, 'extra addedAt') || new Date(0).toISOString(),
+  }
+}
+
+const EMPTY_CURATION = () => ({
+  schemaVersion: 1,
+  revision: 0,
+  updatedAt: null,
+  home: { featured: [] },
+  boards: Object.fromEntries(RANKING_TYPES.map(type => [type, { mode: 'auto', ids: [] }])),
+  extras: [],
+})
+
+// The committed storefront file is the single editorial source of truth. The
+// shape is deliberately small: board modes/orders, homepage picks and bounded
+// GitHub extras. It never changes Catalog approval or install eligibility.
+export function normalizeStorefrontCuration(value) {
+  if (value === null || value === undefined) return EMPTY_CURATION()
+  if (typeof value !== 'object' || Array.isArray(value)) throw new Error('Invalid storefront curation')
+  if (value.schemaVersion !== undefined && value.schemaVersion !== 1) throw new Error('Unsupported storefront curation schema')
+  const revision = value.revision === undefined ? 0 : value.revision
+  if (!Number.isSafeInteger(revision) || revision < 0) throw new Error('Invalid curation revision')
+  const extras = Array.isArray(value.extras) ? value.extras.map(normalizeCurationExtra) : []
+  if (extras.length > MAX_CURATION_EXTRAS) throw new Error('Too many curation extras')
+  const extraIds = new Set()
+  const extraRepositories = new Set()
+  for (const extra of extras) {
+    if (extraIds.has(extra.id)) throw new Error('Duplicate curation extra id')
+    if (extraRepositories.has(extra.repositoryUrl.toLowerCase())) throw new Error('Duplicate curation extra repository')
+    extraIds.add(extra.id)
+    extraRepositories.add(extra.repositoryUrl.toLowerCase())
+  }
+  const boardInput = value.boards && typeof value.boards === 'object' && !Array.isArray(value.boards) ? value.boards : {}
+  const boards = {}
+  for (const type of RANKING_TYPES) {
+    const board = boardInput[type]
+    if (!board || board.mode === undefined || board.mode === 'auto') {
+      if (board && Array.isArray(board.ids) && board.ids.length) throw new Error(`Curation ${type} auto board cannot carry ids`)
+      boards[type] = { mode: 'auto', ids: [] }
+      continue
+    }
+    if (board.mode !== 'manual' || !Array.isArray(board.ids)) throw new Error(`Invalid curation ${type} board`)
+    const ids = board.ids.map(id => {
+      if (typeof id !== 'string' || !CURATION_ID_PATTERN.test(id)) throw new Error(`Invalid curation ${type} id`)
+      return id
+    })
+    if (ids.length > CURATION_LIMITS[type]) throw new Error(`Curation ${type} board exceeds ${CURATION_LIMITS[type]} entries`)
+    if (new Set(ids).size !== ids.length) throw new Error(`Duplicate curation ${type} id`)
+    if (type === 'listed' && ids.some(id => extraIds.has(id))) throw new Error('Listed board cannot include manual extras')
+    boards[type] = ids.length ? { mode: 'manual', ids } : { mode: 'auto', ids: [] }
+  }
+  const featuredInput = value.home && typeof value.home === 'object' && !Array.isArray(value.home) ? value.home.featured : []
+  const featured = Array.isArray(featuredInput) ? featuredInput.map(id => {
+    if (typeof id !== 'string' || !CURATION_ID_PATTERN.test(id)) throw new Error('Invalid featured id')
+    return id
+  }) : []
+  if (featured.length > MAX_FEATURED_PICKS) throw new Error('Too many featured picks')
+  if (new Set(featured).size !== featured.length) throw new Error('Duplicate featured id')
+  return { schemaVersion: 1, revision, updatedAt: isoOrNull(value.updatedAt, 'updatedAt'), home: { featured }, boards, extras }
+}
+
+// Static curation ships in the same release as the snapshot, so it needs no
+// sourceCommit. A live admin overlay keeps that field; a stale overlay is
+// ignored instead of being applied to a different snapshot.
+export function mergeCuration(baseValue, overlayValue) {
+  const base = normalizeStorefrontCuration(baseValue)
+  if (!overlayValue || typeof overlayValue !== 'object') return base
+  const overlay = normalizeStorefrontCuration(overlayValue)
+  const boards = {}
+  for (const type of RANKING_TYPES) {
+    const candidate = overlay.boards[type]
+    boards[type] = candidate.mode === 'manual' ? candidate : base.boards[type]
+  }
+  return {
+    ...base,
+    boards,
+    extras: overlay.extras.length ? overlay.extras : base.extras,
+    home: overlay.home.featured.length ? overlay.home : base.home,
+  }
+}
+
 export function rankingCurationChoices(data, type) {
-  if (!['recommended', 'essential'].includes(type)) throw new Error('Ranking curation is limited to managed boards')
+  if (!RANKING_TYPES.includes(type)) throw new Error('Unknown ranking type')
   const automatic = rankingEntries(data, type)
   const automaticById = new Map(automatic.map((entry, index) => [entry.id, { entry, index }]))
-  const officialSlots = automatic.flatMap((entry, index) => entry.officialToolPick ? [{ id: entry.id, index }] : [])
+  const managed = type === 'recommended' || type === 'essential'
+  const officialSlots = managed
+    ? automatic.flatMap((entry, index) => entry.officialToolPick ? [{ id: entry.id, index }] : [])
+    : []
   const lockedIds = new Set(officialSlots.map(slot => slot.id))
+  const scoreField = type === 'popular' || type === 'listed' ? 'stars' : 'weeklyStars'
   const eligible = data.entries
-    .filter(entry => !['blocked', 'rejected'].includes(entry.reviewStatus))
-    .map(entry => ({ ...entry, stars: Number.isSafeInteger(entry.weeklyStars) ? entry.weeklyStars : null,
+    .filter(entry => {
+      if (type === 'popular') return Number.isSafeInteger(entry.stars) && entry.stars >= 0
+      if (type === 'listed') return entry.listingStatus === 'listed' && Number.isSafeInteger(entry.stars) && entry.stars >= 0
+      return !['blocked', 'rejected'].includes(entry.reviewStatus)
+    })
+    .map(entry => ({ ...entry, stars: Number.isSafeInteger(entry[scoreField]) ? entry[scoreField] : null,
       officialToolPick: lockedIds.has(entry.id) }))
   const selectable = eligible.filter(entry => !lockedIds.has(entry.id))
   const minimumManualEntries = officialSlots.reduce((minimum, slot) => {
     const officialAtOrBefore = officialSlots.filter(candidate => candidate.index <= slot.index).length
     return Math.max(minimum, slot.index + 1 - officialAtOrBefore)
   }, 0)
-  return { automatic, automaticById, eligible, selectable, officialSlots, minimumManualEntries }
+  return { automatic, automaticById, eligible, selectable, officialSlots, minimumManualEntries, limit: CURATION_LIMITS[type] }
+}
+
+function extraRankingEntry(extra) {
+  return {
+    id: extra.id,
+    packageName: extra.packageName,
+    nameZh: extra.nameZh,
+    nameEn: extra.nameEn,
+    version: extra.version,
+    repositoryUrl: extra.repositoryUrl,
+    description: extra.description,
+    categories: extra.categories,
+    listingStatus: 'not-listed',
+    listingReason: '通过插件雷达手动加入榜单；尚未完成固定 Commit 收录审核，展示不授予商城安装资格。',
+    source: 'manual',
+    reviewStatus: 'discovered',
+    stars: extra.stars,
+    weeklyStars: extra.stars,
+    weeklySnapshotMember: false,
+    weeklyCategories: [],
+    manualExtra: true,
+  }
 }
 
 export function curatedRankingEntries(data, type, curation = null) {
   const automatic = rankingEntries(data, type)
-  if (!['recommended', 'essential'].includes(type) || !curation || curation.sourceCommit !== data.sourceCommit) return automatic
+  if (!RANKING_TYPES.includes(type) || !curation) return automatic
+  if (curation.sourceCommit !== undefined && curation.sourceCommit !== null && curation.sourceCommit !== data.sourceCommit) return automatic
   const board = curation.boards?.[type]
-  if (!board || board.mode === 'auto') return automatic
-  if (board.mode !== 'manual' || !Array.isArray(board.ids) || board.ids.length > 30
-    || board.ids.some(id => typeof id !== 'string') || new Set(board.ids).size !== board.ids.length) return automatic
+  if (!board || board.mode !== 'manual' || !Array.isArray(board.ids) || board.ids.length === 0) return automatic
+  if (board.ids.length > CURATION_LIMITS[type]
+    || board.ids.some(id => typeof id !== 'string' || !CURATION_ID_PATTERN.test(id))
+    || new Set(board.ids).size !== board.ids.length) return automatic
 
   const choices = rankingCurationChoices(data, type)
-  const selectableIds = new Set(choices.selectable.map(entry => entry.id))
-  if (board.ids.some(id => !selectableIds.has(id)) || board.ids.length < choices.minimumManualEntries) return automatic
-
   const byId = new Map(choices.selectable.map(entry => [entry.id, entry]))
-  const outputLength = board.ids.length + choices.officialSlots.length
+  if (type !== 'listed' && Array.isArray(curation.extras)) {
+    for (const raw of curation.extras) {
+      try {
+        const extra = normalizeCurationExtra(raw)
+        if (!byId.has(extra.id)) byId.set(extra.id, extraRankingEntry(extra))
+      } catch {}
+    }
+  }
+  const resolved = []
+  for (const id of board.ids) {
+    const entry = byId.get(id)
+    if (entry) resolved.push(entry)
+  }
+  if (resolved.length === 0) return automatic
+
+  if (type !== 'recommended' && type !== 'essential') {
+    return resolved.map(entry => ({ ...entry, manualCuration: true }))
+  }
+  if (resolved.length < choices.minimumManualEntries) return automatic
+  const outputLength = resolved.length + choices.officialSlots.length
   if (choices.officialSlots.some(slot => slot.index >= outputLength)) return automatic
   const output = new Array(outputLength)
   for (const slot of choices.officialSlots) output[slot.index] = choices.eligible.find(entry => entry.id === slot.id)
   let next = 0
   for (let index = 0; index < output.length; index++) {
-    if (!output[index]) output[index] = byId.get(board.ids[next++])
+    if (!output[index]) output[index] = resolved[next++]
   }
   if (!output.every(Boolean)) return automatic
   return output.map(entry => entry.officialToolPick ? entry : { ...entry, manualCuration: true })
+}
+
+// Build-time sanitizer: drop ids that no longer exist or became ineligible so a
+// Catalog refresh can never publish a broken board. Extras are retained as a
+// reusable library even when no board currently references them.
+export function sanitizeCurationForSnapshot(curationValue, data) {
+  const curation = normalizeStorefrontCuration(curationValue)
+  const extras = new Set(curation.extras.map(extra => extra.id))
+  const dropped = []
+  const boards = {}
+  for (const type of RANKING_TYPES) {
+    const board = curation.boards[type]
+    if (board.mode !== 'manual') { boards[type] = board; continue }
+    const selectable = new Set(rankingCurationChoices(data, type).selectable.map(entry => entry.id))
+    const ids = board.ids.filter(id => {
+      const ok = selectable.has(id) || (type !== 'listed' && extras.has(id))
+      if (!ok) dropped.push({ board: type, id })
+      return ok
+    })
+    boards[type] = ids.length ? { mode: 'manual', ids } : { mode: 'auto', ids: [] }
+  }
+  const approved = new Set(data.entries
+    .filter(entry => entry.listingStatus === 'listed' && entry.reviewStatus === 'approved')
+    .map(entry => entry.id))
+  const featured = curation.home.featured.filter(id => {
+    const ok = approved.has(id)
+    if (!ok) dropped.push({ board: 'home', id })
+    return ok
+  })
+  return {
+    curation: { ...curation, boards, home: { featured } },
+    dropped,
+    changed: dropped.length > 0,
+  }
+}
+
+// Machine-readable automatic order and eligibility for the management panel.
+// It is generated by the same rules the public page uses.
+export function rankingChoicesSnapshot(data) {
+  return {
+    schemaVersion: 1,
+    sourceCommit: data.sourceCommit,
+    generatedAt: new Date().toISOString(),
+    boards: Object.fromEntries(RANKING_TYPES.map(type => {
+      const choices = rankingCurationChoices(data, type)
+      return [type, { automatic: choices.automatic.map(entry => entry.id), selectable: choices.selectable.map(entry => entry.id) }]
+    })),
+  }
 }
 
 export function rankingPage(data, type, requestedPage = 1, curation = null) {
@@ -413,20 +644,22 @@ export function renderRankingRows(entries, { type = 'popular', locale = 'zh', of
     const sourceName = entry.repositoryUrl.replace('https://github.com/', '')
     const officialToolNote = entry.officialToolPick
       ? `<span class="ranking-pick">${en ? 'Official DSH tool · randomized weekly top-10 placement; not a star rank or Store review' : 'DSH 官方工具展示位 · 周榜随机置入前十，非星标排名或商城评测'}</span>` : ''
+    const manualNote = entry.manualCuration
+      ? `<span class="ranking-pick">${en ? 'Manually arranged by the Store maintainer · not an automatic star rank' : '官网手动编排 · 非自动星标排名'}</span>` : ''
     const reason = type === 'essential' ? `<div class="ranking-wins">${officialToolNote}${entry.manualCuration
-      ? `<span>${en ? 'Manually arranged by the Store admin · not an automatic category rank' : '商城管理员手动编排 · 非自动分类排名'}</span>`
+      ? `<span>${en ? 'Manually arranged by the Store maintainer · not an automatic category rank' : '官网手动编排 · 非自动分类排名'}</span>`
       : entry.categoryPick
       ? `<span>${en
         ? `${escapeHtml(entry.categoryPick.en)} · Category supplement · observed among known stars #${entry.categoryPick.observedRank}${entry.categoryPick.unknownStars ? ` · ${entry.categoryPick.unknownStars} star counts unknown; category leader unconfirmed` : ''}`
         : `${escapeHtml(entry.categoryPick.zh)} · 分类高星补位 · 当前可核对星标第 ${entry.categoryPick.observedRank} 位${entry.categoryPick.unknownStars ? ` · ${entry.categoryPick.unknownStars} 个插件星标数未知，分类第一未确认` : ''}`}</span>`
       : entry.wins.map(win => `<span>${escapeHtml(en ? win.en : win.zh)}${win.tied ? (en ? ' · tied lead' : ' · 并列最高') : (en ? ' · #1' : ' · 星标第一')}</span>`).join('')}</div>`
       : type === 'recommended' ? (entry.officialToolPick ? officialToolNote : entry.manualCuration
-        ? `<span class="ranking-pick">${en ? 'Manually recommended by the Store admin' : '商城管理员手动推荐'}</span>`
+        ? `<span class="ranking-pick">${en ? 'Manually recommended by the Store maintainer' : '官网手动推荐 · 非自动排名'}</span>`
         : entry.communityRecommendation
         ? `<a class="ranking-pick" href="${escapeHtml(entry.communityRecommendation.evidenceUrl)}" target="_blank" rel="noopener noreferrer">${en ? 'Author interaction · View public discussion' : '作者互动推荐 · 查看公开交流'}</a>`
         : `<span class="ranking-pick">${entry.recommendationKind === 'community-stars' && validStars(entry.stars) && entry.stars > 0 && !['rejected', 'blocked'].includes(entry.reviewStatus)
         ? (en ? `Basis: ${entry.stars.toLocaleString('en-US')} GitHub stars · selected by star count, not a Store review` : `入榜依据：GitHub ${entry.stars.toLocaleString('zh-CN')} 星 · 按星标排序，非商城评测推荐`)
-        : (en ? 'Recommendation basis unavailable' : '暂无可核验的推荐依据')}</span>`) : ''
+        : (en ? 'Recommendation basis unavailable' : '暂无可核验的推荐依据')}</span>`) : manualNote
     const listed = entry.listingStatus === 'listed'
     const href = listed ? `../plugins/?q=${encodeURIComponent(entry.id)}` : entry.repositoryUrl
     const external = listed ? '' : ' target="_blank" rel="noopener noreferrer"'
@@ -435,7 +668,7 @@ export function renderRankingRows(entries, { type = 'popular', locale = 'zh', of
     const reasonCharacters = listingReason ? Array.from(listingReason) : []
     const reasonPreview = reasonCharacters.length > 200 ? `${reasonCharacters.slice(0, 200).join('')}…` : (listingReason || '')
     const fullReason = listingReason && listingReason !== reasonPreview ? `<details class="ranking-reason-details"><summary>${en ? 'Full review reason' : '查看完整审核原因'}</summary><p>${escapeHtml(listingReason)}</p></details>` : ''
-    const boundary = listed ? '' : `<div class="ranking-boundary"><p><strong>${en ? 'Not listed because: ' : '未收录原因：'}</strong>${escapeHtml(reasonPreview)}</p>${fullReason}<p class="ranking-boundary-note">${en ? (entry.source === 'candidate' ? 'Discovery candidate · DSH plugin compatibility unverified · GitHub only' : 'Not available through the Store · View source on GitHub') : (entry.source === 'candidate' ? '发现候选 · 尚未核验为标准 DSH 插件 · 仅查看 GitHub' : '暂未获准商城安装 · 仅查看 GitHub')}</p></div>`
+    const boundary = listed ? '' : `<div class="ranking-boundary"><p><strong>${en ? 'Not listed because: ' : '未收录原因：'}</strong>${escapeHtml(reasonPreview)}</p>${fullReason}<p class="ranking-boundary-note">${en ? (entry.source === 'manual' ? 'Manually added from GitHub · no Store review, install entry, or compatibility claim' : entry.source === 'candidate' ? 'Discovery candidate · DSH plugin compatibility unverified · GitHub only' : 'Not available through the Store · View source on GitHub') : (entry.source === 'manual' ? '手动加入榜单 · 未经商城收录审核 · 无安装入口 · 仅查看 GitHub' : entry.source === 'candidate' ? '发现候选 · 尚未核验为标准 DSH 插件 · 仅查看 GitHub' : '暂未获准商城安装 · 仅查看 GitHub')}</p></div>`
     return `<li class="ranking-row${rank <= 3 ? ' ranking-podium' : ''}" data-ranking-id="${escapeHtml(entry.id)}" data-listing-status="${listed ? 'listed' : 'not-listed'}">
       <span class="ranking-position">${String(rank).padStart(2, '0')}</span>
       <span class="ranking-icon" aria-hidden="true">${escapeHtml(name.replace(/^DSH[\s-]*/i, '').slice(0, 2).toUpperCase())}</span>

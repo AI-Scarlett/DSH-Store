@@ -1,0 +1,50 @@
+{
+  "schemaVersion": 1,
+  "planId": "storefront-curation-20261122",
+  "operation": "add-plugin-managed-storefront-curation-for-four-charts-and-homepage-featured-picks",
+  "createdAt": "2026-11-22",
+  "status": "source-and-tests-ready-pending-ci-and-public-readback",
+  "repository": "AI-Scarlett/DSH-Store",
+  "authorization": {
+    "source": "direct-user-request",
+    "request": "2026-11-22: 官网上面的精选插件、榜单里面的热门、收录、推荐、必装这几个板块，希望都放到插件雷达里面维护；插件可以调整顺序、手动加入 GitHub 项目地址、自动读取插件信息，并同步部署到官网。",
+    "scope": "Add a committed curation file, build-time validation and artifacts, four-board plus homepage-featured rendering, and a plugin-side editor/publisher in dsh-plugin-scout. No Catalog, Profile, package, server, or credential change in this plan."
+  },
+  "objective": "Make the four public ranking boards and the homepage featured picks maintainable from the plugin radar without changing Catalog admission or install eligibility.",
+  "fileScope": {
+    "add": [
+      "registry/storefront-curation.json",
+      "test/storefront-curation.test.mjs",
+      "docs/ops/storefront-curation-plan-20261122.json"
+    ],
+    "modify": [
+      "marketplace/rankings/model.js",
+      "marketplace/rankings/rankings.js",
+      "marketplace/rankings/index.html",
+      "marketplace/app.js",
+      "scripts/build-marketplace-static.mjs",
+      "deploy/setup-model-service.sh",
+      "README.md"
+    ]
+  },
+  "design": {
+    "sourceOfTruth": "registry/storefront-curation.json, committed and reviewed like any source file.",
+    "boards": "Every board supports auto or an ordered manual allow-list. Recommended/essential keep the existing official-tool slots and minimum ordinary entries.",
+    "extras": "Manual GitHub extras are bounded, normalized, GitHub-only and never appear on the listed board or as installable entries.",
+    "featured": "home.featured is validated against approved Catalog entries and injected as a homepage meta list; legacy featured flags remain a fallback only when the file is absent.",
+    "publishPath": "The plugin commits the single curation file to main through a GitHub-verified createCommitOnBranch with expectedHeadOid; Pages rebuilds and the browser reads the committed static file. A live admin overlay remains additive and only overrides manual boards.",
+    "failClosed": "Malformed curation fails the build; stale ids are dropped per board; an empty manual board returns to auto; publish requires an explicit setting and typed confirmation."
+  },
+  "deterministicGates": [
+    "npm run check (syntax, registry validation, all node:test suites)",
+    "node scripts/build-marketplace-static.mjs in a disposable output directory",
+    "public readback of /rankings/curation.json and /rankings/choices.json after deploy",
+    "dsh-plugin-scout: npm run check (syntax plus its node:test suites)"
+  ],
+  "excludedMutations": [
+    "registry/catalog.json and any admission state",
+    "installed Profiles, packages or DSH runtime",
+    "production servers, systemd units, model settings or credentials",
+    "author contact ledger"
+  ]
+}
