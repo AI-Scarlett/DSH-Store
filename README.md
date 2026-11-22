@@ -410,6 +410,39 @@ Host API 和设置页显示验证。单元、契约和事务测试已通过；�
 | [DSH Web Plugin Manager](https://github.com/LX2000WASD/dsh-web-plugin-manager) | 插件市场、管理工具 | 商城不可安装（GitHub 手动） | 第三方综合插件管理器，当前 Bundle 会遮蔽 DSH 官方插件清单。 |
 | [DSH Plugin Hub](https://github.com/Noob-stupid/dsh-plugin-hub) | 插件市场、管理工具 | 商城不可安装（GitHub 手动） | 社区插件控制台，当前使用受保护的 `@deepseek-ai` 官方命名空间。 |
 
+### 官网榜单与精选插件编排（`registry/storefront-curation.json`）
+
+首页「精选插件」和榜单页四个榜单（热门 / 收录 / 推荐 / 必装）的展示名单与顺序由
+`registry/storefront-curation.json` 统一维护。该文件是人工编排的唯一来源，构建时校验、
+裁剪失效条目后再发布为 `marketplace/rankings/curation.json`，同时生成
+`marketplace/rankings/choices.json` 供插件雷达与管理端读取自动顺序和可选池。
+
+```json
+{
+  "schemaVersion": 1,
+  "revision": 3,
+  "updatedAt": "2026-11-22T12:00:00.000Z",
+  "home": { "featured": ["dsh-safe-plugin-manager", "build-dsh-plugin"] },
+  "boards": {
+    "popular": { "mode": "manual", "ids": ["dsh-safe-plugin-manager"] },
+    "listed": { "mode": "auto", "ids": [] },
+    "recommended": { "mode": "auto", "ids": [] },
+    "essential": { "mode": "auto", "ids": [] }
+  },
+  "extras": []
+}
+```
+
+- `home.featured`：最多 4 个已收录条目；构建把它写入首页 `dsh-featured-ids`，静态精选卡片与前端渲染都以此为准。为空即不展示精选。
+- `boards.<type>`：`auto` 保留原有算法；`manual` 按 `ids` 顺序展示，热门榜最多 100 项，其余榜单最多 30 项。推荐榜与必装榜的两个官方工具展示位仍由算法保留。
+- `extras`：手动加入的 GitHub 项目，最多 100 个；只在热门、推荐、必装榜单中可用，收录榜拒绝手动条目。手动条目固定标记「未收录」，仅链接 GitHub，不授予安装资格。
+- 失效的条目 id（已下架、被阻止、超出该榜单资格）在构建时被丢弃并打印 `STOREFRONT_CURATION_DROPPED`；整榜为空时自动回退为 `auto`。
+- 浏览器先读取同源 `marketplace/rankings/curation.json`，再选择性叠加 `/api/rankings/curation` 的管理后台覆盖；后台覆盖仅对 `manual` 榜单生效，不会擦除已提交的编排。
+
+**维护方式**：在「插件雷达」插件的「官网榜单」页编辑并同步；同步会向本仓库 `main`
+提交这个文件（GitHub 验证 Commit），由 Pages 工作流重新构建。手工修改同样走 PR 和
+`npm run check`。榜单编排不改变 Catalog 收录、安全结论、兼容性或安装资格。
+
 ### 固定边界条目说明
 
 - **DSH Memory Evolve**：固定 Commit 的 manifest 未声明 `dsh.bundle.patch`；

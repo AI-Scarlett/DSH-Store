@@ -525,6 +525,20 @@ function catalogIndexEntries() {
   return state.indexEntries.length ? state.indexEntries : state.entries
 }
 
+// Homepage picks come from the committed storefront curation when present. The
+// build writes the curated ids into this meta tag; the legacy `featured` flag is
+// only a fallback so older releases keep working.
+function featuredIndexEntries(limit = 4) {
+  const approved = catalogIndexEntries().filter(entry => entry.status === 'approved')
+  const curatedIds = (document.querySelector('meta[name="dsh-featured-ids"]')?.content || '')
+    .split(',').map(value => value.trim()).filter(Boolean).slice(0, limit)
+  if (curatedIds.length) {
+    const byId = new Map(approved.map(entry => [entry.id, entry]))
+    return curatedIds.map(id => byId.get(id)).filter(Boolean)
+  }
+  return approved.filter(entry => entry.featured === true).slice(0, limit)
+}
+
 function homePluginCardTemplate(indexEntry) {
   const primaryName = state.locale === 'en'
     ? indexEntry.nameEn || indexEntry.name || indexEntry.nameZh || indexEntry.packageName
@@ -655,7 +669,7 @@ function renderManagerMetadata() {
 
 function renderHeroPreview() {
   if (!els.preview) return
-  const featured = catalogIndexEntries().filter(entry => entry.featured === true && entry.status === 'approved').slice(0, 3)
+  const featured = featuredIndexEntries(3)
   els.preview.innerHTML = featured.map((entry, index) => {
     const name = state.detailCache.get(entry.id)?.name || indexName(entry)
     return `
@@ -669,7 +683,7 @@ function renderHeroPreview() {
 
 function renderFeatured() {
   if (!els.featured) return
-  const featured = catalogIndexEntries().filter(entry => entry.featured === true && entry.status === 'approved').slice(0, 4)
+  const featured = featuredIndexEntries(4)
   if (featured.length === 0) {
     els.featured.innerHTML = `
       <article class="featured-empty">
@@ -1360,7 +1374,7 @@ function refreshTrustedPage() {
 }
 
 async function loadFeaturedDetails() {
-  const entries = catalogIndexEntries().filter(entry => entry.featured === true && entry.status === 'approved').slice(0, 4)
+  const entries = featuredIndexEntries(4)
   try {
     await mapDetails(entries)
     renderManagerMetadata()

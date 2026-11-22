@@ -7,7 +7,7 @@ import { compareCatalogEntries, compareVersions, loadCatalogFromFiles, MARKET_PA
 import { validateCandidateRegistry } from '../src/candidates.mjs'
 import { automationReportRunId, buildAutomationStatus } from '../src/automation-status.mjs'
 import { enrichRankingSnapshot } from './ranking-github-metadata.mjs'
-import { applyRankingRefreshState, createRankingSnapshot, MAX_RANKING_SNAPSHOT_BYTES, validateRankingSnapshot, rankingPage, renderRankingRows } from '../marketplace/rankings/model.js'
+import { applyRankingRefreshState, createRankingSnapshot, MAX_RANKING_SNAPSHOT_BYTES, validateRankingSnapshot, normalizeStorefrontCuration, sanitizeCurationForSnapshot, rankingChoicesSnapshot, rankingPage, renderRankingRows } from '../marketplace/rankings/model.js'
 import { createKnownPluginDirectory, filterPluginDirectory } from '../marketplace/lib/plugin-directory.js'
 import { staticSeoCopy } from './static-marketplace-seo-copy.mjs'
 
@@ -86,6 +86,13 @@ const catalogIndexBytes = await readFile(resolve(projectRoot, 'registry/catalog-
 const catalogIndex = JSON.parse(catalogIndexBytes.toString('utf8'))
 const catalogIndexSha256 = createHash('sha256').update(catalogIndexBytes).digest('hex')
 const catalogBridge = JSON.parse(await readFile(resolve(projectRoot, 'registry/catalog.json'), 'utf8'))
+const storefrontCurationPath = resolve(projectRoot, 'registry/storefront-curation.json')
+let storefrontCuration = null
+try {
+  storefrontCuration = normalizeStorefrontCuration(JSON.parse(await readFile(storefrontCurationPath, 'utf8')))
+} catch (error) {
+  if (error?.code !== 'ENOENT') throw new Error(`registry/storefront-curation.json is invalid: ${error.message}`)
+}
 if (catalogIndex.schemaVersion !== 2 || !Array.isArray(catalogIndex.entries)
   || catalogIndex.entries.length !== catalog.entries.length
   || catalogIndex.registry?.updatedAt !== catalog.registry?.updatedAt
@@ -646,7 +653,14 @@ const externalCatalogMarker = `<meta name="dsh-catalog-delivery" content="extern
 const externalDiscoveryMarker = `<meta name="dsh-discovery-index-sha256" content="${discoveryIndexSha256}">
   <meta name="dsh-discovery-index-bytes" content="${discoveryIndexBytes.byteLength}">
   <meta name="dsh-discovery-index-count" content="${discoveryIndex.entries.length}">`
-const featured = visibleEntries.filter(entry => entry.featured === true && entry.status === 'approved').slice(0, 4)
+const approvedById = new Map(visibleEntries.filter(entry => entry.status === 'approved').map(entry => [entry.id, entry]))
+const featured = storefrontCuration
+  ? storefrontCuration.home.featured.map(id => approvedById.get(id)).filter(Boolean).slice(0, 4)
+  : visibleEntries.filter(entry => entry.featured === true && entry.status === 'approved').slice(0, 4)
+if (storefrontCuration) {
+  const missingFeatured = storefrontCuration.home.featured.filter(id => !approvedById.has(id))
+  if (missingFeatured.length) console.warn(`STOREFRONT_FEATURED_DROPPED ${JSON.stringify(missingFeatured)}`)
+}
 const categoryCount = new Set(visibleEntries.flatMap(entry => Array.isArray(entry.categories) ? entry.categories : [])).size
 const installCommand = managerInstallable
   ? `dsh plugin --profile web add 'git+${manager.repositoryUrl}.git#${manager.commit}'`
@@ -884,6 +898,7 @@ for (const { file: pagePath, route, fixedLocale, domesticOnly = false } of canon
 
 let home = await readFile(resolve(outputRoot, 'marketplace/index.html'), 'utf8')
 home = replaceRequired(home, '<!-- DSH_STATIC_CATALOG -->', externalCatalogMarker, 'home external catalog marker')
+home = replaceRequired(home, '</head>', `<meta name="dsh-featured-ids" content="${htmlEscape(featured.map(entry => entry.id).join(','))}">\n</head>`, 'home featured ids')
 home = replaceRequired(home, '<!-- DSH_LEGACY_REPAIR_BANNER -->', repairAvailable
   ? `<aside class="legacy-repair-banner" aria-label="旧版商城安全修复"><strong>旧版商城更新被 pnpm 拦截？</strong><span>不要放开 prepare 权限，也不要手改 Profile。</span><a href="./repair/">打开官方安全修复入口 →</a></aside>`
   : '', 'home legacy repair banner')
@@ -987,11 +1002,23 @@ rankings = applyRankingRefreshState(rankings, previousRankings, rankingRefreshMo
 const rankingsBytes = Buffer.from(JSON.stringify(rankings) + '\n')
 if (rankingsBytes.length > MAX_RANKING_SNAPSHOT_BYTES) throw new Error('Rankings snapshot exceeds the 2 MiB bound')
 await writeFile(resolve(outputRoot, 'marketplace/rankings/data.json'), rankingsBytes)
+let rankingCuration = normalizeStorefrontCuration(null)
+if (storefrontCuration) {
+  const sanitized = sanitizeCurationForSnapshot(storefrontCuration, rankings)
+  rankingCuration = sanitized.curation
+  if (sanitized.dropped.length) console.warn(`STOREFRONT_CURATION_DROPPED ${JSON.stringify(sanitized.dropped)}`)
+}
+const curationBytes = Buffer.from(`${JSON.stringify(rankingCuration)}\n`)
+if (curationBytes.length > 256 * 1024) throw new Error('Storefront curation exceeds the 256 KiB bound')
+await writeFile(resolve(outputRoot, 'marketplace/rankings/curation.json'), curationBytes)
+const choicesBytes = Buffer.from(`${JSON.stringify(rankingChoicesSnapshot(rankings))}\n`)
+if (choicesBytes.length > 512 * 1024) throw new Error('Ranking choices exceed the 512 KiB bound')
+await writeFile(resolve(outputRoot, 'marketplace/rankings/choices.json'), choicesBytes)
 const rankingsPath = resolve(outputRoot, 'marketplace/rankings/index.html')
 let rankingsHtml = await readFile(rankingsPath, 'utf8')
 rankingsHtml = replaceRequired(rankingsHtml, '</head>', `<meta name="dsh-rankings-sha256" content="${createHash('sha256').update(rankingsBytes).digest('hex')}">\n</head>`, 'rankings digest')
 rankingsHtml = replaceBetweenMarkers(rankingsHtml, '<!-- DSH_RANKINGS_START -->', '<!-- DSH_RANKINGS_END -->',
-  renderRankingRows(rankingPage(rankings, 'popular').entries, { locale: defaultLocale }), 'rankings first page')
+  renderRankingRows(rankingPage(rankings, 'popular', 1, rankingCuration).entries, { locale: defaultLocale }), 'rankings first page')
 await writeFile(rankingsPath, rankingsHtml)
 
 // Do not publish a second monolithic catalog snapshot. The copied registry
