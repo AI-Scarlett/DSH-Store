@@ -141,7 +141,8 @@
       "0.2.2-rc.2": "compatible",
       "0.2.2-rc.3": "compatible",
       "0.2.2-rc.4": "compatible",
-      "0.2.2-rc.5": "compatible"
+      "0.2.2-rc.5": "compatible",
+      "0.2.3-alpha.1": "unknown"
     },
     "dshOperations": {
       "rc.7": {
@@ -329,14 +330,20 @@
         "start": "passed",
         "uninstall": "passed",
         "rollback": "unknown"
+      },
+      "0.2.3-alpha.1": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
       }
     },
     "latestWindow": {
       "state": "current",
       "releases": [
-        "0.2.2-rc.3",
         "0.2.2-rc.4",
-        "0.2.2-rc.5"
+        "0.2.2-rc.5",
+        "0.2.3-alpha.1"
       ]
     },
     "node": ">=24.9.0",
