@@ -23,24 +23,24 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "ea8b5b7de2761385e0b60bd71a9cd4539abf14cf",
-  "version": "0.18.2",
+  "commit": "ff19926c6f4f4cf58f5046141f74f103bb3bc79c",
+  "version": "0.18.3",
   "categories": [
     "models"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-11-18T07:53:49.000Z",
-    "observedAt": "2026-11-18T12:19:36.000Z",
+    "updatedAt": "2026-11-22T03:28:28.000Z",
+    "observedAt": "2026-11-22T05:33:00.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-11-18T12:19:36.000Z",
-      "evidenceUrl": "https://github.com/Mars-Sea/dsh-commandcode-provider/commit/ea8b5b7de2761385e0b60bd71a9cd4539abf14cf",
+      "checkedAt": "2026-11-22T05:33:00.000Z",
+      "evidenceUrl": "https://github.com/Mars-Sea/dsh-commandcode-provider/commit/ff19926c6f4f4cf58f5046141f74f103bb3bc79c",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -79,14 +79,14 @@
   },
   "admission": {
     "engine": "bounded-source-v3",
-    "binding": "8d15b0a9b406916017d41ba3160b880b5419ddbc6c88f7c660959fcf9c831522",
+    "binding": "e3501e17be26f3c628210e4952d15372eb8daf6b8be9a381595fe089c35025a0",
     "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
     "state": "rejected",
     "sourceContract": "verified",
     "coverage": "incomplete",
     "capabilities": "prohibited",
     "compatibility": "per-version-declaration",
-    "reviewRegistryDigest": "77be8f89953685d21010262f77080ad73105babc199c839657ae916dc6a3dbde"
+    "reviewRegistryDigest": "6c289f3ac2f4eb799f1848d9b7fbc3c738a03fa7166e8e4212a6988fc568d27c"
   },
   "entryIds": [
     "llm-commandcode"
@@ -115,7 +115,8 @@
       "0.2.2-rc.2": "compatible",
       "0.2.2-rc.3": "compatible",
       "0.2.2-rc.4": "compatible",
-      "0.2.2-rc.5": "unknown"
+      "0.2.2-rc.5": "unknown",
+      "0.2.3-alpha.1": "unknown"
     },
     "dshOperations": {
       "rc.7": {
@@ -227,6 +228,12 @@
         "rollback": "unknown"
       },
       "0.2.2-rc.5": {
+        "install": "unknown",
+        "start": "unknown",
+        "uninstall": "unknown",
+        "rollback": "unknown"
+      },
+      "0.2.3-alpha.1": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",
