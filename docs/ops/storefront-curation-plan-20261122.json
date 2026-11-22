@@ -3,7 +3,7 @@
   "planId": "storefront-curation-20261122",
   "operation": "add-plugin-managed-storefront-curation-for-four-charts-and-homepage-featured-picks",
   "createdAt": "2026-11-22",
-  "status": "source-and-tests-ready-pending-ci-and-public-readback",
+  "status": "github-pages-deployed-and-verified; official-domains-pending-scheduled-refresh",
   "repository": "AI-Scarlett/DSH-Store",
   "authorization": {
     "source": "direct-user-request",
@@ -46,5 +46,23 @@
     "installed Profiles, packages or DSH runtime",
     "production servers, systemd units, model settings or credentials",
     "author contact ledger"
-  ]
+  ],
+  "deployment": {
+    "mergeCommit": "caf54b3dff8d343daa362d49fd86d82a1ce8e069",
+    "pullRequest": 2011,
+    "pagesRun": 45021264556,
+    "pagesVerifiedAt": "2026-11-22T12:20:00Z",
+    "pagesEvidence": {
+      "curation": "https://ai-scarlett.github.io/DSH-Store/marketplace/rankings/curation.json (200, schema v1, revision 1)",
+      "choices": "https://ai-scarlett.github.io/DSH-Store/marketplace/rankings/choices.json (200, sourceCommit caf54b3d)",
+      "featuredMeta": "home HTML contains dsh-featured-ids with the three curated picks",
+      "manualOrderSimulation": "local build with the live snapshot and a manual popular board rendered the curated order plus a GitHub-only extra"
+    },
+    "officialDomains": {
+      "state": "pending-scheduled-refresh",
+      "reason": "dsh.store and dsh-store.cn refresh from the Pages artifact on the three-hour timer; both returned 404 for the new curation artifacts before that refresh.",
+      "nextExpectedRefresh": "2026-11-22T15:47Z (plus up to five minutes of randomized delay)"
+    },
+    "notes": "The plugin radar reads the Pages mirror when it is newer, so curation can continue before the official domains refresh. No Catalog, Profile, server or credential change was made by this plan."
+  }
 }
