@@ -282,27 +282,34 @@
     const copy = document.createElement('div');
     copy.className = 'ranking-entry-copy';
 
+    const header = document.createElement('div');
+    header.className = 'ranking-entry-header';
+
     const name = document.createElement('strong');
     name.className = 'ranking-entry-name';
     name.textContent = entry.nameZh || entry.nameEn || entry.id;
-    copy.appendChild(name);
+    header.appendChild(name);
 
     if (entry.nameEn && entry.nameEn !== entry.nameZh) {
       const englishName = document.createElement('small');
       englishName.className = 'ranking-entry-secondary-name';
       englishName.textContent = entry.nameEn;
-      copy.appendChild(englishName);
+      header.appendChild(englishName);
     }
+    copy.appendChild(header);
+
+    const meta = document.createElement('div');
+    meta.className = 'ranking-entry-meta';
 
     const packageName = document.createElement('code');
     packageName.className = 'ranking-entry-package';
     packageName.textContent = entry.packageName ? `包名：${entry.packageName}` : '包名：目录未提供';
-    copy.appendChild(packageName);
+    meta.appendChild(packageName);
 
     const catalogId = document.createElement('small');
     catalogId.className = 'ranking-entry-id';
     catalogId.textContent = `目录 ID：${entry.id}`;
-    copy.appendChild(catalogId);
+    meta.appendChild(catalogId);
 
     if (entry.repositoryUrl) {
       let repositoryUrl;
@@ -314,9 +321,10 @@
         repository.target = '_blank';
         repository.rel = 'noopener noreferrer';
         repository.textContent = `GitHub：${repositoryUrl.pathname.replace(/^\//, '')}`;
-        copy.appendChild(repository);
+        meta.appendChild(repository);
       }
     }
+    copy.appendChild(meta);
 
     if (entry.description) {
       const description = document.createElement('small');
@@ -395,7 +403,9 @@
       });
       controls.appendChild(remove);
     }
-    row.appendChild(controls);
+    if (controls.childNodes.length > 0) {
+      row.appendChild(controls);
+    }
     return row;
   }
 
