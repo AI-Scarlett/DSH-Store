@@ -1,4 +1,4 @@
-import { MAX_RANKING_SNAPSHOT_BYTES, PAGE_SIZE, RANKING_TYPES, validateRankingSnapshot, normalizeStorefrontCuration, mergeCuration, curatedRankingEntries, rankingPage, renderRankingRows } from './model.js?v=20261122-storefront-curation'
+import { MAX_RANKING_SNAPSHOT_BYTES, PAGE_SIZE, RANKING_TYPES, validateRankingSnapshot, normalizeStorefrontCuration, mergeCuration, curatedRankingEntries, rankingPage, renderRankingRows } from './model.js?v=20261123-browser-safe-exclusions'
 
 const translations = {
   zh: {

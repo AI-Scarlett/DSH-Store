@@ -1,6 +1,6 @@
 // Shared by the static builder and browser. Rankings never change Catalog approval.
-import { communityRecommendationEntries } from '../lib/community-recommendations.js'
-import { isWithdrawnRepository } from '../../src/author-exclusions.mjs'
+import { communityRecommendationEntries } from '../lib/community-recommendations.js?v=20261123-browser-safe-exclusions'
+import { isWithdrawnRepository } from '../lib/server-author-exclusions.js'
 export const PAGE_SIZE = 30
 export const POPULAR_LIMIT = 100
 export const MAX_RANKING_DESCRIPTION_CHARS = 64

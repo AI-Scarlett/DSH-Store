@@ -1,4 +1,4 @@
-import { isBlockedAuthor, isWithdrawnRepository } from '../../src/author-exclusions.mjs'
+import { isBlockedAuthor, isWithdrawnRepository } from './server-author-exclusions.js'
 
 // Public recommendation evidence only. This is not a contact or admission ledger.
 export function validateCommunityRecommendations(document) {

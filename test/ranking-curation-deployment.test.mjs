@@ -19,6 +19,7 @@ test('backend deployment includes the ranking module dependency in both setup pa
     'src/bundle-patch-contract.mjs',
     'marketplace/rankings/model.js',
     'marketplace/lib/community-recommendations.js',
+    'marketplace/lib/server-author-exclusions.js',
   ]
   for (const path of stagedFiles) {
     assert.ok(setup.includes(`"$REPO_ROOT/${path}"`), `repository install path must copy ${path}`)
@@ -39,11 +40,28 @@ test('backend deployment includes the ranking module dependency in both setup pa
     'scripts/serve-marketplace.mjs',
     'src/ai-model-settings.mjs',
     'src/ai-recommend.mjs',
-    ...stagedFiles,
+    ...stagedFiles.filter(path => !path.startsWith('marketplace/')),
   ]) {
     assert.ok(bundledFiles.has(path), `standalone bundle must contain ${path}`)
     const extracted = spawnSync('tar', ['-xzf', '-', '-O', path], { input: archive, encoding: 'buffer' })
     assert.equal(extracted.status, 0, extracted.stderr)
     assert.deepEqual(extracted.stdout, await readFile(new URL(path, root)), `standalone bundle must match ${path}`)
+  }
+
+  const rankingPatch = setup.match(/cat << 'RANKING_PATCH_EOF' \| base64 -d \| tar -xz -C "\$SERVICE_DIR"\n([\s\S]*?)\nRANKING_PATCH_EOF/)
+  assert.ok(rankingPatch, 'standalone ranking dependency overlay must be present')
+  const rankingArchive = Buffer.from(rankingPatch[1].replace(/\s+/g, ''), 'base64')
+  const rankingListing = spawnSync('tar', ['-tzf', '-'], { input: rankingArchive, encoding: 'utf8' })
+  assert.equal(rankingListing.status, 0, rankingListing.stderr)
+  const rankingFiles = new Set(rankingListing.stdout.trim().split('\n'))
+  for (const path of [
+    'marketplace/rankings/model.js',
+    'marketplace/lib/community-recommendations.js',
+    'marketplace/lib/server-author-exclusions.js',
+  ]) {
+    assert.ok(rankingFiles.has(path), `standalone ranking overlay must contain ${path}`)
+    const extracted = spawnSync('tar', ['-xzf', '-', '-O', path], { input: rankingArchive, encoding: 'buffer' })
+    assert.equal(extracted.status, 0, extracted.stderr)
+    assert.deepEqual(extracted.stdout, await readFile(new URL(path, root)), `standalone ranking overlay must match ${path}`)
   }
 })
