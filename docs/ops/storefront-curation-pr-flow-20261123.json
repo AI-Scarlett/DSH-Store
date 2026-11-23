@@ -3,7 +3,7 @@
   "planId": "storefront-curation-pr-flow-20261123",
   "operation": "replace-direct-main-commit-with-scoped-pr-and-auto-merge-for-storefront-curation",
   "createdAt": "2026-11-23",
-  "status": "source-and-tests-ready-pending-ci-and-live-retry",
+  "status": "merged-and-live-verified",
   "repository": "AI-Scarlett/DSH-Store",
   "authorization": {
     "source": "direct-user-request",
@@ -45,5 +45,32 @@
     "node --test test/storefront-workflow.test.mjs",
     "npm run check",
     "after merge: plugin publish creates a PR; auto-merge waits for CodeQL; Pages readback of curation.json"
-  ]
+  ],
+  "deployment": {
+    "mergeCommit": "1fa085ba77cb9672bc4490ca8b11e1cedbc53d75",
+    "pullRequest": 2028,
+    "liveRetry": {
+      "pullRequest": 2029,
+      "mergeCommit": "44f96bbf75819c120453a4bc398cc5ec0221ee5a",
+      "autoMergeRequestedBy": "dsh-plugin-scout 0.2.1",
+      "state": "merged",
+      "mergedAt": "2026-11-23T01:05:50Z",
+      "note": "A no-op revision-2 curation PR created by the updated plugin auto-merged after CodeQL completed."
+    },
+    "pages": {
+      "run": 45092600842,
+      "sourceCommit": "1fa085ba",
+      "curationRevision": 2,
+      "verifiedAt": "2026-11-23T01:08:00Z"
+    },
+    "officialDomains": {
+      "state": "will pick up the new build on the next three-hour refresh",
+      "note": "The plugin reads the Pages mirror as soon as the PR merges, so operators do not need to wait for the domain refresh."
+    },
+    "tests": {
+      "store": "697 passing (npm run check)",
+      "plugin": "71 passing (npm run check)",
+      "ui": "jsdom storefront tab render OK"
+    }
+  }
 }
