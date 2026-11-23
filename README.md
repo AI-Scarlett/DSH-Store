@@ -439,8 +439,10 @@ Host API 和设置页显示验证。单元、契约和事务测试已通过；�
 - 失效的条目 id（已下架、被阻止、超出该榜单资格）在构建时被丢弃并打印 `STOREFRONT_CURATION_DROPPED`；整榜为空时自动回退为 `auto`。
 - 浏览器先读取同源 `marketplace/rankings/curation.json`，再选择性叠加 `/api/rankings/curation` 的管理后台覆盖；后台覆盖仅对 `manual` 榜单生效，不会擦除已提交的编排。
 
-**维护方式**：在「插件雷达」插件的「官网榜单」页编辑并同步；同步会向本仓库 `main`
-提交这个文件（GitHub 验证 Commit），由 Pages 工作流重新构建。手工修改同样走 PR 和
+**维护方式**：在「插件雷达」插件的「官网榜单」页编辑并同步；同步会创建
+`plugin-scout/storefront-*` 分支和 PR，只提交这个文件（GitHub 验证 Commit），
+由 `storefront-pr-automerge.yml` 在 CodeQL 和编排校验通过后 squash 合并，随后 Pages
+工作流重新构建。`main` 有代码扫描规则，不能直接推送。手工修改同样走 PR 和
 `npm run check`。榜单编排不改变 Catalog 收录、安全结论、兼容性或安装资格。
 
 ### 固定边界条目说明

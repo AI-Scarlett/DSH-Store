@@ -1,0 +1,46 @@
+name: Auto-merge storefront curation pull requests
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize, ready_for_review]
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: storefront-curation-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  enable:
+    if: startsWith(github.head_ref, 'plugin-scout/storefront-')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Validate the exact curation scope
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR_URL: ${{ github.event.pull_request.html_url }}
+        run: |
+          set -euo pipefail
+          association=$(gh pr view "$PR_URL" --json authorAssociation --jq .authorAssociation)
+          case "$association" in
+            OWNER|MEMBER|COLLABORATOR) ;;
+            *) echo "Untrusted storefront curation PR author association: $association" >&2; exit 1 ;;
+          esac
+          files=$(gh pr view "$PR_URL" --json files --jq '.files[].path' | LC_ALL=C sort)
+          if [ "$files" != "registry/storefront-curation.json" ]; then
+            echo 'A storefront curation PR may only change registry/storefront-curation.json' >&2
+            printf '%s\n' "$files" >&2
+            exit 1
+          fi
+          node scripts/validate-storefront-curation.mjs
+      - name: Enable squash auto-merge after required checks
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR_URL: ${{ github.event.pull_request.html_url }}
+        run: gh pr merge --auto --squash --delete-branch "$PR_URL" || true
