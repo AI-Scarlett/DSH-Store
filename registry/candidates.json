@@ -3,7 +3,7 @@
   "registry": {
     "name": "DSH STORE Candidate Discovery Registry",
     "repositoryUrl": "https://github.com/AI-Scarlett/DSH-Store",
-    "updatedAt": "2026-11-23T09:48:27.000Z",
+    "updatedAt": "2026-11-23T13:14:49.900Z",
     "trustBoundary": {
       "installActionsDisabled": true,
       "catalogPromotionRequired": true,
@@ -22041,6 +22041,77 @@
         "dsh",
         "dsh-plugin",
         "profile"
+      ],
+      "status": "discovered",
+      "route": "direct-review",
+      "statusReason": "插件雷达规则预检通过；仍需 DSH STORE 固定源码审阅、兼容与安装证据，候选不可安装，未进入 Catalog。"
+    },
+    {
+      "id": "yhprime-dsh-session-delete",
+      "name": "yhPrime/dsh-session-delete",
+      "description": "会话删除：DeepSeek Harness Web 插件——在会话头部添加红色垃圾桶按钮，二次确认后删除会话。",
+      "repositoryUrl": "https://github.com/yhPrime/dsh-session-delete",
+      "defaultBranch": "main",
+      "latestCommit": "c47bc6f9c9868660240139c23be946ebb5b25954",
+      "sourceUpdatedAt": "2026-10-07T16:28:12.000Z",
+      "discoveredAt": "2026-11-23T13:11:25.602Z",
+      "discoverySources": [
+        "github-plugin-scout-scan",
+        "fixed-commit:c47bc6f9c986"
+      ],
+      "topics": [
+        "dsh",
+        "dsh-plugin"
+      ],
+      "status": "discovered",
+      "route": "direct-review",
+      "statusReason": "插件雷达规则预检通过；仍需 DSH STORE 固定源码审阅、兼容与安装证据，候选不可安装，未进入 Catalog。"
+    },
+    {
+      "id": "wbdxy-dsh-tabbit-brain",
+      "name": "wbdxy/dsh-tabbit-brain",
+      "description": "DeepSeek Harness subagent provider: delegate reasoning to Tabbit-served models through a local gateway. Ships its own minimal preset, gateway management, and delegation guidance.",
+      "repositoryUrl": "https://github.com/wbdxy/dsh-tabbit-brain",
+      "defaultBranch": "main",
+      "latestCommit": "072f24a935e34ef3c129e7af53d5b9b4ae76ad6b",
+      "sourceUpdatedAt": "2026-10-07T14:51:27.000Z",
+      "discoveredAt": "2026-11-23T13:11:25.602Z",
+      "discoverySources": [
+        "github-plugin-scout-scan",
+        "fixed-commit:072f24a935e3"
+      ],
+      "topics": [
+        "deepseek-harness",
+        "dsh-plugin",
+        "llm",
+        "local-gateway",
+        "openai-compatible",
+        "subagents",
+        "tabbit-ai"
+      ],
+      "status": "discovered",
+      "route": "direct-review",
+      "statusReason": "插件雷达规则预检通过；仍需 DSH STORE 固定源码审阅、兼容与安装证据，候选不可安装，未进入 Catalog。"
+    },
+    {
+      "id": "zxyxxby-dsh-appearance-tuner",
+      "name": "zxyxxby/dsh-appearance-tuner",
+      "description": "DeepSeek Harness 外观调校插件：浮层/面板不透明度与配色、毛玻璃模糊、背景与侧栏色、强调色、圆角、正文字号、滚动条宽度 | Appearance tuner for DSH UI tokens",
+      "repositoryUrl": "https://github.com/zxyxxby/dsh-appearance-tuner",
+      "defaultBranch": "main",
+      "latestCommit": "65376e7aaa44d6047d6df4520f662c7fe5f86d98",
+      "sourceUpdatedAt": "2026-10-07T10:10:03.000Z",
+      "discoveredAt": "2026-11-23T13:11:25.602Z",
+      "discoverySources": [
+        "github-plugin-scout-scan",
+        "fixed-commit:65376e7aaa44"
+      ],
+      "topics": [
+        "appearance",
+        "deepseek-harness",
+        "dsh",
+        "dsh-plugin",
+        "theme"
       ],
       "status": "discovered",
       "route": "direct-review",
