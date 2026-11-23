@@ -32,7 +32,7 @@
     "boards": "Every board supports auto or an ordered manual allow-list. Recommended/essential keep the existing official-tool slots and minimum ordinary entries.",
     "extras": "Manual GitHub extras are bounded, normalized, GitHub-only and never appear on the listed board or as installable entries.",
     "featured": "home.featured is validated against approved Catalog entries and injected as a homepage meta list; legacy featured flags remain a fallback only when the file is absent.",
-    "publishPath": "The plugin commits the single curation file to main through a GitHub-verified createCommitOnBranch with expectedHeadOid; Pages rebuilds and the browser reads the committed static file. A live admin overlay remains additive and only overrides manual boards.",
+    "publishPath": "The plugin creates a plugin-scout/storefront-* branch, writes the single curation file as a GitHub-verified commit, opens a PR and enables squash auto-merge. The storefront-pr-automerge.yml workflow (added in #2028) re-validates the scope and file, and CodeQL gates the merge. A direct commit to main is rejected by the code-scanning ruleset.",
     "failClosed": "Malformed curation fails the build; stale ids are dropped per board; an empty manual board returns to auto; publish requires an explicit setting and typed confirmation."
   },
   "deterministicGates": [
