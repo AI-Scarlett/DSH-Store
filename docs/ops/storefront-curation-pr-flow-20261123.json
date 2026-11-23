@@ -1,0 +1,49 @@
+{
+  "schemaVersion": 1,
+  "planId": "storefront-curation-pr-flow-20261123",
+  "operation": "replace-direct-main-commit-with-scoped-pr-and-auto-merge-for-storefront-curation",
+  "createdAt": "2026-11-23",
+  "status": "source-and-tests-ready-pending-ci-and-live-retry",
+  "repository": "AI-Scarlett/DSH-Store",
+  "authorization": {
+    "source": "direct-user-request",
+    "request": "2026-11-23: 提交失败：Repository rule violations found Code scanning is waiting for results from CodeQL for the commit 7f60c60. 同步榜单失败",
+    "scope": "Make the plugin radar publish path compatible with the existing main branch ruleset by using a scoped pull request and the repository's auto-merge workflow. No change to the ruleset, Catalog, Profile, servers or credentials."
+  },
+  "objective": "Publish `registry/storefront-curation.json` through a branch PR that CodeQL and a scoped validator gate, without weakening the main branch code-scanning rule.",
+  "rootCause": {
+    "observed": "createCommitOnBranch targeted main directly and the ruleset rejected the ref update: Code scanning is waiting for results from CodeQL for commit 7f60c6032bf1766e6d280cd9676b818f971cd605.",
+    "evidence": "The verified commit 7f60c60 exists as a dangling object (parent 63dc4da3) but no branch points at it; no file on main changed.",
+    "rule": "ruleset 20904616 requires code scanning and code quality results for the default branch; PR heads receive CodeQL analysis, direct pushes do not."
+  },
+  "fix": {
+    "plugin": "dsh-plugin-scout 0.2.1 creates `plugin-scout/storefront-<timestamp>`, writes the verified commit on that branch with expectedHeadOid=main, opens a PR, and best-effort enables squash auto-merge. Failed commits or PR creation delete the temporary branch.",
+    "store": "New `storefront-pr-automerge.yml` runs only for `plugin-scout/storefront-` PRs, requires OWNER/MEMBER/COLLABORATOR authorship and exactly one changed file, validates the file with `scripts/validate-storefront-curation.mjs`, then enables squash auto-merge.",
+    "gates": "CodeQL and code quality remain required by the existing ruleset; the curation PR is additionally validated by the new workflow and by `npm run check` on registry changes."
+  },
+  "fileScope": {
+    "add": [
+      ".github/workflows/storefront-pr-automerge.yml",
+      "scripts/validate-storefront-curation.mjs",
+      "test/storefront-workflow.test.mjs",
+      "docs/ops/storefront-curation-pr-flow-20261123.json"
+    ],
+    "modify": [
+      "package.json",
+      "README.md"
+    ]
+  },
+  "excludedMutations": [
+    "branch ruleset 20904616",
+    "registry/catalog.json and admission state",
+    "installed Profiles, packages or DSH runtime",
+    "production servers, systemd units, model settings or credentials",
+    "author contact ledger"
+  ],
+  "verification": [
+    "node scripts/validate-storefront-curation.mjs",
+    "node --test test/storefront-workflow.test.mjs",
+    "npm run check",
+    "after merge: plugin publish creates a PR; auto-merge waits for CodeQL; Pages readback of curation.json"
+  ]
+}
