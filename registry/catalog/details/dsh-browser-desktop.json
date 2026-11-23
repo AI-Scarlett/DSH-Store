@@ -31,8 +31,8 @@
   "manifestPath": "plugins/dsh-browser-desktop/package.json",
   "installPath": "plugins/dsh-browser-desktop",
   "updatePolicy": "external-only",
-  "commit": "13a22e61e9cb2a68143b8faae1870904177ee0c5",
-  "version": "0.1.6",
+  "commit": "89be1b206b2116f53543ff5d8de5330909de1eb6",
+  "version": "0.1.7",
   "categories": [
     "tools",
     "ui",
@@ -41,16 +41,16 @@
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-11-19T01:15:45.000Z",
-    "observedAt": "2026-11-19T02:30:52.000Z",
+    "updatedAt": "2026-11-23T03:16:44.000Z",
+    "observedAt": "2026-11-23T06:13:25.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-11-19T02:30:52.000Z",
-      "evidenceUrl": "https://github.com/runzhliu/deepseek-harness-docker/commit/13a22e61e9cb2a68143b8faae1870904177ee0c5",
+      "checkedAt": "2026-11-23T06:13:25.000Z",
+      "evidenceUrl": "https://github.com/runzhliu/deepseek-harness-docker/commit/89be1b206b2116f53543ff5d8de5330909de1eb6",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -89,7 +89,7 @@
   },
   "admission": {
     "engine": "bounded-source-v3",
-    "binding": "25f8b457d56ba2d069c3e2d7f91e758f1c1f50ffbba4d4579ad06683c2c9d6eb",
+    "binding": "28fd90aa245253f28dc3f478d96944b038df955da8f7e7a1aa33b9bedbdc4a83",
     "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
     "state": "review-required",
     "sourceContract": "verified",
@@ -105,7 +105,7 @@
   "status": "blocked",
   "statusReason": "Automatic policy blocked installation: runtime or optional dependencies require a separate supply-chain review; runtime dependencies do not have one unambiguous fixed lockfile for supply-chain review; runtime source contains the network permission signal",
   "compatibility": {
-    "dsh": "^0.1.2-alpha.3 || ^0.2.0-rc.1 || ^0.2.1-alpha.1 || ^0.2.2-alpha.2",
+    "dsh": "^0.1.2-alpha.3 || ^0.2.0-rc.1 || ^0.2.1-alpha.1 || ^0.2.2-alpha.2 || ^0.2.3-alpha.1",
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
@@ -115,8 +115,6 @@
       "0.1.2-alpha.3": "unknown",
       "0.1.2-alpha.4": "unknown",
       "0.1.2-alpha.5": "unknown",
-      "0.2.2-rc.3": "unknown",
-      "0.2.2-rc.4": "unknown",
       "0.2.2-rc.5": "unknown",
       "0.2.3-alpha.1": "unknown",
       "0.2.3-alpha.2": "unknown"
@@ -165,18 +163,6 @@
         "rollback": "unknown"
       },
       "0.1.2-alpha.5": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.2.2-rc.3": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.2.2-rc.4": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",
