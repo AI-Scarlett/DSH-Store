@@ -3,7 +3,7 @@
   "registry": {
     "name": "DSH STORE Candidate Discovery Registry",
     "repositoryUrl": "https://github.com/AI-Scarlett/DSH-Store",
-    "updatedAt": "2026-11-24T08:53:38.306Z",
+    "updatedAt": "2026-11-24T10:02:57.812Z",
     "trustBoundary": {
       "installActionsDisabled": true,
       "catalogPromotionRequired": true,
@@ -26764,6 +26764,443 @@
         "fixed-commit:ca81b14fd929"
       ],
       "topics": [],
+      "status": "discovered",
+      "route": "direct-review",
+      "statusReason": "插件雷达规则预检通过；仍需 DSH STORE 固定源码审阅、兼容与安装证据，候选不可安装，未进入 Catalog。"
+    },
+    {
+      "id": "zg2017-dsh-plugin-idle-new-session",
+      "name": "ZG2017/dsh-plugin-idle-new-session",
+      "description": "Auto-start a fresh DeepSeek Harness session after a real idle gap, instead of reopening a stale one",
+      "repositoryUrl": "https://github.com/ZG2017/dsh-plugin-idle-new-session",
+      "defaultBranch": "main",
+      "latestCommit": "77d51168c4caf47d5c11f9e15194bb127a773b9d",
+      "sourceUpdatedAt": "2026-10-13T07:45:42.000Z",
+      "discoveredAt": "2026-11-20T14:42:24.170Z",
+      "discoverySources": [
+        "github-plugin-scout-scan",
+        "fixed-commit:77d51168c4ca"
+      ],
+      "topics": [],
+      "status": "discovered",
+      "route": "direct-review",
+      "statusReason": "插件雷达规则预检通过；仍需 DSH STORE 固定源码审阅、兼容与安装证据，候选不可安装，未进入 Catalog。"
+    },
+    {
+      "id": "zg2017-dsh-plugin-cost-tracker",
+      "name": "ZG2017/dsh-plugin-cost-tracker",
+      "description": "Real dollar cost per turn and per session for DeepSeek Harness, computed from actual OpenRouter pricing",
+      "repositoryUrl": "https://github.com/ZG2017/dsh-plugin-cost-tracker",
+      "defaultBranch": "main",
+      "latestCommit": "68aed0713c1f71684068f077345beb49be31daa5",
+      "sourceUpdatedAt": "2026-10-13T07:45:40.000Z",
+      "discoveredAt": "2026-11-20T14:42:24.171Z",
+      "discoverySources": [
+        "github-plugin-scout-scan",
+        "fixed-commit:68aed0713c1f"
+      ],
+      "topics": [],
+      "status": "discovered",
+      "route": "direct-review",
+      "statusReason": "插件雷达规则预检通过；仍需 DSH STORE 固定源码审阅、兼容与安装证据，候选不可安装，未进入 Catalog。"
+    },
+    {
+      "id": "felixpu-dsh-env-inspector-plus",
+      "name": "felixpu/dsh-env-inspector-plus",
+      "description": "环境体检：在「设置 → 环境体检」加一个分页，展示当前 DSH 宿主进程的身份（pid / 入口 / 工作目录 / Node / 运行时长）与环境变量分组（总数、DSH_ 前缀组、凭证形态组），值一律不出宿主；同时给模型一个只读的 env_inspect 工具。",
+      "repositoryUrl": "https://github.com/felixpu/dsh-env-inspector-plus",
+      "defaultBranch": "main",
+      "latestCommit": "470d62fa2eb741ce022104fc6cc9ef81d91ed881",
+      "sourceUpdatedAt": "2026-10-13T07:44:33.000Z",
+      "discoveredAt": "2026-11-20T14:42:24.171Z",
+      "discoverySources": [
+        "github-plugin-scout-scan",
+        "fixed-commit:470d62fa2eb7"
+      ],
+      "topics": [
+        "dsh-plugin"
+      ],
+      "status": "discovered",
+      "route": "direct-review",
+      "statusReason": "插件雷达规则预检通过；仍需 DSH STORE 固定源码审阅、兼容与安装证据，候选不可安装，未进入 Catalog。"
+    },
+    {
+      "id": "eons2long-dsh-codex-oauth",
+      "name": "eons2long/dsh-codex-oauth",
+      "description": "DeepSeek Harness plugin for using ChatGPT Plus/Pro Codex models through OpenAI Codex OAuth.",
+      "repositoryUrl": "https://github.com/eons2long/dsh-codex-oauth",
+      "defaultBranch": "main",
+      "latestCommit": "ca5b8b42d8148786bfc881cdca61db69460ac1fe",
+      "sourceUpdatedAt": "2026-10-13T07:27:32.000Z",
+      "discoveredAt": "2026-11-20T14:42:24.171Z",
+      "discoverySources": [
+        "github-plugin-scout-scan",
+        "fixed-commit:ca5b8b42d814"
+      ],
+      "topics": [
+        "dsh-plugin"
+      ],
+      "status": "discovered",
+      "route": "direct-review",
+      "statusReason": "插件雷达规则预检通过；仍需 DSH STORE 固定源码审阅、兼容与安装证据，候选不可安装，未进入 Catalog。"
+    },
+    {
+      "id": "liufeicc-dsh-session-delete",
+      "name": "liufeicc/dsh-session-delete",
+      "description": "DSH plugin: permanently delete a session — sidebar row, confirmation dialog, and the Host operation that removes its log",
+      "repositoryUrl": "https://github.com/liufeicc/dsh-session-delete",
+      "defaultBranch": "main",
+      "latestCommit": "2044032a79133c51b31c468bb35fe8ffd873622e",
+      "sourceUpdatedAt": "2026-10-13T07:23:12.000Z",
+      "discoveredAt": "2026-11-20T14:42:24.171Z",
+      "discoverySources": [
+        "github-plugin-scout-scan",
+        "fixed-commit:2044032a7913"
+      ],
+      "topics": [
+        "dsh",
+        "dsh-plugin"
+      ],
+      "status": "discovered",
+      "route": "direct-review",
+      "statusReason": "插件雷达规则预检通过；仍需 DSH STORE 固定源码审阅、兼容与安装证据，候选不可安装，未进入 Catalog。"
+    },
+    {
+      "id": "jk-uzi-dsh-multi-remote",
+      "name": "jk-uzi/dsh-multi-remote",
+      "description": "DSH 插件：SSH / WSL / Docker 三种远程开发 —— agent 的文件读写、命令、终端全部落在目标环境",
+      "repositoryUrl": "https://github.com/jk-uzi/dsh-multi-remote",
+      "defaultBranch": "main",
+      "latestCommit": "7e734cc22154f5551babc6b98fc1144d071b85a8",
+      "sourceUpdatedAt": "2026-10-13T07:21:05.000Z",
+      "discoveredAt": "2026-11-20T14:42:24.171Z",
+      "discoverySources": [
+        "github-plugin-scout-scan",
+        "fixed-commit:7e734cc22154"
+      ],
+      "topics": [
+        "dsh-plugin"
+      ],
+      "status": "discovered",
+      "route": "direct-review",
+      "statusReason": "插件雷达规则预检通过；仍需 DSH STORE 固定源码审阅、兼容与安装证据，候选不可安装，未进入 Catalog。"
+    },
+    {
+      "id": "alshahia-dsh-vision-bridge",
+      "name": "alshahia/dsh-vision-bridge",
+      "description": "DSH plugin: image inbox, describe_image tool and vision agent bridge for DeepSeek Harness",
+      "repositoryUrl": "https://github.com/alshahia/dsh-vision-bridge",
+      "defaultBranch": "main",
+      "latestCommit": "9b5e018e3b099aa885c988ce022bdfc5f8a97ceb",
+      "sourceUpdatedAt": "2026-10-13T07:11:37.000Z",
+      "discoveredAt": "2026-11-20T14:42:29.248Z",
+      "discoverySources": [
+        "github-plugin-scout-scan",
+        "fixed-commit:9b5e018e3b09"
+      ],
+      "topics": [],
+      "status": "discovered",
+      "route": "direct-review",
+      "statusReason": "插件雷达规则预检通过；仍需 DSH STORE 固定源码审阅、兼容与安装证据，候选不可安装，未进入 Catalog。"
+    },
+    {
+      "id": "l0251314-dsh-rewind",
+      "name": "L0251314/dsh-rewind",
+      "description": "DeepSeek Harness 桌面端插件：悬停消息一键回退——文件回滚 + 会话折叠 + 输入框回填。快照式实现，不碰 git。",
+      "repositoryUrl": "https://github.com/L0251314/dsh-rewind",
+      "defaultBranch": "main",
+      "latestCommit": "0cbd648a3d61439bc56b97158cad91c36ecf1d97",
+      "sourceUpdatedAt": "2026-10-13T07:10:21.000Z",
+      "discoveredAt": "2026-11-20T14:42:29.248Z",
+      "discoverySources": [
+        "github-plugin-scout-scan",
+        "fixed-commit:0cbd648a3d61"
+      ],
+      "topics": [],
+      "status": "discovered",
+      "route": "direct-review",
+      "statusReason": "插件雷达规则预检通过；仍需 DSH STORE 固定源码审阅、兼容与安装证据，候选不可安装，未进入 Catalog。"
+    },
+    {
+      "id": "github-xzhi-dsh-simple-worktree-plus",
+      "name": "GitHub-Xzhi/dsh-simple-worktree-plus",
+      "description": "dsh-simple-worktree加强版",
+      "repositoryUrl": "https://github.com/GitHub-Xzhi/dsh-simple-worktree-plus",
+      "defaultBranch": "main",
+      "latestCommit": "099e4385d926dd8718b8ff4c5c44c945b487ef15",
+      "sourceUpdatedAt": "2026-10-13T07:06:15.000Z",
+      "discoveredAt": "2026-11-20T14:42:29.248Z",
+      "discoverySources": [
+        "github-plugin-scout-scan",
+        "fixed-commit:099e4385d926"
+      ],
+      "topics": [
+        "ai-agent",
+        "deepseek-harness",
+        "dsh",
+        "dsh-plugin",
+        "dsh-plugins",
+        "git",
+        "git-worktree",
+        "worktree"
+      ],
+      "status": "discovered",
+      "route": "direct-review",
+      "statusReason": "插件雷达规则预检通过；仍需 DSH STORE 固定源码审阅、兼容与安装证据，候选不可安装，未进入 Catalog。"
+    },
+    {
+      "id": "cpsggg-dsh-task-board",
+      "name": "cpsGGG/dsh-task-board",
+      "description": "Cross-project task board for DeepSeek Harness: every DSH session becomes a task card across 待处理 / 处理中 / 待审阅, with a 16-colour priority palette, stable ordering and a one-page adaptive layout.",
+      "repositoryUrl": "https://github.com/cpsGGG/dsh-task-board",
+      "defaultBranch": "main",
+      "latestCommit": "c2a7da1fc35c90426e7e7517e505fb4762dc2897",
+      "sourceUpdatedAt": "2026-10-14T12:58:49.000Z",
+      "discoveredAt": "2026-11-20T14:42:29.248Z",
+      "discoverySources": [
+        "github-plugin-scout-scan",
+        "fixed-commit:c2a7da1fc35c"
+      ],
+      "topics": [
+        "deepseek-harness",
+        "dsh",
+        "dsh-plugin",
+        "kanban",
+        "panel",
+        "sessions",
+        "sidebar",
+        "task-board"
+      ],
+      "status": "discovered",
+      "route": "direct-review",
+      "statusReason": "插件雷达规则预检通过；仍需 DSH STORE 固定源码审阅、兼容与安装证据，候选不可安装，未进入 Catalog。"
+    },
+    {
+      "id": "xhj-cloud-dsh-ssh-hub",
+      "name": "xhj-cloud/dsh-ssh-hub",
+      "description": "xhj-cloud/dsh-ssh-hub（由插件雷达发现，待固定源码审阅）",
+      "repositoryUrl": "https://github.com/xhj-cloud/dsh-ssh-hub",
+      "defaultBranch": "main",
+      "latestCommit": "622867ed886aff4fbb079459a58f2032919aaa3c",
+      "sourceUpdatedAt": "2026-10-13T06:28:43.000Z",
+      "discoveredAt": "2026-11-20T14:42:29.248Z",
+      "discoverySources": [
+        "github-plugin-scout-scan",
+        "fixed-commit:622867ed886a"
+      ],
+      "topics": [],
+      "status": "discovered",
+      "route": "direct-review",
+      "statusReason": "插件雷达规则预检通过；仍需 DSH STORE 固定源码审阅、兼容与安装证据，候选不可安装，未进入 Catalog。"
+    },
+    {
+      "id": "vec715-dsh-activity-view",
+      "name": "vec715/dsh-activity-view",
+      "description": "Activity view for the DeepSeek Harness web sidebar: a bell swaps the sessions list for Needs attention, Working and Today.",
+      "repositoryUrl": "https://github.com/vec715/dsh-activity-view",
+      "defaultBranch": "main",
+      "latestCommit": "4f6140ad0ef5e9a04354639461ac63ac00e9c9b4",
+      "sourceUpdatedAt": "2026-10-13T06:24:48.000Z",
+      "discoveredAt": "2026-11-20T14:42:29.248Z",
+      "discoverySources": [
+        "github-plugin-scout-scan",
+        "fixed-commit:4f6140ad0ef5"
+      ],
+      "topics": [
+        "deepseek-harness",
+        "dsh",
+        "dsh-plugin",
+        "sidebar"
+      ],
+      "status": "discovered",
+      "route": "direct-review",
+      "statusReason": "插件雷达规则预检通过；仍需 DSH STORE 固定源码审阅、兼容与安装证据，候选不可安装，未进入 Catalog。"
+    },
+    {
+      "id": "ax2-dsh-win-native",
+      "name": "ax2/dsh-win-native",
+      "description": "Windows correctness layer for DeepSeek Harness: encoding detection/conversion (GBK/GB18030/Big5/Shift-JIS), Windows path legality, netstat interpretation, and bounded read-only disk inspection.",
+      "repositoryUrl": "https://github.com/ax2/dsh-win-native",
+      "defaultBranch": "main",
+      "latestCommit": "61f5bc49ad566ca52ea390869c466099f0cf272e",
+      "sourceUpdatedAt": "2026-10-13T06:21:09.000Z",
+      "discoveredAt": "2026-11-20T14:42:29.248Z",
+      "discoverySources": [
+        "github-plugin-scout-scan",
+        "fixed-commit:61f5bc49ad56"
+      ],
+      "topics": [
+        "deepseek-harness",
+        "dsh",
+        "dsh-plugin",
+        "encoding",
+        "read-only",
+        "windows"
+      ],
+      "status": "discovered",
+      "route": "direct-review",
+      "statusReason": "插件雷达规则预检通过；仍需 DSH STORE 固定源码审阅、兼容与安装证据，候选不可安装，未进入 Catalog。"
+    },
+    {
+      "id": "ax2-dsh-py-doctor",
+      "name": "ax2/dsh-py-doctor",
+      "description": "Python/Django production-report doctor for DeepSeek Harness: traceback, pytest, migrations, N+1 SQL, django checks and celery inspection parsed into structured diagnoses.",
+      "repositoryUrl": "https://github.com/ax2/dsh-py-doctor",
+      "defaultBranch": "main",
+      "latestCommit": "1fe770fbd048434f6400e64b169f4ae02e4fc8fc",
+      "sourceUpdatedAt": "2026-10-13T06:20:16.000Z",
+      "discoveredAt": "2026-11-20T14:42:29.248Z",
+      "discoverySources": [
+        "github-plugin-scout-scan",
+        "fixed-commit:1fe770fbd048"
+      ],
+      "topics": [
+        "deepseek-harness",
+        "diagnostics",
+        "django",
+        "dsh",
+        "dsh-plugin",
+        "python"
+      ],
+      "status": "discovered",
+      "route": "direct-review",
+      "statusReason": "插件雷达规则预检通过；仍需 DSH STORE 固定源码审阅、兼容与安装证据，候选不可安装，未进入 Catalog。"
+    },
+    {
+      "id": "ax2-dsh-jvm-doctor",
+      "name": "ax2/dsh-jvm-doctor",
+      "description": "JVM production-report doctor for DeepSeek Harness: jstack/cmd thread dumps, GC logs, Maven/Gradle dependency conflicts, stack traces and Spring config diffs parsed into structured diagnoses.",
+      "repositoryUrl": "https://github.com/ax2/dsh-jvm-doctor",
+      "defaultBranch": "main",
+      "latestCommit": "497ebb7ab2d0b3454cdd5292cf2b6505c479127a",
+      "sourceUpdatedAt": "2026-10-13T06:19:18.000Z",
+      "discoveredAt": "2026-11-20T14:42:29.248Z",
+      "discoverySources": [
+        "github-plugin-scout-scan",
+        "fixed-commit:497ebb7ab2d0"
+      ],
+      "topics": [
+        "deepseek-harness",
+        "diagnostics",
+        "dsh",
+        "dsh-plugin",
+        "java",
+        "jvm"
+      ],
+      "status": "discovered",
+      "route": "direct-review",
+      "statusReason": "插件雷达规则预检通过；仍需 DSH STORE 固定源码审阅、兼容与安装证据，候选不可安装，未进入 Catalog。"
+    },
+    {
+      "id": "ax2-dsh-deterministic-tools",
+      "name": "ax2/dsh-deterministic-tools",
+      "description": "Deterministic, offline, bounded tools for DeepSeek Harness: 29 JSON/YAML/CSV, text, encoding and inspection tools, each returning a byte receipt.",
+      "repositoryUrl": "https://github.com/ax2/dsh-deterministic-tools",
+      "defaultBranch": "main",
+      "latestCommit": "c5269783caa235da2700d4330c844b81b71140b9",
+      "sourceUpdatedAt": "2026-10-13T06:18:21.000Z",
+      "discoveredAt": "2026-11-20T14:42:29.248Z",
+      "discoverySources": [
+        "github-plugin-scout-scan",
+        "fixed-commit:c5269783caa2"
+      ],
+      "topics": [
+        "deepseek-harness",
+        "deterministic",
+        "developer-tools",
+        "dsh",
+        "dsh-plugin",
+        "offline"
+      ],
+      "status": "discovered",
+      "route": "direct-review",
+      "statusReason": "插件雷达规则预检通过；仍需 DSH STORE 固定源码审阅、兼容与安装证据，候选不可安装，未进入 Catalog。"
+    },
+    {
+      "id": "jjdonald-dsh-stream-tuning",
+      "name": "JJDonald/dsh-stream-tuning",
+      "description": "DSH plugin: coalesce model-stream deltas and enable WebSocket compression on the Web UI's Remote mux for smooth streaming over high-latency links",
+      "repositoryUrl": "https://github.com/JJDonald/dsh-stream-tuning",
+      "defaultBranch": "main",
+      "latestCommit": "35b6aa31517db3ca8ecd29dfada9fb2668296e07",
+      "sourceUpdatedAt": "2026-10-13T06:06:37.000Z",
+      "discoveredAt": "2026-11-20T14:42:29.248Z",
+      "discoverySources": [
+        "github-plugin-scout-scan",
+        "fixed-commit:35b6aa31517d"
+      ],
+      "topics": [],
+      "status": "discovered",
+      "route": "direct-review",
+      "statusReason": "插件雷达规则预检通过；仍需 DSH STORE 固定源码审阅、兼容与安装证据，候选不可安装，未进入 Catalog。"
+    },
+    {
+      "id": "ruaibeite-dsh-auto-observe",
+      "name": "ruaibeite/dsh-auto-observe",
+      "description": "Records the edit target's current version as an observation when the agent never used the read tool (bash inspection does not count), so the fs observation policy stops rejecting edits with FS_NOT_OBSERVED.",
+      "repositoryUrl": "https://github.com/ruaibeite/dsh-auto-observe",
+      "defaultBranch": "main",
+      "latestCommit": "bc0b3cd908017156d0d4d6c00030ff3f994dfc86",
+      "sourceUpdatedAt": "2026-10-13T05:51:12.000Z",
+      "discoveredAt": "2026-11-20T14:42:29.248Z",
+      "discoverySources": [
+        "github-plugin-scout-scan",
+        "fixed-commit:bc0b3cd90801"
+      ],
+      "topics": [
+        "deepseek-harness",
+        "dsh",
+        "dsh-plugin"
+      ],
+      "status": "discovered",
+      "route": "direct-review",
+      "statusReason": "插件雷达规则预检通过；仍需 DSH STORE 固定源码审阅、兼容与安装证据，候选不可安装，未进入 Catalog。"
+    },
+    {
+      "id": "noelune-dsh-agent-relay",
+      "name": "Noelune/dsh-agent-relay",
+      "description": "Local multi-agent collaboration relay for DeepSeek Harness — HMAC-authenticated loopback message broker for dsh, Codex, Claude Code & Hermes.",
+      "repositoryUrl": "https://github.com/Noelune/dsh-agent-relay",
+      "defaultBranch": "main",
+      "latestCommit": "07d0d5bfa07ce4e6b495b5cfd840a2f331bd6316",
+      "sourceUpdatedAt": "2026-10-13T05:43:20.000Z",
+      "discoveredAt": "2026-11-20T14:42:29.248Z",
+      "discoverySources": [
+        "github-plugin-scout-scan",
+        "fixed-commit:07d0d5bfa07c"
+      ],
+      "topics": [
+        "agent-collaboration",
+        "claude-code",
+        "codex",
+        "deepseek-harness",
+        "dsh-plugin",
+        "hermes",
+        "hmac-auth",
+        "message-broker",
+        "multi-agent",
+        "wire-protocol"
+      ],
+      "status": "discovered",
+      "route": "direct-review",
+      "statusReason": "插件雷达规则预检通过；仍需 DSH STORE 固定源码审阅、兼容与安装证据，候选不可安装，未进入 Catalog。"
+    },
+    {
+      "id": "seeingrain-dsh-session-todos",
+      "name": "seeingrain/dsh-session-todos",
+      "description": "会话内待办事项：DSH 悬浮待办面板 + 服务器端跨端存储 + 会话列表未完成图标",
+      "repositoryUrl": "https://github.com/seeingrain/dsh-session-todos",
+      "defaultBranch": "main",
+      "latestCommit": "adcb36637ac685fef4de25ab27a0697e44cc8ec3",
+      "sourceUpdatedAt": "2026-10-13T05:40:18.000Z",
+      "discoveredAt": "2026-11-20T14:42:29.248Z",
+      "discoverySources": [
+        "github-plugin-scout-scan",
+        "fixed-commit:adcb36637ac6"
+      ],
+      "topics": [
+        "dsh-plugin"
+      ],
       "status": "discovered",
       "route": "direct-review",
       "statusReason": "插件雷达规则预检通过；仍需 DSH STORE 固定源码审阅、兼容与安装证据，候选不可安装，未进入 Catalog。"
