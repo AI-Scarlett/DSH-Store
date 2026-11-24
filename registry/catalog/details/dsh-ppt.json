@@ -25,8 +25,8 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "c430ac06f0a40becc5b7ec545a8e725b93b4037e",
-  "version": "1.0.1",
+  "commit": "2f353493b8fcaeb13af6568dd864fb50783a82e7",
+  "version": "1.0.4",
   "categories": [
     "files",
     "tools"
@@ -34,16 +34,16 @@
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-11-24T02:42:28.000Z",
-    "observedAt": "2026-11-24T10:23:46.000Z",
+    "updatedAt": "2026-11-24T17:41:36.000Z",
+    "observedAt": "2026-11-24T20:52:02.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-11-24T10:23:46.000Z",
-      "evidenceUrl": "https://github.com/STARDUSTLC666/dsh-ppt/commit/c430ac06f0a40becc5b7ec545a8e725b93b4037e",
+      "checkedAt": "2026-11-24T20:52:02.000Z",
+      "evidenceUrl": "https://github.com/STARDUSTLC666/dsh-ppt/commit/2f353493b8fcaeb13af6568dd864fb50783a82e7",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -82,7 +82,7 @@
   },
   "admission": {
     "engine": "bounded-source-v3",
-    "binding": "83fcb068beb5a85d7159ac0e229c106c383d2e943865cb92ea4c70b356c46a23",
+    "binding": "a7909f805a911dc6ae500d7b611803480a1552181a6cc357b4489495880aae1a",
     "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
     "state": "review-required",
     "sourceContract": "verified",
@@ -96,7 +96,7 @@
   ],
   "configOverrides": [],
   "status": "blocked",
-  "statusReason": "Automatic policy blocked installation: runtime or optional dependencies require a separate supply-chain review; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the credentials permission signal; dynamic module loading or code evaluation requires separate review",
+  "statusReason": "Automatic policy blocked installation: runtime or optional dependencies require a separate supply-chain review; fixed-source security warnings require review; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime source contains the credentials permission signal; dynamic module loading or code evaluation requires separate review",
   "compatibility": {
     "dsh": ">=0.2.2-rc.3",
     "dshReleases": {
