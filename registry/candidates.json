@@ -3,7 +3,7 @@
   "registry": {
     "name": "DSH STORE Candidate Discovery Registry",
     "repositoryUrl": "https://github.com/AI-Scarlett/DSH-Store",
-    "updatedAt": "2026-11-24T01:34:32.906Z",
+    "updatedAt": "2026-11-24T04:57:52.336Z",
     "trustBoundary": {
       "installActionsDisabled": true,
       "catalogPromotionRequired": true,
@@ -25920,6 +25920,463 @@
       "discoverySources": [
         "github-plugin-scout-scan",
         "fixed-commit:85117c4a35c5"
+      ],
+      "topics": [
+        "dsh-plugin"
+      ],
+      "status": "discovered",
+      "route": "direct-review",
+      "statusReason": "插件雷达规则预检通过；仍需 DSH STORE 固定源码审阅、兼容与安装证据，候选不可安装，未进入 Catalog。"
+    },
+    {
+      "id": "wobenshiwomu-dsh-ration",
+      "name": "wobenshiwomu/dsh-ration",
+      "description": "DeepSeek Harness 插件：配给 —— 自己给自己防沉迷的 token 限额。5 小时滚动窗 + 周，两把闸；越线就不接新活 | Ration your tokens: self-imposed 5-hour & weekly limits that actually stop you",
+      "repositoryUrl": "https://github.com/wobenshiwomu/dsh-ration",
+      "defaultBranch": "main",
+      "latestCommit": "814a55a7acde7f6cdbc934497a567072c32057c9",
+      "sourceUpdatedAt": "2026-10-13T11:54:48.000Z",
+      "discoveredAt": "2026-11-20T14:42:18.371Z",
+      "discoverySources": [
+        "github-plugin-scout-scan",
+        "fixed-commit:814a55a7acde"
+      ],
+      "topics": [
+        "anti-addiction",
+        "cordis-plugin",
+        "cost-control",
+        "deepseek-harness",
+        "dsh",
+        "dsh-plugin",
+        "quota",
+        "self-discipline"
+      ],
+      "status": "discovered",
+      "route": "direct-review",
+      "statusReason": "插件雷达规则预检通过；仍需 DSH STORE 固定源码审阅、兼容与安装证据，候选不可安装，未进入 Catalog。"
+    },
+    {
+      "id": "wobenshiwomu-dsh-plan",
+      "name": "wobenshiwomu/dsh-plan",
+      "description": "DeepSeek Harness 插件：深潜计划 —— DSH 里的自营 Token Plan 页面。七档订阅（¥10~自定义），订阅跳官方充值页；充回来自动把额度写进 dsh-ration | A self-hosted Token Plan page inside DSH: subscribe, top up DeepSeek balance, self-quota syncs",
+      "repositoryUrl": "https://github.com/wobenshiwomu/dsh-plan",
+      "defaultBranch": "main",
+      "latestCommit": "5cd70a69d92b28a71f373c06a1e2e28463439382",
+      "sourceUpdatedAt": "2026-10-13T11:53:32.000Z",
+      "discoveredAt": "2026-11-20T14:42:18.371Z",
+      "discoverySources": [
+        "github-plugin-scout-scan",
+        "fixed-commit:5cd70a69d92b"
+      ],
+      "topics": [
+        "coding-plan",
+        "cordis-plugin",
+        "deepseek-harness",
+        "dsh",
+        "dsh-plugin",
+        "pricing-page",
+        "subscription",
+        "token-plan"
+      ],
+      "status": "discovered",
+      "route": "direct-review",
+      "statusReason": "插件雷达规则预检通过；仍需 DSH STORE 固定源码审阅、兼容与安装证据，候选不可安装，未进入 Catalog。"
+    },
+    {
+      "id": "dream12347-dsh-session-manager",
+      "name": "dream12347/dsh-session-manager",
+      "description": "DSH 会话管理插件：删除（回收站恢复/彻底清除）、统计、继续/暂停、打开日志目录、对话顶部抽屉、工作区分组与排序、上下文压缩阈值设置。DSH session manager: delete with trash/restore/purge, stats, continue/pause, log folder, header drawer, workspace grouping, context compaction threshold.",
+      "repositoryUrl": "https://github.com/dream12347/dsh-session-manager",
+      "defaultBranch": "main",
+      "latestCommit": "37d751721b28464b4985168243e06df73adb06bd",
+      "sourceUpdatedAt": "2026-10-13T11:52:19.000Z",
+      "discoveredAt": "2026-11-20T14:42:18.371Z",
+      "discoverySources": [
+        "github-plugin-scout-scan",
+        "fixed-commit:37d751721b28"
+      ],
+      "topics": [
+        "ai-worker",
+        "deeepseek-harness-plugins",
+        "deepseek-harness",
+        "deepseek-harness-plugin",
+        "dsh",
+        "dsh-plugin"
+      ],
+      "status": "discovered",
+      "route": "direct-review",
+      "statusReason": "插件雷达规则预检通过；仍需 DSH STORE 固定源码审阅、兼容与安装证据，候选不可安装，未进入 Catalog。"
+    },
+    {
+      "id": "icstick-dsh-context-maid",
+      "name": "Icstick/dsh-context-maid",
+      "description": "DeepSeek Harness 自动上下文策展插件：tool 输出内容感知瘦身 + 无效日志清理 + 工作流/记忆钉扎保护 + 先归档后压缩 + 摘要模型可配",
+      "repositoryUrl": "https://github.com/Icstick/dsh-context-maid",
+      "defaultBranch": "main",
+      "latestCommit": "1ec2e26a50ac830c2feb2ba9886b7ead5356ca2c",
+      "sourceUpdatedAt": "2026-10-13T11:35:35.000Z",
+      "discoveredAt": "2026-11-20T14:42:18.371Z",
+      "discoverySources": [
+        "github-plugin-scout-scan",
+        "fixed-commit:1ec2e26a50ac"
+      ],
+      "topics": [
+        "ai-agent",
+        "context-compaction",
+        "context-curation",
+        "deepseek-harness",
+        "dsh",
+        "dsh-plugin",
+        "plugin",
+        "token-efficiency"
+      ],
+      "status": "discovered",
+      "route": "direct-review",
+      "statusReason": "插件雷达规则预检通过；仍需 DSH STORE 固定源码审阅、兼容与安装证据，候选不可安装，未进入 Catalog。"
+    },
+    {
+      "id": "sevenhsu7-dsh-codex-like-markdown",
+      "name": "sevenhsu7/dsh-codex-like-markdown",
+      "description": "Codex-like Markdown editing for the DSH right Sidebar: a rendered document you edit in place, including table cells.",
+      "repositoryUrl": "https://github.com/sevenhsu7/dsh-codex-like-markdown",
+      "defaultBranch": "main",
+      "latestCommit": "8389fe1d0ec75bf6d8fa3c9f725c78909f493a33",
+      "sourceUpdatedAt": "2026-10-13T11:26:31.000Z",
+      "discoveredAt": "2026-11-20T14:42:18.371Z",
+      "discoverySources": [
+        "github-plugin-scout-scan",
+        "fixed-commit:8389fe1d0ec7"
+      ],
+      "topics": [
+        "deepseek-harness",
+        "dsh",
+        "dsh-plugin",
+        "editor",
+        "markdown",
+        "plugin",
+        "table-editor",
+        "wysiwyg"
+      ],
+      "status": "discovered",
+      "route": "direct-review",
+      "statusReason": "插件雷达规则预检通过；仍需 DSH STORE 固定源码审阅、兼容与安装证据，候选不可安装，未进入 Catalog。"
+    },
+    {
+      "id": "ppppetermosaic-dsh-tool-crawlkit",
+      "name": "PPPPetermosaic/dsh-tool-crawlkit",
+      "description": "PPPPetermosaic/dsh-tool-crawlkit（由插件雷达发现，待固定源码审阅）",
+      "repositoryUrl": "https://github.com/PPPPetermosaic/dsh-tool-crawlkit",
+      "defaultBranch": "main",
+      "latestCommit": "15d8ce648a8dd67047e1a25d0a2ea9e838bb614e",
+      "sourceUpdatedAt": "2026-10-13T11:10:05.000Z",
+      "discoveredAt": "2026-11-20T14:42:18.371Z",
+      "discoverySources": [
+        "github-plugin-scout-scan",
+        "fixed-commit:15d8ce648a8d"
+      ],
+      "topics": [],
+      "status": "discovered",
+      "route": "direct-review",
+      "statusReason": "插件雷达规则预检通过；仍需 DSH STORE 固定源码审阅、兼容与安装证据，候选不可安装，未进入 Catalog。"
+    },
+    {
+      "id": "kirschtinte-dsh-opencode-go-quota",
+      "name": "kirschtinte/dsh-opencode-go-quota",
+      "description": "kirschtinte/dsh-opencode-go-quota（由插件雷达发现，待固定源码审阅）",
+      "repositoryUrl": "https://github.com/kirschtinte/dsh-opencode-go-quota",
+      "defaultBranch": "main",
+      "latestCommit": "8e138b884010c5b0d5ba8c2862f22033c92c4a41",
+      "sourceUpdatedAt": "2026-10-13T10:43:15.000Z",
+      "discoveredAt": "2026-11-20T14:42:18.371Z",
+      "discoverySources": [
+        "github-plugin-scout-scan",
+        "fixed-commit:8e138b884010"
+      ],
+      "topics": [],
+      "status": "discovered",
+      "route": "direct-review",
+      "statusReason": "插件雷达规则预检通过；仍需 DSH STORE 固定源码审阅、兼容与安装证据，候选不可安装，未进入 Catalog。"
+    },
+    {
+      "id": "0123896-dsh-notify-sounds",
+      "name": "0123896/dsh-notify-sounds",
+      "description": "0123896/dsh-notify-sounds（由插件雷达发现，待固定源码审阅）",
+      "repositoryUrl": "https://github.com/0123896/dsh-notify-sounds",
+      "defaultBranch": "main",
+      "latestCommit": "811fc3d0399cd945df3ff1c600d68d194c97913b",
+      "sourceUpdatedAt": "2026-10-13T10:39:28.000Z",
+      "discoveredAt": "2026-11-20T14:42:18.371Z",
+      "discoverySources": [
+        "github-plugin-scout-scan",
+        "fixed-commit:811fc3d0399c"
+      ],
+      "topics": [],
+      "status": "discovered",
+      "route": "direct-review",
+      "statusReason": "插件雷达规则预检通过；仍需 DSH STORE 固定源码审阅、兼容与安装证据，候选不可安装，未进入 Catalog。"
+    },
+    {
+      "id": "cccchensy-dsh-token-heatmap",
+      "name": "cccchensy/dsh-token-heatmap",
+      "description": "dsh使用token活动统计，token热力图",
+      "repositoryUrl": "https://github.com/cccchensy/dsh-token-heatmap",
+      "defaultBranch": "main",
+      "latestCommit": "3ff5cfad46b5c6d1728be051f9271493430fd795",
+      "sourceUpdatedAt": "2026-10-13T10:39:27.000Z",
+      "discoveredAt": "2026-11-20T14:42:18.371Z",
+      "discoverySources": [
+        "github-plugin-scout-scan",
+        "fixed-commit:3ff5cfad46b5"
+      ],
+      "topics": [
+        "contribution-graph",
+        "cordis",
+        "cordis-plugin",
+        "deepseek",
+        "deepseek-harness",
+        "dsh",
+        "dsh-plugin",
+        "dsh-plugin-ui",
+        "heatmap",
+        "token-usage"
+      ],
+      "status": "discovered",
+      "route": "direct-review",
+      "statusReason": "插件雷达规则预检通过；仍需 DSH STORE 固定源码审阅、兼容与安装证据，候选不可安装，未进入 Catalog。"
+    },
+    {
+      "id": "shinelon-dsh-mcp-plugin",
+      "name": "shinelon/dsh-mcp-plugin",
+      "description": "shinelon/dsh-mcp-plugin（由插件雷达发现，待固定源码审阅）",
+      "repositoryUrl": "https://github.com/shinelon/dsh-mcp-plugin",
+      "defaultBranch": "main",
+      "latestCommit": "2852d89c2322a01784a1f0db862bbc20d67987e0",
+      "sourceUpdatedAt": "2026-10-13T10:19:24.000Z",
+      "discoveredAt": "2026-11-20T14:42:18.371Z",
+      "discoverySources": [
+        "github-plugin-scout-scan",
+        "fixed-commit:2852d89c2322"
+      ],
+      "topics": [
+        "deepseek-harness",
+        "dsh",
+        "dsh-plugin",
+        "mcp"
+      ],
+      "status": "discovered",
+      "route": "direct-review",
+      "statusReason": "插件雷达规则预检通过；仍需 DSH STORE 固定源码审阅、兼容与安装证据，候选不可安装，未进入 Catalog。"
+    },
+    {
+      "id": "kevin-zx-dsh-park-notes",
+      "name": "kevin-zx/dsh-park-notes",
+      "description": "kevin-zx/dsh-park-notes（由插件雷达发现，待固定源码审阅）",
+      "repositoryUrl": "https://github.com/kevin-zx/dsh-park-notes",
+      "defaultBranch": "main",
+      "latestCommit": "1bb54f3d763a32b7da637de4dd32c2d1895d6c19",
+      "sourceUpdatedAt": "2026-10-13T10:13:24.000Z",
+      "discoveredAt": "2026-11-20T14:42:18.371Z",
+      "discoverySources": [
+        "github-plugin-scout-scan",
+        "fixed-commit:1bb54f3d763a"
+      ],
+      "topics": [
+        "dsh-plugin"
+      ],
+      "status": "discovered",
+      "route": "direct-review",
+      "statusReason": "插件雷达规则预检通过；仍需 DSH STORE 固定源码审阅、兼容与安装证据，候选不可安装，未进入 Catalog。"
+    },
+    {
+      "id": "zhanshenovo-dsh-brake-pedal",
+      "name": "zhanshenovo/dsh-brake-pedal",
+      "description": "DeepSeek Harness 客户端插件：给长任务一场『6 脚全力制动测试』，支架随机断在第 2–6 脚（约 1/8 不裂）。纯表演，从不接管、不拦截、不延迟任何停止动作。",
+      "repositoryUrl": "https://github.com/zhanshenovo/dsh-brake-pedal",
+      "defaultBranch": "main",
+      "latestCommit": "a6d0aebeb7b2be9003423a768110e586046aee9e",
+      "sourceUpdatedAt": "2026-10-13T10:11:36.000Z",
+      "discoveredAt": "2026-11-20T14:42:18.371Z",
+      "discoverySources": [
+        "github-plugin-scout-scan",
+        "fixed-commit:a6d0aebeb7b2"
+      ],
+      "topics": [
+        "deepseek-harness",
+        "dsh-plugin",
+        "dsh-plugins",
+        "easter-egg",
+        "parody",
+        "plugin"
+      ],
+      "status": "discovered",
+      "route": "direct-review",
+      "statusReason": "插件雷达规则预检通过；仍需 DSH STORE 固定源码审阅、兼容与安装证据，候选不可安装，未进入 Catalog。"
+    },
+    {
+      "id": "n-pll-dsh-skill-card-interview",
+      "name": "n-pll/dsh-skill-card-interview",
+      "description": "DSH 插件：让访谈/决策类 skill 一律用 ask_user_question 卡片提问（加载时给指定 skill 追加覆盖层，不改上游包、不被上游更新覆盖）",
+      "repositoryUrl": "https://github.com/n-pll/dsh-skill-card-interview",
+      "defaultBranch": "master",
+      "latestCommit": "5c09e2342f2a8f348628e4e4a363dc400a3fca06",
+      "sourceUpdatedAt": "2026-10-13T10:04:53.000Z",
+      "discoveredAt": "2026-11-20T14:42:18.371Z",
+      "discoverySources": [
+        "github-plugin-scout-scan",
+        "fixed-commit:5c09e2342f2a"
+      ],
+      "topics": [],
+      "status": "discovered",
+      "route": "direct-review",
+      "statusReason": "插件雷达规则预检通过；仍需 DSH STORE 固定源码审阅、兼容与安装证据，候选不可安装，未进入 Catalog。"
+    },
+    {
+      "id": "wlx2007-dsh-skillshub",
+      "name": "WLX2007/DSH-SkillsHub",
+      "description": "DeepSeek Harness (DSH) 技能中心插件 —— 原生 Web GUI 面板：搜索网络技能市场（SkillHub / skills.sh / GitHub）、一键安装到用户/项目根、管理与创建本地技能。npm: @wulongxi/dsh-skills-hub",
+      "repositoryUrl": "https://github.com/WLX2007/DSH-SkillsHub",
+      "defaultBranch": "main",
+      "latestCommit": "588d53f8c81ff9817ba04782f06ec0ba4c442f48",
+      "sourceUpdatedAt": "2026-10-13T10:02:02.000Z",
+      "discoveredAt": "2026-11-20T14:42:18.371Z",
+      "discoverySources": [
+        "github-plugin-scout-scan",
+        "fixed-commit:588d53f8c81f"
+      ],
+      "topics": [
+        "deepseek-harness",
+        "dsh-plugin",
+        "plugin",
+        "skill-market",
+        "skills"
+      ],
+      "status": "discovered",
+      "route": "direct-review",
+      "statusReason": "插件雷达规则预检通过；仍需 DSH STORE 固定源码审阅、兼容与安装证据，候选不可安装，未进入 Catalog。"
+    },
+    {
+      "id": "lanfeng97-dsh-workspace-create-dialog",
+      "name": "LanFeng97/dsh-workspace-create-dialog",
+      "description": "Codex-style Create Workspace dialog for DeepSeek Harness: type a name and the folder is created for you, or pick a folder with a native chooser that remembers where you were.",
+      "repositoryUrl": "https://github.com/LanFeng97/dsh-workspace-create-dialog",
+      "defaultBranch": "main",
+      "latestCommit": "7c4d0ef91a0ad9d49efa71ec5a637a53e6d87b2f",
+      "sourceUpdatedAt": "2026-10-13T09:51:29.000Z",
+      "discoveredAt": "2026-11-20T14:42:24.170Z",
+      "discoverySources": [
+        "github-plugin-scout-scan",
+        "fixed-commit:7c4d0ef91a0a"
+      ],
+      "topics": [
+        "deepseek-harness",
+        "dsh",
+        "dsh-plugin",
+        "plugin",
+        "workspace"
+      ],
+      "status": "discovered",
+      "route": "direct-review",
+      "statusReason": "插件雷达规则预检通过；仍需 DSH STORE 固定源码审阅、兼容与安装证据，候选不可安装，未进入 Catalog。"
+    },
+    {
+      "id": "lz020316-dsh-zentao",
+      "name": "Lz020316/dsh-zentao",
+      "description": "禅道 · 团队早会助手：小团队负责人的 ZenTao 管理 DSH 插件，一键拉取项目进展与每人任务并生成每日早会简报",
+      "repositoryUrl": "https://github.com/Lz020316/dsh-zentao",
+      "defaultBranch": "main",
+      "latestCommit": "e20d3cc2d9f4d4b268e137ce415c245303fef1ed",
+      "sourceUpdatedAt": "2026-10-13T09:49:45.000Z",
+      "discoveredAt": "2026-11-20T14:42:24.170Z",
+      "discoverySources": [
+        "github-plugin-scout-scan",
+        "fixed-commit:e20d3cc2d9f4"
+      ],
+      "topics": [],
+      "status": "discovered",
+      "route": "direct-review",
+      "statusReason": "插件雷达规则预检通过；仍需 DSH STORE 固定源码审阅、兼容与安装证据，候选不可安装，未进入 Catalog。"
+    },
+    {
+      "id": "xiazhenxin314-cpu-dsh-soul-memory",
+      "name": "xiazhenxin314-cpu/dsh-soul-memory",
+      "description": "SOUL/MEMORY 三层跨会话记忆插件 for DeepSeek Harness (DSH)：L1 MEMORY.md + L2/L3 logfile、memory 五件套工具、soulMemory cordis 服务。纯 ESM 无构建。",
+      "repositoryUrl": "https://github.com/xiazhenxin314-cpu/dsh-soul-memory",
+      "defaultBranch": "main",
+      "latestCommit": "2d975a157876191cdf98f8eddb3f3283e436db9a",
+      "sourceUpdatedAt": "2026-10-13T09:06:12.000Z",
+      "discoveredAt": "2026-11-20T14:42:24.170Z",
+      "discoverySources": [
+        "github-plugin-scout-scan",
+        "fixed-commit:2d975a157876"
+      ],
+      "topics": [
+        "cordis",
+        "cross-session-memory",
+        "deepseek-harness",
+        "dsh",
+        "memory",
+        "plugin",
+        "soul"
+      ],
+      "status": "discovered",
+      "route": "direct-review",
+      "statusReason": "插件雷达规则预检通过；仍需 DSH STORE 固定源码审阅、兼容与安装证据，候选不可安装，未进入 Catalog。"
+    },
+    {
+      "id": "wihteco-dsh-opencode-go-quota",
+      "name": "WihteCo/dsh-opencode-go-quota",
+      "description": "OpenCode Go quota in the DeepSeek Harness sidebar foot: one 42px cell plus a hover popover with the rolling 5-hour, weekly and monthly windows, each carrying a usage bar, an elapsed-time marker, the remaining share and a reset countdown.",
+      "repositoryUrl": "https://github.com/WihteCo/dsh-opencode-go-quota",
+      "defaultBranch": "main",
+      "latestCommit": "dae1fb4be82b4a1dd45cdc6433b9340240d8786e",
+      "sourceUpdatedAt": "2026-10-13T09:02:18.000Z",
+      "discoveredAt": "2026-11-20T14:42:24.170Z",
+      "discoverySources": [
+        "github-plugin-scout-scan",
+        "fixed-commit:dae1fb4be82b"
+      ],
+      "topics": [
+        "deepseek-harness",
+        "dsh",
+        "dsh-plugin",
+        "opencode-go"
+      ],
+      "status": "discovered",
+      "route": "direct-review",
+      "statusReason": "插件雷达规则预检通过；仍需 DSH STORE 固定源码审阅、兼容与安装证据，候选不可安装，未进入 Catalog。"
+    },
+    {
+      "id": "liuzwzyw-dsh-pwa-ui",
+      "name": "liuzwZYW/dsh-pwa-ui",
+      "description": "liuzwZYW/dsh-pwa-ui（由插件雷达发现，待固定源码审阅）",
+      "repositoryUrl": "https://github.com/liuzwZYW/dsh-pwa-ui",
+      "defaultBranch": "main",
+      "latestCommit": "63f7ae93ecffe112a52ab5c60d1c97eaf5d42012",
+      "sourceUpdatedAt": "2026-10-13T09:01:39.000Z",
+      "discoveredAt": "2026-11-20T14:42:24.170Z",
+      "discoverySources": [
+        "github-plugin-scout-scan",
+        "fixed-commit:63f7ae93ecff"
+      ],
+      "topics": [
+        "dsh-plugin"
+      ],
+      "status": "discovered",
+      "route": "direct-review",
+      "statusReason": "插件雷达规则预检通过；仍需 DSH STORE 固定源码审阅、兼容与安装证据，候选不可安装，未进入 Catalog。"
+    },
+    {
+      "id": "seetraum-harness-session-delete",
+      "name": "Seetraum/harness-session-delete",
+      "description": "Deepseek Harness 删除会话",
+      "repositoryUrl": "https://github.com/Seetraum/harness-session-delete",
+      "defaultBranch": "main",
+      "latestCommit": "3f41dd29221b6a844f9682a835551568a4b49f89",
+      "sourceUpdatedAt": "2026-10-13T08:59:46.000Z",
+      "discoveredAt": "2026-11-20T14:42:24.170Z",
+      "discoverySources": [
+        "github-plugin-scout-scan",
+        "fixed-commit:3f41dd29221b"
       ],
       "topics": [
         "dsh-plugin"
