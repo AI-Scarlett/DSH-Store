@@ -22,24 +22,24 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "ecf23197b4d3b7da2d01175fde7df8a48267928f",
-  "version": "1.0.11",
+  "commit": "95160d3077f558fff4c6df4b2b85dd09b3b56151",
+  "version": "1.0.12",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-11-03T08:40:14.000Z",
-    "observedAt": "2026-11-05T16:14:13.000Z",
+    "updatedAt": "2026-11-25T07:51:43.000Z",
+    "observedAt": "2026-11-25T11:25:07.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-11-05T16:14:13.000Z",
-      "evidenceUrl": "https://github.com/aa2246740/dsh-autoresearch/commit/ecf23197b4d3b7da2d01175fde7df8a48267928f",
+      "checkedAt": "2026-11-25T11:25:07.000Z",
+      "evidenceUrl": "https://github.com/aa2246740/dsh-autoresearch/commit/95160d3077f558fff4c6df4b2b85dd09b3b56151",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -78,14 +78,14 @@
   },
   "admission": {
     "engine": "bounded-source-v3",
-    "binding": "568fcc611f1d274e74b1d28f8079ad6f5838c65e0baff4af0c02631572c6ffc2",
+    "binding": "9c715f4b08f5e94fc73149665de725e9d7f4715d98d20b8f2bef69a63473449b",
     "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
     "state": "incomplete",
     "sourceContract": "verified",
     "coverage": "incomplete",
     "capabilities": "review-required",
     "compatibility": "per-version-declaration",
-    "reviewRegistryDigest": "f40e4a10a2ae7f8d8dadbbde3a7a03e9f7d967caf114a14d6a7bbfe46a93efbf"
+    "reviewRegistryDigest": "6c289f3ac2f4eb799f1848d9b7fbc3c738a03fa7166e8e4212a6988fc568d27c"
   },
   "entryIds": [
     "dsh-autoresearch"
@@ -94,7 +94,7 @@
   "status": "blocked",
   "statusReason": "Automatic policy blocked installation: local module is missing from the distributable surface: scripts/repair-autoresearch-session.mjs -> ../lib/types/recovery.js; fixed-source scan is incomplete; unobserved capability signals are unknown; fixed-source security warnings require review; runtime source contains the files permission signal; runtime source contains the commands permission signal",
   "compatibility": {
-    "dsh": ">=0.2.1-rc.1 <0.2.2",
+    "dsh": ">=0.2.2-rc.5 <0.2.3-0",
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
@@ -104,15 +104,7 @@
       "0.1.2-alpha.3": "unknown",
       "0.1.2-alpha.4": "unknown",
       "0.1.2-alpha.5": "unknown",
-      "0.2.0-rc.2": "incompatible",
-      "0.2.1-rc.5": "compatible",
-      "0.2.2-alpha.2": "unknown",
-      "0.2.2-alpha.3": "unknown",
-      "0.2.2-rc.1": "unknown",
-      "0.2.2-rc.2": "unknown",
-      "0.2.2-rc.3": "unknown",
-      "0.2.2-rc.4": "unknown",
-      "0.2.2-rc.5": "unknown",
+      "0.2.2-rc.5": "compatible",
       "0.2.3-alpha.1": "unknown",
       "0.2.3-alpha.2": "unknown"
     },
@@ -160,54 +152,6 @@
         "rollback": "unknown"
       },
       "0.1.2-alpha.5": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.2.0-rc.2": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.2.1-rc.5": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.2.2-alpha.2": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.2.2-alpha.3": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.2.2-rc.1": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.2.2-rc.2": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.2.2-rc.3": {
-        "install": "unknown",
-        "start": "unknown",
-        "uninstall": "unknown",
-        "rollback": "unknown"
-      },
-      "0.2.2-rc.4": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",
