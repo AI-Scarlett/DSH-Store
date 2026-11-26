@@ -21,24 +21,24 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "6521d70a55eac94613c731a8324f8236dd80d081",
-  "version": "0.1.13",
+  "commit": "ec7712592828e19c8217bbad0de8d969955205b1",
+  "version": "0.1.15",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-11-26T05:15:02.000Z",
-    "observedAt": "2026-11-26T07:14:09.000Z",
+    "updatedAt": "2026-11-26T17:37:13.000Z",
+    "observedAt": "2026-11-26T18:11:26.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-11-26T07:14:09.000Z",
-      "evidenceUrl": "https://github.com/Moraxyc/dsh-cpa/commit/6521d70a55eac94613c731a8324f8236dd80d081",
+      "checkedAt": "2026-11-26T18:11:26.000Z",
+      "evidenceUrl": "https://github.com/Moraxyc/dsh-cpa/commit/ec7712592828e19c8217bbad0de8d969955205b1",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -77,7 +77,7 @@
   },
   "admission": {
     "engine": "bounded-source-v3",
-    "binding": "da4b10ea1631e8d677291697dde672c581d2f31dee9391c6df76d8c0edeef37a",
+    "binding": "da73f6fa7cced643a9bce370679ba8bcc908914e0eca6c894fec4e869e25af52",
     "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
     "state": "incomplete",
     "sourceContract": "verified",
@@ -93,7 +93,7 @@
   "status": "blocked",
   "statusReason": "Automatic policy blocked installation: runtime or optional dependencies require a separate supply-chain review; runtime artifact is missing from the distributable surface: ./lib/index.js; runtime artifact is missing from the distributable surface: ./lib/client.js; runtime artifact is missing from the distributable surface: ./lib/index.d.ts; fixed-source scan is incomplete; unobserved capability signals are unknown",
   "compatibility": {
-    "dsh": "0.2.2-rc.5",
+    "dsh": "0.2.3-alpha.2",
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
