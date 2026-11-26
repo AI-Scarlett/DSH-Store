@@ -3,7 +3,7 @@
   "registry": {
     "name": "DSH STORE Candidate Discovery Registry",
     "repositoryUrl": "https://github.com/AI-Scarlett/DSH-Store",
-    "updatedAt": "2026-11-26T02:24:49.000Z",
+    "updatedAt": "2026-11-26T03:23:30.123Z",
     "trustBoundary": {
       "installActionsDisabled": true,
       "catalogPromotionRequired": true,
@@ -32890,6 +32890,490 @@
         "fixed-commit:427e004fb043"
       ],
       "topics": [],
+      "status": "discovered",
+      "route": "direct-review",
+      "statusReason": "插件雷达规则预检通过；仍需 DSH STORE 固定源码审阅、兼容与安装证据，候选不可安装，未进入 Catalog。"
+    },
+    {
+      "id": "ch1bug-dsh-wsl-bridge",
+      "name": "ch1bug/dsh-wsl-bridge",
+      "description": "Windows access tools for WSL agents: win_ls/win_read/win_write/win_run/win_open/win_path/win_drives as a DeepSeek Harness bundle",
+      "repositoryUrl": "https://github.com/ch1bug/dsh-wsl-bridge",
+      "defaultBranch": "main",
+      "latestCommit": "c2c719e961f3e799065ef7337507ebcaa78d2dff",
+      "sourceUpdatedAt": "2026-10-03T11:45:11.000Z",
+      "discoveredAt": "2026-11-24T00:37:37.837Z",
+      "discoverySources": [
+        "github-plugin-scout-scan",
+        "fixed-commit:c2c719e961f3"
+      ],
+      "topics": [
+        "dsh-plugin"
+      ],
+      "status": "discovered",
+      "route": "direct-review",
+      "statusReason": "插件雷达规则预检通过；仍需 DSH STORE 固定源码审阅、兼容与安装证据，候选不可安装，未进入 Catalog。"
+    },
+    {
+      "id": "3likofj-dsh-custom-reasoning",
+      "name": "3likofj/dsh-custom-reasoning",
+      "description": "deepseek harness 第三方模型推理强度选择",
+      "repositoryUrl": "https://github.com/3likofj/dsh-custom-reasoning",
+      "defaultBranch": "main",
+      "latestCommit": "2f7af5020aa625f3f4ad917fe16ee3988e18bb89",
+      "sourceUpdatedAt": "2026-10-03T11:12:12.000Z",
+      "discoveredAt": "2026-11-24T00:37:37.837Z",
+      "discoverySources": [
+        "github-plugin-scout-scan",
+        "fixed-commit:2f7af5020aa6"
+      ],
+      "topics": [
+        "deepseek-harness",
+        "dsh-plugin",
+        "dsh-plugin-desktop"
+      ],
+      "status": "discovered",
+      "route": "direct-review",
+      "statusReason": "插件雷达规则预检通过；仍需 DSH STORE 固定源码审阅、兼容与安装证据，候选不可安装，未进入 Catalog。"
+    },
+    {
+      "id": "winniesi-dsh-hide-sidebar",
+      "name": "winniesi/dsh-hide-sidebar",
+      "description": "Mobile left sidebar for the DeepSeek Harness Web GUI: the 56px collapsed rail becomes a top toggle button that slides the sidebar in over the content.",
+      "repositoryUrl": "https://github.com/winniesi/dsh-hide-sidebar",
+      "defaultBranch": "main",
+      "latestCommit": "7787c9afedc52727ce3f57afb3fb1d2c2f08fed4",
+      "sourceUpdatedAt": "2026-10-03T10:58:09.000Z",
+      "discoveredAt": "2026-11-24T00:37:37.837Z",
+      "discoverySources": [
+        "github-plugin-scout-scan",
+        "fixed-commit:7787c9afedc5"
+      ],
+      "topics": [
+        "client-plugin",
+        "deepseek-harness",
+        "dsh-plugin",
+        "mobile",
+        "sidebar",
+        "web"
+      ],
+      "status": "discovered",
+      "route": "direct-review",
+      "statusReason": "插件雷达规则预检通过；仍需 DSH STORE 固定源码审阅、兼容与安装证据，候选不可安装，未进入 Catalog。"
+    },
+    {
+      "id": "xuye23-dsh-page-evidence",
+      "name": "XUYE23/dsh-page-evidence",
+      "description": "Page-aware PDF evidence for DeepSeek Harness: coverage warnings, local CPU OCR, and exact page citations.",
+      "repositoryUrl": "https://github.com/XUYE23/dsh-page-evidence",
+      "defaultBranch": "main",
+      "latestCommit": "a7ba913b762e6e0be4fb37fbd2b79b978e30ca5d",
+      "sourceUpdatedAt": "2026-10-03T10:55:43.000Z",
+      "discoveredAt": "2026-11-24T00:37:37.837Z",
+      "discoverySources": [
+        "github-plugin-scout-scan",
+        "fixed-commit:a7ba913b762e"
+      ],
+      "topics": [
+        "citations",
+        "computer-vision",
+        "deepseek-harness",
+        "document-ai",
+        "dsh",
+        "nlp",
+        "ocr",
+        "pdf",
+        "rag"
+      ],
+      "status": "discovered",
+      "route": "direct-review",
+      "statusReason": "插件雷达规则预检通过；仍需 DSH STORE 固定源码审阅、兼容与安装证据，候选不可安装，未进入 Catalog。"
+    },
+    {
+      "id": "modesthub-dsh-sensenova-vision-aid",
+      "name": "modesthub/dsh-sensenova-vision-aid",
+      "description": "Unofficial DeepSeek Harness vision plugin: when the main model receives an image-recognition request, it spawns a child agent switched to the SenseNova vision model (reusing the dsh-sensenova-freeapi credential), with a dedicated settings panel and a direct fallback path.",
+      "repositoryUrl": "https://github.com/modesthub/dsh-sensenova-vision-aid",
+      "defaultBranch": "main",
+      "latestCommit": "e96a93fe996aacda42013301b7d73f622af0c719",
+      "sourceUpdatedAt": "2026-10-03T10:29:26.000Z",
+      "discoveredAt": "2026-11-24T00:37:37.837Z",
+      "discoverySources": [
+        "github-plugin-scout-scan",
+        "fixed-commit:e96a93fe996a"
+      ],
+      "topics": [
+        "deepseek",
+        "dsh-plugin",
+        "sensenova",
+        "vision"
+      ],
+      "status": "discovered",
+      "route": "direct-review",
+      "statusReason": "插件雷达规则预检通过；仍需 DSH STORE 固定源码审阅、兼容与安装证据，候选不可安装，未进入 Catalog。"
+    },
+    {
+      "id": "turtlelnc-turtleplugin-dsh-computeruse",
+      "name": "turtlelnc/TurtlePlugin-DSH_ComputerUSE",
+      "description": "TurtlePlugin-DSH_ComputerUSE grants DeepSeek Harness computer control, similar to Codex/Qwen Code. It uses sandboxing and explicit authorization, with an app whitelist and first-use Allow prompt. Two modes: Foreground Takeover and Background; Background uses a separate virtual cursor, so your physic",
+      "repositoryUrl": "https://github.com/turtlelnc/TurtlePlugin-DSH_ComputerUSE",
+      "defaultBranch": "main",
+      "latestCommit": "ba9149b3874a208cfcfa751e27db5fa044430a71",
+      "sourceUpdatedAt": "2026-10-03T10:13:59.000Z",
+      "discoveredAt": "2026-11-24T00:37:37.837Z",
+      "discoverySources": [
+        "github-plugin-scout-scan",
+        "fixed-commit:ba9149b3874a"
+      ],
+      "topics": [],
+      "status": "discovered",
+      "route": "direct-review",
+      "statusReason": "插件雷达规则预检通过；仍需 DSH STORE 固定源码审阅、兼容与安装证据，候选不可安装，未进入 Catalog。"
+    },
+    {
+      "id": "nikitafedorov008-dsh-flutter-tools",
+      "name": "nikitafedorov008/dsh-flutter-tools",
+      "description": "Flutter panel for the DeepSeek Harness sidebar: devices, launch, VM Service controls, debug toggles, embedded DevTools, memory and profiling",
+      "repositoryUrl": "https://github.com/nikitafedorov008/dsh-flutter-tools",
+      "defaultBranch": "main",
+      "latestCommit": "83f540a34216fdc89331e6abd5157bfcae1e917e",
+      "sourceUpdatedAt": "2026-10-03T09:44:29.000Z",
+      "discoveredAt": "2026-11-24T00:37:37.837Z",
+      "discoverySources": [
+        "github-plugin-scout-scan",
+        "fixed-commit:83f540a34216"
+      ],
+      "topics": [
+        "deepseek-harness",
+        "devtools",
+        "dsh-plugin",
+        "flutter",
+        "vm-service"
+      ],
+      "status": "discovered",
+      "route": "direct-review",
+      "statusReason": "插件雷达规则预检通过；仍需 DSH STORE 固定源码审阅、兼容与安装证据，候选不可安装，未进入 Catalog。"
+    },
+    {
+      "id": "ak-blank-dsh-plugin-mac-notify",
+      "name": "AK-blank/dsh-plugin-mac-notify",
+      "description": "Unofficial DSH (DeepSeek Harness) plugin: macOS Notification Center alerts when a session finishes or needs you — the banner carries the last reply, plays your system alert sound, and clicking it jumps back to the DSH page.",
+      "repositoryUrl": "https://github.com/AK-blank/dsh-plugin-mac-notify",
+      "defaultBranch": "main",
+      "latestCommit": "a9ef9439a1e8f7957a402c742bc639919ab1d1c8",
+      "sourceUpdatedAt": "2026-10-03T09:35:58.000Z",
+      "discoveredAt": "2026-11-24T00:37:37.837Z",
+      "discoverySources": [
+        "github-plugin-scout-scan",
+        "fixed-commit:a9ef9439a1e8"
+      ],
+      "topics": [
+        "cordis",
+        "cordis-plugin",
+        "deepseek-harness",
+        "dsh",
+        "dsh-plugin",
+        "macos",
+        "notification",
+        "terminal-notifier"
+      ],
+      "status": "discovered",
+      "route": "direct-review",
+      "statusReason": "插件雷达规则预检通过；仍需 DSH STORE 固定源码审阅、兼容与安装证据，候选不可安装，未进入 Catalog。"
+    },
+    {
+      "id": "zhang-dr985-dsh-print-task-complete",
+      "name": "ZHANG-dr985/dsh-print-task-complete",
+      "description": "DeepSeek Harness bundle: stamps a physical task-complete receipt at a random free spot on an A4 sheet (30 per sheet), auto-detects the printer.",
+      "repositoryUrl": "https://github.com/ZHANG-dr985/dsh-print-task-complete",
+      "defaultBranch": "main",
+      "latestCommit": "d2a87644b753647b12506ea6982f9058c0c2d6bc",
+      "sourceUpdatedAt": "2026-10-03T09:26:41.000Z",
+      "discoveredAt": "2026-11-24T00:37:37.837Z",
+      "discoverySources": [
+        "github-plugin-scout-scan",
+        "fixed-commit:d2a87644b753"
+      ],
+      "topics": [
+        "cordis",
+        "deepseek-harness",
+        "dsh",
+        "printer",
+        "skill"
+      ],
+      "status": "discovered",
+      "route": "direct-review",
+      "statusReason": "插件雷达规则预检通过；仍需 DSH STORE 固定源码审阅、兼容与安装证据，候选不可安装，未进入 Catalog。"
+    },
+    {
+      "id": "baldovinmarques391-design-dsh-computer-control",
+      "name": "baldovinmarques391-design/dsh-computer-control",
+      "description": "DeepSeek Harness bundle: Windows desktop operation as discrete tool calls, each returning the frames captured around the call.",
+      "repositoryUrl": "https://github.com/baldovinmarques391-design/dsh-computer-control",
+      "defaultBranch": "main",
+      "latestCommit": "2f8410e25c17be017cfaf925d7eb920fa03dc292",
+      "sourceUpdatedAt": "2026-10-03T09:08:43.000Z",
+      "discoveredAt": "2026-11-24T00:37:37.837Z",
+      "discoverySources": [
+        "github-plugin-scout-scan",
+        "fixed-commit:2f8410e25c17"
+      ],
+      "topics": [
+        "computer-use",
+        "deepseek-harness",
+        "desktop-automation",
+        "dsh-plugin",
+        "windows"
+      ],
+      "status": "discovered",
+      "route": "direct-review",
+      "statusReason": "插件雷达规则预检通过；仍需 DSH STORE 固定源码审阅、兼容与安装证据，候选不可安装，未进入 Catalog。"
+    },
+    {
+      "id": "lxchapu-dsh-session-purge",
+      "name": "lxchapu/dsh-session-purge",
+      "description": "DSH（DeepSeek Harness）插件：把会话从磁盘上彻底删除。任意会话的「…」菜单里可删单条，侧边栏切到「仅显示已归档」时可一键删除全部已归档会话；两者都先弹二次确认，正在运行的会话会被拒绝删除。",
+      "repositoryUrl": "https://github.com/lxchapu/dsh-session-purge",
+      "defaultBranch": "main",
+      "latestCommit": "5cddebf3bcceac4b0cb9b5ac8b6f2df135286f25",
+      "sourceUpdatedAt": "2026-10-03T09:00:33.000Z",
+      "discoveredAt": "2026-11-24T00:37:37.837Z",
+      "discoverySources": [
+        "github-plugin-scout-scan",
+        "fixed-commit:5cddebf3bcce"
+      ],
+      "topics": [
+        "deepseek-harness",
+        "dsh",
+        "dsh-plugin",
+        "session-cleanup",
+        "session-management"
+      ],
+      "status": "discovered",
+      "route": "direct-review",
+      "statusReason": "插件雷达规则预检通过；仍需 DSH STORE 固定源码审阅、兼容与安装证据，候选不可安装，未进入 Catalog。"
+    },
+    {
+      "id": "tsuyuzakifarm-dsh-whale-purse",
+      "name": "TsuyuzakiFarm/dsh-whale-purse",
+      "description": "A cute whale desktop pet for DeepSeek Harness that keeps an eye on your DeepSeek balance and session usage/cost. Drag her anywhere, click to open a live panel with real-time spend, peak/off-peak pricing, budget alerts, and history trends.",
+      "repositoryUrl": "https://github.com/TsuyuzakiFarm/dsh-whale-purse",
+      "defaultBranch": "main",
+      "latestCommit": "23804dcea5f4db4b230a45a8c66517483a8ac8d2",
+      "sourceUpdatedAt": "2026-10-03T08:43:58.000Z",
+      "discoveredAt": "2026-11-24T00:37:37.837Z",
+      "discoverySources": [
+        "github-plugin-scout-scan",
+        "fixed-commit:23804dcea5f4"
+      ],
+      "topics": [],
+      "status": "discovered",
+      "route": "direct-review",
+      "statusReason": "插件雷达规则预检通过；仍需 DSH STORE 固定源码审阅、兼容与安装证据，候选不可安装，未进入 Catalog。"
+    },
+    {
+      "id": "zhang0098-dsh-telegram-channel",
+      "name": "zhang0098/dsh-telegram-channel",
+      "description": "Telegram mobile remote for DeepSeek Harness sessions (Martty/ACP-compatible fork of hi-wenw/dsh-telegram-channel): bind a chat to a live session, plain text = followup, /model /last /sessions.",
+      "repositoryUrl": "https://github.com/zhang0098/dsh-telegram-channel",
+      "defaultBranch": "master",
+      "latestCommit": "079fdfb8474d29404ac32f02ce85281600530357",
+      "sourceUpdatedAt": "2026-10-03T08:39:14.000Z",
+      "discoveredAt": "2026-11-24T00:37:37.837Z",
+      "discoverySources": [
+        "github-plugin-scout-scan",
+        "fixed-commit:079fdfb8474d"
+      ],
+      "topics": [
+        "cordis",
+        "deepseek",
+        "deepseek-harness",
+        "dsh",
+        "dsh-plugin",
+        "martty",
+        "mobile",
+        "remote-control",
+        "telegram",
+        "telegram-bot",
+        "typescript"
+      ],
+      "status": "discovered",
+      "route": "direct-review",
+      "statusReason": "插件雷达规则预检通过；仍需 DSH STORE 固定源码审阅、兼容与安装证据，候选不可安装，未进入 Catalog。"
+    },
+    {
+      "id": "lzhimie-dsh-skin-master",
+      "name": "Lzhimie/dsh-skin-master",
+      "description": "DeepSeek Harness 皮肤大师：主题壁纸/自定义皮肤插件 —— 全局背景图片/视频、毛玻璃、输入框背景、弹出框毛玻璃、滤镜、AI 回复文本与消息气泡颜色",
+      "repositoryUrl": "https://github.com/Lzhimie/dsh-skin-master",
+      "defaultBranch": "main",
+      "latestCommit": "563809165dbf0a06acb8bd479b945d39b3511759",
+      "sourceUpdatedAt": "2026-10-03T08:22:58.000Z",
+      "discoveredAt": "2026-11-24T00:37:37.837Z",
+      "discoverySources": [
+        "github-plugin-scout-scan",
+        "fixed-commit:563809165dbf"
+      ],
+      "topics": [
+        "ai-agents",
+        "cordis",
+        "deepseek",
+        "deepseek-harness",
+        "dsh",
+        "dsh-plugin",
+        "harness",
+        "skin",
+        "theme",
+        "wallpaper"
+      ],
+      "status": "discovered",
+      "route": "direct-review",
+      "statusReason": "插件雷达规则预检通过；仍需 DSH STORE 固定源码审阅、兼容与安装证据，候选不可安装，未进入 Catalog。"
+    },
+    {
+      "id": "hg1048596-pixel-dsh-price-indicator",
+      "name": "hg1048596-pixel/dsh-price-indicator",
+      "description": "DeepSeek Harness (dsh) plugin: show the current DeepSeek price tide (peak 梁文峰 / off-peak 梁文谷) and a countdown to the next price switch. Weekdays peak 09:00-12:00 & 14:00-18:00; weekends and Chinese statutory holidays are off-peak all day.",
+      "repositoryUrl": "https://github.com/hg1048596-pixel/dsh-price-indicator",
+      "defaultBranch": "main",
+      "latestCommit": "ceefc2ee57ab90c385e53ea2266f82501a0fb80e",
+      "sourceUpdatedAt": "2026-10-03T08:12:44.000Z",
+      "discoveredAt": "2026-11-24T00:37:42.669Z",
+      "discoverySources": [
+        "github-plugin-scout-scan",
+        "fixed-commit:ceefc2ee57ab"
+      ],
+      "topics": [
+        "deepseek",
+        "dsh-plugin",
+        "dsh-plugin-market",
+        "dsh-plugins",
+        "price"
+      ],
+      "status": "discovered",
+      "route": "direct-review",
+      "statusReason": "插件雷达规则预检通过；仍需 DSH STORE 固定源码审阅、兼容与安装证据，候选不可安装，未进入 Catalog。"
+    },
+    {
+      "id": "ak-blank-dsh-plugin-offpeak-badge",
+      "name": "AK-blank/dsh-plugin-offpeak-badge",
+      "description": "Unofficial DSH (DeepSeek Harness) Web GUI plugin: shows whether the DeepSeek API is billing at the off-peak or peak rate right now — bilingual 空闲/高峰 · Idle/Peak, Chinese holiday calendar built in.",
+      "repositoryUrl": "https://github.com/AK-blank/dsh-plugin-offpeak-badge",
+      "defaultBranch": "main",
+      "latestCommit": "7baac218a3ac9a7a31964bda164284c4647cf308",
+      "sourceUpdatedAt": "2026-10-03T08:08:12.000Z",
+      "discoveredAt": "2026-11-24T00:37:42.669Z",
+      "discoverySources": [
+        "github-plugin-scout-scan",
+        "fixed-commit:7baac218a3ac"
+      ],
+      "topics": [
+        "cordis",
+        "cordis-plugin",
+        "deepseek-harness",
+        "deepseek-harness-plugin",
+        "dsh",
+        "dsh-plugin",
+        "dsh-plugins",
+        "i18n"
+      ],
+      "status": "discovered",
+      "route": "direct-review",
+      "statusReason": "插件雷达规则预检通过；仍需 DSH STORE 固定源码审阅、兼容与安装证据，候选不可安装，未进入 Catalog。"
+    },
+    {
+      "id": "ymrwithnoworry-dsh-global-system-prompt",
+      "name": "YMRwithNoworry/dsh-global-system-prompt",
+      "description": "Global prompt for DeepSeek Harness (dsh): one user-editable block injected into every conversation's system prompt, mirrored into each session project's AGENTS.md, and edited from the web settings panel.",
+      "repositoryUrl": "https://github.com/YMRwithNoworry/dsh-global-system-prompt",
+      "defaultBranch": "main",
+      "latestCommit": "1c9a243b0028fa0158a193b952435c9c5a3e5eef",
+      "sourceUpdatedAt": "2026-10-03T07:43:13.000Z",
+      "discoveredAt": "2026-11-24T00:37:42.669Z",
+      "discoverySources": [
+        "github-plugin-scout-scan",
+        "fixed-commit:1c9a243b0028"
+      ],
+      "topics": [
+        "agents-md",
+        "cordis",
+        "cordis-plugin",
+        "deepseek",
+        "deepseek-harness",
+        "dsh",
+        "dsh-plugin",
+        "global-prompt",
+        "prompt-engineering",
+        "system-prompt"
+      ],
+      "status": "discovered",
+      "route": "direct-review",
+      "statusReason": "插件雷达规则预检通过；仍需 DSH STORE 固定源码审阅、兼容与安装证据，候选不可安装，未进入 Catalog。"
+    },
+    {
+      "id": "myx-0211-dsh-sidebar-image-zoom",
+      "name": "MYX-0211/dsh-sidebar-image-zoom",
+      "description": "Pointer-anchored wheel zoom and drag-to-pan for images in the DeepSeek Harness right sidebar. Replaces the built-in image viewport.",
+      "repositoryUrl": "https://github.com/MYX-0211/dsh-sidebar-image-zoom",
+      "defaultBranch": "main",
+      "latestCommit": "23ca716b8de68989cdf8b3e8aa75fa8374d40175",
+      "sourceUpdatedAt": "2026-10-03T07:34:27.000Z",
+      "discoveredAt": "2026-11-24T00:37:42.669Z",
+      "discoverySources": [
+        "github-plugin-scout-scan",
+        "fixed-commit:23ca716b8de6"
+      ],
+      "topics": [
+        "deepseek",
+        "deepseek-harness",
+        "dsh",
+        "dsh-plugin",
+        "image-viewer",
+        "pan",
+        "zoom"
+      ],
+      "status": "discovered",
+      "route": "direct-review",
+      "statusReason": "插件雷达规则预检通过；仍需 DSH STORE 固定源码审阅、兼容与安装证据，候选不可安装，未进入 Catalog。"
+    },
+    {
+      "id": "myremme-dsh-skill-manager",
+      "name": "MyRemme/dsh-skill-manager",
+      "description": "Skill manager for DeepSeek Harness: batch and per-skill enable/disable, folder and archive import, authoring, and a PR-fed skill market. · DSH 技能管理：批量启停、导入、自写、市场",
+      "repositoryUrl": "https://github.com/MyRemme/dsh-skill-manager",
+      "defaultBranch": "main",
+      "latestCommit": "e7a7a69ebdba6cebff891ff950b898bfe083bae0",
+      "sourceUpdatedAt": "2026-10-03T07:30:05.000Z",
+      "discoveredAt": "2026-11-24T00:37:42.669Z",
+      "discoverySources": [
+        "github-plugin-scout-scan",
+        "fixed-commit:e7a7a69ebdba"
+      ],
+      "topics": [],
+      "status": "discovered",
+      "route": "direct-review",
+      "statusReason": "插件雷达规则预检通过；仍需 DSH STORE 固定源码审阅、兼容与安装证据，候选不可安装，未进入 Catalog。"
+    },
+    {
+      "id": "d0ublecl1ck-dsh-search-enhance",
+      "name": "d0ublecl1ck/dsh-search-enhance",
+      "description": "Search inside the DeepSeek Harness New-Session workspace picker: pinyin initials, full pinyin spelling and substring matching. / 在「新建会话」的工作区下拉里直接搜索，支持拼音首字母、全拼与任意位置子串匹配。",
+      "repositoryUrl": "https://github.com/d0ublecl1ck/dsh-search-enhance",
+      "defaultBranch": "main",
+      "latestCommit": "1ab008d62ccfadbb014b9b10f8351001d27c514c",
+      "sourceUpdatedAt": "2026-10-03T06:43:06.000Z",
+      "discoveredAt": "2026-11-24T00:37:42.669Z",
+      "discoverySources": [
+        "github-plugin-scout-scan",
+        "fixed-commit:1ab008d62ccf"
+      ],
+      "topics": [
+        "deepseek-harness",
+        "dsh",
+        "dsh-plugin",
+        "pinyin",
+        "workspace"
+      ],
       "status": "discovered",
       "route": "direct-review",
       "statusReason": "插件雷达规则预检通过；仍需 DSH STORE 固定源码审阅、兼容与安装证据，候选不可安装，未进入 Catalog。"
