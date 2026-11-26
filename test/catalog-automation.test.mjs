@@ -610,3 +610,25 @@ test('the fixed-source reviewer does not flag its own diagnostic prose as a tool
   const reviewer = await read('src/fixed-source-review.mjs')
   assert.equal(dshInterfaceSignals(reviewer, 'fixed-source-review.mjs').toolViewExtension, false)
 })
+
+test('candidate auto admission pins the probed Commit through the Candidate Registry field', async () => {
+  const [source, registry] = await Promise.all([
+    read('scripts/automate-catalog.mjs'),
+    read('registry/candidates.json'),
+  ])
+  const start = source.indexOf('async function inspectCandidateAutoAdmissions')
+  const end = source.indexOf('async function inspectDiscoveries')
+  assert.ok(start > 0 && end > start, 'candidate admission block is missing')
+  const block = source.slice(start, end)
+  // The Candidate Registry stores `latestCommit` (see src/candidates.mjs) and an
+  // entry has no `commit` field. Reading `candidate.commit` therefore passed an
+  // undefined fixed Commit, compared a resolved SHA against undefined, and
+  // rejected every probed candidate as "no longer the source of the manifest".
+  assert.doesNotMatch(block, /candidate\.commit/)
+  assert.match(block, /fixedCommit: candidate\.latestCommit/)
+  assert.match(block, /checked\.commit !== candidate\.latestCommit/)
+  const entries = JSON.parse(registry).entries
+  assert.ok(entries.length > 0, 'the Candidate Registry must not be empty')
+  assert.ok(entries.every(entry => !Object.hasOwn(entry, 'commit')), 'candidate entries must not carry a commit field')
+  assert.ok(entries.every(entry => entry.latestCommit === null || /^[0-9a-f]{40}$/.test(entry.latestCommit)), 'latestCommit must be a full Commit SHA or null')
+})
