@@ -3,7 +3,7 @@
   "registry": {
     "name": "DSH STORE Candidate Discovery Registry",
     "repositoryUrl": "https://github.com/AI-Scarlett/DSH-Store",
-    "updatedAt": "2026-11-27T20:20:52.000Z",
+    "updatedAt": "2026-11-27T20:26:16.000Z",
     "trustBoundary": {
       "installActionsDisabled": true,
       "catalogPromotionRequired": true,
@@ -31063,9 +31063,9 @@
         "deepseek-harness",
         "dsh-plugin"
       ],
-      "status": "discovered",
-      "route": "direct-review",
-      "statusReason": "插件雷达规则预检通过；仍需 DSH STORE 固定源码审阅、兼容与安装证据，候选不可安装，未进入 Catalog。"
+      "status": "rejected",
+      "route": "blocked",
+      "statusReason": "Candidate auto-admission blocked: Automatic policy blocked installation: manifest repository does not match the canonical GitHub repository; DSH compatibility is not explicitly declared; Node.js compatibility is not explicitly declared; runtime source contains the network permission signal; runtime source contains the credentials permission signal"
     },
     {
       "id": "zzy-fxxxexxxyxxx-dsh-custom-brand",
