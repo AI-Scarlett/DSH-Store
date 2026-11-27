@@ -3,7 +3,7 @@
   "registry": {
     "name": "DSH STORE Candidate Discovery Registry",
     "repositoryUrl": "https://github.com/AI-Scarlett/DSH-Store",
-    "updatedAt": "2026-11-27T11:28:01.177Z",
+    "updatedAt": "2026-11-27T11:33:18.000Z",
     "trustBoundary": {
       "installActionsDisabled": true,
       "catalogPromotionRequired": true,
@@ -35935,9 +35935,9 @@
         "fixed-commit:9a37d7077f3e"
       ],
       "topics": [],
-      "status": "discovered",
-      "route": "direct-review",
-      "statusReason": "插件雷达规则预检通过；仍需 DSH STORE 固定源码审阅、兼容与安装证据，候选不可安装，未进入 Catalog。"
+      "status": "rejected",
+      "route": "blocked",
+      "statusReason": "Candidate auto-admission blocked: Automatic policy blocked installation: DSH compatibility is not explicitly declared; runtime source contains the files permission signal; runtime source contains the network permission signal"
     },
     {
       "id": "inju0524-dsh-inju-boot",
