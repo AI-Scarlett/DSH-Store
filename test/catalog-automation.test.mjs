@@ -642,3 +642,26 @@ test('the candidate registry schema stores the fixed Commit as latestCommit', as
     if (entry.latestCommit !== null) assert.match(entry.latestCommit, /^[0-9a-f]{40}$/)
   }
 })
+
+test('candidate admission is serialized on the Catalog automation group', async () => {
+  // Parallel probes all pinned the same base Commit. The first merge moved
+  // main, so the remaining admission pull requests were closed unmerged
+  // instead of being retried. The admission job must therefore serialize on
+  // the shared Catalog automation group, while probing stays parallel.
+  const probe = await read('.github/workflows/candidate-compatibility-probe.yml')
+  const admission = probe.slice(probe.indexOf('\n  admission:'))
+  assert.match(admission, /concurrency:\s*\n\s*group: catalog-automation/)
+  assert.match(admission, /cancel-in-progress: false/)
+  // The workflow itself must stay unserialized so probes still run in parallel.
+  assert.doesNotMatch(probe, /^concurrency:/m)
+})
+
+test('the candidate probe dispatch rotates the pool instead of the file head', async () => {
+  const dispatch = await read('.github/workflows/candidate-dispatch.yml')
+  // Selecting the head of the registry re-probed the same oldest candidates
+  // every cycle, so the rest of the backlog never received a probe.
+  assert.doesNotMatch(dispatch, /\.slice\(0, 3\)/)
+  assert.match(dispatch, /cycle/)
+  assert.match(dispatch, /sha256/)
+  assert.match(dispatch, /max-parallel: [2-9]/)
+})
