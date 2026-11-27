@@ -22,24 +22,24 @@
   "manifestPath": "package.json",
   "installPath": null,
   "updatePolicy": "external-only",
-  "commit": "efaa1415bcbb4348709869fb60fcb4931d65d99c",
-  "version": "0.4.38",
+  "commit": "7ea77fcc55cd2829c9397b2b8d5dcccdaa3d7a24",
+  "version": "0.4.39",
   "categories": [
     "experimental"
   ],
   "featured": false,
   "installCount": null,
   "source": {
-    "updatedAt": "2026-11-26T07:44:27.000Z",
-    "observedAt": "2026-11-26T17:12:51.000Z",
+    "updatedAt": "2026-11-27T18:04:00.000Z",
+    "observedAt": "2026-11-27T18:53:46.000Z",
     "provenance": "github-commit"
   },
   "assurance": {
     "discovery": {
       "status": "verified",
       "method": "automated-fixed-source-recheck-v1",
-      "checkedAt": "2026-11-26T17:12:51.000Z",
-      "evidenceUrl": "https://github.com/GooDAnDReaDY/dsh-russian-lang/commit/efaa1415bcbb4348709869fb60fcb4931d65d99c",
+      "checkedAt": "2026-11-27T18:53:46.000Z",
+      "evidenceUrl": "https://github.com/GooDAnDReaDY/dsh-russian-lang/commit/7ea77fcc55cd2829c9397b2b8d5dcccdaa3d7a24",
       "dshRelease": null,
       "systems": [],
       "profiles": [],
@@ -78,7 +78,7 @@
   },
   "admission": {
     "engine": "bounded-source-v3",
-    "binding": "b370e087983997a46730387e9c57efd9d646f639f025c3b3641c1f7b76d9688d",
+    "binding": "d46114fc67ef86148d50b5d946bac2a31f2b04c226c7bfabd46c28ad99b35617",
     "policyDigest": "3578986fe56466165ea24abf5ec522dc5a97086296653349ddcb9e20b8dd89f3",
     "state": "rejected",
     "sourceContract": "verified",
@@ -94,7 +94,7 @@
   "status": "blocked",
   "statusReason": "Automatic policy blocked installation: manifest files selectors are unsupported or ambiguous; whole-package fallback requires review; package ignore rules require artifact review; package contains unsupported artifacts requiring review: .gitignore; fixed-source scan is incomplete; unobserved capability signals are unknown; fixed-source security findings require quarantine; fixed-source security warnings require review; runtime source contains the files permission signal; runtime source contains the network permission signal; runtime source contains the commands permission signal; runtime sourc",
   "compatibility": {
-    "dsh": "0.2.0-rc.2 || >=0.2.1-rc.2 <0.2.2-0 || >=0.2.2-0 <0.2.3-0",
+    "dsh": "0.2.0-rc.2 || >=0.2.1-rc.2 <0.2.2-0 || >=0.2.2-0 <0.3.0",
     "dshReleases": {
       "rc.7": "unknown",
       "rc.8": "unknown",
@@ -114,8 +114,8 @@
       "0.2.2-rc.3": "compatible",
       "0.2.2-rc.4": "compatible",
       "0.2.2-rc.5": "compatible",
-      "0.2.3-alpha.1": "unknown",
-      "0.2.3-alpha.2": "unknown"
+      "0.2.3-alpha.2": "compatible",
+      "0.2.3-alpha.1": "unknown"
     },
     "dshOperations": {
       "rc.7": {
@@ -226,13 +226,13 @@
         "uninstall": "unknown",
         "rollback": "unknown"
       },
-      "0.2.3-alpha.1": {
+      "0.2.3-alpha.2": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",
         "rollback": "unknown"
       },
-      "0.2.3-alpha.2": {
+      "0.2.3-alpha.1": {
         "install": "unknown",
         "start": "unknown",
         "uninstall": "unknown",
