@@ -610,3 +610,35 @@ test('the fixed-source reviewer does not flag its own diagnostic prose as a tool
   const reviewer = await read('src/fixed-source-review.mjs')
   assert.equal(dshInterfaceSignals(reviewer, 'fixed-source-review.mjs').toolViewExtension, false)
 })
+
+test('candidate auto-admission binds the probe Commit to the Candidate Registry fixed Commit', async () => {
+  // The Candidate Registry persists the fixed Commit as `latestCommit`. The
+  // admission path must compare and pin that exact Commit. Reading a
+  // `commit` field that the registry never stores silently produced
+  // `undefined`, so every probed candidate was rejected as "commit
+  // unavailable" and none could reach the Catalog.
+  const source = await read('scripts/automate-catalog.mjs')
+  const admission = source.slice(source.indexOf('async function inspectCandidateAutoAdmissions'))
+  const body = admission.slice(0, admission.indexOf('\nasync function '))
+  // Ignore line comments so the prose that explains the bug cannot satisfy
+  // or break the executable-code assertions below.
+  const code = body.split('\n').filter(line => !line.trimStart().startsWith('//')).join('\n')
+  assert.match(code, /const probedCommit = candidate\.latestCommit/)
+  assert.match(code, /fixedCommit: probedCommit/)
+  assert.match(code, /checked\.commit !== probedCommit/)
+  assert.doesNotMatch(code, /candidate\.commit/)
+  // The registry entry that the probe matched must stay bound to the same
+  // Commit the probe actually tested.
+  assert.match(code, /entry\.latestCommit === probe\.commit/)
+})
+
+test('the candidate registry schema stores the fixed Commit as latestCommit', async () => {
+  const schema = await read('src/candidates.mjs')
+  assert.match(schema, /latestCommit/)
+  assert.doesNotMatch(schema, /\bcommit:\s*(?:value|entry)\./)
+  const registry = JSON.parse(await read('registry/candidates.json'))
+  for (const entry of registry.entries) {
+    assert.equal(Object.hasOwn(entry, 'commit'), false)
+    if (entry.latestCommit !== null) assert.match(entry.latestCommit, /^[0-9a-f]{40}$/)
+  }
+})
