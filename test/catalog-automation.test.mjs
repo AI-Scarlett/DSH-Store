@@ -610,3 +610,58 @@ test('the fixed-source reviewer does not flag its own diagnostic prose as a tool
   const reviewer = await read('src/fixed-source-review.mjs')
   assert.equal(dshInterfaceSignals(reviewer, 'fixed-source-review.mjs').toolViewExtension, false)
 })
+
+test('candidate auto-admission binds the probe Commit to the Candidate Registry fixed Commit', async () => {
+  // The Candidate Registry persists the fixed Commit as `latestCommit`. The
+  // admission path must compare and pin that exact Commit. Reading a
+  // `commit` field that the registry never stores silently produced
+  // `undefined`, so every probed candidate was rejected as "commit
+  // unavailable" and none could reach the Catalog.
+  const source = await read('scripts/automate-catalog.mjs')
+  const admission = source.slice(source.indexOf('async function inspectCandidateAutoAdmissions'))
+  const body = admission.slice(0, admission.indexOf('\nasync function '))
+  // Ignore line comments so the prose that explains the bug cannot satisfy
+  // or break the executable-code assertions below.
+  const code = body.split('\n').filter(line => !line.trimStart().startsWith('//')).join('\n')
+  assert.match(code, /const probedCommit = candidate\.latestCommit/)
+  assert.match(code, /fixedCommit: probedCommit/)
+  assert.match(code, /checked\.commit !== probedCommit/)
+  assert.doesNotMatch(code, /candidate\.commit/)
+  // The registry entry that the probe matched must stay bound to the same
+  // Commit the probe actually tested.
+  assert.match(code, /entry\.latestCommit === probe\.commit/)
+})
+
+test('the candidate registry schema stores the fixed Commit as latestCommit', async () => {
+  const schema = await read('src/candidates.mjs')
+  assert.match(schema, /latestCommit/)
+  assert.doesNotMatch(schema, /\bcommit:\s*(?:value|entry)\./)
+  const registry = JSON.parse(await read('registry/candidates.json'))
+  for (const entry of registry.entries) {
+    assert.equal(Object.hasOwn(entry, 'commit'), false)
+    if (entry.latestCommit !== null) assert.match(entry.latestCommit, /^[0-9a-f]{40}$/)
+  }
+})
+
+test('candidate admission is serialized on the Catalog automation group', async () => {
+  // Parallel probes all pinned the same base Commit. The first merge moved
+  // main, so the remaining admission pull requests were closed unmerged
+  // instead of being retried. The admission job must therefore serialize on
+  // the shared Catalog automation group, while probing stays parallel.
+  const probe = await read('.github/workflows/candidate-compatibility-probe.yml')
+  const admission = probe.slice(probe.indexOf('\n  admission:'))
+  assert.match(admission, /concurrency:\s*\n\s*group: catalog-automation/)
+  assert.match(admission, /cancel-in-progress: false/)
+  // The workflow itself must stay unserialized so probes still run in parallel.
+  assert.doesNotMatch(probe, /^concurrency:/m)
+})
+
+test('the candidate probe dispatch rotates the pool instead of the file head', async () => {
+  const dispatch = await read('.github/workflows/candidate-dispatch.yml')
+  // Selecting the head of the registry re-probed the same oldest candidates
+  // every cycle, so the rest of the backlog never received a probe.
+  assert.doesNotMatch(dispatch, /\.slice\(0, 3\)/)
+  assert.match(dispatch, /cycle/)
+  assert.match(dispatch, /sha256/)
+  assert.match(dispatch, /max-parallel: [2-9]/)
+})

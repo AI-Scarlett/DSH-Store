@@ -132,6 +132,14 @@ jobs:
     if: needs.probe.result == 'success'
     runs-on: ubuntu-latest
     timeout-minutes: 45
+    # Only one candidate admission may write the Catalog at a time. Without
+    # this group, parallel probes all pinned the same base Commit, so the
+    # first merge invalidated the others and their admission pull requests
+    # were closed unmerged instead of being retried against the new main.
+    # The group is scoped to this job so probing itself stays parallel.
+    concurrency:
+      group: catalog-automation
+      cancel-in-progress: false
     permissions:
       contents: write
       pull-requests: write

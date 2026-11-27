@@ -23,16 +23,27 @@ jobs:
         id: find
         run: |
           node - <<'NODE'
+          const crypto = require('node:crypto')
           const fs = require('node:fs')
           const registry = JSON.parse(fs.readFileSync('registry/candidates.json', 'utf8'))
-          const selected = (registry.entries || [])
+          const pool = (registry.entries || [])
             .filter(entry => entry && entry.status === 'discovered'
               && typeof entry.repositoryUrl === 'string'
               && /^[0-9a-f]{40}$/.test(String(entry.latestCommit)))
-            .slice(0, 3)
-            .map(entry => ({ repository: entry.name, commit: entry.latestCommit }))
+          // Selecting the head of the file kept re-probing the same oldest
+          // candidates, so the rest of the backlog never received a probe.
+          // Rotate the pool deterministically per dispatch cycle instead.
+          const cycle = Math.floor(Date.now() / (15 * 60 * 1000))
+          const selected = pool
+            .map(entry => ({
+              entry,
+              key: crypto.createHash('sha256').update(`${cycle}:${entry.id}`).digest('hex'),
+            }))
+            .sort((left, right) => (left.key < right.key ? -1 : left.key > right.key ? 1 : 0))
+            .slice(0, 6)
+            .map(({ entry }) => ({ repository: entry.name, commit: entry.latestCommit }))
           fs.appendFileSync(process.env.GITHUB_OUTPUT, `matrix=${JSON.stringify({ include: selected })}\n`)
-          console.log(`candidates awaiting probe: ${selected.length}`)
+          console.log(`candidates awaiting probe: ${selected.length} (pool ${pool.length})`)
           NODE
 
   dispatch:
@@ -43,7 +54,7 @@ jobs:
       actions: write
     strategy:
       matrix: ${{ fromJSON(needs.prepare.outputs.matrix) }}
-      max-parallel: 1
+      max-parallel: 2
     steps:
       - uses: actions/checkout@v4
       - name: Dispatch probe

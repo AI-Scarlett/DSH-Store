@@ -1138,9 +1138,14 @@ async function inspectCandidateAutoAdmissions(catalog, candidates, policy, githu
       : row.status === 'compatible' && row.method === 'host-boot' ? 'compatible'
         : row.status === 'incompatible' ? 'incompatible' : 'unknown'
   }
+  // The Candidate Registry persists the fixed Commit as `latestCommit`; there
+  // is no `commit` field on a registry entry. Reading `candidate.commit` here
+  // yielded undefined, so the probe Commit was never verified against the
+  // registry and every auto-admission was rejected as "commit unavailable".
+  const probedCommit = candidate.latestCommit
   report.candidateAutoAdmission = {
     repository: candidate.repositoryUrl,
-    commit: candidate.commit,
+    commit: probedCommit,
     probeSha256: report.preconditions.candidateProbeSha256,
     latestDshReleases: [...dshReleaseWindow.releases],
     releaseStatuses: releases,
@@ -1150,7 +1155,7 @@ async function inspectCandidateAutoAdmissions(catalog, candidates, policy, githu
   let checked
   try {
     const result = await retryInfrastructure(() => checkRepository(candidate.repositoryUrl, '', {
-      catalogDocument: catalog, token: process.env.GITHUB_TOKEN, timeoutMs: 12_000, fetch: github.fetch, fixedCommit: candidate.commit,
+      catalogDocument: catalog, token: process.env.GITHUB_TOKEN, timeoutMs: 12_000, fetch: github.fetch, fixedCommit: probedCommit,
     }))
     checked = result.candidate
   } catch (error) {
@@ -1158,15 +1163,15 @@ async function inspectCandidateAutoAdmissions(catalog, candidates, policy, githu
     candidate.route = routeForFailure(error?.code)
     candidate.statusReason = `${error?.code ?? 'CANDIDATE_PRECHECK_FAILED'}: ${boundedText(error?.message, 'candidate fixed-source precheck failed')}`
     report.candidateAutoAdmission.rejected.push({ repository: candidate.repositoryUrl, reason: candidate.statusReason })
-    report.rejectedCandidates.push({ repository: candidate.repositoryUrl, commit: candidate.commit, reason: candidate.statusReason })
+    report.rejectedCandidates.push({ repository: candidate.repositoryUrl, commit: probedCommit, reason: candidate.statusReason })
     return
   }
-  if (checked.repositoryUrl.toLowerCase() !== candidate.repositoryUrl.toLowerCase() || checked.commit !== candidate.commit) {
+  if (checked.repositoryUrl.toLowerCase() !== candidate.repositoryUrl.toLowerCase() || checked.commit !== probedCommit) {
     candidate.status = 'rejected'
     candidate.route = routeForFailure('CANDIDATE_COMMIT_UNAVAILABLE')
     candidate.statusReason = 'Candidate auto-admission blocked: the probed fixed Commit is no longer the source returned by the canonical repository manifest.'
     report.candidateAutoAdmission.rejected.push({ repository: candidate.repositoryUrl, reason: candidate.statusReason })
-    report.rejectedCandidates.push({ repository: candidate.repositoryUrl, commit: candidate.commit, reason: candidate.statusReason })
+    report.rejectedCandidates.push({ repository: candidate.repositoryUrl, commit: probedCommit, reason: candidate.statusReason })
     return
   }
   checked.compatibility = {
@@ -1184,7 +1189,7 @@ async function inspectCandidateAutoAdmissions(catalog, candidates, policy, githu
       'Candidate auto-admission did not prove an installable entry under the current policy.',
     )
     report.candidateAutoAdmission.rejected.push({ repository: candidate.repositoryUrl, reason: candidate.statusReason })
-    report.rejectedCandidates.push({ repository: candidate.repositoryUrl, commit: candidate.commit, reason: candidate.statusReason })
+    report.rejectedCandidates.push({ repository: candidate.repositoryUrl, commit: probedCommit, reason: candidate.statusReason })
     return
   }
   catalog.entries.push(entry)
